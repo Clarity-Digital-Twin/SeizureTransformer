@@ -27,8 +27,6 @@
 # import required system modules
 #
 import os
-import sys
-import math
 
 # import required NEDC modules
 #
@@ -82,7 +80,7 @@ def run(events_ref, events_hyp, mapping, nedc_ira, odir, fp):
      (3) evaluating the resulting confusion matrix
      (4) displaying the results
     """
-       
+
     # display an informational message
     #
     if dbgl > ndt.BRIEF:
@@ -157,7 +155,7 @@ def run(events_ref, events_hyp, mapping, nedc_ira, odir, fp):
 #
 #------------------------------------------------------------------------------
 
-class NedcIra():
+class NedcIra:
     """
     Class: NedcIra
     
@@ -192,11 +190,11 @@ class NedcIra():
         description: 
          none
         """
- 
+
         # create class data
         #
         NedcIra.__CLASS_NAME__ = self.__class__.__name__
-        
+
         # decode the parameters passed from the parameter file
         #
         self.epoch_dur_d = float(params['epoch_duration'])
@@ -238,14 +236,14 @@ class NedcIra():
          We use dictionaries that are initialized in the order
          labels appear in the scoring map.
         """
- 
+
         # display informational message
         #
         if self.dbgl_d > ndt.BRIEF:
             print("%s (line: %s) %s::%s: initializing score" %
                   (__FILE__, ndt.__LINE__, NedcIra.__CLASS_NAME__,
                    ndt.__NAME__))
-            
+
         # initialize global counters
         #
         self.total_dur_d = float(0)
@@ -264,7 +262,7 @@ class NedcIra():
         for key in score_map:
             self.sub_d[key] = {}
             for key2 in score_map:
-                self.sub_d[key][key2] = int(0)
+                self.sub_d[key][key2] = 0
 
             self.kappa_d[key] = float(0)
 
@@ -273,7 +271,7 @@ class NedcIra():
         self.pmap_d = nft.permute_map(score_map)
 
         # exit gracefully
-        # 
+        #
         return True
     #
     # end of method
@@ -293,22 +291,22 @@ class NedcIra():
         description: 
          This method computes a confusion matrix.
         """
- 
+
         # display informational message
         #
         if self.dbgl_d > ndt.BRIEF:
             print("%s (line: %s) %s::%s: scoring files" %
                   (__FILE__, ndt.__LINE__, NedcIra.__CLASS_NAME__,
                    ndt.__NAME__))
-            
+
         # declare local variables
         #
         status = True
 
         # loop over all files
         #
-        i = int(0)
-        for key_ref, key_hyp in zip(all_events_ref, all_events_hyp):
+        i = 0
+        for key_ref, key_hyp in zip(all_events_ref, all_events_hyp, strict=False):
 
             events_ref = all_events_ref[key_ref]
             if events_ref == None:
@@ -317,8 +315,8 @@ class NedcIra():
                        "error getting annotations", fname))
                 return False
 
-            # get the hyp eventss                                            
-            #                                                               
+            # get the hyp eventss
+            #
             events_hyp = all_events_hyp[key_hyp]
             if events_hyp == None:
                 print("Error: %s (line: %s) %s: %s (%s)" %
@@ -338,7 +336,7 @@ class NedcIra():
                 key = next(iter(event[2]))
                 ann_ref.append([event[0], event[1], \
                                 self.pmap_d[key], event[2][key]])
-                
+
             ann_hyp = []
             for event in events_hyp:
                 key = next(iter(event[2]))
@@ -356,7 +354,7 @@ class NedcIra():
                 return False
 
         # exit gracefully
-        # 
+        #
         return True
     #
     # end of method
@@ -379,7 +377,7 @@ class NedcIra():
          times spaced by dur secs, and compares labels to the corresponding
          label in the hypothesis.
         """
- 
+
         # check to make sure the annotations match:
         #  since these are floating point values for times, we
         #  do a simple sanity check to make sure the end times
@@ -392,8 +390,8 @@ class NedcIra():
         # loop over the reference annotation starting at the middle
         # of the first interval.
         #
-        dur_by_2 = dur / float(2.0)
-        curr_time = dur / float(2.0)
+        dur_by_2 = dur / 2.0
+        curr_time = dur / 2.0
         start_time = float(0)
         stop_time = ref[-1][1]
         i = 0
@@ -407,7 +405,7 @@ class NedcIra():
 
             # increment the substitution matrix
             #
-            self.sub_d[ref[j][2]][hyp[k][2]] += int(1)
+            self.sub_d[ref[j][2]][hyp[k][2]] += 1
 
             # increment time:
             #  do this using an integer counter to avoid roundoff error
@@ -435,7 +433,7 @@ class NedcIra():
         description: 
          This method finds the annotation corresponding to a value of time.
         """
- 
+
         # loop over the annotation
         #
         counter = 0
@@ -448,7 +446,7 @@ class NedcIra():
         # exit ungracefully:
         #  no match was found, which is a problem
         #
-        return int(-1)
+        return -1
     #
     # end of method
 
@@ -480,14 +478,14 @@ class NedcIra():
         
          https://www.harrisgeospatial.com/docs/CalculatingConfusionMatrices.html
         """
- 
+
         # display informational message
         #
         if self.dbgl_d > ndt.BRIEF:
             print("%s (line: %s) %s::%s: computing Cohen's Kappa statistic" %
                   (__FILE__, ndt.__LINE__, NedcIra.__CLASS_NAME__,
                    ndt.__NAME__))
-            
+
         # loop over all labels:
         #  note that the confusion matrix is square by definition,
         #  so loop counters can be interchanged.
@@ -535,7 +533,7 @@ class NedcIra():
                        "error computing kappa statistic", label))
                 self.kappa_d[label] = 0
             elif denom == float(0):
-                self.kappa_d[label] = float(1.0)
+                self.kappa_d[label] = 1.0
             else:
                 self.kappa_d[label] = float((p_o - p_e) / (1 - p_e))
 
@@ -547,21 +545,21 @@ class NedcIra():
         #
         sum_rows = {}
         for label1 in self.sub_d:
-            sum_rows[label1] = int(0)
+            sum_rows[label1] = 0
         sum_cols = {}
         flbl = next(iter(self.sub_d))
         for label1 in self.sub_d[flbl]:
-            sum_cols[label1] = int(0)
+            sum_cols[label1] = 0
 
-        sum_M = int(0)
+        sum_M = 0
         for label1 in self.sub_d:
             sum_M += self.sub_d[label1][label1]
             for label2 in self.sub_d[label1]:
                 sum_rows[label1] += self.sub_d[label1][label2]
                 sum_cols[label2] += self.sub_d[label1][label2]
 
-        sum_N = int(0)
-        sum_gc = int(0)
+        sum_N = 0
+        sum_gc = 0
         for label1 in self.sub_d:
             sum_N += sum_rows[label1]
             sum_gc += sum_rows[label1] * sum_cols[label1]
@@ -570,9 +568,9 @@ class NedcIra():
         #
         num = sum_N * sum_M - sum_gc
         denom = sum_N * sum_N - sum_gc
-        if (denom == int(0)) and (num == int(0)):
+        if (denom == 0) and (num == 0):
             self.mkappa_d = float(1)
-        elif denom == int(0):
+        elif denom == 0:
             print("Error: %s (line: %s) %s::%s: %s (%s %f %f)" %
                   (__FILE__, ndt.__LINE__, NedcIra.__CLASS_NAME__,
                    ndt.__NAME__,
@@ -604,20 +602,20 @@ class NedcIra():
         description: 
          This method displays all the results in output report.
         """
- 
+
         # display informational message
         #
         if self.dbgl_d > ndt.BRIEF:
             print("%s (line: %s) %s::%s: displaying results to output file" %
                   (__FILE__, ndt.__LINE__, NedcIra.__CLASS_NAME__,
                    ndt.__NAME__))
-            
+
         # declare a format length:
         #  we use this variable to make sure the output lines up.
         #  it is the length of the fixed portion of the per label
         #  output format ("Label: " + "   " + "Kappa" = 15 characters
         #
-        fmt_len = int(15)
+        fmt_len = 15
 
         # print complete table in output file
         #

@@ -7,8 +7,8 @@ Note: This is a thin wrapper around the in-repo NEDC v6.0.0 tools
 located under `evaluation/nedc_eeg_eval/v6.0.0`.
 """
 
-import subprocess
 import os
+import subprocess
 from pathlib import Path
 
 # Point to in-repo NEDC tools

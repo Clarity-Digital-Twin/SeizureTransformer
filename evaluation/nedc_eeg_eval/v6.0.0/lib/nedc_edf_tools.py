@@ -106,20 +106,18 @@
 
 # import required system modules
 #
-import numpy as np
+import math
 import os
-from scipy.signal import resample_poly, decimate, kaiserord, firwin
 import struct
 import sys
-import math
-import copy
-import re
 
 # import NEDC modules
 #
 import nedc_debug_tools as ndt
 import nedc_file_tools as nft
 import nedc_mont_tools as nmt
+import numpy as np
+from scipy.signal import decimate, resample_poly
 
 #------------------------------------------------------------------------------
 #
@@ -140,13 +138,13 @@ __FILE__ = os.path.basename(__file__)
 # section (1): version information
 #
 EDF_VERS_NAME = "version"
-EDF_VERS_BSIZE = int(8)
+EDF_VERS_BSIZE = 8
 EDF_VERS = b"0       "
 
 # section (2): patient information
 #
-EDF_LPTI_BSIZE = int(80)
-EDF_LPTI_TSIZE = int(119)
+EDF_LPTI_BSIZE = 80
+EDF_LPTI_TSIZE = 119
 
 EDF_LPTI_PATIENT_ID_NAME = "ltpi_patient_id"
 EDF_LPTI_GENDER_NAME = "ltpi_gender"
@@ -156,7 +154,7 @@ EDF_LPTI_AGE_NAME = "ltpi_age"
 
 # section (3): local recording information
 #
-EDF_LRCI_BSIZE = int(80)
+EDF_LRCI_BSIZE = 80
 EDF_LRCI_TSIZE = EDF_LPTI_TSIZE
 EDF_LRCI_RSIZE = EDF_LPTI_BSIZE
 
@@ -183,15 +181,15 @@ EDF_GHDI_NSIG_REC = "ghdi_nsig_rec"
 
 # section (5): channel-specific information
 #
-EDF_LABL_BSIZE = int(16)
-EDF_TRNT_BSIZE = int(80)
-EDF_PDIM_BSIZE = int( 8)
-EDF_PMIN_BSIZE = int( 8)
-EDF_PMAX_BSIZE = int( 8)
-EDF_DMIN_BSIZE = int( 8)
-EDF_DMAX_BSIZE = int( 8)
+EDF_LABL_BSIZE = 16
+EDF_TRNT_BSIZE = 80
+EDF_PDIM_BSIZE = 8
+EDF_PMIN_BSIZE = 8
+EDF_PMAX_BSIZE = 8
+EDF_DMIN_BSIZE = 8
+EDF_DMAX_BSIZE = 8
 EDF_PREF_BSIZE = EDF_TRNT_BSIZE
-EDF_RECS_BSIZE = int( 8)
+EDF_RECS_BSIZE = 8
 
 EDF_CHAN_LABELS = "chan_labels"
 EDF_CHAN_TRANS_TYPE = "chan_trans_type"
@@ -211,23 +209,23 @@ EDF_NUM_CHANNELS_ANNOTATION = "num_channels_annotation"
 
 # other important definitions
 #
-EDF_BSIZE = int(256)
+EDF_BSIZE = 256
 EDF_ANNOTATION_KEY = "ANNOTATION"
 EDF_FTYP_NAME = "ftype"
-EDF_FTYP_BSIZE = int(5)
+EDF_FTYP_BSIZE = 5
 EDF_FTYP = "EDF  "
-EDF_SIG_MAXVAL = int(32767)
-EDF_SIZEOF_SHORT = int(2)
+EDF_SIG_MAXVAL = 32767
+EDF_SIZEOF_SHORT = 2
 
 # define variables needed for conventional down sampling
 #
 DEF_EDFR_FTYPE = 'fir'
-DEF_EDFR_FORDER = int(1024)
+DEF_EDFR_FORDER = 1024
 
 # define default values
 #
-EDF_DEF_CHAN = int(-1)
-EDF_DEF_DBG_NF = int(10)
+EDF_DEF_CHAN = -1
+EDF_DEF_DBG_NF = 10
 
 # define an regex to extract raw channel names
 #
@@ -259,20 +257,20 @@ def set_limits(f1, f2, fmax):
 
     # initial the output to the max range
     #
-    n1 = int(0)
+    n1 = 0
     n2 = int(fmax)
 
     # clip n1
     #
-    if f1 > int(0):
+    if f1 > 0:
         n1 = min(f1, fmax - 1)
 
     # clip n2
     #
-    if f2 == int(0):
+    if f2 == 0:
         n2 = n1
         return(n1, n2)
-    elif f2 > int(0):
+    elif f2 > 0:
         n2 = min(n1 + f2, n2)
 
     # exit gracefully
@@ -802,8 +800,8 @@ class Edf:
 
         # declare local variables
         #
-        nbytes = int(0)
-        num_items = int(0)
+        nbytes = 0
+        num_items = 0
 
         # display debug information
         #
@@ -843,27 +841,27 @@ class Edf:
 
         fields = (fp.read(EDF_LPTI_BSIZE)).split()
 
-        if len(fields) > int(0):
+        if len(fields) > 0:
             self.h_d[EDF_LPTI_PATIENT_ID_NAME] = str(fields[0],
                                                      nft.DEF_CHAR_ENCODING)
         else:
             self.h_d[EDF_LPTI_PATIENT_ID_NAME] = nft.STRING_EMPTY
-        if len(fields) > int(1):
+        if len(fields) > 1:
             self.h_d[EDF_LPTI_GENDER_NAME] = str(fields[1],
                                                  nft.DEF_CHAR_ENCODING)
         else:
             self.h_d[EDF_LPTI_GENDER_NAME] = nft.STRING_EMPTY
-        if len(fields) > int(2):
+        if len(fields) > 2:
             self.h_d[EDF_LPTI_DOB_NAME] = str(fields[2],
                                               nft.DEF_CHAR_ENCODING)
         else:
             self.h_d[EDF_LPTI_DOB_NAME] = nft.STRING_EMPTY
-        if len(fields) > int(3):
+        if len(fields) > 3:
             self.h_d[EDF_LPTI_FULL_NAME_NAME] = str(fields[3],
                                                     nft.DEF_CHAR_ENCODING)
         else:
             self.h_d[EDF_LPTI_FULL_NAME_NAME] = nft.STRING_EMPTY
-        if len(fields) > int(4):
+        if len(fields) > 4:
             self.h_d[EDF_LPTI_AGE_NAME] = str(fields[4],
                                               nft.DEF_CHAR_ENCODING)
         else:
@@ -882,27 +880,27 @@ class Edf:
 
         fields = (fp.read(EDF_LRCI_BSIZE)).split()
 
-        if len(fields) > int(0):
+        if len(fields) > 0:
             self.h_d[EDF_LRCI_START_DATE_LABEL] = str(fields[0],
                                                       nft.DEF_CHAR_ENCODING)
         else:
             self.h_d[EDF_LRCI_START_DATE_LABEL] = nft.STRING_EMPTY
-        if len(fields) > int(1):
+        if len(fields) > 1:
             self.h_d[EDF_LRCI_START_DATE] = str(fields[1],
                                                 nft.DEF_CHAR_ENCODING)
         else:
             self.h_d[EDF_LRCI_START_DATE] = nft.STRING_EMPTY
-        if len(fields) > int(2):
+        if len(fields) > 2:
             self.h_d[EDF_LRCI_EEG_ID] = str(fields[2],
                                             nft.DEF_CHAR_ENCODING)
         else:
             self.h_d[EDF_LRCI_EEG_ID] = nft.STRING_EMPTY
-        if len(fields) > int(3):
+        if len(fields) > 3:
             self.h_d[EDF_LRCI_TECH] = str(fields[3],
                                           nft.DEF_CHAR_ENCODING)
         else:
             self.h_d[EDF_LRCI_TECH] = nft.STRING_EMPTY
-        if len(fields) > int(4):
+        if len(fields) > 4:
             self.h_d[EDF_LRCI_MACHINE] = str(fields[4],
                                              nft.DEF_CHAR_ENCODING)
         else:
@@ -950,7 +948,7 @@ class Edf:
 
         buf = fp.read(EDF_LABL_BSIZE * self.h_d[EDF_GHDI_NSIG_REC])
 
-        self.h_d[EDF_NUM_CHANNELS_ANNOTATION] = int(0)
+        self.h_d[EDF_NUM_CHANNELS_ANNOTATION] = 0
         self.h_d[EDF_CHAN_LABELS] = []
         for i in range(0, self.h_d[EDF_GHDI_NSIG_REC]):
 
@@ -965,7 +963,7 @@ class Edf:
             #  note that the label is already upper case
             #
             if EDF_ANNOTATION_KEY in self.h_d[EDF_CHAN_LABELS][i]:
-                self.h_d[EDF_NUM_CHANNELS_ANNOTATION] += int(1)
+                self.h_d[EDF_NUM_CHANNELS_ANNOTATION] += 1
 
         # (5b) read the transducer type
         #
@@ -1966,7 +1964,7 @@ class Edf:
         #
         # set the record duration for each record to one second
         #
-        monhdr[EDF_GHDI_DUR_REC] = float(1.0)
+        monhdr[EDF_GHDI_DUR_REC] = 1.0
 
         # Calculate new total recording duration
         #

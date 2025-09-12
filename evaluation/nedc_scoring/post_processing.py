@@ -5,11 +5,11 @@ Applies threshold, morphological operations, and event filtering.
 """
 
 import numpy as np
-from scipy.ndimage import binary_opening, binary_closing
+from scipy.ndimage import binary_closing, binary_opening
 
 
 def apply_seizure_transformer_postprocessing(
-    predictions: np.ndarray, 
+    predictions: np.ndarray,
     threshold: float = 0.8,
     morph_kernel_size: int = 5,
     min_duration_sec: float = 2.0,
@@ -30,17 +30,17 @@ def apply_seizure_transformer_postprocessing(
     """
     # Step 1: Apply threshold
     binary = predictions > threshold
-    
+
     # Step 2: Morphological opening (remove small false positives)
     kernel = np.ones(morph_kernel_size, dtype=bool)
     binary = binary_opening(binary, structure=kernel)
-    
+
     # Step 3: Morphological closing (fill small gaps)
     binary = binary_closing(binary, structure=kernel)
-    
+
     # Step 4: Convert binary mask to events
     events = binary_mask_to_events(binary, fs)
-    
+
     # Step 5: Remove events shorter than minimum duration
     min_samples = int(min_duration_sec * fs)
     filtered_events = []
@@ -50,7 +50,7 @@ def apply_seizure_transformer_postprocessing(
             start_sec = start_idx / fs
             end_sec = end_idx / fs
             filtered_events.append((start_sec, end_sec))
-    
+
     return filtered_events
 
 
@@ -67,17 +67,17 @@ def binary_mask_to_events(binary_mask: np.ndarray, fs: int = 256) -> list:
     """
     # Add padding to handle edge cases
     padded = np.pad(binary_mask, (1, 1), mode='constant', constant_values=0)
-    
+
     # Find edges (transitions)
     diff = np.diff(padded.astype(int))
     starts = np.where(diff == 1)[0]  # 0→1 transitions
     ends = np.where(diff == -1)[0]   # 1→0 transitions
-    
+
     # Pair up starts and ends
     events = []
-    for start, end in zip(starts, ends):
+    for start, end in zip(starts, ends, strict=False):
         events.append((start, end))
-    
+
     return events
 
 
@@ -94,18 +94,18 @@ def merge_nearby_events(events: list, gap_sec: float = 1.0) -> list:
     """
     if not events:
         return []
-    
+
     # Sort by start time
     sorted_events = sorted(events)
     merged = [sorted_events[0]]
-    
+
     for start, end in sorted_events[1:]:
         last_start, last_end = merged[-1]
-        
+
         # If gap is small enough, merge
         if start - last_end <= gap_sec:
             merged[-1] = (last_start, max(last_end, end))
         else:
             merged.append((start, end))
-    
+
     return merged

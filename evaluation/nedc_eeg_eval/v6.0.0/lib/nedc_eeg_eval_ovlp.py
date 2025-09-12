@@ -21,31 +21,30 @@
 # This file implements NEDC's overlap scoring algorithm. This algorithm is
 # described here:
 #
-#  Wilson, Scheuer, Plummer, Young, & Pacia. (2003). Seizure detection: 
+#  Wilson, Scheuer, Plummer, Young, & Pacia. (2003). Seizure detection:
 #  Correlation of human experts. Clinical Neurophysiology, 114(11), 2156-2164.
 #
 # A synposis is as follows:
 #
-#  Inter-reader sensitivity and false positive rate are calculated 
-#  with the traditional algorithm described in Section 1. Given 
-#  Readers X and Y, SensitivityXY (the sensitivity of Reader X with 
+#  Inter-reader sensitivity and false positive rate are calculated
+#  with the traditional algorithm described in Section 1. Given
+#  Readers X and Y, SensitivityXY (the sensitivity of Reader X with
 #  respect to Reader Y) is given by the number of events marked by Y
 #  that are overlapped by one or more events marked by X divided by the
-#  number of events marked by Y. FPRateXY is given by the number of events 
-#  marked by X that do not overlap any event marked by Y divided by 
-#  the record duration in minutes. Wilson et al. (1996) show how to 
+#  number of events marked by Y. FPRateXY is given by the number of events
+#  marked by X that do not overlap any event marked by Y divided by
+#  the record duration in minutes. Wilson et al. (1996) show how to
 #  extend the any-overlap comparison calculations to support perception
 #  values, but perception values were not used in these anyoverlap
-#  computations since the cost (probably time) to review a false positive 
+#  computations since the cost (probably time) to review a false positive
 #  seizure is independent of its perception value.
 #
 #------------------------------------------------------------------------------
 
 # import required system modules
 #
-import os
-import sys
 import math
+import os
 
 # import required NEDC modules
 #
@@ -98,7 +97,7 @@ def run(events_ref, events_hyp, mapping, nedc_ovlp, odir, rfile, fp):
       (2) scoring them
       (3) displaying the results
     """
-     
+
     # display an informational message
     #
     if dbgl > ndt.BRIEF:
@@ -170,7 +169,7 @@ def run(events_ref, events_hyp, mapping, nedc_ovlp, odir, rfile, fp):
 #
 #------------------------------------------------------------------------------
 
-class NedcOverlap():
+class NedcOverlap:
     """
     Class: NedcOverlap
     
@@ -193,7 +192,7 @@ class NedcOverlap():
     #
     dbgl_d = ndt.Dbgl()
     vrbl_d = ndt.Vrbl()
- 
+
     def __init__(self, params):
         """
         method: constructor
@@ -218,7 +217,7 @@ class NedcOverlap():
             print("%s (line: %s) %s::%s: scoring files" %
                   (__FILE__, ndt.__LINE__, NedcOverlap.__CLASS_NAME__,
                    ndt.__NAME__))
-            
+
         # decode the parameters passed from the parameter file
         # (if we are using this)
         #
@@ -271,17 +270,17 @@ class NedcOverlap():
 
         # declare parameters to compute summaries
         #
-        self.sum_tp_d = int(0)
-        self.sum_tn_d = int(0)
-        self.sum_fp_d = int(0)
-        self.sum_fn_d = int(0)
+        self.sum_tp_d = 0
+        self.sum_tn_d = 0
+        self.sum_fp_d = 0
+        self.sum_fn_d = 0
 
-        self.sum_tgt_d = int(0)
-        self.sum_hit_d = int(0)
-        self.sum_mis_d = int(0)
-        self.sum_fal_d = int(0)
-        self.sum_ins_d = int(0)
-        self.sum_del_d = int(0)
+        self.sum_tgt_d = 0
+        self.sum_hit_d = 0
+        self.sum_mis_d = 0
+        self.sum_fal_d = 0
+        self.sum_ins_d = 0
+        self.sum_del_d = 0
 
         # additional derived data:
         #  we use class data to store a number of statistical measures
@@ -304,7 +303,7 @@ class NedcOverlap():
         # declare parameters to hold per file output
         #
         self.rfile_d = None
-        
+
     #
     # end of method
 
@@ -330,7 +329,7 @@ class NedcOverlap():
             print("%s (line: %s) %s::%s: initializing score" %
                   (__FILE__, ndt.__LINE__, NedcOverlap.__CLASS_NAME__,
                    ndt.__NAME__))
-            
+
         # initialize global counters
         #
         self.total_dur_d = float(0)
@@ -368,17 +367,17 @@ class NedcOverlap():
 
         # declare parameters to compute summaries
         #
-        self.sum_tp_d = int(0)
-        self.sum_tn_d = int(0)
-        self.sum_fp_d = int(0)
-        self.sum_fn_d = int(0)
+        self.sum_tp_d = 0
+        self.sum_tn_d = 0
+        self.sum_fp_d = 0
+        self.sum_fn_d = 0
 
-        self.sum_tgt_d = int(0)
-        self.sum_hit_d = int(0)
-        self.sum_mis_d = int(0)
-        self.sum_fal_d = int(0)
-        self.sum_ins_d = int(0)
-        self.sum_del_d = int(0)
+        self.sum_tgt_d = 0
+        self.sum_hit_d = 0
+        self.sum_mis_d = 0
+        self.sum_fal_d = 0
+        self.sum_ins_d = 0
+        self.sum_del_d = 0
 
         self.sum_tpr_d = float(0)
         self.sum_tnr_d = float(0)
@@ -397,17 +396,17 @@ class NedcOverlap():
         # the scoring map.
         #
         for key in score_map:
-            self.tp_d[key] = int(0)
-            self.tn_d[key] = int(0)
-            self.fp_d[key] = int(0)
-            self.fn_d[key] = int(0)
+            self.tp_d[key] = 0
+            self.tn_d[key] = 0
+            self.fp_d[key] = 0
+            self.fn_d[key] = 0
 
-            self.tgt_d[key] = int(0)
-            self.hit_d[key] = int(0)
-            self.mis_d[key] = int(0)
-            self.fal_d[key] = int(0)
-            self.ins_d[key] = int(0)
-            self.del_d[key] = int(0)
+            self.tgt_d[key] = 0
+            self.hit_d[key] = 0
+            self.mis_d[key] = 0
+            self.fal_d[key] = 0
+            self.ins_d[key] = 0
+            self.del_d[key] = 0
 
             self.tpr_d[key] = float(0)
             self.tnr_d[key] = float(0)
@@ -429,7 +428,7 @@ class NedcOverlap():
         self.pmap_d = nft.permute_map(score_map)
 
         # exit gracefully
-        # 
+        #
         return True
     #
     # end of method
@@ -457,7 +456,7 @@ class NedcOverlap():
             print("%s (line: %s) %s::%s: scoring files" %
                   (__FILE__, ndt.__LINE__, NedcOverlap.__CLASS_NAME__,
                    ndt.__NAME__))
-            
+
         # declare local variables
         #
         status = True
@@ -468,8 +467,8 @@ class NedcOverlap():
 
         # loop over all files
         #
-        i = int(0)
-        for key_ref, key_hyp in zip(all_events_ref, all_events_hyp):
+        i = 0
+        for key_ref, key_hyp in zip(all_events_ref, all_events_hyp, strict=False):
 
             # get the ref events
             #
@@ -481,12 +480,12 @@ class NedcOverlap():
                 return False
 
             # get the corresponding hyp events
-            #                                                               
+            #
             events_hyp = all_events_hyp[key_hyp]
             if events_hyp == None:
                 print("Error: %s (line: %s) %s: %s (%s)" %
                       (__FILE__, ndt.__LINE__, ndt.__NAME__,
-                       "error getting annotations", key_hyp)) 
+                       "error getting annotations", key_hyp))
                 return False
 
             # update the total duration
@@ -501,7 +500,7 @@ class NedcOverlap():
                 key = next(iter(event[2]))
                 ann_ref.append([event[0], event[1], \
                                 self.pmap_d[key], event[2][key]])
-                
+
             ann_hyp = []
             for event in events_hyp:
                 key = next(iter(event[2]))
@@ -536,14 +535,14 @@ class NedcOverlap():
 
             # increment the counter
             #
-            i += int(1)
+            i += 1
 
         # close the file
         #
         self.rfile_d.close()
 
         # exit gracefully
-        # 
+        #
         return True
     #
     # end of method
@@ -567,7 +566,7 @@ class NedcOverlap():
          this method loops through reference and hypothesis annotations to 
          collect miss/hits and false alarms.
         """
-            
+
         # check to make sure the annotations match:
         #  since these are floating point values for times, we
         #  do a simple sanity check to make sure the end times
@@ -584,12 +583,12 @@ class NedcOverlap():
 
         # loop over the ref annotation to collect hits and misses
         #
-        hit = int(0)
-        mis = int(0)
-        fal = int(0)
+        hit = 0
+        mis = 0
+        fal = 0
 
         for event in ref:
-            self.tgt_d[event[2]] += 1            
+            self.tgt_d[event[2]] += 1
             refo.append(event[2])
             labels, starts, stops = self.get_events(event[0], event[1], hyp)
             if event[2] in labels:
@@ -653,7 +652,7 @@ class NedcOverlap():
                 starts.append(event[0])
                 stops.append(event[1])
                 labels.append(event[2])
-        
+
         # exit gracefully
         #
         return [labels, starts, stops]
@@ -692,7 +691,7 @@ class NedcOverlap():
             print("%s (line: %s) %s::%s: computing the performance" %
                   (__FILE__, ndt.__LINE__, NedcOverlap.__CLASS_NAME__,
                    ndt.__NAME__))
-            
+
         # check for a zero count
         #
         num_total_ref_events = sum(self.tgt_d.values())
@@ -734,7 +733,7 @@ class NedcOverlap():
             # compute true negatives (tn):
             #  sum the hits that are not the current label
             #
-            tn_sum = int(0)
+            tn_sum = 0
             for key2 in self.hit_d:
                 if key1 != key2:
                     tn_sum += self.hit_d[key2]
@@ -765,7 +764,7 @@ class NedcOverlap():
                 print("Warning: %s (line: %s) %s::%s: %s (%f)" %
                   (__FILE__, ndt.__LINE__, NedcOverlap.__CLASS_NAME__,
                    ndt.__NAME__, "duration is zero",  tdur))
-                                
+
             # (2.3) compute derived measures
             #
             if (tp + fn) != 0:
@@ -811,7 +810,7 @@ class NedcOverlap():
             if round(f1s_denom, ndt.MAX_PRECISION) == 0:
                 print("Warning: %s (line: %s) %s::%s: %s (%s)" %
                   (__FILE__, ndt.__LINE__, NedcOverlap.__CLASS_NAME__,
-                   ndt.__NAME__, "f ratio divide by zero", key1)) 
+                   ndt.__NAME__, "f ratio divide by zero", key1))
                 self.f1s_d[key1] = float(0)
             else:
                 self.f1s_d[key1] = 2.0 * self.ppv_d[key1] * \
@@ -829,7 +828,7 @@ class NedcOverlap():
                 self.mcc_d[key1] = float(0)
             else:
                 self.mcc_d[key1] = mcc_num / math.sqrt(mcc_denom)
-                
+
             # compute the false alarm rate
             #
             if (round(tdur, ndt.MAX_PRECISION) == 0):
@@ -839,7 +838,7 @@ class NedcOverlap():
                 self.flr_d[key1] = float(0)
             else:
                 self.flr_d[key1] = float(fp) / tdur * (60 * 60 * 24)
-        
+
         #----------------------------------------------------------------------
         # (3) the third block of parameters are the summary values
         #
@@ -921,7 +920,7 @@ class NedcOverlap():
             self.sum_mcc_d = float(0)
         else:
             self.sum_mcc_d = sum_mcc_num / math.sqrt(sum_mcc_denom)
-            
+
         # compute the false alarm rate
         #
         if round(self.total_dur_d, ndt.MAX_PRECISION) == 0:
@@ -959,7 +958,7 @@ class NedcOverlap():
             print("%s (line: %s) %s::%s: displaying results to output file" %
                   (__FILE__, ndt.__LINE__, NedcOverlap.__CLASS_NAME__,
                    ndt.__NAME__))
-            
+
         # write per label header
         #
         fp.write(("Per Label Results:" + nft.DELIM_NEWLINE).upper())
@@ -1135,14 +1134,14 @@ class NedcOverlap():
             print("%s (line: %s) %s::%s: computing an roc/det curve" %
                   (__FILE__, ndt.__LINE__, NedcOverlap.__CLASS_NAME__,
                    ndt.__NAME__))
-            
+
         # declare local variables
         #
         status = True
 
         # loop over all event lists (corresponding to files)
         #
-        for ann_ref, ann_hyp in zip(events_ref, events_hyp):
+        for ann_ref, ann_hyp in zip(events_ref, events_hyp, strict=False):
 
             # update the total duration
             #
@@ -1158,7 +1157,7 @@ class NedcOverlap():
                 return False
 
         # exit gracefully
-        # 
+        #
         return True
     #
     # end of method
@@ -1187,7 +1186,7 @@ class NedcOverlap():
             print("%s (line: %s) %s::%s: computing performance for an ROC" %
                   (__FILE__, ndt.__LINE__, NedcOverlap.__CLASS_NAME__,
                    ndt.__NAME__))
-            
+
         # check for a zero count
         #
         num_total_ref_events = sum(self.tgt_d.values())
@@ -1195,7 +1194,7 @@ class NedcOverlap():
             print("Error: %s (line: %s) %s::%s: %s (%d)" %
                   (__FILE__, ndt.__LINE__, NedcOverlap.__CLASS_NAME__,
                    ndt.__NAME__, "number of events is zero",
-                   num_total_ref_events))    
+                   num_total_ref_events))
             return False
 
         #----------------------------------------------------------------------
@@ -1225,7 +1224,7 @@ class NedcOverlap():
         # compute true negatives (tn):
         #  sum the hits that are not the current label
         #
-        tn_sum = int(0)
+        tn_sum = 0
         for key2 in self.hit_d:
             if key != key2:
                 tn_sum += self.hit_d[key2]
@@ -1300,7 +1299,7 @@ class NedcOverlap():
          false negative rate (fnr) as a function of the false positive rate (fpr).
         """
 
-        return self.fpr_d[key], self.fnr_d[key] 
+        return self.fpr_d[key], self.fnr_d[key]
 
 # end of file
 #

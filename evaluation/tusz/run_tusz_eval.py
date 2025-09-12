@@ -19,6 +19,7 @@ from tqdm import tqdm
 sys.path.append(str(Path(__file__).parent.parent.parent / "wu_2025/src"))
 
 from epilepsy2bids.eeg import Eeg
+
 from wu_2025.utils import get_dataloader, load_models
 
 
@@ -60,22 +61,22 @@ def process_single_file(edf_path, model, device):
 
 
 def load_labels_for_file(edf_path):
-    """Load ground truth labels from .tse file. Returns list of (start_sec, end_sec)."""
-    tse_path = edf_path.with_suffix(".tse")
+    """Load ground truth labels from .csv_bi file. Returns list of (start_sec, end_sec)."""
+    csv_bi_path = edf_path.with_suffix(".csv_bi")
 
-    if not tse_path.exists():
+    if not csv_bi_path.exists():
         return []  # No seizures in this file
 
     seizure_events = []
     try:
-        with open(tse_path) as f:
+        with open(csv_bi_path) as f:
             for line in f:
                 line = line.strip()
                 if line and not line.startswith("#"):
-                    parts = line.split()
-                    if len(parts) >= 3:
-                        start = float(parts[0])
-                        end = float(parts[1])
+                    parts = line.split(",")
+                    if len(parts) >= 5 and parts[3] == "seiz":
+                        start = float(parts[1])
+                        end = float(parts[2])
                         seizure_events.append((start, end))
     except:
         pass

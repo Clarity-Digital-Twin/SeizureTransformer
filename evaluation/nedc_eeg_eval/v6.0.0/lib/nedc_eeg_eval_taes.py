@@ -25,9 +25,8 @@
 
 # import required system modules
 #
-import os
-import sys
 import math
+import os
 
 # import required nedc modules
 #
@@ -80,7 +79,7 @@ def run(events_ref, events_hyp, mapping, nedc_taes, odir, rfile, fp):
       (2) scoring them
       (3) displaying the results
     """
-     
+
     # display an informational message
     #
     if dbgl > ndt.BRIEF:
@@ -99,7 +98,7 @@ def run(events_ref, events_hyp, mapping, nedc_taes, odir, rfile, fp):
 
     if num_files_ref < 1 or num_files_hyp < 1 or \
        num_files_ref != num_files_hyp:
-        print("Error: %s (line: %s) %s: file list error (%s %s)" % 
+        print("Error: %s (line: %s) %s: file list error (%s %s)" %
             (__FILE__, ndt.__LINE__, ndt.__NAME__, events_ref, events_hyp))
         return False
 
@@ -112,7 +111,7 @@ def run(events_ref, events_hyp, mapping, nedc_taes, odir, rfile, fp):
     status = ntaes.init_score(mapping)
     status = ntaes.score(events_ref, events_hyp, mapping, rfile)
     if status == False:
-        print("Error: %s (line: %s) %s: error during scoring" % 
+        print("Error: %s (line: %s) %s: error during scoring" %
             (__FILE__, ndt.__LINE__,ndt.__NAME__))
         return False
 
@@ -136,7 +135,7 @@ def run(events_ref, events_hyp, mapping, nedc_taes, odir, rfile, fp):
 
     status = ntaes.display_results(fp)
     if status == False:
-        print("Error: %s (line: %s) %s: error displaying results" % 
+        print("Error: %s (line: %s) %s: error displaying results" %
             (__FILE__, ndt.__LINE__,ndt.__NAME__))
         return False
 
@@ -152,7 +151,7 @@ def run(events_ref, events_hyp, mapping, nedc_taes, odir, rfile, fp):
 #
 #------------------------------------------------------------------------------
 
-class NedcTAES():
+class NedcTAES:
     """
     Class: NedcTAES
     
@@ -175,7 +174,7 @@ class NedcTAES():
     #
     dbgl_d = ndt.Dbgl()
     vrbl_d = ndt.Vrbl()
- 
+
     def __init__(self, params):
         """
         method: constructor
@@ -190,12 +189,12 @@ class NedcTAES():
          none
         """
 
-        # create class data                                                    
-        #                                                                      
+        # create class data
+        #
         NedcTAES.__CLASS_NAME__ = self.__class__.__name__
 
-        # display informational message                                        
-        #                                                                      
+        # display informational message
+        #
         if self.dbgl_d > ndt.BRIEF:
             print("%s (line: %s) %s::%s: scoring files" %
                   (__FILE__, ndt.__LINE__, NedcTAES.__CLASS_NAME__,
@@ -249,17 +248,17 @@ class NedcTAES():
 
         # declare parameters to compute summaries
         #
-        self.sum_tp_d = int(0)
-        self.sum_tn_d = int(0)
-        self.sum_fp_d = int(0)
-        self.sum_fn_d = int(0)
+        self.sum_tp_d = 0
+        self.sum_tn_d = 0
+        self.sum_fp_d = 0
+        self.sum_fn_d = 0
 
-        self.sum_tgt_d = int(0)
-        self.sum_hit_d = int(0)
-        self.sum_mis_d = int(0)
-        self.sum_fal_d = int(0)
-        self.sum_ins_d = int(0)
-        self.sum_del_d = int(0)
+        self.sum_tgt_d = 0
+        self.sum_hit_d = 0
+        self.sum_mis_d = 0
+        self.sum_fal_d = 0
+        self.sum_ins_d = 0
+        self.sum_del_d = 0
 
         # additional derived data:
         #  we use class data to store a number of statistical measures
@@ -302,8 +301,8 @@ class NedcTAES():
          labels appear in the scoring map.
         """
 
-        # display informational message                                        
-        #                                                                      
+        # display informational message
+        #
         if self.dbgl_d > ndt.BRIEF:
             print("%s (line: %s) %s::%s: initializing score" %
                   (__FILE__, ndt.__LINE__, NedcTAES.__CLASS_NAME__,
@@ -346,17 +345,17 @@ class NedcTAES():
 
         # declare parameters to compute summaries
         #
-        self.sum_tp_d = int(0)
-        self.sum_tn_d = int(0)
-        self.sum_fp_d = int(0)
-        self.sum_fn_d = int(0)
+        self.sum_tp_d = 0
+        self.sum_tn_d = 0
+        self.sum_fp_d = 0
+        self.sum_fn_d = 0
 
-        self.sum_tgt_d = int(0)
-        self.sum_hit_d = int(0)
-        self.sum_mis_d = int(0)
-        self.sum_fal_d = int(0)
-        self.sum_ins_d = int(0)
-        self.sum_del_d = int(0)
+        self.sum_tgt_d = 0
+        self.sum_hit_d = 0
+        self.sum_mis_d = 0
+        self.sum_fal_d = 0
+        self.sum_ins_d = 0
+        self.sum_del_d = 0
 
         self.sum_tpr_d = float(0)
         self.sum_tnr_d = float(0)
@@ -375,17 +374,17 @@ class NedcTAES():
         # the scoring map.
         #
         for key in score_map:
-            self.tp_d[key] = int(0)
-            self.tn_d[key] = int(0)
-            self.fp_d[key] = int(0)
-            self.fn_d[key] = int(0)
+            self.tp_d[key] = 0
+            self.tn_d[key] = 0
+            self.fp_d[key] = 0
+            self.fn_d[key] = 0
 
-            self.tgt_d[key] = int(0)
-            self.hit_d[key] = int(0)
-            self.mis_d[key] = int(0)
-            self.fal_d[key] = int(0)
-            self.ins_d[key] = int(0)
-            self.del_d[key] = int(0)
+            self.tgt_d[key] = 0
+            self.hit_d[key] = 0
+            self.mis_d[key] = 0
+            self.fal_d[key] = 0
+            self.ins_d[key] = 0
+            self.del_d[key] = 0
 
             self.tpr_d[key] = float(0)
             self.tnr_d[key] = float(0)
@@ -407,7 +406,7 @@ class NedcTAES():
         self.pmap_d = nft.permute_map(score_map)
 
         # exit gracefully
-        # 
+        #
         return True
     #
     # end of method
@@ -429,8 +428,8 @@ class NedcTAES():
          This method computes a confusion matrix.
         """
 
-        # display informational message                                        
-        #                                                                      
+        # display informational message
+        #
         if self.dbgl_d > ndt.BRIEF:
             print("%s (line: %s) %s::%s: scoring files" %
                   (__FILE__, ndt.__LINE__, NedcTAES.__CLASS_NAME__,
@@ -446,8 +445,8 @@ class NedcTAES():
 
         # loop over all files
         #
-        i = int(0)
-        for key_ref, key_hyp in zip(all_events_ref, all_events_hyp):
+        i = 0
+        for key_ref, key_hyp in zip(all_events_ref, all_events_hyp, strict=False):
 
             events_ref = all_events_ref[key_ref]
             if events_ref == None:
@@ -457,7 +456,7 @@ class NedcTAES():
                 return False
 
             # get the hyp events
-            #                                                               
+            #
             events_hyp = all_events_hyp[key_hyp]
             if events_hyp == None:
                 print("Error: %s (line: %s) %s: %s (%s)" %
@@ -477,7 +476,7 @@ class NedcTAES():
                 key = next(iter(event[2]))
                 ann_ref.append([event[0], event[1], \
                                 self.pmap_d[key], event[2][key]])
-                
+
             ann_hyp = []
             for event in events_hyp:
                 key = next(iter(event[2]))
@@ -512,14 +511,14 @@ class NedcTAES():
 
             # increment the counter
             #
-            i += int(1)
+            i += 1
 
         # close the file
         #
         self.rfile_d.close()
 
         # exit gracefully
-        # 
+        #
         return True
     #
     # end of method
@@ -581,7 +580,7 @@ class NedcTAES():
             self.tgt_d[ref[i][2]] += 1
             tgt_event = ref[i][2]
             refo.append(ref[i][2])
-            
+
             # collect hyp events which are in some overlap with ref event
             #
             labels, starts, stops \
@@ -598,7 +597,7 @@ class NedcTAES():
                     # compare hyp and ref event labels and hyp flags status;
                     #
                     if hyp[j][2] == ref[i][2] and hflags[j]:
-                    
+
                         p_hit, p_miss, p_fa \
                             = self.compute_partial(ref, hyp, i, j, \
                                                    rflags, hflags, tgt_event)
@@ -616,7 +615,7 @@ class NedcTAES():
                     # update the hyp event index
                     #
                     j += 1
-            
+
             # updated the ref event index
             #
             i += 1
@@ -627,7 +626,7 @@ class NedcTAES():
             mis += rflags.count(True)
             fal += hflags.count(True)
             self.update_abs_mf(ref, hyp, rflags, hflags)
-        
+
         # exit gracefully
         #
         return (refo, hypo, hit, mis, fal)
@@ -650,9 +649,9 @@ class NedcTAES():
          collecting the ignored events which are not in partial
          overlap with same labels. (i.e. Absolute misses)
         """
-          
+
         # loop through ref and hyp lists to update class variables
-        # 
+        #
         for i in range(len(ref)):
             if rflags[i]:
                 self.mis_d[ref[i][2]] += 1
@@ -699,7 +698,7 @@ class NedcTAES():
         #
         p_hit, p_fa = self.calc_hf(ref[rind], hyp[hind])
         p_miss += float(1) - p_hit
-        
+
         # update flags for already detected events
         #
         hypflag[hind] = False
@@ -712,11 +711,11 @@ class NedcTAES():
         # <--------------------->
         #
         rind += 1
-        
+
         # look for more ref events overlapping with hyp event
         #
         for i in range(rind, len(ref)):
-            
+
             # update misses according to the TAES score definition
             #
             if ref[i][2] == hyp[hind][2] and \
@@ -736,7 +735,7 @@ class NedcTAES():
         return p_hit, p_miss, p_fa
     #
     # end of method
- 
+
     def ovlp_hyp_seqs(self, ref, hyp, rind, hind,
                           refflag, hypflag, tgt_a):
         """
@@ -761,7 +760,7 @@ class NedcTAES():
          reference event stop time exceeds the hypothesis event
          stop time.
         """
-        
+
         # define variables
         #
         p_miss = float(0)
@@ -769,7 +768,7 @@ class NedcTAES():
         # calculate the parameters for the current event
         #
         p_hit, p_fa = self.calc_hf(ref[rind], hyp[hind])
-        p_miss += float(1) - p_hit        
+        p_miss += float(1) - p_hit
 
         # update flags for already detected events
         #
@@ -783,11 +782,11 @@ class NedcTAES():
         #   <---->  <-->   <-->
         #
         hind += 1
-        
+
         # look for hyp events overlapping with hyp event
         #
         for i in range(hind, len(hyp)):
-            
+
             # update HMF according to the TAES score definition
             #
             if hyp[i][2] == ref[rind][2] and \
@@ -811,7 +810,7 @@ class NedcTAES():
         # return gracefully
         #
         return p_hit, p_miss, p_fa
-    # 
+    #
     # end of method
 
     def compute_partial(self, ref, hyp, rind, hind, \
@@ -844,7 +843,7 @@ class NedcTAES():
         if not self.anyovlp(ref[rind], hyp[hind]):
             return (float(0), float(0), float(0))
 
-        # check whether detected event stop time exceed the 
+        # check whether detected event stop time exceed the
         # reference stop time.
         #
         elif float(hyp[hind][1]) >= float(ref[rind][1]):
@@ -854,18 +853,18 @@ class NedcTAES():
             #
             #   <---->
             # <-------->
-            #            
-            # check whether multiple reference events are 
+            #
+            # check whether multiple reference events are
             # overlapped with hypothesis event
             #
             #  <-->    <-->  <-->
             # <--------------------->
             #
             p_hit, p_mis, p_fal \
-                = self.ovlp_ref_seqs(ref, hyp, rind, hind, 
+                = self.ovlp_ref_seqs(ref, hyp, rind, hind,
                                       rflags, hflags, tgt_event)
 
-        # check whether reference event stop time exceed the 
+        # check whether reference event stop time exceed the
         # detected stop time.
         #
         elif float(ref[rind][1]) > float(hyp[hind][1]):
@@ -876,7 +875,7 @@ class NedcTAES():
             #   <------>
             #     <-->
             #
-            # check whether multiple hypothesis events are 
+            # check whether multiple hypothesis events are
             # overlapped with reference event
             #
             #  <----------------------->
@@ -908,12 +907,12 @@ class NedcTAES():
          two events passed as an argument and return a boolean
          value indicating the status.
         """
-        
+
         # create set for the ref/hyp events
         #
         refset = set(range(int(ref[0]), int(ref[1]) + 1))
         hypset = set(range(int(hyp[0]), int(hyp[1]) + 1))
-            
+
         if len(refset.intersection(hypset)) != 0:
             return True
 
@@ -975,7 +974,7 @@ class NedcTAES():
         #
         elif start_h_a >= start_r_a and stop_h_a >= stop_r_a:
 
-            hit = (stop_r_a - start_h_a) / ref_dur                       
+            hit = (stop_r_a - start_h_a) / ref_dur
             if ((stop_h_a - stop_r_a) / ref_dur) < 1.0:
                 fa = ((stop_h_a - stop_r_a) / ref_dur)
             else:
@@ -987,7 +986,7 @@ class NedcTAES():
         #     hyp:        <------------------->
         #
         elif start_h_a < start_r_a and stop_h_a > stop_r_a:
-            
+
             hit = 1.0
             fa = ((stop_h_a - stop_r_a) + (start_r_a - start_h_a)) /\
                  ref_dur
@@ -1081,8 +1080,8 @@ class NedcTAES():
          computations.
         """
 
-        # display informational message                                       
-        #                                                                      
+        # display informational message
+        #
         if self.dbgl_d > ndt.BRIEF:
             print("%s (line: %s) %s::%s: computing the performance" %
                   (__FILE__, ndt.__LINE__, NedcTAES.__CLASS_NAME__,
@@ -1092,7 +1091,7 @@ class NedcTAES():
         # check for a zero count
         #
         num_total_ref_events = sum(self.tgt_d.values())
-        if num_total_ref_events == 0:            
+        if num_total_ref_events == 0:
             print("Error: %s (line: %s) %s::%s: %s (%d)" %
                   (__FILE__, ndt.__LINE__, NedcTAES.__CLASS_NAME__,
                    ndt.__NAME__, "number of events is zero",
@@ -1130,7 +1129,7 @@ class NedcTAES():
             # compute true negatives (tn):
             #  sum the hits that are not the current label
             #
-            tn_sum = int(0)
+            tn_sum = 0
             for key2 in self.hit_d:
                 if key1 != key2:
                     tn_sum += self.hit_d[key2]
@@ -1154,11 +1153,11 @@ class NedcTAES():
 
             if ((tp + fn) == 0) or ((fpos + tn) == 0) or \
                ((tp + fpos) == 0) or ((fn + tn) == 0):
-                print("Warning: %s (line: %s) %s::%s: %s (%d %d %d %d)" % 
+                print("Warning: %s (line: %s) %s::%s: %s (%d %d %d %d)" %
                     (__FILE__, ndt.__LINE__, NedcTAES.__CLASS_NAME__,
                      ndt.__NAME__, "divide by zero", tp, fpos, tn, fn))
             elif (round(tdur, ndt.MAX_PRECISION) == 0):
-                print("Warning: %s (line: %s) %s::%s: %s (%f)" % 
+                print("Warning: %s (line: %s) %s::%s: %s (%f)" %
                     (__FILE__, ndt.__LINE__, NedcTAES.__CLASS_NAME__,
                      ndt.__NAME__, "duration is zero", tdur))
 
@@ -1207,7 +1206,7 @@ class NedcTAES():
             if round(f1s_denom, ndt.MAX_PRECISION) == 0:
                 print("Warning: %s (line %s) %s::%s %s (%s)" %
                 (__FILE__, ndt.__LINE__, ndt.__NAME__,
-                 ndt.__NAME__, "f ratio divide by zero", key1)) 
+                 ndt.__NAME__, "f ratio divide by zero", key1))
                 self.f1s_d[key1] = float(0)
             else:
                 self.f1s_d[key1] = 2.0 * self.ppv_d[key1] * \
@@ -1219,7 +1218,7 @@ class NedcTAES():
             mcc_denom = (tp + fpos) * (tp + fn) * (tn + fpos) * (tn + fn)
             mcc_num = (tp * tn) - (fpos * fn)
             if round(mcc_denom, ndt.MAX_PRECISION) == 0:
-                print("Warning: %s (line: %s) %s::%s: %s (%s)" % 
+                print("Warning: %s (line: %s) %s::%s: %s (%s)" %
                     (__FILE__, ndt.__LINE__, NedcTAES.__CLASS_NAME__,
                      ndt.__NAME__, "mcc ratio divide by zero", key1))
                 self.mcc_d[key1] = float(0)
@@ -1229,13 +1228,13 @@ class NedcTAES():
             # compute the false alarm rate
             #
             if (round(tdur, ndt.MAX_PRECISION) == 0):
-                print("Warning: %s (line: %s) %s::%s: %s (%s)" % 
+                print("Warning: %s (line: %s) %s::%s: %s (%s)" %
                     (__FILE__, ndt.__LINE__, NedcTAES.__CLASS_NAME__,
                    ndt.__NAME__, "zero duration", key1))
                 self.flr_d[key1] = float(0)
             else:
                 self.flr_d[key1] = float(fpos) / tdur * (60 * 60 * 24)
-        
+
         #----------------------------------------------------------------------
         # (3) the third block of parameters are the summary values
         #
@@ -1295,7 +1294,7 @@ class NedcTAES():
         self.sum_msr_d = 1 - self.sum_acc_d
 
         if round(f1s_denom, ndt.MAX_PRECISION) == 0:
-            print("Warning: %s (line: %s) %s::%s: %s (%s)" % 
+            print("Warning: %s (line: %s) %s::%s: %s (%s)" %
                 (__FILE__, ndt.__LINE__, NedcTAES.__CLASS_NAME__,
                    ndt.__NAME__, "f ratio divide by zero", "summary"))
             self.sum_f1s_d = float(0)
@@ -1311,7 +1310,7 @@ class NedcTAES():
         sum_mcc_num = (self.sum_tp_d * self.sum_tn_d) - \
             (self.sum_fp_d * self.sum_fn_d)
         if round(sum_mcc_denom, ndt.MAX_PRECISION) == 0:
-            print("Warning: %s (line: %s) %s::%s: %s (%s)" % 
+            print("Warning: %s (line: %s) %s::%s: %s (%s)" %
                    (__FILE__, ndt.__LINE__, NedcTAES.__CLASS_NAME__,
                     ndt.__NAME__, "mcc ratio divide by zero", "summary"))
             self.sum_mcc_d = float(0)
@@ -1321,7 +1320,7 @@ class NedcTAES():
         # compute the false alarm rate
         #
         if round(self.total_dur_d, ndt.MAX_PRECISION) == 0:
-            print("Warning: %s (line: %s) %s::%s: %s (%s)" % 
+            print("Warning: %s (line: %s) %s::%s: %s (%s)" %
                    (__FILE__, ndt.__LINE__, NedcTAES.__CLASS_NAME__,
                     ndt.__NAME__, "zero duration", "summary"))
             self.sum_flr_d = float(0)
@@ -1349,13 +1348,13 @@ class NedcTAES():
          This method displays all the results in output report.
         """
 
-        # display informational message                                        
+        # display informational message
         #
         if self.dbgl_d > ndt.BRIEF:
             print("%s (line: %s) %s::%s: displaying results to output file" %
                   (__FILE__, ndt.__LINE__, NedcTAES.__CLASS_NAME__,
                    ndt.__NAME__))
-            
+
         # write per label header
         #
         fp.write(("Per Label Results:" + nft.DELIM_NEWLINE).upper())
@@ -1531,7 +1530,7 @@ class NedcTAES():
 
         # loop over all event lists (corresponding to files)
         #
-        for ann_ref, ann_hyp in zip(events_ref, events_hyp):
+        for ann_ref, ann_hyp in zip(events_ref, events_hyp, strict=False):
 
             # update the total duration
             #
@@ -1547,7 +1546,7 @@ class NedcTAES():
                 return False
 
         # exit gracefully
-        # 
+        #
         return True
     #
     # end of method
@@ -1570,18 +1569,18 @@ class NedcTAES():
          are suppressed.
         """
 
-        # display informational message                                        
-        #            
+        # display informational message
+        #
         if self.dbgl_d > ndt.BRIEF:
             print("%s (line: %s) %s::%s: computing performance for an ROC" %
                   (__FILE__, ndt.__LINE__, NedcTAES.__CLASS_NAME__,
                    ndt.__NAME__))
-            
+
         # check for a zero count
         #
         num_total_ref_events = sum(self.tgt_d.values())
         if num_total_ref_events == 0:
-            print("%Error: %s (line: %s) %s::%s: %s (%d)" % 
+            print("%Error: %s (line: %s) %s::%s: %s (%d)" %
                 (__FILE__, ndt.__LINE__, NedcTAES.__CLASS_NAME__,
                  ndt.__NAME__, "number of events is zero",
                  num_total_ref_events))
@@ -1614,7 +1613,7 @@ class NedcTAES():
         # compute true negatives (tn):
         #  sum the hits that are not the current label
         #
-        tn_sum = int(0)
+        tn_sum = 0
         for key2 in self.hit_d:
             if key != key2:
                 tn_sum += self.hit_d[key2]

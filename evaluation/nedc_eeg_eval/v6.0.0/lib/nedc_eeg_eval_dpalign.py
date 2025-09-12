@@ -21,9 +21,8 @@
 
 # import required system modules
 #
-import os
-import sys
 import math
+import os
 
 # import required NEDC modules
 #
@@ -47,10 +46,10 @@ NEDC_DPALIGN = "NEDC_DPALIGN"
 
 # define error types
 #
-DPALIGN_ETYPES_NULL = int(-1)
-DPALIGN_ETYPES_DEL = int(0)
-DPALIGN_ETYPES_INS = int(1)
-DPALIGN_ETYPES_SUB = int(2)
+DPALIGN_ETYPES_NULL = -1
+DPALIGN_ETYPES_DEL = 0
+DPALIGN_ETYPES_INS = 1
+DPALIGN_ETYPES_SUB = 2
 
 #------------------------------------------------------------------------------
 #
@@ -84,7 +83,7 @@ def run(events_ref, events_hyp, mapping, nedc_dpalign, odir, rfile, fp):
      (2) scoring them
      (3) displaying the results
     """
-    
+
     # display an informational message
     #
     if dbgl > ndt.BRIEF:
@@ -159,7 +158,7 @@ def run(events_ref, events_hyp, mapping, nedc_dpalign, odir, rfile, fp):
 #
 #------------------------------------------------------------------------------
 
-class NedcDpalign():
+class NedcDpalign:
     """
     Class: NedcDpalign
     
@@ -181,7 +180,7 @@ class NedcDpalign():
     #
     dbgl_d = ndt.Dbgl()
     vrbl_d = ndt.Vrbl()
-    
+
     def __init__(self, params):
         """
         method: constructor
@@ -195,7 +194,7 @@ class NedcDpalign():
         description: 
          none
         """
- 
+
         # create class data
         #
         NedcDpalign.__CLASS_NAME__ = self.__class__.__name__
@@ -206,7 +205,7 @@ class NedcDpalign():
             print("%s (line: %s) %s::%s: scoring files" %
                   (__FILE__, ndt.__LINE__, NedcDpalign.__CLASS_NAME__,
                    ndt.__NAME__))
-            
+
         # decode the parameters passed from the parameter file
         #
         self.penalty_del_d = float(params['penalty_del'])
@@ -260,17 +259,17 @@ class NedcDpalign():
 
         # declare parameters to compute summaries
         #
-        self.sum_tp_d = int(0)
-        self.sum_tn_d = int(0)
-        self.sum_fp_d = int(0)
-        self.sum_fn_d = int(0)
+        self.sum_tp_d = 0
+        self.sum_tn_d = 0
+        self.sum_fp_d = 0
+        self.sum_fn_d = 0
 
-        self.sum_tgt_d = int(0)
-        self.sum_hit_d = int(0)
-        self.sum_mis_d = int(0)
-        self.sum_fal_d = int(0)
-        self.sum_ins_d = int(0)
-        self.sum_del_d = int(0)
+        self.sum_tgt_d = 0
+        self.sum_hit_d = 0
+        self.sum_mis_d = 0
+        self.sum_fal_d = 0
+        self.sum_ins_d = 0
+        self.sum_del_d = 0
 
         # additional derived data:
         #  we use class data to store a number of statistical measures
@@ -295,7 +294,7 @@ class NedcDpalign():
         self.rfile_d = None
         self.refo_d = []
         self.hypo_d = []
-        
+
     #
     # end of method
 
@@ -314,14 +313,14 @@ class NedcDpalign():
          We use dictionaries that are initialized in the order
          labels appear in the scoring map.
         """
- 
+
         # display informational message
         #
         if self.dbgl_d > ndt.BRIEF:
             print("%s (line: %s) %s::%s: initializing score" %
                   (__FILE__, ndt.__LINE__, NedcDpalign.__CLASS_NAME__,
                    ndt.__NAME__))
-            
+
         # initialize global counters
         #
         self.total_dur_d = float(0)
@@ -360,17 +359,17 @@ class NedcDpalign():
 
         # declare parameters to compute summaries
         #
-        self.sum_tp_d = int(0)
-        self.sum_tn_d = int(0)
-        self.sum_fp_d = int(0)
-        self.sum_fn_d = int(0)
+        self.sum_tp_d = 0
+        self.sum_tn_d = 0
+        self.sum_fp_d = 0
+        self.sum_fn_d = 0
 
-        self.sum_tgt_d = int(0)
-        self.sum_hit_d = int(0)
-        self.sum_mis_d = int(0)
-        self.sum_fal_d = int(0)
-        self.sum_ins_d = int(0)
-        self.sum_del_d = int(0)
+        self.sum_tgt_d = 0
+        self.sum_hit_d = 0
+        self.sum_mis_d = 0
+        self.sum_fal_d = 0
+        self.sum_ins_d = 0
+        self.sum_del_d = 0
 
         self.sum_tpr_d = float(0)
         self.sum_tnr_d = float(0)
@@ -391,19 +390,19 @@ class NedcDpalign():
         for key in score_map:
             self.sub_d[key] = {}
             for key2 in score_map:
-                self.sub_d[key][key2] = int(0)
+                self.sub_d[key][key2] = 0
 
-            self.tp_d[key] = int(0)
-            self.tn_d[key] = int(0)
-            self.fp_d[key] = int(0)
-            self.fn_d[key] = int(0)
+            self.tp_d[key] = 0
+            self.tn_d[key] = 0
+            self.fp_d[key] = 0
+            self.fn_d[key] = 0
 
-            self.tgt_d[key] = int(0)
-            self.hit_d[key] = int(0)
-            self.mis_d[key] = int(0)
-            self.fal_d[key] = int(0)
-            self.ins_d[key] = int(0)
-            self.del_d[key] = int(0)
+            self.tgt_d[key] = 0
+            self.hit_d[key] = 0
+            self.mis_d[key] = 0
+            self.fal_d[key] = 0
+            self.ins_d[key] = 0
+            self.del_d[key] = 0
 
             self.tpr_d[key] = float(0)
             self.tnr_d[key] = float(0)
@@ -425,7 +424,7 @@ class NedcDpalign():
         self.pmap_d = nft.permute_map(score_map)
 
         # exit gracefully
-        # 
+        #
         return True
     #
     # end of method
@@ -446,14 +445,14 @@ class NedcDpalign():
         description: 
          This method computes a confusion matrix.
         """
- 
+
         # display informational message
         #
         if self.dbgl_d > ndt.BRIEF:
             print("%s (line: %s) %s::%s: scoring files" %
                   (__FILE__, ndt.__LINE__, NedcDpalign.__CLASS_NAME__,
                    ndt.__NAME__))
-            
+
         # declare local variables
         #
         status = True
@@ -464,8 +463,8 @@ class NedcDpalign():
 
         # loop over all files
         #
-        i = int(0)
-        for key_ref, key_hyp in zip(all_events_ref, all_events_hyp):
+        i = 0
+        for key_ref, key_hyp in zip(all_events_ref, all_events_hyp, strict=False):
 
             # get the ref events
             #
@@ -477,12 +476,12 @@ class NedcDpalign():
                 return False
 
             # get the corresponding hyp events
-            #                                                               
+            #
             events_hyp = all_events_hyp[key_hyp]
             if events_hyp == None:
                 print("Error: %s (line: %s) %s: %s (%s)" %
                       (__FILE__, ndt.__LINE__, ndt.__NAME__,
-                       "error getting annotations", key_hyp)) 
+                       "error getting annotations", key_hyp))
                 return False
 
             # update the total duration
@@ -518,7 +517,7 @@ class NedcDpalign():
             #
             ref_fm, hyp_fm, hits, subs, inss, dels = \
 	        nec.format_hyp(refo, hypo)
-            
+
             self.rfile_d.write("%5d: %s" % (i, key_ref) + \
                                nft.DELIM_NEWLINE)
             self.rfile_d.write("%5s  %s" % (nft.STRING_EMPTY,
@@ -535,14 +534,14 @@ class NedcDpalign():
 
             # increment the counter
             #
-            i += int(1)
+            i += 1
 
         # close the file
         #
         self.rfile_d.close()
 
         # exit gracefully
-        # 
+        #
         return True
     #
     # end of method
@@ -563,15 +562,15 @@ class NedcDpalign():
          this method measures similarity by performing a dynamic programming
          based string alignment.
         """
- 
+
         # display informational message
         #
         if self.dbgl_d > ndt.BRIEF:
             print("%s (line: %s) %s::%s: computing errors" %
                   (__FILE__, ndt.__LINE__, NedcDpalign.__CLASS_NAME__,
                    ndt.__NAME__))
-            
-        # extract the labels from the input file record and extend the 
+
+        # extract the labels from the input file record and extend the
         #  inputs with a dummy symbol at the beginning and end:
         #  this makes the code a little simpler and more uniform
         #
@@ -683,28 +682,28 @@ class NedcDpalign():
         # due to the dummy nodes
         #
         for i in range(1, len(refo) - 1):
-        
+
             # track no. of targets, del, ins and subs
             #
             if refo[i] == nec.NULL_CLASS:
-                self.ins_d[hypo[i]] += int(1)
+                self.ins_d[hypo[i]] += 1
             elif hypo[i] == nec.NULL_CLASS:
-                self.tgt_d[refo[i]] += 1            
-                self.del_d[refo[i]] += int(1)
+                self.tgt_d[refo[i]] += 1
+                self.del_d[refo[i]] += 1
             else:
-                self.tgt_d[refo[i]] += 1            
+                self.tgt_d[refo[i]] += 1
                 self.sub_d[refo[i]][hypo[i]] += 1
-                
+
             # track no. of hits, misses and false alarms
             #
             if refo[i] == nec.NULL_CLASS:
-                self.fal_d[hypo[i]] += int(1)
+                self.fal_d[hypo[i]] += 1
             elif hypo[i] == nec.NULL_CLASS:
-                self.mis_d[refo[i]] += int(1)
+                self.mis_d[refo[i]] += 1
             elif refo[i] == hypo[i]:
-                self.hit_d[refo[i]] += int(1)
+                self.hit_d[refo[i]] += 1
             else:
-                self.mis_d[refo[i]] += int(1)
+                self.mis_d[refo[i]] += 1
 
         # exit gracefully
         #
@@ -732,14 +731,14 @@ class NedcDpalign():
          NxN matrix to a 2x2 for each label, and then do the necessary
          computations.
         """
- 
+
         # display informational message
         #
         if self.dbgl_d > ndt.BRIEF:
             print("%s (line: %s) %s::%s: computing the performance" %
                   (__FILE__, ndt.__LINE__, NedcDpalign.__CLASS_NAME__,
                    ndt.__NAME__))
-            
+
         # check for a zero count
         #
         num_total_ref_events = sum(self.tgt_d.values())
@@ -747,7 +746,7 @@ class NedcDpalign():
             print("Error: %s (line: %s) %s::%s: %s (%d)" %
                   (__FILE__, ndt.__LINE__, NedcDpalign.__CLASS_NAME__,
                    ndt.__NAME__, "number of events is zero",
-                   num_total_ref_events))    
+                   num_total_ref_events))
             return None
 
         #----------------------------------------------------------------------
@@ -779,7 +778,7 @@ class NedcDpalign():
             #  sum the submatrix formed when you exclude the row and column
             #  associated with key1
             #
-            tn_sum = int(0)
+            tn_sum = 0
             for key2 in self.sub_d:
                 for key3 in self.sub_d:
                     if (key1 != key2) and (key1 != key3):
@@ -806,11 +805,11 @@ class NedcDpalign():
                ((tp + fp) == 0) or ((fn + tn) == 0):
                 print("Warning: %s (line: %s) %s::%s: %s (%d %d %d %d)" %
                   (__FILE__, ndt.__LINE__, NedcDpalign.__CLASS_NAME__,
-                   ndt.__NAME__, "divide by zero", tp, fp, tn, fn))    
+                   ndt.__NAME__, "divide by zero", tp, fp, tn, fn))
             elif (round(tdur, ndt.MAX_PRECISION) == 0):
                 print("Warning: %s (line: %s) %s::%s: %s (%f)" %
                   (__FILE__, ndt.__LINE__, NedcDpalign.__CLASS_NAME__,
-                   ndt.__NAME__, "duration is zero",  tdur))    
+                   ndt.__NAME__, "duration is zero",  tdur))
 
             # (2.3) compute derived measures
             #
@@ -857,7 +856,7 @@ class NedcDpalign():
             if round(f1s_denom, ndt.MAX_PRECISION) == 0:
                 print("Warning: %s (line: %s) %s::%s: %s (%s)" %
                   (__FILE__, ndt.__LINE__, NedcDpalign.__CLASS_NAME__,
-                   ndt.__NAME__, "f ratio divide by zero", key1))    
+                   ndt.__NAME__, "f ratio divide by zero", key1))
                 self.f1s_d[key1] = float(0)
             else:
                 self.f1s_d[key1] = 2.0 * self.ppv_d[key1] * \
@@ -871,7 +870,7 @@ class NedcDpalign():
             if round(mcc_denom, ndt.MAX_PRECISION) == 0:
                 print("Warning: %s (line: %s) %s::%s: %s (%s)" %
                   (__FILE__, ndt.__LINE__, NedcDpalign.__CLASS_NAME__,
-                   ndt.__NAME__, "mcc ratio divide by zero",  key1))    
+                   ndt.__NAME__, "mcc ratio divide by zero",  key1))
                 self.mcc_d[key1] = float(0)
             else:
                 self.mcc_d[key1] = mcc_num / math.sqrt(mcc_denom)
@@ -880,7 +879,7 @@ class NedcDpalign():
             #
             if (round(tdur, ndt.MAX_PRECISION) != 0):
                 self.flr_d[key1] = float(fp) / tdur * (60 * 60 * 24)
-        
+
         #----------------------------------------------------------------------
         # (3) the third block of parameters are the summary values
         #
@@ -942,7 +941,7 @@ class NedcDpalign():
         if round(f1s_denom, ndt.MAX_PRECISION) == 0:
             print("Warning: %s (line: %s) %s::%s: %s (%s)" %
                   (__FILE__, ndt.__LINE__, NedcDpalign.__CLASS_NAME__,
-                   ndt.__NAME__, "f ratio divide by zero", "summary"))    
+                   ndt.__NAME__, "f ratio divide by zero", "summary"))
             self.sum_f1s_d = float(0)
         else:
             self.sum_f1s_d = 2.0 * self.sum_ppv_d * self.sum_tpr_d / f1s_denom
@@ -958,11 +957,11 @@ class NedcDpalign():
         if round(sum_mcc_denom, ndt.MAX_PRECISION) == 0:
             print("Warning: %s (line: %s) %s::%s: %s (%s)" %
                   (__FILE__, ndt.__LINE__, NedcDpalign.__CLASS_NAME__,
-                   ndt.__NAME__, "mcc ratio divide by zero", "summary"))    
+                   ndt.__NAME__, "mcc ratio divide by zero", "summary"))
             self.sum_mcc_d = float(0)
         else:
             self.sum_mcc_d = sum_mcc_num / math.sqrt(sum_mcc_denom)
-            
+
         # compute the false alarm rate
         #
         if round(self.total_dur_d, ndt.MAX_PRECISION) == 0:
@@ -993,14 +992,14 @@ class NedcDpalign():
         description: 
          This method displays all the results in output report.
         """
- 
+
         # display informational message
         #
         if self.dbgl_d > ndt.BRIEF:
             print("%s (line: %s) %s::%s: displaying results to output file" %
                   (__FILE__, ndt.__LINE__, NedcDpalign.__CLASS_NAME__,
                    ndt.__NAME__))
-            
+
         # print complete table in output file
         #
         nec.print_table(title, headers, tbl,
@@ -1168,21 +1167,21 @@ class NedcDpalign():
         description: 
          This method computes a confusion matrix for an roc/det curve.
         """
- 
+
         # display informational message
         #
         if self.dbgl_d > ndt.BRIEF:
             print("%s (line: %s) %s::%s: computing an roc/det curve" %
                   (__FILE__, ndt.__LINE__, NedcDpalign.__CLASS_NAME__,
                    ndt.__NAME__))
-            
+
         # declare local variables
         #
         status = True
 
         # loop over all event lists (corresponding to files)
         #
-        for ann_ref, ann_hyp in zip(events_ref, events_hyp):
+        for ann_ref, ann_hyp in zip(events_ref, events_hyp, strict=False):
 
             # update the total duration
             #
@@ -1194,11 +1193,11 @@ class NedcDpalign():
             if refo == None:
                 print("Error: %s (line: %s) %s::%s: %s" %
                   (__FILE__, ndt.__LINE__, NedcDpalign.__CLASS_NAME__,
-                   ndt.__NAME__), "error computing confusions")    
+                   ndt.__NAME__), "error computing confusions")
                 return False
 
         # exit gracefully
-        # 
+        #
         return True
     #
     # end of method
@@ -1220,14 +1219,14 @@ class NedcDpalign():
          Note that because of the way this method is used, error messages
          are suppressed.
         """
- 
+
         # display informational message
         #
         if self.dbgl_d > ndt.BRIEF:
             print("%s (line: %s) %s::%s: computing performance for an ROC" %
                   (__FILE__, ndt.__LINE__, NedcDpalign.__CLASS_NAME__,
                    ndt.__NAME__))
-            
+
         # check for a zero count
         #
         num_total_ref_events = sum(self.tgt_d.values())
@@ -1235,7 +1234,7 @@ class NedcDpalign():
             print("Error: %s (line: %s) %s::%s: %s (%d)" %
                   (__FILE__, ndt.__LINE__, NedcDpalign.__CLASS_NAME__,
                    ndt.__NAME__, "number of events is zero",
-                   num_total_ref_events))    
+                   num_total_ref_events))
             return False
 
         #----------------------------------------------------------------------
@@ -1265,7 +1264,7 @@ class NedcDpalign():
         # compute true negatives (tn):
         #  sum the hits that are not the current label
         #
-        tn_sum = int(0)
+        tn_sum = 0
         for key2 in self.hit_d:
             if key != key2:
                 tn_sum += self.hit_d[key2]
@@ -1322,7 +1321,7 @@ class NedcDpalign():
          This method simply returns the quanities needed for an roc curve:
          true positive rate (tpr) as a function of the false positive rate (fpr).
         """
-         
+
         return self.fpr_d[key], self.tpr_d[key]
 
     def get_det(self, key):
@@ -1339,7 +1338,7 @@ class NedcDpalign():
          This method simply returns the quanities needed for a det curve:
          false negative rate (fnr) as a function of the false positive rate (fpr).
         """
-         
+
         return self.fpr_d[key], self.fnr_d[key]
 
 # end of file

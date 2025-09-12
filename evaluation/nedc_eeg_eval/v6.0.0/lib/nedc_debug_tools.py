@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # file: $NEDC_NFC/class/python/nedc_sys_tools/nedc_debug_tools.py
-#                                                                              
+#
 # revision history:
 #
 # 20250128 (SP): added set_seed() method to Dbgl class
@@ -9,7 +9,7 @@
 # 20230622 (AB): refactored code to new comment format
 # 20200531 (JP): refactored code
 # 20200514 (JP): initial version
-#                                                                              
+#
 # This file contains classes that facilitate debugging and information display.
 #------------------------------------------------------------------------------
 
@@ -27,19 +27,19 @@ from numpy.random import default_rng
 #
 
 #------------------------------------------------------------------------------
-#                                                                              
-# global variables are listed here                                             
-#                                                                              
+#
+# global variables are listed here
+#
 #------------------------------------------------------------------------------
 
 # define a numerically ordered list of 'levels'
 #
-NONE = int(0)
-BRIEF = int(1)
-SHORT = int(2)
-MEDIUM = int(3)
-DETAILED = int(4)
-FULL = int(5)
+NONE = 0
+BRIEF = 1
+SHORT = 2
+MEDIUM = 3
+DETAILED = 4
+FULL = 5
 
 # define a dictionary indexed by name and reverse it so we have it by level
 #
@@ -51,13 +51,13 @@ NAMES = {val: key for key, val in LEVELS.items()}
 # to check floating point numbers. we use two constants - max precision
 # for detailed checks and min precision for curosry checks.
 #
-MIN_PRECISION = int(4)
-MAX_PRECISION = int(10)
+MIN_PRECISION = 4
+MAX_PRECISION = 10
 
 # define a constant that is used to seed random number generators
 # from a common starting point
 #
-RANDSEED = int(27)
+RANDSEED = 27
 
 # define a newline delimiter
 #
@@ -69,8 +69,8 @@ DELIM_NEWLINE = '\n'
 # classes are listed here
 #
 #------------------------------------------------------------------------------
-                                                                         
-class __NAME__(object):
+
+class __NAME__:
     """
     Class: __NAME__
     
@@ -106,8 +106,8 @@ class __NAME__(object):
 
 #
 # end of class
-                                                                          
-class __LINE__(object):
+
+class __LINE__:
     """
     Class: __LINE__
     
@@ -188,14 +188,14 @@ class Dbgl:
          note this method cannot set the value or this overrides
          values set elsewhere in a program. the set method must be called.
         """
-         
+
         Dbgl.__CLASS_NAME__ = self.__class__.__name__
-        
+
         # set the seed for random number generators to a common value so
         # that we can reproduce results
         #
         self.set_seed(value = RANDSEED)
-    
+
     #--------------------------------------------------------------------------
     #
     # operator overloads:
@@ -217,7 +217,7 @@ class Dbgl:
          cast conversion to int
 
         """
-         
+
         return int(self.level_d)
 
     def __gt__(self, level):
@@ -233,7 +233,7 @@ class Dbgl:
         description: 
          overload > (greater than) operator
         """
-         
+
         if Dbgl.level_d > level:
             return True
         return False
@@ -252,7 +252,7 @@ class Dbgl:
          overload >= (greater than or equal to) operator
          none
         """
-         
+
         if Dbgl.level_d >= level:
             return True
         return False
@@ -270,7 +270,7 @@ class Dbgl:
         description: 
          overload != (not equal to) operator
         """
-         
+
         if Dbgl.level_d != level:
             return True
         return False
@@ -288,7 +288,7 @@ class Dbgl:
         description: 
          overload < (less than) operator
         """
-         
+
         if Dbgl.level_d < level:
             return True
         return False
@@ -306,7 +306,7 @@ class Dbgl:
         description: 
          overload <= (less than or equal to) operator
         """
-         
+
         if Dbgl.level_d <= level:
             return True
         return False
@@ -324,7 +324,7 @@ class Dbgl:
         description: 
          overload == (equal to) operator
         """
-         
+
         if Dbgl.level_d == level:
             return True
         return False
@@ -348,7 +348,7 @@ class Dbgl:
         description: 
          none
         """
- 
+
         # check and set the level by value
         #
         if level is not None:
@@ -365,7 +365,7 @@ class Dbgl:
         elif name is not None:
             try:
                 Dbgl.level_d = LEVELS[name.upper()]
-            except KeyError as e:
+            except KeyError:
                 print("Error: %s (line: %s) %s::%s: invalid value (%s)" %
                       (__FILE__, __LINE__, Dbgl.__CLASS_NAME__, __NAME__,
                        name))
@@ -379,7 +379,7 @@ class Dbgl:
         # exit gracefully
         #
         return Dbgl.level_d
-    
+
     def set_seed(self, value: int) -> None:
         """
         method: set_seed
@@ -390,7 +390,7 @@ class Dbgl:
         description:
          This method sets the seed for random number generators.
         """
-        
+
         # set the seed for Python's random number generators
         #
         random.seed(value)
@@ -399,15 +399,15 @@ class Dbgl:
         np.random.seed(value)
         # set the seed for numpy's random number generators
         rng = default_rng(value)
-        
+
         # set the seed for Python's hash function
         #
         os.environ['PYTHONHASHSEED'] = str(value)
-        
+
         # exit gracefully
         #
         return rng
-        
+
     def get(self):
         """
         method: get
@@ -422,7 +422,7 @@ class Dbgl:
          note that we don't provide a method to return the integer value
          because int(), a pseudo-cast operator, can do this.
         """
-         
+
         return NAMES[Dbgl.level_d]
 
     def check(self, level):
@@ -439,9 +439,9 @@ class Dbgl:
          none
 
         """
-         
+
         if (level < NONE) or (level > FULL):
-            return False;
+            return False
         else:
             return True
 
@@ -540,9 +540,9 @@ class Vrbl:
          note this method cannot set the value or this overrides
          values set elsewhere in a program. the set method must be called.
         """
-         
+
         Vrbl.__CLASS_NAME__ = self.__class__.__name__
-    
+
     #--------------------------------------------------------------------------
     #
     # operator overloads
@@ -562,7 +562,7 @@ class Vrbl:
         description: 
          cast conversion to int
         """
-         
+
         return int(self.level_d)
 
     def __gt__(self, level):
@@ -578,7 +578,7 @@ class Vrbl:
         description: 
          overload > (greater than) operator
         """
-         
+
         if Vrbl.level_d > level:
             return True
         return False
@@ -596,7 +596,7 @@ class Vrbl:
         description: 
          overload >= (greater than or equal to) operator
         """
-         
+
         if Vrbl.level_d >= level:
             return True
         return False
@@ -614,7 +614,7 @@ class Vrbl:
         description: 
          overload != (not equal to) operator
         """
-         
+
         if Vrbl.level_d != level:
             return True
         return False
@@ -632,7 +632,7 @@ class Vrbl:
         description: 
          overload < (less than) operator
         """
-         
+
         if Vrbl.level_d < level:
             return True
         return False
@@ -650,7 +650,7 @@ class Vrbl:
         description: 
          overload <= (less than or equal to) operator
         """
-         
+
         if Vrbl.level_d <= level:
             return True
         return False
@@ -668,7 +668,7 @@ class Vrbl:
         description: 
          overload == (equal to) operator
         """
-         
+
         if Vrbl.level_d == level:
             return True
         return False
@@ -692,7 +692,7 @@ class Vrbl:
         description: 
          none
         """
- 
+
         # check and set the level by value
         #
         if level is not None:
@@ -709,7 +709,7 @@ class Vrbl:
         elif name is not None:
             try:
                 Vrbl.level_d = LEVELS[name.upper()]
-            except KeyError as e:
+            except KeyError:
                 print("Error: %s (line: %s) %s::%s: invalid value (%s)" %
                       (__FILE__, __LINE__, Vrbl.__CLASS_NAME__, __NAME__,
                        name))
@@ -738,11 +738,11 @@ class Vrbl:
          note that we don't provide a method to return the integer value
          because int(), a pseudo-cast operator, can do this.
         """
-         
+
         return NAMES[Vrbl.level_d]
 
     # method: Vrbl::check
-    # 
+    #
     def check(self, level):
         """
         method: check
@@ -756,15 +756,15 @@ class Vrbl:
         description: 
          none
         """
-         
+
         if (level < NONE) or (level > FULL):
-            return False;
+            return False
         else:
             return True
 
 #
 # end of class
 
-#                                                                              
-# end of file 
+#
+# end of file
 

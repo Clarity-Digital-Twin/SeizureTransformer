@@ -18,14 +18,15 @@
 
 # import required system modules
 #
+import argparse
 import os
 import sys
-import argparse
+
+import nedc_debug_tools as ndt
 
 # import NEDC modules
 #
 import nedc_file_tools as nft
-import nedc_debug_tools as ndt
 
 #------------------------------------------------------------------------------
 #
@@ -178,7 +179,7 @@ class Cmdl(argparse.ArgumentParser):
         #
         try:
             fp = open(self.usage_d, nft.MODE_READ_TEXT)
-        except IOError:
+        except OSError:
             print("Error: %s (line: %s) %s::%s: file not found (%s)" %
                   (__FILE__, ndt.__LINE__, Cmdl.__CLASS_NAME__, ndt.__NAME__,
                    self.usage_d))
@@ -214,7 +215,7 @@ class Cmdl(argparse.ArgumentParser):
         #
         try:
             fp = open(self.help_d, nft.MODE_READ_TEXT)
-        except IOError:
+        except OSError:
             print("Error: %s (line: %s) %s::%s: file not found (%s)" %
                   (__FILE__, ndt.__LINE__, Cmdl.__CLASS_NAME__, ndt.__NAME__,
                    self.help_d))

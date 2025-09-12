@@ -22,16 +22,14 @@
 #
 import os
 import sys
-import re
-
-# import numpy
-#
-import numpy as np
 
 # import NEDC modules
 #
 import nedc_debug_tools as ndt
 import nedc_file_tools as nft
+
+# import numpy
+#
 
 #------------------------------------------------------------------------------
 #
@@ -357,13 +355,13 @@ class Montage:
                 #
                 if expected_minu in candidate and actual_minu is None:
                     actual_minu = isig[channel]
-                    
+
                 # If a subtrahend is expected and the candidate matches it and we
                 # haven't stored it yet, then store that signal.
                 #
                 if (expected_subtra is not None and expected_subtra in candidate and
                     actual_subtra is None):
-                    
+
                     actual_subtra = isig[channel]
 
             # If a subtrahend is expected, perform subtraction.
@@ -375,7 +373,7 @@ class Montage:
                 #
                 if actual_minu is not None and actual_subtra is not None:
                     out_sig[mont_key] = actual_minu - actual_subtra
-                    
+
                 else:
 
                     # If the expected minuend signal was not found, print an error.
@@ -397,7 +395,7 @@ class Montage:
                 #
                 if actual_minu is not None:
                     out_sig[mont_key] = actual_minu
-                    
+
                     # Print an error if the expected minuend was not found.
                     #
                 else:
@@ -562,7 +560,7 @@ class Montage:
 
         # loop over all minudes and subtrahens
         #
-        for minude, subtrahend in zip(minudes, subtrahends):
+        for minude, subtrahend in zip(minudes, subtrahends, strict=False):
 
 
             # if a minude is not in channels_order

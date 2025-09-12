@@ -22,30 +22,30 @@
 import os
 from operator import itemgetter
 from pathlib import Path
-import sys
+
+import nedc_debug_tools as ndt
 
 # import nedc_modules
 #
 import nedc_eeg_ann_tools as neat
-import nedc_debug_tools as ndt
 import nedc_file_tools as nft
 
 #------------------------------------------------------------------------------
-#                                                                              
-# global variables are listed here                                             
-#                                                                              
+#
+# global variables are listed here
+#
 #------------------------------------------------------------------------------
 
-# set the filename using basename                                             
-#                                                                           
+# set the filename using basename
+#
 __FILE__ = os.path.basename(__file__)
 
-# define a constant used to indicate a null choice  
-#                                                                              
+# define a constant used to indicate a null choice
+#
 NULL_CLASS = "***"
 
-# define constant that appears in the parameter file                          
-#                                                                              
+# define constant that appears in the parameter file
+#
 PARAM_MAP = "MAP"
 
 # define standard delimiters for ROC/DET curves
@@ -82,17 +82,17 @@ def format_hyp(ref, hyp):
     description: 
      This function displays all the results in output report.
     """
-       
+
     # declare return values
     #
-    hits = int(0)
-    subs = int(0)
-    inss = int(0)
-    dels = int(0)
-    
+    hits = 0
+    subs = 0
+    inss = 0
+    dels = 0
+
     # find the max label length and increment by 1
     #
-    maxl = int(0)
+    maxl = 0
     for lbl in ref:
         if len(lbl) > maxl:
             maxl = len(lbl)
@@ -116,18 +116,18 @@ def format_hyp(ref, hyp):
         # count the errors
         #
         if (ref[i] == NULL_CLASS) and (hyp[i] != NULL_CLASS):
-            inss += int(1)
+            inss += 1
             lbl_h = hyp[i].upper()
         elif (ref[i] != NULL_CLASS) and (hyp[i] == NULL_CLASS):
-            dels += int(1)
+            dels += 1
             lbl_r = ref[i].upper()
         elif (ref[i] != hyp[i]):
-            subs += int(1)
+            subs += 1
             lbl_r = ref[i].upper()
             lbl_h = hyp[i].upper()
         else:
-            hits += int(1)
-            
+            hits += 1
+
         # append the strings
         #
         refo += ("%*s " % (maxl, lbl_r))
@@ -154,7 +154,7 @@ def create_table(cnf):
      This function transforms a confusion matrix into a format
      required for print_table.
     """
-       
+
     # display informational message
     #
     if dbgl > ndt.BRIEF:
@@ -175,7 +175,7 @@ def create_table(cnf):
 
     # loop over each key and then each row
     #
-    counter = int(0)
+    counter = 0
     for key1 in cnf:
 
         # append the header
@@ -187,14 +187,14 @@ def create_table(cnf):
         sum = float(0)
         for key2 in cnf[key1]:
             sum += float(cnf[key1][key2])
-        
+
         # transfer counts and percentages to the output table:
         #  note there is a chance the counts are zero due to a bad map
         #
         for key2 in cnf[key1]:
             if sum == 0:
-                val1 = float(0.0)
-                val2 = float(0.0)
+                val1 = 0.0
+                val2 = 0.0
             else:
                 val1 = float(cnf[key1][key2])
                 val2 = float(cnf[key1][key2]) / sum * 100.0
@@ -203,7 +203,7 @@ def create_table(cnf):
         # increment the counter
         #
         counter += 1
-            
+
     # exit gracefully
     #
     return header, tbl
@@ -249,7 +249,7 @@ def print_table(title, headers, data,
      used for the first number in each cell, which is usually an unnormalized
      number such as a count. fmt_pct is the format for the percentage.
     """
-       
+
     # display informational message
     #
     if dbgl > ndt.BRIEF:
@@ -260,7 +260,7 @@ def print_table(title, headers, data,
     #  the data structure contains two header rows
     #  the data structure contains one column for headers
     #
-    nrows = len(data);
+    nrows = len(data)
     ncols = len(headers) - 1
 
     # get the width of each colum and compute the total width:
@@ -272,7 +272,7 @@ def print_table(title, headers, data,
     width_paren = 4
     total_width_cell = width_cell + width_pct + width_paren
     total_width_table = width_lab + \
-                        ncols * (width_cell + width_pct + width_paren);
+                        ncols * (width_cell + width_pct + width_paren)
 
     # print the title
     #
@@ -345,22 +345,22 @@ def parse_files(files, scmap = None):
      A recent addition to this method was code to fill in gaps in the
      annotations with "bckg" and to collapse multiple consecutive hypotheses.
     """
-       
-    # display informational message                                           
-    #                                                                     
+
+    # display informational message
+    #
     if dbgl > ndt.BRIEF:
-        print("%s (line: %s) %s: parsing files" % 
+        print("%s (line: %s) %s: parsing files" %
               (__FILE__, ndt.__LINE__, ndt.__NAME__))
-        
+
     # declare local variables
     #
     ann = neat.AnnEeg()
     odict = {}
-    
+
     # load annotations
     #
     for i in range(len(files)):
-        
+
         if ann.load(files[i]) == False:
             print("Error: %s (line: %s) %s: %s (%s)" %
                   (__FILE__, ndt.__LINE__,
@@ -384,17 +384,17 @@ def parse_files(files, scmap = None):
             events_sorted = sorted(events, key=itemgetter(0))
         else:
             events_sorted = []
-            events_sorted.append([float(0.0), duration,
+            events_sorted.append([0.0, duration,
                                   {neat.DEF_BCKG: neat.PROBABILITY}])
 
         # augment the annotation with background intervals
         #
         events_new = neat.augment_annotation(events_sorted, duration, neat.DEF_BCKG)
-        
+
         # reduce multiple background events
         #
         events_reduced = neat.remove_repeated_events(events_new)
-        
+
         # store full file path because this is used to print out
         # the filenames being processed
         #
@@ -412,7 +412,7 @@ def parse_files(files, scmap = None):
     # return a dictionary
     #
     return odict
-    
+
 #
 # end of function
 

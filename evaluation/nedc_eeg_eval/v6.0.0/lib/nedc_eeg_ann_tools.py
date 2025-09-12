@@ -64,9 +64,7 @@ import os
 import re
 import sys
 import xml.etree.ElementTree as et
-
 from collections import defaultdict
-from lxml import etree
 from operator import itemgetter
 from pathlib import Path as path
 from xml.dom import minidom as md
@@ -75,6 +73,7 @@ from xml.dom import minidom as md
 #
 import nedc_debug_tools as ndt
 import nedc_file_tools as nft
+from lxml import etree
 
 #------------------------------------------------------------------------------
 #
@@ -88,7 +87,7 @@ __FILE__ = os.path.basename(__file__)
 
 # define numeric and symbolic constants
 #
-DEF_CHANNEL = int(-1)
+DEF_CHANNEL = -1
 
 # define symbols to use to create filler events:
 #  a background symbol
@@ -97,8 +96,8 @@ DEF_CHANNEL = int(-1)
 #
 DEF_BCKG = "bckg"
 DEF_SEIZ = "seiz"
-PRECISION = int(4)
-PROBABILITY = float(1.0000)
+PRECISION = 4
+PROBABILITY = 1.0000
 
 # define the location of default files:
 #  note these are version specific since the schema file will evolve
@@ -117,7 +116,7 @@ DEF_REGEX_MONTAGE_FILE = \
 # define eas map regex
 #
 DEF_NEDC_EAS_MAP_REGEX = \
-    re.compile("(.+?(?==))=\((\d+),(\d+),(\(\d+,\d+,\d+,\d+\))\)",
+    re.compile(r"(.+?(?==))=\((\d+),(\d+),(\(\d+,\d+,\d+,\d+\))\)",
                re.IGNORECASE)
 
 #******************************************************************************
@@ -268,7 +267,7 @@ def remap_labels(graph, label_map):
      label according to label_map.
 
     """
-    
+
     # build raw_label -> target_label lookup
     #
     raw2tgt = {
@@ -280,7 +279,7 @@ def remap_labels(graph, label_map):
     # deep‐copy so original isn’t touched
     #
     new_graph = copy.deepcopy(graph)
-    
+
     # walk and remap each label in the graph
     #
     for lvl, subd in new_graph.items():
@@ -304,7 +303,7 @@ def remap_labels(graph, label_map):
                     # prepare a fresh dict to hold the remapped symbols
                     #
                     new_symdict = {}
-                    
+
                     # for each raw label and its probability
                     #
                     for raw_label, prob in symdict.items():
@@ -323,7 +322,7 @@ def remap_labels(graph, label_map):
                         # map the raw label to its target, defaulting to itself
                         #
                         tgt = raw2tgt.get(raw_label, raw_label)
-                        
+
                         # accumulate probability under the mapped label
                         #
                         new_symdict[tgt] = new_symdict.get(tgt, 0.0) + prob
@@ -368,8 +367,8 @@ def get_unique_events(events):
         # reset flag
         #
         is_unique = True
-        n_start = int(-1)
-        n_stop = int(-1)
+        n_start = -1
+        n_stop = -1
 
         # get this event's start/stop times
         #
@@ -518,7 +517,7 @@ def compare_durations(l1, l2):
 
     # loop over the lists together
     #
-    for l1_i, l2_i in zip(l1, l2):
+    for l1_i, l2_i in zip(l1, l2, strict=False):
 
         # load the annotations for l1
         #
@@ -592,7 +591,7 @@ def compare_durations(l1, l2):
 #
 # end of function
 
-def load_annotations(flist, level=int(0), sublevel=int(0),
+def load_annotations(flist, level=0, sublevel=0,
                      channel=DEF_CHANNEL):
     """
     function: load_annotations
@@ -687,7 +686,7 @@ def augment_annotation(events, dur, sym = DEF_BCKG):
     # loop over the events
     #
     events_new = []
-    curr_time = float(0.0)
+    curr_time = 0.0
 
     for ev in events:
 
@@ -760,7 +759,7 @@ def remove_repeated_events(events):
 
     # loop over all events
     #
-    i = int(0)
+    i = 0
     while i < len(events):
 
         # seek forward from the current event to the next dissimilar event
@@ -770,9 +769,9 @@ def remove_repeated_events(events):
         while (j < (len(events) - 1)):
             nxt_tag = list(events[j+1][2].keys())[0]
             if cur_tag != nxt_tag:
-                break;
+                break
             else:
-                j += int(1)
+                j += 1
                 cur_tag = nxt_tag
 
         # append the new event list with the collapsed event:
@@ -1277,17 +1276,7 @@ class AnnGrEeg:
 
                 # ignore if the start or stop time is past the duration
                 #
-                if (event[0] > dur) or (event[1] > dur):
-                    pass
-
-                # ignore if the start time is bigger than the stop time
-                #
-                elif event[0] > event[1]:
-                    pass
-
-                # ignore if the start time equals the stop time
-                #
-                elif event[0] == event[1]:
+                if (event[0] > dur) or (event[1] > dur) or event[0] > event[1] or event[0] == event[1]:
                     pass
 
                 # if the beginning of the event is not at the mark
@@ -1603,7 +1592,7 @@ class Tse:
 
                     # create annotation in AG
                     #
-                    self.data_d.create(int(0), int(0), int(-1),
+                    self.data_d.create(0, 0, (-1),
                                         float(parts[0]), float(parts[1]), val)
                 except:
                     print("Error: %s (line: %s) %s::%s %s (%s)" %
@@ -1992,8 +1981,8 @@ class Lbl:
         self.chan_map_d = {DEF_CHANNEL: DEF_TERM_BASED_IDENTIFIER}
         self.montage_lines_d = []
         self.symbol_map_d = {}
-        self.num_levels_d = int(1)
-        self.num_sublevels_d = {int(0): int(1)}
+        self.num_levels_d = 1
+        self.num_sublevels_d = {0: 1}
 
         # declare Graph object, to store annotations
         #
@@ -2302,17 +2291,17 @@ class Lbl:
 
                 # create a dictionary at level 0 of symbol map
                 #
-                self.symbol_map_d[int(0)] = {}
+                self.symbol_map_d[0] = {}
 
                 # if all channel exists we are converting from
                 # tse to lbl. else we are converting from
                 # xml or csv to lbl
                 #
-                if int(-1) in graph[level][sublevel]:
+                if -1 in graph[level][sublevel]:
 
                     # iterate over all events stored in the 'all' channels
                     #
-                    for event in graph[level][sublevel][int(-1)]:
+                    for event in graph[level][sublevel][(-1)]:
 
                         # iterate over symbols in each event
                         #
@@ -2757,7 +2746,7 @@ class Lbl:
         try:
             channel = int(data[4])
         except:
-            channel = int(-1)
+            channel = -1
 
         # parse probabilities
         #
@@ -2987,10 +2976,10 @@ class Csv:
         # create an incrementing index variable representing
         # the channel index
         #
-        channel_idx = int(0)
+        channel_idx = 0
         known_channels = [self.channel_map_label.values()]
         channel_map_label_temp = dict()
-        
+
         with open(fname, nft.MODE_READ_TEXT) as fp:
 
             # fetch bname information
@@ -3013,35 +3002,35 @@ class Csv:
                 # get the annotation label file for each line
                 #
                 channel = line.split(nft.DELIM_COMMA)[0]
-                
+
                 # if the channel map label still assumes a TERM based
                 # approach load the montage information found by parsing
                 # the csv instead
                 #
                 if channel not in known_channels:
-                    
+
                     # append to the channel_map dictionary to create
                     # the corresponding channel number and name
                     #
                     channel_map_label_temp[int(channel_idx)] = channel
-                    
+
                     # increment channel index
                     #
-                    channel_idx += int(1)
+                    channel_idx += 1
 
                     known_channels.append(channel)
 
             # rewind pointer
             #
             fp.seek(0)
-            
+
             # if no montage has been loaded except for the defualt TERM mapping
             # update the channel map.
             #
             if len(self.channel_map_label) == 1 and channel_map_label_temp:
 
                 self.channel_map_label.update(channel_map_label_temp)
-                
+
             for line_number, line in enumerate(fp):
 
                 # remove space, "\n" and "\r" just case in it is written on a
@@ -3066,7 +3055,7 @@ class Csv:
                     # file name found in fname
                     #
                     self.data_d.header_d[CSV_KEY_MONTAGE_FILE] = \
-                        line.split(nft.DELIM_EQUAL)[int(-1)]
+                        line.split(nft.DELIM_EQUAL)[(-1)]
 
                 # if we find the file duration
                 #
@@ -3076,7 +3065,7 @@ class Csv:
                     #
                     self.data_d.header_d[CSV_KEY_DURATION] = line \
                                .replace(DELIM_CSV_SECS, nft.DELIM_NULL) \
-                               .split(nft.DELIM_EQUAL)[int(-1)]
+                               .split(nft.DELIM_EQUAL)[(-1)]
 
                 # ignore comments, blank line, csv header
                 #
@@ -3097,7 +3086,7 @@ class Csv:
 
                     # uses the index of -1 if it is a term based event
                     #
-                    self.data_d.create(int(0), int(0), int(-1),
+                    self.data_d.create(0, 0, (-1),
                             float(start_time), float(stop_time),
                             {label:float(confidence)})
 
@@ -3105,20 +3094,20 @@ class Csv:
                 # order and create the graph
                 #
                 else:
-    
+
                     # get the correct index for the channel
                     #
                     for ind, channel_lb in self.channel_map_label.items():
                         if channel_lb == channel:
                             channel_ind = ind
 
-                    self.data_d.create(int(0), int(0), channel_ind,
+                    self.data_d.create(0, 0, channel_ind,
                                 float(start_time), float(stop_time),
                                 {label:float(confidence)})
 
 
         self.data_d.sort()
-        
+
         # exit gracefully
         #
         return True
@@ -3191,7 +3180,7 @@ class Csv:
                     # then unzip it then cast it to the variable where it gets
                     # unzip again as the first unzip makes it turn into a tuple
                     #
-                    [*label], [*confidence] = zip(*event[-1].items())
+                    [*label], [*confidence] = zip(*event[-1].items(), strict=False)
 
                     fp.write(f"{self.channel_map_label[channel_ind]},"
                              f"{start_time:.{PRECISION}f},"
@@ -4699,7 +4688,7 @@ class AnnEeg:
     #
     # end of method
 
-    def get(self, level=int(0), sublevel=int(0), channel=int(-1)):
+    def get(self, level=0, sublevel=0, channel=-1):
         """
         method: name
 
@@ -4739,7 +4728,7 @@ class AnnEeg:
     #
     # end of method
 
-    def display(self, level=int(0), sublevel=int(0), fp=sys.stdout):
+    def display(self, level=0, sublevel=0, fp=sys.stdout):
         """
         method: display
 
@@ -4780,7 +4769,7 @@ class AnnEeg:
     #
     # end of method
 
-    def write(self, ofile, level=int(0), sublevel=int(0)):
+    def write(self, ofile, level=0, sublevel=0):
         """
         method: write
 
@@ -5062,7 +5051,7 @@ class AnnEeg:
             # if annotation type is supported update ftype_obj_d and
             # change type_d
             #
-            if ann_type in FTYPE_OBJECTS.keys():
+            if ann_type in FTYPE_OBJECTS:
 
                 # update graph
                 #

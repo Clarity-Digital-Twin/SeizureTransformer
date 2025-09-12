@@ -23,9 +23,8 @@
 
 # import required system modules
 #
-import os
-import sys
 import math
+import os
 
 # import required NEDC modules
 #
@@ -79,7 +78,7 @@ def run(events_ref, events_hyp, mapping, nedc_epoch, odir, rfile, fp):
      (2) scoring them
      (3) displaying the results
     """
-    
+
     # display an informational message
     #
     if dbgl > ndt.BRIEF:
@@ -148,7 +147,7 @@ def run(events_ref, events_hyp, mapping, nedc_epoch, odir, rfile, fp):
 #
 # end of function
 
-class NedcEpoch():
+class NedcEpoch:
     """
     Class: NedcEpoch
     
@@ -185,11 +184,11 @@ class NedcEpoch():
         description: 
          none
         """
- 
+
         # create class data
         #
         NedcEpoch.__CLASS_NAME__ = self.__class__.__name__
-        
+
         # display informational message
         #
         if self.dbgl_d > ndt.BRIEF:
@@ -249,17 +248,17 @@ class NedcEpoch():
 
         # declare parameters to compute summaries
         #
-        self.sum_tp_d = int(0)
-        self.sum_tn_d = int(0)
-        self.sum_fp_d = int(0)
-        self.sum_fn_d = int(0)
+        self.sum_tp_d = 0
+        self.sum_tn_d = 0
+        self.sum_fp_d = 0
+        self.sum_fn_d = 0
 
-        self.sum_ins_d = int(0)
-        self.sum_del_d = int(0)
-        self.sum_tgt_d = int(0)
-        self.sum_hit_d = int(0)
-        self.sum_mis_d = int(0)
-        self.sum_fal_d = int(0)
+        self.sum_ins_d = 0
+        self.sum_del_d = 0
+        self.sum_tgt_d = 0
+        self.sum_hit_d = 0
+        self.sum_mis_d = 0
+        self.sum_fal_d = 0
 
         # additional derived data:
         #  we use class data to store a number of statistical measures
@@ -294,7 +293,7 @@ class NedcEpoch():
          We use dictionaries that are initialized in the order
          labels appear in the scoring map.
         """
-         
+
         # display informational message
         #
         if self.dbgl_d > ndt.BRIEF:
@@ -340,17 +339,17 @@ class NedcEpoch():
 
         # declare parameters to compute summaries
         #
-        self.sum_tp_d = int(0)
-        self.sum_tn_d = int(0)
-        self.sum_fp_d = int(0)
-        self.sum_fn_d = int(0)
+        self.sum_tp_d = 0
+        self.sum_tn_d = 0
+        self.sum_fp_d = 0
+        self.sum_fn_d = 0
 
-        self.sum_ins_d = int(0)
-        self.sum_del_d = int(0)
-        self.sum_tgt_d = int(0)
-        self.sum_hit_d = int(0)
-        self.sum_mis_d = int(0)
-        self.sum_fal_d = int(0)
+        self.sum_ins_d = 0
+        self.sum_del_d = 0
+        self.sum_tgt_d = 0
+        self.sum_hit_d = 0
+        self.sum_mis_d = 0
+        self.sum_fal_d = 0
 
         self.sum_tpr_d = float(0)
         self.sum_tnr_d = float(0)
@@ -371,19 +370,19 @@ class NedcEpoch():
         for key in score_map:
             self.sub_d[key] = {}
             for key2 in score_map:
-                self.sub_d[key][key2] = int(0)
+                self.sub_d[key][key2] = 0
 
-            self.tp_d[key] = int(0)
-            self.tn_d[key] = int(0)
-            self.fp_d[key] = int(0)
-            self.fn_d[key] = int(0)
+            self.tp_d[key] = 0
+            self.tn_d[key] = 0
+            self.fp_d[key] = 0
+            self.fn_d[key] = 0
 
-            self.ins_d[key] = int(0)
-            self.del_d[key] = int(0)
-            self.tgt_d[key] = int(0)
-            self.hit_d[key] = int(0)
-            self.mis_d[key] = int(0)
-            self.fal_d[key] = int(0)
+            self.ins_d[key] = 0
+            self.del_d[key] = 0
+            self.tgt_d[key] = 0
+            self.hit_d[key] = 0
+            self.mis_d[key] = 0
+            self.fal_d[key] = 0
 
             self.tpr_d[key] = float(0)
             self.tnr_d[key] = float(0)
@@ -405,7 +404,7 @@ class NedcEpoch():
         self.pmap_d = nft.permute_map(score_map)
 
         # exit gracefully
-        # 
+        #
         return True
     #
     # end of method
@@ -426,7 +425,7 @@ class NedcEpoch():
         description: 
          This method computes a confusion matrix.
         """
- 
+
         # display informational message
         #
         if self.dbgl_d > ndt.BRIEF:
@@ -444,8 +443,8 @@ class NedcEpoch():
 
         # loop over all files
         #
-        i = int(0)
-        for key_ref, key_hyp in zip(all_events_ref, all_events_hyp):
+        i = 0
+        for key_ref, key_hyp in zip(all_events_ref, all_events_hyp, strict=False):
 
             events_ref = all_events_ref[key_ref]
             if events_ref == None:
@@ -455,7 +454,7 @@ class NedcEpoch():
                 return False
 
             # get the hyp events
-            #                                                               
+            #
             events_hyp = all_events_hyp[key_hyp]
             if events_hyp == None:
                 print("Error: %s (line: %s) %s: %s (%s)" %
@@ -475,7 +474,7 @@ class NedcEpoch():
                 key = next(iter(event[2]))
                 ann_ref.append([event[0], event[1],
                                 self.pmap_d[key], event[2][key]])
-                
+
             ann_hyp = []
             for event in events_hyp:
                 key = next(iter(event[2]))
@@ -513,14 +512,14 @@ class NedcEpoch():
 
             # increment the counter
             #
-            i += int(1)
+            i += 1
 
         # close the file
         #
         self.rfile_d.close()
 
         # exit gracefully
-        # 
+        #
         return True
     #
     # end of method
@@ -543,7 +542,7 @@ class NedcEpoch():
          times spaced by dur secs, and compares labels to the corresponding
          label in the hypothesis.
         """
-                 
+
         # check to make sure the annotations match:
         #  since these are floating point values for times, we
         #  do a simple sanity check to make sure the end times
@@ -561,8 +560,8 @@ class NedcEpoch():
         # loop over the reference annotation starting at the middle
         # of the first interval.
         #
-        dur_by_2 = dur / float(2.0)
-        curr_time = dur / float(2.0)
+        dur_by_2 = dur / 2.0
+        curr_time = dur / 2.0
         start_time = float(0)
         stop_time = ref[-1][1]
         i = 0
@@ -576,7 +575,7 @@ class NedcEpoch():
 
             # increment the substitution matrix
             #
-            self.sub_d[ref[j][2]][hyp[k][2]] += int(1)
+            self.sub_d[ref[j][2]][hyp[k][2]] += 1
             reft.append(ref[j][2])
             hypt.append(hyp[k][2])
 
@@ -625,7 +624,7 @@ class NedcEpoch():
         description: 
          This method finds the annotation corresponding to a value of time.
         """
- 
+
         # loop over the annotation
         #
         counter = 0
@@ -638,7 +637,7 @@ class NedcEpoch():
         # exit ungracefully:
         #  no match was found, which is a problem
         #
-        return int(-1)
+        return -1
     #
     # end of method
 
@@ -664,14 +663,14 @@ class NedcEpoch():
          NxN matrix to a 2x2 for each label, and then do the necessary
          computations.
         """
- 
+
         # display informational message
         #
         if self.dbgl_d > ndt.BRIEF:
             print("%s (line: %s) %s::%s: computing the performance" %
                   (__FILE__, ndt.__LINE__, NedcEpoch.__CLASS_NAME__,
                    ndt.__NAME__))
-        
+
         # check for a zero count
         #
         num_total_ref_events = sum(self.tgt_d.values())
@@ -708,7 +707,7 @@ class NedcEpoch():
                 self.fal_d[key1] = self.sub_d[self.null_class_d][key1]
 
         # compute insertions and deletions:
-        #  insertions are defined as the number of times 'key' is 
+        #  insertions are defined as the number of times 'key' is
         #   recognized as the null_class
         #  deletions are defined as the number of times the null class
         #   is hypothesized as 'key'
@@ -718,8 +717,8 @@ class NedcEpoch():
                 self.ins_d[key1] = self.sub_d[self.null_class_d][key1]
                 self.del_d[key1] = self.sub_d[key1][self.null_class_d]
             else:
-                self.ins_d[key1] = int(0)
-                self.del_d[key1] = int(0)
+                self.ins_d[key1] = 0
+                self.del_d[key1] = 0
 
         #----------------------------------------------------------------------
         # (2) The second block of computations are the derived measures
@@ -742,9 +741,9 @@ class NedcEpoch():
             #
             subs = {}
             subs['tp'] = self.sub_d[key1][key1]
-            subs['fn'] = int(0)
-            subs['fp'] = int(0)
-            subs['tn'] = int(0)
+            subs['fn'] = 0
+            subs['fp'] = 0
+            subs['tn'] = 0
 
             # assign the "tn" condition by summing all values
             # correctly classified as not key1 (this is a sub-matrix
@@ -783,11 +782,11 @@ class NedcEpoch():
                ((tp + fp) == 0) or ((fn + tn) == 0):
                 print("Warning: %s (line: %s) %s::%s: %s (%d %d %d %d)" %
                   (__FILE__, ndt.__LINE__, NedcEpoch.__CLASS_NAME__,
-                   ndt.__NAME__, "divide by zero", tp, fp, tn, fn))    
+                   ndt.__NAME__, "divide by zero", tp, fp, tn, fn))
             elif (round(tdur, ndt.MAX_PRECISION) == 0):
                 print("Warning: %s (line: %s) %s::%s: %s (%f)" %
                   (__FILE__, ndt.__LINE__, NedcEpoch.__CLASS_NAME__,
-                   ndt.__NAME__, "duration is zero",  tdur))    
+                   ndt.__NAME__, "duration is zero",  tdur))
 
             # (2.3) compute derived measures
             #
@@ -834,7 +833,7 @@ class NedcEpoch():
             if round(f1s_denom, ndt.MAX_PRECISION) == 0:
                 print("Warning: %s (line: %s) %s::%s: %s (%s)" %
                   (__FILE__, ndt.__LINE__, NedcEpoch.__CLASS_NAME__,
-                   ndt.__NAME__, "f ratio divide by zero", key1))    
+                   ndt.__NAME__, "f ratio divide by zero", key1))
                 self.f1s_d[key1] = float(0)
             else:
                 self.f1s_d[key1] = 2.0 * self.ppv_d[key1] * \
@@ -848,22 +847,22 @@ class NedcEpoch():
             if round(mcc_denom, ndt.MAX_PRECISION) == 0:
                 print("Warning: %s (line: %s) %s::%s: %s (%s)" %
                   (__FILE__, ndt.__LINE__, NedcEpoch.__CLASS_NAME__,
-                   ndt.__NAME__, "mcc ratio divide by zero", key1))    
+                   ndt.__NAME__, "mcc ratio divide by zero", key1))
                 self.mcc_d[key1] = float(0)
             else:
                 self.mcc_d[key1] = mcc_num / math.sqrt(mcc_denom)
-                
+
             # compute the false alarm rate
             #
             if (round(tdur, ndt.MAX_PRECISION) == 0):
                 print("Warning: %s (line: %s) %s::%s: %s (%s)" %
                   (__FILE__, ndt.__LINE__, NedcEpoch.__CLASS_NAME__,
-                   ndt.__NAME__, "zero duration", key1))    
+                   ndt.__NAME__, "zero duration", key1))
                 self.flr_d[key1] = float(0)
             else:
                 self.flr_d[key1] = float(fp) * self.epoch_dur_d / \
                                    tdur * (60 * 60 * 24)
-        
+
         #----------------------------------------------------------------------
         # (3) the third block of parameters are the summary values
         #
@@ -925,7 +924,7 @@ class NedcEpoch():
         if round(f1s_denom, ndt.MAX_PRECISION) == 0:
             print("Warning: %s (line: %s) %s::%s: %s (%s)" %
                   (__FILE__, ndt.__LINE__, NedcEpoch.__CLASS_NAME__,
-                   ndt.__NAME__, "f ratio divide by zero",  "summary"))    
+                   ndt.__NAME__, "f ratio divide by zero",  "summary"))
             self.sum_f1s_d = float(0)
         else:
             self.sum_f1s_d = 2.0 * self.sum_ppv_d * self.sum_tpr_d / f1s_denom
@@ -941,7 +940,7 @@ class NedcEpoch():
         if round(sum_mcc_denom, ndt.MAX_PRECISION) == 0:
             print("Warning: %s (line: %s) %s::%s: %s (%s)" %
                   (__FILE__, ndt.__LINE__, NedcEpoch.__CLASS_NAME__,
-                   ndt.__NAME__, "mcc ratio divide by zero", "summary"))    
+                   ndt.__NAME__, "mcc ratio divide by zero", "summary"))
             self.sum_mcc_d = float(0)
         else:
             self.sum_mcc_d = sum_mcc_num / math.sqrt(sum_mcc_denom)
@@ -952,7 +951,7 @@ class NedcEpoch():
         if round(self.total_dur_d, ndt.MAX_PRECISION) == 0:
             print("Warning: %s (line: %s) %s::%s: %s (%s)" %
                   (__FILE__, ndt.__LINE__, NedcEpoch.__CLASS_NAME__,
-                   ndt.__NAME__, "zero duration", "summary"))    
+                   ndt.__NAME__, "zero duration", "summary"))
             self.sum_flr_d = float(0)
         else:
             self.sum_flr_d = float(self.sum_fp_d) * self.epoch_dur_d / \
@@ -980,14 +979,14 @@ class NedcEpoch():
         description: 
          This method displays all the results in output report.
         """
- 
+
         # display informational message
         #
         if self.dbgl_d > ndt.BRIEF:
             print("%s (line: %s) %s::%s: displaying results to output file" %
                   (__FILE__, ndt.__LINE__, NedcEpoch.__CLASS_NAME__,
                    ndt.__NAME__))
-        
+
         # print complete table in output file
         #
         nec.print_table(title, headers, tbl,
@@ -1155,7 +1154,7 @@ class NedcEpoch():
         description: 
          This method computes a confusion matrix for an roc/det curve.
         """
- 
+
         # display informational message
         #
         if self.dbgl_d > ndt.BRIEF:
@@ -1169,7 +1168,7 @@ class NedcEpoch():
 
         # loop over all event lists (corresponding to files)
         #
-        for ann_ref, ann_hyp in zip(events_ref, events_hyp):
+        for ann_ref, ann_hyp in zip(events_ref, events_hyp, strict=False):
 
             # update the total duration
             #
@@ -1182,11 +1181,11 @@ class NedcEpoch():
             if refo == None:
                 print("Error: %s (line: %s) %s::%s: %s" %
                   (__FILE__, ndt.__LINE__, NedcEpoch.__CLASS_NAME__,
-                   ndt.__NAME__), "error computing confusions")    
+                   ndt.__NAME__), "error computing confusions")
                 return False
 
         # exit gracefully
-        # 
+        #
         return True
     #
     # end of method
@@ -1208,14 +1207,14 @@ class NedcEpoch():
          Note that because of the way this method is used, error messages
          are suppressed.
         """
- 
+
         # display informational message
         #
         if self.dbgl_d > ndt.BRIEF:
             print("%s (line: %s) %s::%s: computing performance for an ROC" %
                   (__FILE__, ndt.__LINE__, NedcEpoch.__CLASS_NAME__,
                    ndt.__NAME__))
-        
+
         # check for a zero count
         #
         num_total_ref_events = sum(self.tgt_d.values())
@@ -1223,7 +1222,7 @@ class NedcEpoch():
             print("Error: %s (line: %s) %s::%s: %s (%d)" %
                   (__FILE__, ndt.__LINE__, NedcEpoch.__CLASS_NAME__,
                    ndt.__NAME__, "number of events is zero",
-                   num_total_ref_events))    
+                   num_total_ref_events))
             return False
 
         #----------------------------------------------------------------------
@@ -1253,7 +1252,7 @@ class NedcEpoch():
         # compute true negatives (tn):
         #  sum the hits that are not the current label
         #
-        tn_sum = int(0)
+        tn_sum = 0
         for key2 in self.hit_d:
             if key != key2:
                 tn_sum += self.hit_d[key2]
@@ -1310,7 +1309,7 @@ class NedcEpoch():
          This method simply returns the quanities needed for an roc curve:
          true positive rate (tpr) as a function of the false positive rate (fpr).
         """
-         
+
         return self.fpr_d[key], self.tpr_d[key]
 
     def get_det(self, key):
@@ -1327,7 +1326,7 @@ class NedcEpoch():
          This method simply returns the quanities needed for a det curve:
          false negative rate (fnr) as a function of the false positive rate (fpr).
         """
-         
+
         return self.fpr_d[key], self.fnr_d[key]
 
 # end of file

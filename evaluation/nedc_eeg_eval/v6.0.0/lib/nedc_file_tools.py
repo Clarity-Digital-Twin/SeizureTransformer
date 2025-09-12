@@ -33,19 +33,19 @@
 
 # import system modules
 #
+import atexit
 import errno
 import os
 import re
-import sys
-import tomllib
-import tempfile
 import shutil
-import atexit
 import signal
+import sys
+import tempfile
 
 # import NEDC modules
 #
 import nedc_debug_tools as ndt
+import tomllib
 
 #------------------------------------------------------------------------------
 #
@@ -230,15 +230,15 @@ FMT_XML_VERSION = "<?xml version="
 
 # define number constants related to string processing
 #
-DEF_LWIDTH = int(79)
+DEF_LWIDTH = 79
 
 # define the number of bytes to read to check for a raw file
 #
-FLIST_BSIZE = int(32768)
+FLIST_BSIZE = 32768
 
 # define the number of bytes to read to check for an edf file
 #
-EDF_VERS_BSIZE = int(8)
+EDF_VERS_BSIZE = 8
 EDF_VERS = b"0       "
 
 # define some important ml constants
@@ -331,7 +331,7 @@ def first_substring(strings, substring):
         return next(i for i, string in enumerate(strings) if \
                     substring in string)
     except:
-        return int(-1)
+        return -1
 #
 # end of function
 
@@ -356,7 +356,7 @@ def first_string(strings, tstring):
         return next(i for i, string in enumerate(strings) if \
                     tstring == string)
     except:
-        return int(-1)
+        return -1
 #
 # end of function
 
@@ -649,7 +649,7 @@ def get_flist(fname):
     #
     try:
         fp = open(fname, MODE_READ_TEXT)
-    except IOError:
+    except OSError:
         print("Error: %s (line: %s) %s: file not found (%s)" %
               (__FILE__, ndt.__LINE__, ndt.__NAME__, fname))
         return None
@@ -865,9 +865,9 @@ def is_hea(hfile):
 
     # count the number of remaining lines
     #
-    nl = int(0)
+    nl = 0
     while fp.readline():
-        nl += int(1)
+        nl += 1
 
     # close the file
     #
@@ -916,13 +916,7 @@ def is_ann(fname):
 
         # check the list of known types
         #
-        if is_tse(fname):
-            return True
-        elif is_lbl(fname):
-            return True
-        elif is_csv(fname):
-            return True
-        elif is_xml(fname):
+        if is_tse(fname) or is_lbl(fname) or is_csv(fname) or is_xml(fname):
             return True
 
     # if an error occurs due to utf encoding
@@ -1274,7 +1268,7 @@ def make_tmpdir(dir_name):
     # the system temporary directory.
     #
     base_tmp = os.environ.get("ISIP_TMPDIR", tempfile.gettempdir())
-    
+
     # Create a unique temporary directory using mkdtemp.
     # The prefix includes the basename and the current process's PID.
     #
@@ -1283,7 +1277,7 @@ def make_tmpdir(dir_name):
         suffix = f"_{os.getpid()}",
         dir=base_tmp
     )
-    
+
     # set the environment
     #
     os.environ["TMPDIR"] = run_dir
@@ -1324,11 +1318,11 @@ def free_tmpdir(dir_path):
     # attempt to recursively remove temp dir
     #
     try:
-        
+
         # Recursively remove the directory.
         #
         shutil.rmtree(dir_path)
-        
+
         # display debug information
         #
         if dbgl_g > ndt.BRIEF:
@@ -1336,12 +1330,12 @@ def free_tmpdir(dir_path):
                   (__FILE__, ndt.__LINE__,
                    "deleted temporary directory",
                    ndt.__NAME__, dir_path))
-            
+
     # if any exception occurs during recursive directory
     # removing print the exeption for debugging
     #
-    except Exception as e:
-        
+    except Exception:
+
         # display debug information
         #
         if dbgl_g > ndt.BRIEF:
@@ -1349,13 +1343,13 @@ def free_tmpdir(dir_path):
                   (__FILE__, ndt.__LINE__,
                    "failed to delete temporary directory",
                    ndt.__NAME__, dir_path))
-            
+
     # exit gracefully
     #
     return None
 #
 # end of function
-                
+
 #------------------------------------------------------------------------------
 #
 # functions listed here: manage parameter files
@@ -1574,12 +1568,12 @@ def map_events(elist, pmap):
     # loop over the input list
     #
     mlist = []
-    i = int(0)
+    i = 0
     for event in elist:
 
         # copy the event
         #
-        mlist.append([event[0], event[1], {}]);
+        mlist.append([event[0], event[1], {}])
 
         # change the label
         #
@@ -1588,7 +1582,7 @@ def map_events(elist, pmap):
 
         # increment the counter
         #
-        i += int(1)
+        i += 1
 
     # exit gracefully
     #
@@ -1621,11 +1615,11 @@ def get_version(fname):
     #
     try:
         fp = open(fname, MODE_READ_TEXT)
-    except IOError:
+    except OSError:
         print("%s (line: %s) %s: file not found (%s)" %
               (__FILE__, ndt.__LINE__, ndt.__NAME__, fname))
         return None
-    
+
     # define version value
     #
     ver = None
@@ -1636,27 +1630,27 @@ def get_version(fname):
         # iterate over lines until we find the magic string
         #
         for line in fp:
-            
+
             # set every character to be lowercase
             #
             line = line.lower()
-            
+
             # check if string contains "version"
             #
             if line.startswith(DEF_VERSION) or line.startswith(FMT_XML_VERSION) \
                or line.startswith(DELIM_COMMENT + DELIM_SPACE + DEF_VERSION):
-                
+
                 # only get version value after "version"
                 #  for example, xxx_v1.0.0
                 #
                 ver = line.split(DEF_VERSION, 1)[-1]
                 ver = (ver.replace(DELIM_EQUAL, DELIM_NULL)).strip()
                 ver = (ver.split())[0]
-                
+
                 #  remove "" if has
                 #
                 ver = ver.replace(DELIM_QUOTE, DELIM_NULL)
-                
+
                 # break after we find the version
                 #
                 break
@@ -1726,7 +1720,7 @@ def extract_comments(fname, cdelim = "#", cassign = "="):
     #
     try:
         fp = open(fname, MODE_READ_TEXT)
-    except IOError:
+    except OSError:
         print("%s (line: %s) %s: file not found (%s)" %
               (__FILE__, ndt.__LINE__, ndt.__NAME__, fname))
         return None
@@ -1802,15 +1796,15 @@ class TempDirManager:
          and registers cleanup handlers so that the temporary directory is
          removed at program exit or interruption.
         """
-        
+
         # Store the base name for the temporary directory
         #
         self.dir_name = dir_name
-        
+
         # Initialize the variable that will hold the temporary directory path
         #
         self.run_dir = None
-        
+
         # Register free() to clean up the temp directory on exit
         #
         atexit.register(self.free)
@@ -1818,16 +1812,16 @@ class TempDirManager:
         # Register signal handlers for SIGINT and SIGTERM
         #
         try:
-            
+
             # Register SIGINT
             #
-            signal.signal(signal.SIGINT, self._handle_signal) 
+            signal.signal(signal.SIGINT, self._handle_signal)
 
             # Register SIGTERM
             #
             signal.signal(signal.SIGTERM, self._handle_signal)
 
-        # catch the exception if signal registration fails 
+        # catch the exception if signal registration fails
         #
         except Exception as e:
 
@@ -1861,7 +1855,7 @@ class TempDirManager:
          Sets several environment variables to point to this directory and
          overrides default settings in the tempfile module.
         """
-        
+
         # Determine base temp directory using 'ISIP_TMPDIR' or system default
         #
         base_tmp = os.environ.get("ISIP_TMPDIR", tempfile.gettempdir())
@@ -1906,7 +1900,7 @@ class TempDirManager:
 
     #
     # end of method
-    
+
     def free(self):
         """
         method: free
@@ -1959,12 +1953,12 @@ class TempDirManager:
         # notify user
         #
         else:
-            
+
             print("Error : %s (line: %s) %s: No temporary directory to delete" %
                   (__FILE__, ndt.__LINE__, ndt.__NAME__))
     #
     # end of method
-    
+
     def get_path(self):
         """
         method: get_path
@@ -2024,7 +2018,7 @@ class TempDirManager:
 
     #
     # end of method
-    
+
     def __enter__(self):
         """
         method: __enter__
