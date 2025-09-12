@@ -4,7 +4,6 @@ Wrapper for NEDC official scoring tools.
 Converts SeizureTransformer output to NEDC format and runs scoring.
 """
 
-import sys
 import subprocess
 from pathlib import Path
 
@@ -22,10 +21,10 @@ def run_nedc_scoring(ref_file, hyp_file):
     """Run NEDC scoring tool."""
     cmd = [
         "python", str(NEDC_SCRIPT),
-        "-r", ref_file,  # Reference annotations  
+        "-r", ref_file,  # Reference annotations
         "-h", hyp_file,  # Hypothesis predictions
     ]
-    
+
     result = subprocess.run(cmd, capture_output=True, text=True)
     return result.stdout
 
@@ -37,4 +36,4 @@ def parse_nedc_output(output):
 if __name__ == "__main__":
     print("NEDC scoring wrapper - to be implemented after TUSZ eval completes")
     print(f"NEDC tools located at: {NEDC_PATH}")
-    print(f"This will convert SeizureTransformer output to NEDC format and score")
+    print("This will convert SeizureTransformer output to NEDC format and score")

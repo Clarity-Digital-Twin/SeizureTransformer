@@ -40,7 +40,9 @@
       "Bash(pip install:*)",
       "Bash(tmux kill-session:*)",
       "Bash(tmux list-sessions:*)",
-      "Bash(tmux attach:*)"
+      "Bash(tmux attach:*)",
+      "Bash(tee:*)",
+      "Bash(ruff check:*)"
     ],
     "deny": [],
     "ask": []

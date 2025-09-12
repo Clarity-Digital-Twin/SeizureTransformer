@@ -4,45 +4,46 @@ Test that SeizureTransformer inference works with pretrained weights.
 This doesn't modify wu_2025 at all - just tests it works.
 """
 
-import os
 import sys
-import torch
-import numpy as np
 from pathlib import Path
+
+import numpy as np
+import torch
+
 
 # Test model loading
 def test_model_loads():
     """Test that model and weights load correctly."""
     from wu_2025.utils import load_models
-    
+
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Testing on device: {device}")
-    
+
     try:
         model = load_models(device)
         print("✅ Model loaded successfully")
         print(f"   Model type: {type(model).__name__}")
-        
+
         # They set eval mode in predict(), not load_models()
         model.eval()
         print("✅ Model set to eval mode")
-        
+
         # Test with dummy input
         batch_size = 1
         channels = 19
         samples = 15360  # 60 seconds at 256Hz
-        
+
         dummy_input = torch.randn(batch_size, channels, samples).to(device)
         with torch.no_grad():
             output = model(dummy_input)
-        
-        print(f"✅ Inference successful")
+
+        print("✅ Inference successful")
         print(f"   Input shape: {dummy_input.shape}")
         print(f"   Output shape: {output.shape}")
         print(f"   Output range: [{output.min().item():.3f}, {output.max().item():.3f}]")
-        
+
         return True
-        
+
     except Exception as e:
         print(f"❌ Error: {e}")
         return False
@@ -50,14 +51,14 @@ def test_model_loads():
 def test_preprocessing():
     """Test preprocessing pipeline via dataloader."""
     from wu_2025.utils import get_dataloader
-    
+
     # Create dummy EEG data (19 channels, 1 minute at 256Hz)
     eeg_data = np.random.randn(19, 15360) * 100  # Microvolts
-    
+
     try:
         # Preprocessing happens inside get_dataloader
         dataloader = get_dataloader(eeg_data, fs=256, batch_size=1)
-        
+
         # Get first batch
         for batch in dataloader:
             print("✅ Preprocessing successful")
@@ -87,19 +88,19 @@ if __name__ == "__main__":
     print("=" * 60)
     print("SeizureTransformer Inference Test")
     print("=" * 60)
-    
+
     # Check weights exist
     print("\n1. Checking model weights...")
     weights_ok = check_weights()
-    
+
     # Test preprocessing
     print("\n2. Testing preprocessing pipeline...")
     preprocess_ok = test_preprocessing()
-    
+
     # Test model loading and inference
     print("\n3. Testing model loading and inference...")
     model_ok = test_model_loads()
-    
+
     # Summary
     print("\n" + "=" * 60)
     if all([weights_ok, preprocess_ok, model_ok]):

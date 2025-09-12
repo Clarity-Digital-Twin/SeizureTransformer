@@ -40,6 +40,14 @@ build-backend = "hatchling.build"
 [tool.ruff]
 line-length = 100
 target-version = "py310"
+exclude = [
+    "wu_2025",  # Don't lint reference implementation
+    "reference_repos",
+    ".venv",
+    "literature",
+]
+
+[tool.ruff.lint]
 select = [
     "E",    # pycodestyle errors
     "W",    # pycodestyle warnings
@@ -52,6 +60,7 @@ select = [
 ignore = [
     "E501",  # line too long (handled by formatter)
     "B008",  # do not perform function calls in argument defaults
+    "E722",  # bare except (for robustness)
 ]
 fixable = ["ALL"]
 
@@ -60,7 +69,7 @@ quote-style = "double"
 indent-style = "space"
 skip-magic-trailing-comma = false
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 known-first-party = ["seizure_transformer_replication"]
 
 [tool.mypy]
