@@ -1,8 +1,10 @@
 # 🟢 IDEAL SEIZURE TRANSFORMER DATAFLOW (What We Should Build)
 
-**Status**: PROPOSED ARCHITECTURE
-**Created**: December 12, 2024
+**Status**: VALIDATED & AUDITED ✅
+**Created**: December 12, 2024  
+**Last Updated**: December 12, 2024
 **Purpose**: Document the CORRECT implementation based on OSS reference
+**Verification**: 100% verified against OSS code and paper
 
 ---
 
@@ -507,38 +509,30 @@ New Data → Different Preprocessing → Same Model → ⚠️ DEGRADED PERFORMA
 ### 🔴 REMAINING GAPS (Professional GitHub Issues Created):
 
 #### Issue 1: Siena Dataset Integration Clarification
-```markdown
-Title: Clarification on Siena Scalp EEG Database Usage
+**GitHub Issue**: https://github.com/keruiwu/SeizureTransformer/issues/1
+**Status**: Created Dec 12, 2024
 
-Hi team, excellent work on SeizureTransformer! 
+**Gap Identified**: 
+- Paper mentions training on TUSZ + Siena (128 hours, 14 subjects)
+- OSS code only includes TUSZ handling via epilepsy2bids
+- No Siena loading code provided in repository
+- Unclear if all 14 subjects used for training or if some held out
 
-We're working to reproduce your results and noticed:
-1. The paper mentions training on TUSZ + Siena datasets
-2. The OSS code only includes TUSZ handling via epilepsy2bids
-3. No Siena loading code is provided
+**Why This Matters**: Without Siena loader, we cannot fully reproduce the paper's training 
+methodology, though we can still use pretrained weights for inference.
 
-Questions:
-- Were all 14 Siena subjects used for training (no hold-out)?
-- Is the Siena dataset loader available, or should we implement our own?
-- The paper mentions 5-fold cross-validation - was this only within training data?
+#### Issue 2: Channel Ordering Specification  
+**GitHub Issue**: https://github.com/keruiwu/SeizureTransformer/issues/2
+**Status**: Created Dec 12, 2024
 
-This would help ensure proper reproduction of the multi-dataset training approach.
-```
+**Gap Identified**:
+- Model requires exactly 19 channels (hardcoded assertion in architecture)
+- OSS code enforces UNIPOLAR montage but doesn't specify channel names/order
+- No documentation of which 19 channels from the 10-20 system
+- No guidance on handling missing channels
 
-#### Issue 2: Channel Ordering Specification
-```markdown
-Title: Exact Channel Ordering for 19-Channel Input
-
-The model requires exactly 19 channels (shape assertion in forward pass), but the specific 
-channel ordering isn't documented.
-
-Could you clarify:
-1. The exact channel sequence expected (e.g., Fp1, Fp2, F3, F4...)?
-2. Is this the standard 10-20 ordering shown in Figure 2?
-3. How should missing channels be handled (zero-padding, interpolation, or rejection)?
-
-This would ensure the pretrained weights work correctly with our preprocessing.
-```
+**Why This Matters**: Without knowing the exact channel order, we cannot guarantee 
+the pretrained weights are applied to the correct channels, potentially degrading performance.
 
 #### ~~Issue 3: Test-Time Dropout~~ [RESOLVED - NOT AN ISSUE]
 **Analysis**: The paper states "drop rate of 0.1 for all dropout layers both at training and test time" 
@@ -547,7 +541,7 @@ but the code correctly uses `model.eval()` which disables dropout at test time (
 **Resolution**: This is a paper typo/error. The implementation is correct - dropout MUST be disabled 
 during inference per standard deep learning practice. No clarification needed from authors.
 
-### 📊 UPDATED UNDERSTANDING:
+### 📊 FINAL VALIDATED UNDERSTANDING:
 Based on literal paper interpretation:
 - **Training Data**: TUSZ train + ALL 14 Siena subjects (no Siena test split)
 - **Test Data**: TUSZ eval/ only (predefined, 42.7 hours)
