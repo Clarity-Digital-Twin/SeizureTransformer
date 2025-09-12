@@ -193,7 +193,7 @@ def main():
 
     print(f"\nProcessing {sum(len(files) for files in subjects.values())} files...")
 
-    for subject_id, edf_files in tqdm(subjects.items(), desc="Subjects"):
+    for _subject_id, edf_files in tqdm(subjects.items(), desc="Subjects"):
         for edf_path in edf_files:
             # Get predictions
             predictions = process_edf_file(edf_path, model, device)

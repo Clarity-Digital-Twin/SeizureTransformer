@@ -180,7 +180,7 @@ def main():
     all_preds = []
     all_labels = []
 
-    for file_id, result in results.items():
+    for _file_id, result in results.items():
         if result["predictions"] is not None and result["seizure_events"] is not None:
             preds = result["predictions"]
 
