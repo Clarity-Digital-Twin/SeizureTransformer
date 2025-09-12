@@ -15,69 +15,69 @@
 │      github.com/Clarity-Digital-Twin/SeizureTransformer             │
 │                         (PRIVATE)                                   │
 │                                                                     │
-│  ├── wu_2025/                 ✅ Matches upstream                  │
-│  ├── data/                    ❌ Wrong location!                   │
+│  ├── wu_2025/                 ✅ Matches upstream                   |
+│  ├── data/                    ❌ Wrong location!                    |
 │  │   ├── datasets/                                                  │
-│  │   │   ├── tusz/            (Should be in wu_2025/)              │
-│  │   │   └── siena/           (Should be in wu_2025/)              │
+│  │   │   ├── tusz/            (Should be in wu_2025/)               |
+│  │   │   └── siena/           (Should be in wu_2025/)               |
 │  │   └── models/                                                    │
-│  │       └── pretrained/      (Should be in wu_2025/src/wu_2025/)  │
+│  │       └── pretrained/      (Should be in wu_2025/src/wu_2025/)   |
 │  ├── literature/              🔶 Extra (keep, but gitignore)        │
 │  ├── IDEAL_REFERENCE_*.md     🔶 Extra (keep, but gitignore)        │
-│  └── .gitignore               ✅ Good                              │
+│  └── .gitignore               ✅ Good                               |
 └─────────────────────────────────────────────────────────────────────┘
 
 ## PROPOSED STRUCTURE (Matching Upstream Expectations):
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                     ORIGINAL PUBLIC REPO                             │
-│           github.com/keruiwu/SeizureTransformer                      │
+│                     ORIGINAL PUBLIC REPO                            │
+│           github.com/keruiwu/SeizureTransformer                     │
 └─────────────────────────────────────────────────────────────────────┘
                                 ↑
                                 │ PR (only code changes)
                                 │
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    PUBLIC FORK (for PRs)                             │
+│                    PUBLIC FORK (for PRs)                            │
 │    github.com/Clarity-Digital-Twin/SeizureTransformer-Fork          │
-│                         (PUBLIC)                                     │
-│                                                                      │
-│  ✅ ONLY CONTAINS:                                                  │
+│                         (PUBLIC)                                    │
+│                                                                     │
+│  ✅ ONLY CONTAINS:                                                  |
 │  - Code improvements (siena_utils.py, bug fixes)                    │
 │  - Original README.md updates                                       │
-│                                                                      │
-│  ❌ NEVER CONTAINS:                                                 │
-│  - Data (no wu_2025/data/*)                                        │
-│  - Weights (no model.pth)                                          │
-│  - Private docs (no IDEAL_*.md, no literature/)                    │
+│                                                                     │
+│  ❌ NEVER CONTAINS:                                                 |
+│  - Data (no wu_2025/data/*)                                         |
+│  - Weights (no model.pth)                                           |
+│  - Private docs (no IDEAL_*.md, no literature/)                     |
 └─────────────────────────────────────────────────────────────────────┘
                                 ↑
                                 │ cherry-pick commits
                                 │
 ┌─────────────────────────────────────────────────────────────────────┐
-│                YOUR PRIVATE WORKING REPO                             │
+│                YOUR PRIVATE WORKING REPO                            │
 │      github.com/Clarity-Digital-Twin/SeizureTransformer             │
-│                         (PRIVATE)                                    │
-│                                                                      │
+│                         (PRIVATE)                                   │
+│                                                                     │
 │  CORRECT STRUCTURE:                                                 │
 │  ├── wu_2025/                                                       │
 │  │   ├── src/                                                       │
-│  │   │   └── wu_2025/                                              │
-│  │   │       ├── model.pth            ← Model weights HERE         │
-│  │   │       ├── architecture.py                                    │
-│  │   │       ├── utils.py                                          │
-│  │   │       ├── siena_utils.py       ← NEW: Siena loader          │
-│  │   │       └── main.py                                           │
-│  │   ├── data/                        ← Data goes HERE             │
-│  │   │   ├── tusz/                                                 │
-│  │   │   │   └── [TUSZ files]                                      │
-│  │   │   └── siena/                                                │
-│  │   │       └── [Siena files]                                     │
-│  │   └── pyproject.toml                                            │
-│  │                                                                  │
-│  ├── literature/              (KEEP - private documentation)        │
-│  ├── IDEAL_*.md              (KEEP - private documentation)        │
+│  │   │   └── wu_2025/                                               |
+│  │   │       ├── model.pth            ← Model weights HERE          |
+│  │   │       ├── architecture.py                                    |
+│  │   │       ├── utils.py                                           |
+│  │   │       ├── siena_utils.py       ← NEW: Siena loader           |
+│  │   │       └── main.py                                            |
+│  │   ├── data/                        ← Data goes HERE              |
+│  │   │   ├── tusz/                                                  |
+│  │   │   │   └── [TUSZ files]                                       |
+│  │   │   └── siena/                                                 |
+│  │   │       └── [Siena files]                                      |
+│  │   └── pyproject.toml                                             |
+│  │                                                                  |
+│  ├── literature/              (KEEP - private documentation)        |
+│  ├── IDEAL_*.md              (KEEP - private documentation)         |
 │  ├── .gitignore              (Updated to ignore data & weights)     │
-│  └── README.md               (Original)                            │
+│  └── README.md               (Original)                             |
 └─────────────────────────────────────────────────────────────────────┘
 
 ## File Movement Commands:

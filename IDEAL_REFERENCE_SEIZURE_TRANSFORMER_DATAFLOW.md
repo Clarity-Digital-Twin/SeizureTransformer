@@ -504,7 +504,7 @@ New Data → Different Preprocessing → Same Model → ⚠️ DEGRADED PERFORMA
 3. **Preprocessing Pipeline**: Code and paper align perfectly
    - Z-score → Resample → Bandpass → Notch (both sources confirm)
 
-### 🔴 REMAINING GAPS (Professional GitHub Issues):
+### 🔴 REMAINING GAPS (Professional GitHub Issues Created):
 
 #### Issue 1: Siena Dataset Integration Clarification
 ```markdown
@@ -540,22 +540,12 @@ Could you clarify:
 This would ensure the pretrained weights work correctly with our preprocessing.
 ```
 
-#### Issue 3: Test-Time Dropout Clarification
-```markdown
-Title: Dropout Behavior at Test Time
+#### ~~Issue 3: Test-Time Dropout~~ [RESOLVED - NOT AN ISSUE]
+**Analysis**: The paper states "drop rate of 0.1 for all dropout layers both at training and test time" 
+but the code correctly uses `model.eval()` which disables dropout at test time (line 89 in utils.py).
 
-Small clarification needed: The paper mentions "drop rate of 0.1 for all dropout layers 
-both at training and test time" (Page 2).
-
-However, the OSS code correctly uses model.eval() which disables dropout at test time 
-(standard PyTorch behavior).
-
-Could you confirm:
-- Was this a typo in the paper? 
-- Should dropout be disabled at test time (as the code does)?
-
-Just want to ensure we're evaluating the model correctly!
-```
+**Resolution**: This is a paper typo/error. The implementation is correct - dropout MUST be disabled 
+during inference per standard deep learning practice. No clarification needed from authors.
 
 ### 📊 UPDATED UNDERSTANDING:
 Based on literal paper interpretation:
