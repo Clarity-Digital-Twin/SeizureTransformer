@@ -19,16 +19,47 @@ src/brain_go_brrr/infra/ml_models/
 **PRINCIPLE**: Reference repos are for LEARNING, not IMPORTING. Copy the architecture, understand it, own it.
 
 ### 2. PREPROCESSING PIPELINE (From OSS)
+
+**⚠️ CRITICAL PREPROCESSING UNDERSTANDING**:
+
+#### Why Preprocessing Matters:
+1. **For Parity**: You MUST use Wu's exact preprocessing for ANY data the model sees (train/dev/eval/production)
+   - The model learned patterns based on Wu's specific preprocessing
+   - Different preprocessing = degraded performance
+   
+2. **For Improvement**: Better preprocessing COULD exceed published results
+   - More sophisticated filters might preserve more signal
+   - Better artifact removal could improve SNR
+   - BUT: Would need retraining or fine-tuning
+
+#### The Citation Discrepancy:
+Wu et al. cite Zhu et al. [6] for preprocessing but MODIFY it significantly:
+
+| Parameter | Zhu et al. 2023 [6] | Wu et al. 2025 (USE THIS!) | Impact |
+|-----------|---------------------|----------------------------|---------|
+| Bandpass | 0.5-100 Hz | **0.5-120 Hz** | Captures higher gamma |
+| Resample | 250 Hz | **256 Hz** | More samples/window |
+| Window | 4 seconds | **60 seconds** | Longer context |
+| Overlap | 75% (training) | **75% train, 0% inference** | Different for modes |
+
+**🎯 GOLDEN RULE: For inference with pretrained weights, use Wu's preprocessing EXACTLY!**
+
 ```python
 # src/brain_go_brrr/infra/ml_models/seizure_transformer_utils.py
 
 class SeizurePreprocessor:
-    """Exact preprocessing from Wu et al. 2025."""
+    """Exact preprocessing from Wu et al. 2025.
+    
+    WARNING: This differs from cited Zhu et al. 2023 paper!
+    - Bandpass: 0.5-120Hz (NOT 0.5-100Hz)
+    - Resample: 256Hz (NOT 250Hz)
+    - Window: 60s (NOT 4s)
+    """
     
     def __init__(self, fs: int = 256):
         self.fs = fs
         self.lowcut = 0.5
-        self.highcut = 120
+        self.highcut = 120  # Wu uses 120Hz, not Zhu's 100Hz
         # Pre-compute filter coefficients (ALWAYS for 256Hz after resampling)
         self.notch_1_b, self.notch_1_a = iirnotch(1, Q=30, fs=256)
         self.notch_60_b, self.notch_60_a = iirnotch(60, Q=30, fs=256)
@@ -150,6 +181,10 @@ class SeizurePostProcessor:
         
         return binary
 ```
+
+- Note: In the OSS path (`utils.predict`), model outputs are flattened and then
+  truncated to the original sequence length (`seq_len`) before post-processing.
+  Keep this behavior if you mirror the reference.
 
 ### 5. MODEL WRAPPER (Complete Integration)
 ```python
@@ -433,6 +468,9 @@ With correct implementation:
 ### IMPLEMENT FROM CODE (Primary Source):
 1. **Unipolar montage** - Model REQUIRES unipolar (will assert error if bipolar)
 2. **Exact preprocessing** - Order matters: normalize → resample → bandpass → notch
+   - **CRITICAL**: This preprocessing MUST be applied to ALL data (train/dev/test/production)
+   - Using different preprocessing will degrade performance
+   - To exceed published results, you'd need to retrain with better preprocessing
 3. **Window alignment** - 60s windows (15360 samples), 0% overlap for inference
 4. **Post-processing params** - All hardcoded: threshold=0.8, kernel=5, min_duration=2.0s
 5. **Channel requirements** - EXACTLY 19 channels, hardcoded in architecture
@@ -440,6 +478,14 @@ With correct implementation:
 7. **Filter details** - Butterworth order=3, uses lfilter (causal) not filtfilt
 8. **Padding strategy** - Zero-padding at END for windows < 15360 samples
 9. **Dropout** - Code uses `model.eval()` which DISABLES dropout at test time (standard practice)
+
+### PREPROCESSING CONSISTENCY IS KEY:
+```
+Training Data → Wu Preprocessing → Model → Weights
+Test Data → SAME Wu Preprocessing → Same Model → Expected AUROC 0.876
+New Data → SAME Wu Preprocessing → Same Model → Similar Performance
+New Data → Different Preprocessing → Same Model → ⚠️ DEGRADED PERFORMANCE
+```
 
 ---
 
@@ -548,6 +594,46 @@ Based on literal paper interpretation:
    - Implement custom Siena loader
    - Use all 14 subjects for training only
    - Test only on TUSZ eval/
+
+---
+
+## 💡 Potential Preprocessing Improvements (Requires Retraining)
+
+### Current Wu Preprocessing Limitations:
+1. **Simple notch filters** - Could use adaptive filtering for line noise
+2. **Fixed bandpass** - Could use subject-specific bands
+3. **Basic z-score** - Could use robust scaling or artifact rejection
+4. **No artifact removal** - Could add eye blink/muscle artifact removal
+
+### Potential Improvements:
+```python
+class ImprovedSeizurePreprocessor:
+    """Hypothetical improvements - would need retraining!"""
+    
+    def preprocess_advanced(self, eeg, fs_original):
+        # 1. Artifact rejection (ICA, wavelet denoising)
+        eeg = self.remove_artifacts(eeg)
+        
+        # 2. Adaptive filtering for subject-specific noise
+        eeg = self.adaptive_filter(eeg)
+        
+        # 3. Robust scaling (less sensitive to outliers)
+        eeg = self.robust_scale(eeg)
+        
+        # 4. Advanced resampling (anti-aliasing)
+        eeg = self.advanced_resample(eeg, fs_original, 256)
+        
+        # 5. Subject-specific band selection
+        eeg = self.adaptive_bandpass(eeg)
+        
+        return eeg
+```
+
+**⚠️ WARNING**: These improvements would require:
+1. Retraining the model from scratch
+2. New hyperparameter tuning
+3. Validation that improvements actually help
+4. Can't use with existing pretrained weights!
 
 ---
 
