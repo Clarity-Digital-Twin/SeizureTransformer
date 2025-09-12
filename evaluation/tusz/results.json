@@ -1,0 +1,9 @@
+{
+  "auroc": 0.9020582313337343,
+  "sensitivity": 0.30796255244464454,
+  "specificity": 0.996054501880659,
+  "threshold": 0.8,
+  "total_samples": 117604918,
+  "seizure_percentage": 0.05930041122940114,
+  "timestamp": "2025-09-12T15:01:06.092549"
+}
