@@ -117,7 +117,7 @@ export PATH=$NEDC_NFC/bin:$PATH
 export PYTHONPATH=$NEDC_NFC/lib:$PYTHONPATH
 
 # Run NEDC scoring (lists contain absolute paths)
-nedc_eeg_eval \
+$NEDC_NFC/bin/nedc_eeg_eval \
   evaluation/nedc_scoring/output/lists/ref.list \
   evaluation/nedc_scoring/output/lists/hyp.list \
   -o evaluation/nedc_scoring/output/results
