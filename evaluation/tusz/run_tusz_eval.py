@@ -2,9 +2,16 @@
 """
 Bulletproof TUSZ evaluation for SeizureTransformer.
 Saves checkpoints and handles errors gracefully.
+
+CLI:
+  python evaluation/tusz/run_tusz_eval.py \
+    --data_dir wu_2025/data/tusz/edf/eval \
+    --out_dir evaluation/tusz \
+    --device auto
 """
 
 import json
+import argparse
 import pickle
 import sys
 from datetime import datetime
@@ -98,12 +105,36 @@ def create_binary_labels(seizure_events, duration_samples, fs=256):
 
 def main():
     """Run bulletproof evaluation."""
+    parser = argparse.ArgumentParser(description="Run TUSZ evaluation")
+    parser.add_argument(
+        "--data_dir",
+        type=str,
+        default=str(Path("wu_2025/data/tusz/edf/eval")),
+        help="Path to TUSZ eval EDF root (globbed recursively)",
+    )
+    parser.add_argument(
+        "--out_dir",
+        type=str,
+        default=str(Path("evaluation/tusz")),
+        help="Output directory for checkpoint and results",
+    )
+    parser.add_argument(
+        "--device",
+        type=str,
+        default="auto",
+        choices=["auto", "cpu", "cuda"],
+        help="Device to run inference (auto selects cuda if available)",
+    )
+    args = parser.parse_args()
     print("=" * 60)
     print("SeizureTransformer TUSZ Evaluation v2 (Bulletproof)")
     print("=" * 60)
 
     # Setup
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+    if args.device == "auto":
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+    else:
+        device = args.device
     print(f"Device: {device}")
 
     # Load model
@@ -113,12 +144,14 @@ def main():
     print("✅ Model loaded")
 
     # Find TUSZ eval files
-    data_dir = Path("wu_2025/data/tusz/edf/eval")
+    data_dir = Path(args.data_dir)
     edf_files = sorted(data_dir.glob("**/*.edf"))
     print(f"\n✅ Found {len(edf_files)} EDF files")
 
     # Checkpoint file
-    checkpoint_file = Path("evaluation/tusz/checkpoint.pkl")
+    out_dir = Path(args.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    checkpoint_file = out_dir / "checkpoint.pkl"
 
     # Load checkpoint if exists
     if checkpoint_file.exists():
@@ -235,7 +268,7 @@ def main():
         print(f"   Specificity: {specificity:.3f}")
 
         # Save results
-        results_file = Path("evaluation/tusz/results.json")
+        results_file = out_dir / "results.json"
         with open(results_file, "w") as f:
             json.dump({
                 "auroc": (float(auroc) if auroc is not None else None),

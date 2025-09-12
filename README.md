@@ -60,24 +60,29 @@ This repository provides an **independent, reproducible evaluation** of the Seiz
 git clone https://github.com/Clarity-Digital-Twin/SeizureTransformer
 cd SeizureTransformer
 
-# Setup environment (using uv for speed)
-pip install uv
-uv venv
-source .venv/bin/activate
+  # Setup environment
+  python -m venv .venv
+  source .venv/bin/activate
+  
+  # Install the original model package (includes core deps)
+  pip install ./wu_2025
+  
+  # Install additional runtime tools used by the evaluation
+  pip install tqdm scikit-learn
 
-# Install packages
-uv pip install ./wu_2025           # Original model
-uv pip install -e . --extra dev    # Our evaluation tools
+  # Install PyTorch matching your CUDA/CPU environment
+  # See: https://pytorch.org/get-started/locally/
+  # Example (CPU): pip install torch --index-url https://download.pytorch.org/whl/cpu
 ```
 
 ### Run Complete Evaluation
 
 ```bash
 # 1. Run TUSZ evaluation (GPU recommended)
-python evaluation/tusz/run_tusz_eval.py \
-    --data_dir /path/to/TUSZ/v2.0.3/eval \
-    --output_dir evaluation/tusz \
-    --device cuda
+  python evaluation/tusz/run_tusz_eval.py \
+      --data_dir /path/to/TUSZ/v2.0.3/eval \
+      --out_dir evaluation/tusz \
+      --device auto
 
 # 2. Convert predictions to NEDC format
 python evaluation/nedc_scoring/convert_predictions.py
