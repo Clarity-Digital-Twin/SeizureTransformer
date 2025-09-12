@@ -443,41 +443,111 @@ With correct implementation:
 
 ---
 
-## 📝 Paper vs Code Discrepancies (For GitHub Issues)
+## 📝 Paper vs Code Alignment & Professional Questions
 
-### PAPER CLAIMS (Not in Code):
-1. **Datasets**: Paper used TUSZ + Siena Scalp EEG Database
-   - Code only shows TUSZ handling via epilepsy2bids
-   - To achieve paper parity: Need to add Siena dataset loader
+### ✅ CONFIRMED ALIGNMENTS:
+1. **TUSZ Test Set**: Paper explicitly states "TUSZ's predefined test set" (42.7 hours, 43 subjects)
+   - This maps to TUSZ `eval/` folder - **100% reproducible**
+   - No ambiguity - use eval/ for testing
 
-2. **Dropout at test**: Paper says "dropout=0.1 at test time"
-   - Likely a PAPER ERROR (dropout should be off at test)
-   - Code correctly uses `model.eval()` 
+2. **Siena Usage** (Based on literal paper reading):
+   - Siena used ONLY for training (128 hours from 14 subjects)
+   - Paper shows results ONLY on TUSZ test set
+   - Logical conclusion: All 14 Siena subjects were training data (no test split mentioned)
 
-3. **Channel order**: Paper shows channels but no exact sequence
-   - Code doesn't validate channel names, only count
+3. **Preprocessing Pipeline**: Code and paper align perfectly
+   - Z-score → Resample → Bandpass → Notch (both sources confirm)
 
-4. **Multi-GPU**: Paper used 2x NVIDIA L40S
-   - Code has no multi-GPU implementation
+### 🔴 REMAINING GAPS (Professional GitHub Issues):
 
-5. **Training overlap**: Paper says 75% overlap
-   - Code allows configuration but doesn't show 75% default
+#### Issue 1: Siena Dataset Integration Clarification
+```markdown
+Title: Clarification on Siena Scalp EEG Database Usage
 
-### ACTION ITEMS:
-- **For full paper parity**: Download Siena Scalp EEG Database
-  - Available at: https://physionet.org/content/siena-scalp-eeg/1.0.0/
-  - DOI: https://doi.org/10.13026/5d4a-j060
-  - Size: 20.3 GB uncompressed (13.0 GB ZIP)
-  - Contents: 128 hours from 14 subjects at 512Hz
-  - 47 seizures total
-  - Format: EDF files with 10-20 system + EKG
-  - Download: `wget -r -N -c -np https://physionet.org/files/siena-scalp-eeg/1.0.0/`
-  - Would need custom loader (not in OSS code)
-- **Create GitHub issues** asking about:
-  - Dropout at test time (likely paper typo?)
-  - Exact channel ordering used
-  - Multi-GPU training code
-  - Why Siena dataset handling not in OSS?
+Hi team, excellent work on SeizureTransformer! 
+
+We're working to reproduce your results and noticed:
+1. The paper mentions training on TUSZ + Siena datasets
+2. The OSS code only includes TUSZ handling via epilepsy2bids
+3. No Siena loading code is provided
+
+Questions:
+- Were all 14 Siena subjects used for training (no hold-out)?
+- Is the Siena dataset loader available, or should we implement our own?
+- The paper mentions 5-fold cross-validation - was this only within training data?
+
+This would help ensure proper reproduction of the multi-dataset training approach.
+```
+
+#### Issue 2: Channel Ordering Specification
+```markdown
+Title: Exact Channel Ordering for 19-Channel Input
+
+The model requires exactly 19 channels (shape assertion in forward pass), but the specific 
+channel ordering isn't documented.
+
+Could you clarify:
+1. The exact channel sequence expected (e.g., Fp1, Fp2, F3, F4...)?
+2. Is this the standard 10-20 ordering shown in Figure 2?
+3. How should missing channels be handled (zero-padding, interpolation, or rejection)?
+
+This would ensure the pretrained weights work correctly with our preprocessing.
+```
+
+#### Issue 3: Test-Time Dropout Clarification
+```markdown
+Title: Dropout Behavior at Test Time
+
+Small clarification needed: The paper mentions "drop rate of 0.1 for all dropout layers 
+both at training and test time" (Page 2).
+
+However, the OSS code correctly uses model.eval() which disables dropout at test time 
+(standard PyTorch behavior).
+
+Could you confirm:
+- Was this a typo in the paper? 
+- Should dropout be disabled at test time (as the code does)?
+
+Just want to ensure we're evaluating the model correctly!
+```
+
+### 📊 UPDATED UNDERSTANDING:
+Based on literal paper interpretation:
+- **Training Data**: TUSZ train + ALL 14 Siena subjects (no Siena test split)
+- **Test Data**: TUSZ eval/ only (predefined, 42.7 hours)
+- **Validation**: Likely TUSZ dev/ (not explicitly mentioned)
+- **Competition**: Private Danish dataset (not available)
+
+### ✅ WHAT WE CAN REPRODUCE NOW:
+1. **TUSZ Test AUROC (~0.876)**
+   - Load pretrained weights
+   - Test on TUSZ eval/ 
+   - Should match paper Figure 3
+
+2. **Inference Speed (3.98s per hour)**
+   - Should match paper Table II
+
+### 🚫 WHAT WE CANNOT FULLY REPRODUCE:
+1. **Training from Scratch with Siena**
+   - Missing Siena loader code
+   - But NOT needed for using pretrained model
+
+2. **Competition Results (F1=0.43)**
+   - Private Danish dataset unavailable
+   - But shows model generalizes well
+
+### 🎯 RECOMMENDED APPROACH FOR YOUR USE CASE:
+1. **For Immediate Application**: 
+   - Use pretrained weights (`seizure_transformer_wu2025.pth`)
+   - Test on TUSZ eval/ only
+   - Skip Siena entirely (not needed for inference)
+   - Should achieve AUROC ~0.876
+
+2. **For Full Paper Reproduction** (if ever needed):
+   - Download Siena (20.3GB, currently downloading in tmux)
+   - Implement custom Siena loader
+   - Use all 14 subjects for training only
+   - Test only on TUSZ eval/
 
 ---
 
