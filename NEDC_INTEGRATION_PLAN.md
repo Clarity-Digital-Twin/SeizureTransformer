@@ -45,8 +45,8 @@ def convert_to_nedc_csv(checkpoint_file, output_dir):
     
     Input: checkpoint.pkl with predictions
       Output:
-        - output/hyp/*.csv (predictions)
-        - output/ref/*.csv (ground truth)
+        - output/hyp/*.csv_bi (predictions)
+        - output/ref/*.csv_bi (ground truth)
     """
     # Apply threshold (0.8)
     # Post-processing (morphological ops)
@@ -170,7 +170,7 @@ TERM,133.8040,162.1105,seiz,1.0000
   HYP_LIST=evaluation/nedc_scoring/output/lists/hyp.list
 
   # Run NEDC scorer with explicit output directory
-  nedc_eeg_eval "$REF_LIST" "$HYP_LIST" \
+  $NEDC_NFC/bin/nedc_eeg_eval "$REF_LIST" "$HYP_LIST" \
     -o evaluation/nedc_scoring/output/results
   ```
 
