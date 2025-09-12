@@ -175,8 +175,8 @@ def main():
     print("=" * 60)
 
     # Collect all predictions and labels
-    all_preds = []
-    all_labels = []
+    all_preds: list = []
+    all_labels: list = []
 
     for _file_id, result in results.items():
         if result["predictions"] is not None and result["seizure_events"] is not None:
@@ -197,17 +197,17 @@ def main():
     # Calculate metrics
     auroc = None
     if all_preds and all_labels:
-        all_preds = np.array(all_preds)
-        all_labels = np.array(all_labels)
+        all_preds_array = np.array(all_preds)
+        all_labels_array = np.array(all_labels)
 
         print("\n📊 Data Statistics:")
-        print(f"   Total samples: {len(all_preds):,}")
-        print(f"   Seizure samples: {all_labels.sum():,} ({100*all_labels.mean():.1f}%)")
-        print(f"   Non-seizure samples: {(1-all_labels).sum():,}")
+        print(f"   Total samples: {len(all_preds_array):,}")
+        print(f"   Seizure samples: {all_labels_array.sum():,} ({100*all_labels_array.mean():.1f}%)")
+        print(f"   Non-seizure samples: {(1-all_labels_array).sum():,}")
 
         # AUROC
         try:
-            auroc = roc_auc_score(all_labels, all_preds)
+            auroc = roc_auc_score(all_labels_array, all_preds_array)
             print(f"\n🎯 AUROC: {auroc:.4f}")
             print("   Paper claims: 0.876")
 
@@ -220,12 +220,12 @@ def main():
 
         # Threshold metrics
         threshold = 0.8
-        binary_preds = (all_preds > threshold).astype(int)
+        binary_preds = (all_preds_array > threshold).astype(int)
 
-        tp = np.sum((all_labels == 1) & (binary_preds == 1))
-        fp = np.sum((all_labels == 0) & (binary_preds == 1))
-        fn = np.sum((all_labels == 1) & (binary_preds == 0))
-        tn = np.sum((all_labels == 0) & (binary_preds == 0))
+        tp = np.sum((all_labels_array == 1) & (binary_preds == 1))
+        fp = np.sum((all_labels_array == 0) & (binary_preds == 1))
+        fn = np.sum((all_labels_array == 1) & (binary_preds == 0))
+        tn = np.sum((all_labels_array == 0) & (binary_preds == 0))
 
         sensitivity = tp / (tp + fn) if (tp + fn) > 0 else 0
         specificity = tn / (tn + fp) if (tn + fp) > 0 else 0
@@ -242,8 +242,8 @@ def main():
                 "sensitivity": sensitivity,
                 "specificity": specificity,
                 "threshold": threshold,
-                "total_samples": len(all_preds),
-                "seizure_percentage": float(all_labels.mean()),
+                "total_samples": len(all_preds_array),
+                "seizure_percentage": float(all_labels_array.mean()),
                 "timestamp": datetime.now().isoformat()
             }, f, indent=2)
 
