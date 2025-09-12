@@ -1,0 +1,94 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "SeizureTransformer: Independent Evaluation Framework with NEDC Integration"
+version: 1.0.0
+doi: 10.5281/zenodo.XXXXXXX
+date-released: 2025-09-12
+url: "https://github.com/Clarity-Digital-Twin/SeizureTransformer"
+authors:
+  - family-names: "JJ"
+    given-names: ""
+    affiliation: "Clarity Digital Twin"
+  - family-names: "Claude"
+    given-names: ""
+    affiliation: "Anthropic"
+    orcid: "https://orcid.org/0000-0000-0000-0000"
+keywords:
+  - seizure detection
+  - EEG
+  - deep learning
+  - transformer
+  - TUSZ
+  - NEDC
+  - epilepsy
+  - benchmark
+license: MIT
+repository-code: "https://github.com/Clarity-Digital-Twin/SeizureTransformer"
+references:
+  - type: article
+    authors:
+      - family-names: "Wu"
+        given-names: "Kerui"
+      - family-names: "Siouda"
+        given-names: "Wadii"
+      - family-names: "Park"
+        given-names: "Dongwook"
+      - family-names: "Martinet"
+        given-names: "Laurent"
+      - family-names: "Lagabrielle"
+        given-names: "Elise"
+      - family-names: "Kim"
+        given-names: "Joseph"
+      - family-names: "Al Khoury"
+        given-names: "Antoine"
+      - family-names: "Salazar"
+        given-names: "Diego"
+      - family-names: "Elger"
+        given-names: "Christian"
+      - family-names: "Weber"
+        given-names: "Bernd"
+      - family-names: "Qirko"
+        given-names: "Klajdi"
+      - family-names: "La Rocca"
+        given-names: "Damiano"
+      - family-names: "Pascucci"
+        given-names: "Michele"
+    title: "SeizureTransformer: Versatile Seizure Detection Model for Generalization Across Patients, Datasets, and Seizure Types"
+    year: 2025
+    journal: "arXiv preprint"
+    doi: "10.48550/arXiv.2501.XXXXX"
+  - type: article
+    authors:
+      - family-names: "Shah"
+        given-names: "V."
+      - family-names: "von Weltin"
+        given-names: "E."
+      - family-names: "Lopez"
+        given-names: "S."
+      - family-names: "McHugh"
+        given-names: "J."
+      - family-names: "Veloso"
+        given-names: "L."
+      - family-names: "Golmohammadi"
+        given-names: "M."
+      - family-names: "Obeid"
+        given-names: "I."
+      - family-names: "Picone"
+        given-names: "J."
+    title: "The Temple University Hospital Seizure Detection Corpus"
+    journal: "Frontiers in Neuroinformatics"
+    volume: 12
+    pages: 83
+    year: 2018
+    doi: "10.3389/fninf.2018.00083"
+  - type: software
+    authors:
+      - family-names: "Picone"
+        given-names: "Joseph"
+      - family-names: "Obeid"
+        given-names: "Iyad"
+    title: "NEDC EEG Eval: Neural Engineering Data Consortium EEG Evaluation Suite"
+    version: "6.0.0"
+    year: 2025
+    institution: "Temple University"
+    url: "https://www.isip.piconepress.com/projects/nedc/"
