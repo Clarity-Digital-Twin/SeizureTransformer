@@ -17,14 +17,14 @@ def apply_seizure_transformer_postprocessing(
 ) -> list:
     """
     Apply paper's post-processing pipeline.
-    
+
     Args:
         predictions: Per-sample probabilities at fs Hz
         threshold: Probability threshold (paper uses 0.8)
         morph_kernel_size: Kernel size for morphological ops (paper uses 5)
         min_duration_sec: Minimum event duration in seconds (paper uses 2.0)
         fs: Sampling frequency in Hz
-        
+
     Returns:
         List of (start_sec, end_sec) tuples for seizure events
     """
@@ -57,11 +57,11 @@ def apply_seizure_transformer_postprocessing(
 def binary_mask_to_events(binary_mask: np.ndarray, fs: int = 256) -> list:
     """
     Convert binary mask to list of (start_idx, end_idx) tuples.
-    
+
     Args:
         binary_mask: Binary array (1 = seizure, 0 = background)
         fs: Sampling frequency (for reference, not used in conversion)
-        
+
     Returns:
         List of (start_sample, end_sample) tuples
     """
@@ -84,11 +84,11 @@ def binary_mask_to_events(binary_mask: np.ndarray, fs: int = 256) -> list:
 def merge_nearby_events(events: list, gap_sec: float = 1.0) -> list:
     """
     Merge events that are close together.
-    
+
     Args:
         events: List of (start_sec, end_sec) tuples
         gap_sec: Maximum gap in seconds to merge
-        
+
     Returns:
         Merged list of events
     """

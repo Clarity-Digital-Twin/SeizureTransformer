@@ -16,7 +16,7 @@ import numpy as np
 def create_test_checkpoint(output_file, num_files=5):
     """
     Create a small test checkpoint for pipeline validation.
-    
+
     Args:
         output_file: Path to save test checkpoint
         num_files: Number of test files to include
@@ -70,11 +70,11 @@ def create_test_checkpoint(output_file, num_files=5):
 def validate_conversion(test_checkpoint, output_dir):
     """
     Test the conversion script.
-    
+
     Args:
         test_checkpoint: Path to test checkpoint
         output_dir: Output directory
-        
+
     Returns:
         bool: True if validation passed
     """
@@ -164,7 +164,7 @@ def validate_conversion(test_checkpoint, output_dir):
 def validate_nedc_binary():
     """
     Check if NEDC binary is available.
-    
+
     Returns:
         bool: True if NEDC binary found
     """
@@ -194,7 +194,7 @@ def validate_nedc_binary():
 def run_full_test():
     """
     Run complete pipeline test.
-    
+
     Returns:
         int: Exit code (0 for success)
     """

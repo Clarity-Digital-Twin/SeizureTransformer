@@ -14,7 +14,7 @@ from post_processing import apply_seizure_transformer_postprocessing
 def write_nedc_csv(events, file_path, file_id, duration_sec):
     """
     Write events to NEDC CSV_bi format.
-    
+
     Args:
         events: List of (start_sec, end_sec) tuples
         file_path: Output CSV_bi file path
@@ -39,7 +39,7 @@ def write_nedc_csv(events, file_path, file_id, duration_sec):
 def convert_checkpoint_to_nedc(checkpoint_file, output_dir):
     """
     Convert checkpoint.pkl to NEDC CSV_bi format.
-    
+
     Args:
         checkpoint_file: Path to checkpoint.pkl
         output_dir: Base output directory
@@ -49,10 +49,7 @@ def convert_checkpoint_to_nedc(checkpoint_file, output_dir):
         checkpoint = pickle.load(f)
 
     # Handle both checkpoint formats (with/without "results" key)
-    if 'results' in checkpoint:
-        results = checkpoint['results']
-    else:
-        results = checkpoint
+    results = checkpoint.get('results', checkpoint)
 
     # Create output directories
     hyp_dir = Path(output_dir) / "hyp"
@@ -116,7 +113,7 @@ def convert_checkpoint_to_nedc(checkpoint_file, output_dir):
 def create_list_files(output_dir, file_ids):
     """
     Create ref.list and hyp.list files for NEDC.
-    
+
     Args:
         output_dir: Base output directory
         file_ids: List of processed file IDs

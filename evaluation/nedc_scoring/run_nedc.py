@@ -15,7 +15,7 @@ from pathlib import Path
 def setup_nedc_environment():
     """
     Set up NEDC environment variables.
-    
+
     Returns:
         dict: Environment variables for NEDC
     """
@@ -41,12 +41,12 @@ def setup_nedc_environment():
 def run_conversion(checkpoint_file, output_dir, force=False):
     """
     Convert checkpoint.pkl to NEDC CSV_bi format.
-    
+
     Args:
         checkpoint_file: Path to checkpoint.pkl
         output_dir: Output directory for NEDC files
         force: Overwrite existing output
-        
+
     Returns:
         int: Return code (0 for success)
     """
@@ -90,11 +90,11 @@ def run_conversion(checkpoint_file, output_dir, force=False):
 def run_nedc_scorer(output_dir):
     """
     Run NEDC official scorer on converted files.
-    
+
     Args:
         output_dir: Directory containing NEDC files
         scoring_method: Scoring method (TAES, OVLP, EPOCH, IRA)
-        
+
     Returns:
         int: Return code (0 for success)
     """
@@ -155,7 +155,7 @@ def run_nedc_scorer(output_dir):
 def parse_nedc_output(results_dir):
     """
     Parse and display key metrics from NEDC output.
-    
+
     Args:
         results_dir: Directory containing NEDC results
         scoring_method: The scoring method used
@@ -189,13 +189,13 @@ def parse_nedc_output(results_dir):
 def run_full_pipeline(checkpoint_file, output_dir, force=False):
     """
     Run the complete NEDC evaluation pipeline.
-    
+
     Args:
         checkpoint_file: Path to checkpoint.pkl
         output_dir: Output directory
         scoring_method: NEDC scoring method
         force: Overwrite existing output
-        
+
     Returns:
         int: Return code (0 for success)
     """
@@ -235,15 +235,15 @@ def main():
 Examples:
   # Run full pipeline with default settings
   python evaluation/nedc_scoring/run_nedc.py
-  
+
   # Use specific checkpoint and output
   python evaluation/nedc_scoring/run_nedc.py \\
     --checkpoint evaluation/tusz/checkpoint.pkl \\
     --outdir evaluation/nedc_scoring/output
-  
+
   # Run with different scoring method
   python evaluation/nedc_scoring/run_nedc.py --method OVLP
-  
+
   # Force overwrite existing output
   python evaluation/nedc_scoring/run_nedc.py --force
         """

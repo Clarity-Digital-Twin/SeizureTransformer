@@ -47,7 +47,9 @@
       "Bash(git reset:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(nvidia-smi:*)",
+      "Bash(export:*)"
     ],
     "deny": [],
     "ask": []
