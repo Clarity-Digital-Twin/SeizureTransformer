@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(git submodule:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(git remote remove:*)",
+      "Bash(gh repo create:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []
