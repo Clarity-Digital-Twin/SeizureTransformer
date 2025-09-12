@@ -45,7 +45,10 @@ import tempfile
 # import NEDC modules
 #
 import nedc_debug_tools as ndt
-import tomllib
+try:
+    import tomllib
+except ModuleNotFoundError:
+    import tomli as tomllib
 
 #------------------------------------------------------------------------------
 #
