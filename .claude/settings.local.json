@@ -31,7 +31,9 @@
       "Bash(python:*)",
       "Bash(git rm:*)",
       "Bash(uv pip compile:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(uv sync:*)",
+      "Bash(make test-inference:*)"
     ],
     "deny": [],
     "ask": []
