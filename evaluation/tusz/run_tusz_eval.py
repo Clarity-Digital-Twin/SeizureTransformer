@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
-Evaluate SeizureTransformer on TUSZ eval set.
-Reproduces paper's AUROC of 0.876 on TUSZ evaluation data.
+Bulletproof TUSZ evaluation for SeizureTransformer.
+Saves checkpoints and handles errors gracefully.
 """
 
 import json
+import pickle
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -15,238 +16,244 @@ from sklearn.metrics import roc_auc_score
 from tqdm import tqdm
 
 # Add wu_2025 to path
-sys.path.append(str(Path(__file__).parent.parent / "wu_2025/src"))
+sys.path.append(str(Path(__file__).parent.parent.parent / "wu_2025/src"))
 
 from epilepsy2bids.eeg import Eeg
 from wu_2025.utils import get_dataloader, load_models
 
 
-def load_tusz_eval_data(data_dir="/mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/wu_2025/data/tusz/edf/eval"):
-    """Load TUSZ eval EDF files and labels."""
-    data_path = Path(data_dir)
-    if not data_path.exists():
-        raise FileNotFoundError(f"TUSZ eval data not found at {data_path}")
-
-    # Find all EDF files
-    edf_files = list(data_path.glob("**/*.edf"))
-    print(f"Found {len(edf_files)} EDF files in eval set")
-
-    # Group by subject
-    subjects = {}
-    for edf_path in edf_files:
-        # TUSZ naming: 00000258_s002_t000.edf
-        parts = edf_path.stem.split("_")
-        if len(parts) >= 2:
-            subject_id = parts[0]
-            if subject_id not in subjects:
-                subjects[subject_id] = []
-            subjects[subject_id].append(edf_path)
-
-    print(f"Found {len(subjects)} unique subjects")
-    return subjects
-
-
-def process_edf_file(edf_path, model, device):
-    """Process single EDF file through model."""
+def process_single_file(edf_path, model, device):
+    """Process one EDF file and return (predictions, seq_len) or (None, error)."""
     try:
-        # Load EDF using epilepsy2bids
+        # Load EDF - use simple loadEdf like original
         eeg = Eeg.loadEdf(str(edf_path))
-
-        # Get data and sampling rate
-        data = eeg.data  # Should be (channels, samples)
+        data = eeg.data
         fs = eeg.fs
+        seq_len = data.shape[1]
 
-        # Check channel count
+        # Skip if wrong channel count
         if data.shape[0] != 19:
-            print(f"Warning: {edf_path.name} has {data.shape[0]} channels, expected 19")
-            return None
+            return None, f"Wrong channels: {data.shape[0]}"
 
-        # Get dataloader (handles preprocessing)
+        # Get predictions
         dataloader = get_dataloader(data, fs=fs, batch_size=1)
-
-        # Run inference
         predictions = []
+
         with torch.no_grad():
             for batch in dataloader:
                 batch = batch.to(device)
+                # Model already outputs probabilities (sigmoid inside architecture)
                 output = model(batch)
-                predictions.append(output.cpu().numpy())
+                predictions.append(output.detach().cpu().numpy())
 
-        # Concatenate predictions
         if predictions:
-            predictions = np.concatenate(predictions, axis=0)
-            return predictions
+            # Flatten all predictions
+            predictions = np.concatenate(predictions, axis=0).flatten()
+            # Truncate to original sequence length (mirror OSS utils.predict)
+            predictions = predictions[:seq_len]
+            return (predictions, None)
 
     except Exception as e:
-        print(f"Error processing {edf_path.name}: {e}")
+        return None, str(e)
 
-    return None
+    return None, "Unknown error"
 
 
-def load_labels(edf_path):
-    """Load seizure labels for an EDF file."""
-    # Look for corresponding .tse file (TUSZ seizure annotations)
+def load_labels_for_file(edf_path):
+    """Load ground truth labels from .tse file. Returns list of (start_sec, end_sec)."""
     tse_path = edf_path.with_suffix(".tse")
 
     if not tse_path.exists():
-        # No seizures in this file
-        return []
+        return []  # No seizures in this file
 
-    seizures = []
-    with open(tse_path) as f:
-        for line in f:
-            line = line.strip()
-            if line and not line.startswith("#"):
-                parts = line.split()
-                if len(parts) >= 3:
-                    start = float(parts[0])
-                    end = float(parts[1])
-                    seizures.append((start, end))
-
-    return seizures
-
-
-def compute_metrics(all_predictions, all_labels):
-    """Compute AUROC and other metrics."""
-    # Flatten predictions and labels
-    y_true = []
-    y_pred = []
-
-    for pred, label in zip(all_predictions, all_labels, strict=False):
-        if pred is not None and label is not None:
-            y_pred.extend(pred.flatten())
-            y_true.extend(label.flatten())
-
-    if not y_true or not y_pred:
-        print("No valid predictions to evaluate")
-        return {}
-
-    # Debug: Check lengths
-    print(f"Debug: y_true length: {len(y_true)}, y_pred length: {len(y_pred)}")
-
-    # Ensure same length (truncate to shorter)
-    min_len = min(len(y_true), len(y_pred))
-    y_true = y_true[:min_len]
-    y_pred = y_pred[:min_len]
-
-    # Calculate AUROC
+    seizure_events = []
     try:
-        auroc = roc_auc_score(y_true, y_pred)
+        with open(tse_path) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#"):
+                    parts = line.split()
+                    if len(parts) >= 3:
+                        start = float(parts[0])
+                        end = float(parts[1])
+                        seizure_events.append((start, end))
     except:
-        auroc = 0.0  # Handle single-class case
+        pass
 
-    # Calculate accuracy at threshold 0.8 (paper's threshold)
-    threshold = 0.8
-    y_pred_binary = (np.array(y_pred) > threshold).astype(int)
-    accuracy = np.mean(np.array(y_true) == y_pred_binary)
+    return seizure_events
 
-    # Count seizures and false alarms
-    tp = np.sum((np.array(y_true) == 1) & (y_pred_binary == 1))
-    fp = np.sum((np.array(y_true) == 0) & (y_pred_binary == 1))
-    fn = np.sum((np.array(y_true) == 1) & (y_pred_binary == 0))
-    tn = np.sum((np.array(y_true) == 0) & (y_pred_binary == 0))
 
-    sensitivity = tp / (tp + fn) if (tp + fn) > 0 else 0
-    specificity = tn / (tn + fp) if (tn + fp) > 0 else 0
-
-    return {
-        "auroc": auroc,
-        "accuracy": accuracy,
-        "sensitivity": sensitivity,
-        "specificity": specificity,
-        "tp": tp,
-        "fp": fp,
-        "fn": fn,
-        "tn": tn,
-    }
+def create_binary_labels(seizure_events, duration_samples, fs=256):
+    """Convert seizure events in seconds to per-sample binary array at fs Hz."""
+    labels = np.zeros(duration_samples, dtype=int)
+    if seizure_events:
+        for start_sec, end_sec in seizure_events:
+            start_idx = int(start_sec * fs)
+            end_idx = min(int(end_sec * fs), duration_samples)
+            if start_idx < duration_samples:
+                labels[start_idx:end_idx] = 1
+    return labels
 
 
 def main():
-    """Run evaluation on TUSZ eval set."""
+    """Run bulletproof evaluation."""
     print("=" * 60)
-    print("SeizureTransformer TUSZ Evaluation")
+    print("SeizureTransformer TUSZ Evaluation v2 (Bulletproof)")
     print("=" * 60)
 
     # Setup
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    print(f"Using device: {device}")
+    print(f"Device: {device}")
 
     # Load model
     print("\nLoading model...")
     model = load_models(device)
     model.eval()
-    print("Model loaded successfully")
+    print("✅ Model loaded")
 
-    # Load TUSZ eval data
-    print("\nLoading TUSZ eval data...")
-    try:
-        subjects = load_tusz_eval_data()
-    except FileNotFoundError as e:
-        print(f"Error: {e}")
-        print("\nPlease ensure TUSZ eval data is at:")
-        print("/mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/wu_2025/data/tusz/edf/eval")
-        return
+    # Find TUSZ eval files
+    data_dir = Path("wu_2025/data/tusz/edf/eval")
+    edf_files = sorted(data_dir.glob("**/*.edf"))
+    print(f"\n✅ Found {len(edf_files)} EDF files")
 
-    # Process each file
-    all_predictions = []
-    all_labels = []
+    # Checkpoint file
+    checkpoint_file = Path("evaluation/tusz/checkpoint.pkl")
 
-    print(f"\nProcessing {sum(len(files) for files in subjects.values())} files...")
+    # Load checkpoint if exists
+    if checkpoint_file.exists():
+        print("\n📂 Loading checkpoint...")
+        with open(checkpoint_file, "rb") as f:
+            checkpoint = pickle.load(f)
+        results = checkpoint["results"]
+        start_idx = checkpoint["next_idx"]
+        print(f"   Resuming from file {start_idx}/{len(edf_files)}")
+    else:
+        results = {}
+        start_idx = 0
 
-    for _subject_id, edf_files in tqdm(subjects.items(), desc="Subjects"):
-        for edf_path in edf_files:
-            # Get predictions
-            predictions = process_edf_file(edf_path, model, device)
+    # Process files
+    print("\nProcessing files...")
+    for idx in tqdm(range(start_idx, len(edf_files)), initial=start_idx, total=len(edf_files)):
+        edf_path = edf_files[idx]
+        file_id = edf_path.stem
 
-            if predictions is not None:
-                # Get labels
-                seizures = load_labels(edf_path)
+        # Skip if already processed
+        if file_id in results:
+            continue
 
-                # Create binary label array
-                # Assuming 256Hz and predictions are per-second
-                duration_seconds = predictions.shape[-1]
-                labels = np.zeros(duration_seconds)
+        # Process file
+        predictions, error = process_single_file(edf_path, model, device)
 
-                for start, end in seizures:
-                    start_idx = int(start)
-                    end_idx = int(end)
-                    if start_idx < duration_seconds:
-                        labels[start_idx:min(end_idx, duration_seconds)] = 1
+        # Load labels
+        seizure_events = load_labels_for_file(edf_path)
 
-                all_predictions.append(predictions)
-                all_labels.append(labels)
+        # Store result
+        results[file_id] = {
+            "predictions": predictions,
+            "seizure_events": seizure_events,
+            "error": error
+        }
 
-    # Compute metrics
+        # Save checkpoint every 10 files
+        if idx % 10 == 0:
+            with open(checkpoint_file, "wb") as f:
+                pickle.dump({
+                    "results": results,
+                    "next_idx": idx + 1
+                }, f)
+
+    # Save final checkpoint
+    with open(checkpoint_file, "wb") as f:
+        pickle.dump({
+            "results": results,
+            "next_idx": len(edf_files)
+        }, f)
+
     print("\n" + "=" * 60)
-    print("EVALUATION RESULTS")
+    print("COMPUTING METRICS")
     print("=" * 60)
 
-    metrics = compute_metrics(all_predictions, all_labels)
+    # Collect all predictions and labels
+    all_preds = []
+    all_labels = []
 
-    if metrics:
-        print(f"\nAUROC: {metrics['auroc']:.4f}")
-        print("(Paper reports: 0.876)")
-        print(f"\nAccuracy @ 0.8 threshold: {metrics['accuracy']:.4f}")
-        print(f"Sensitivity: {metrics['sensitivity']:.4f}")
-        print(f"Specificity: {metrics['specificity']:.4f}")
+    for _file_id, result in results.items():
+        if result["predictions"] is not None and result["seizure_events"] is not None:
+            preds = result["predictions"]
 
-        print("\nConfusion Matrix:")
-        print(f"  TP: {metrics['tp']:,}")
-        print(f"  FP: {metrics['fp']:,}")
-        print(f"  FN: {metrics['fn']:,}")
-        print(f"  TN: {metrics['tn']:,}")
+            # Create binary labels
+            duration = len(preds)  # samples at 256 Hz
+            labels = create_binary_labels(result["seizure_events"], duration, fs=256)
+
+            # Ensure same length
+            min_len = min(len(preds), len(labels))
+            preds = preds[:min_len]
+            labels = labels[:min_len]
+
+            all_preds.extend(preds)
+            all_labels.extend(labels)
+
+    # Calculate metrics
+    auroc = None
+    if all_preds and all_labels:
+        all_preds = np.array(all_preds)
+        all_labels = np.array(all_labels)
+
+        print("\n📊 Data Statistics:")
+        print(f"   Total samples: {len(all_preds):,}")
+        print(f"   Seizure samples: {all_labels.sum():,} ({100*all_labels.mean():.1f}%)")
+        print(f"   Non-seizure samples: {(1-all_labels).sum():,}")
+
+        # AUROC
+        try:
+            auroc = roc_auc_score(all_labels, all_preds)
+            print(f"\n🎯 AUROC: {auroc:.4f}")
+            print("   Paper claims: 0.876")
+
+            if auroc > 0.85:
+                print("   ✅ Close to paper results!")
+            else:
+                print("   ⚠️ Lower than expected")
+        except Exception as e:
+            print(f"   Could not calculate AUROC: {e}")
+
+        # Threshold metrics
+        threshold = 0.8
+        binary_preds = (all_preds > threshold).astype(int)
+
+        tp = np.sum((all_labels == 1) & (binary_preds == 1))
+        fp = np.sum((all_labels == 0) & (binary_preds == 1))
+        fn = np.sum((all_labels == 1) & (binary_preds == 0))
+        tn = np.sum((all_labels == 0) & (binary_preds == 0))
+
+        sensitivity = tp / (tp + fn) if (tp + fn) > 0 else 0
+        specificity = tn / (tn + fp) if (tn + fp) > 0 else 0
+
+        print(f"\n📈 At threshold {threshold}:")
+        print(f"   Sensitivity: {sensitivity:.3f}")
+        print(f"   Specificity: {specificity:.3f}")
 
         # Save results
-        results_path = Path("evaluation/results")
-        results_path.mkdir(exist_ok=True)
-
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        results_file = results_path / f"tusz_eval_{timestamp}.json"
-
+        results_file = Path("evaluation/tusz/results.json")
         with open(results_file, "w") as f:
-            json.dump(metrics, f, indent=2)
+            json.dump({
+                "auroc": (float(auroc) if auroc is not None else None),
+                "sensitivity": sensitivity,
+                "specificity": specificity,
+                "threshold": threshold,
+                "total_samples": len(all_preds),
+                "seizure_percentage": float(all_labels.mean()),
+                "timestamp": datetime.now().isoformat()
+            }, f, indent=2)
 
-        print(f"\nResults saved to: {results_file}")
+        print(f"\n✅ Results saved to {results_file}")
+    else:
+        print("\n❌ No valid predictions to evaluate")
+
+    # Clean up checkpoint
+    if checkpoint_file.exists():
+        checkpoint_file.rename(checkpoint_file.with_suffix(".pkl.complete"))
+        print("\n🧹 Checkpoint saved as .complete")
 
 
 if __name__ == "__main__":
