@@ -29,28 +29,33 @@ class SeizurePreprocessor:
         self.fs = fs
         self.lowcut = 0.5
         self.highcut = 120
-        # Pre-compute filter coefficients
-        self.notch_1_b, self.notch_1_a = iirnotch(1, Q=30, fs=fs)
-        self.notch_60_b, self.notch_60_a = iirnotch(60, Q=30, fs=fs)
+        # Pre-compute filter coefficients (ALWAYS for 256Hz after resampling)
+        self.notch_1_b, self.notch_1_a = iirnotch(1, Q=30, fs=256)
+        self.notch_60_b, self.notch_60_a = iirnotch(60, Q=30, fs=256)
     
-    def preprocess(self, eeg: np.ndarray) -> np.ndarray:
-        """Apply OSS preprocessing pipeline.
+    def preprocess(self, eeg: np.ndarray, fs_original: int) -> np.ndarray:
+        """Apply OSS preprocessing pipeline (EXACT order from implementation).
         
-        1. Z-score normalization
+        NOTE: Preprocessing happens in TWO stages:
+        1. In get_dataloader: Z-score normalization + Resampling
+        2. In preprocess_clip: Bandpass + Notch filters
+        
+        Order:
+        1. Z-score normalization (per-channel, computed over the entire recording before windowing)
         2. Resample to 256Hz if needed
-        3. Bandpass filter (0.5-120Hz)
+        3. Bandpass filter (0.5-120Hz, order=3, using lfilter not filtfilt)
         4. Notch filters (1Hz, 60Hz)
         """
-        # Z-score normalize
+        # Z-score normalize (per-channel over full sequence, not window-wise)
         eeg = (eeg - np.mean(eeg, axis=1, keepdims=True)) / np.std(eeg, axis=1, keepdims=True)
         
         # Resample if needed
-        if self.fs != 256:
-            new_n_samples = int(eeg.shape[1] * 256.0 / self.fs)
+        if fs_original != 256:
+            new_n_samples = int(eeg.shape[1] * 256.0 / fs_original)
             eeg = resample(eeg, new_n_samples, axis=1)
         
-        # Bandpass filter
-        eeg = self.butter_bandpass_filter(eeg)
+        # Bandpass filter (order=3 specifically, causal filtering)
+        eeg = self.butter_bandpass_filter(eeg, order=3)
         
         # Notch filters
         eeg = lfilter(self.notch_1_b, self.notch_1_a, eeg)
@@ -77,6 +82,9 @@ class TUSZDetectionDataset:
         
     def __getitem__(self, idx):
         # Load raw EDF
+        # NOTE (OSS parity): The reference implementation uses
+        # epilepsy2bids.Eeg.loadEdfAutoDetectMontage and asserts UNIPOLAR montage.
+        # If using MNE here, enforce equivalent constraints and 19-channel referential data.
         raw = mne.io.read_raw_edf(edf_path, preload=True)
         
         # CRITICAL: Check montage
@@ -88,7 +96,8 @@ class TUSZDetectionDataset:
         data = raw.get_data()  # (channels, samples)
         
         # Apply preprocessing
-        data = self.preprocessor.preprocess(data)
+        fs_original = int(raw.info['sfreq'])  # source sampling rate
+        data = self.preprocessor.preprocess(data, fs_original=fs_original)
         
         # Window extraction...
         return torch.from_numpy(data), label
@@ -167,12 +176,13 @@ class SeizureTransformerWrapper:
         self.model.eval()
         
         # Initialize processors
-        self.preprocessor = SeizurePreprocessor(fs=256)
-        self.postprocessor = SeizurePostProcessor()
+        self.preprocessor = SeizurePreprocessor(fs=256)  # Note: fs param ignored for notch filters
+        self.postprocessor = SeizurePostProcessor()  # All params hardcoded
     
     def predict(
         self,
         eeg: np.ndarray,
+        fs_original: int,
         apply_preprocessing: bool = True,
         apply_postprocessing: bool = True,
     ) -> np.ndarray:
@@ -180,10 +190,10 @@ class SeizureTransformerWrapper:
         
         # Preprocessing
         if apply_preprocessing:
-            eeg = self.preprocessor.preprocess(eeg)
+            eeg = self.preprocessor.preprocess(eeg, fs_original=fs_original)
         
         # Sliding windows with proper overlap
-        windows = self._create_windows(eeg)  # 60s @ 256Hz, 0% overlap for inference
+        windows = self._create_windows(eeg)  # 60s @ 256Hz (15360 samples), 0% overlap for inference
         
         # Model inference
         predictions = []
@@ -225,7 +235,8 @@ def train():
         cfg=WindowConfig(
             fs=256,
             window_sec=60.0,
-            stride_sec=60.0,  # No overlap for training (OSS style)
+            stride_sec=15.0,  # 75% overlap for training (from paper)
+            # For inference: stride_sec=60.0 (0% overlap)
         ),
         preprocessor=preprocessor,
         ensure_unipolar=True,
@@ -238,6 +249,21 @@ def train():
         drop_rate=0.1,
     )
     
+    # Training parameters (from paper Page 3):
+    # - Optimizer: RAdam
+    # - Learning rate: 1e-3
+    # - Weight decay: 2e-5
+    # - Batch size: 256
+    # - Drop rate: 0.1
+    # - Loss: Binary Cross-Entropy
+    # - Early stopping: 12 epochs patience
+    # - Max epochs: 100
+    # 
+    # Data balancing (from paper):
+    # D = Dps ∪ D*fs ∪ D*ns where:
+    # - |D*fs| = 0.3 × |Dps| (30% of partial-seizure windows)
+    # - |D*ns| = 2.5 × |Dps| (250% of partial-seizure windows)
+    
     # Training loop...
 ```
 
@@ -247,10 +273,10 @@ def train():
 
 ```mermaid
 graph TD
-    A[TUSZ EDF Files<br/>Unipolar Montage] --> B[MNE Raw Object]
+    A[TUSZ EDF Files<br/>Unipolar Montage] --> B[Epilepsy2BIDS Eeg Object]
     B --> C[Check Montage<br/>Assert Unipolar]
-    C --> D[Channel Mapping<br/>T3→T7, etc.]
-    D --> E[Z-score Normalize]
+    C --> D[Channel Handling<br/>19 channels required; no name remap in OSS]
+    D --> E[Z-score Normalize<br/>(per-channel over full recording)]
     E --> F[Resample to 256Hz]
     F --> G[Bandpass 0.5-120Hz]
     G --> H[Notch 1Hz, 60Hz]
@@ -260,7 +286,7 @@ graph TD
     K --> L[Threshold 0.8]
     L --> M[Morphological Ops]
     M --> N[Remove <2s Events]
-    N --> O[NEDC Metrics]
+    N --> O[Metrics (proposed)]
 ```
 
 ---
@@ -272,21 +298,28 @@ graph TD
 - ✅ RIGHT: `from brain_go_brrr.infra.ml_models.seizure_transformer import SeizureTransformer`
 
 ### 2. **COMPLETE PREPROCESSING**
-- Z-score normalization FIRST
+- Z-score normalization FIRST (per-channel, not global)
 - Resample to 256Hz if needed
-- Bandpass filter (0.5-120Hz)
-- Notch filters (1Hz, 60Hz)
+- Bandpass filter (0.5-120Hz, order=3, using lfilter for causal filtering)
+- Notch filters (1Hz, 60Hz - hardcoded, no 50Hz option)
 
 ### 3. **MONTAGE VALIDATION**
 - MUST check for unipolar/referential montage
 - Reject bipolar montages or convert them
 
-### 4. **EXACT OSS POST-PROCESSING**
-- Threshold: 0.8 (not configurable)
-- Morphological kernel sizes: 5
-- Min event duration: 2 seconds
+### 3.1. **Data Requirements (OSS exact)**
+- Montage: Unipolar only. The OSS code asserts `Eeg.Montage.UNIPOLAR` and aborts otherwise.
+- Channels: Exactly 19 channels required by the model input assertion; OSS does not enforce specific channel names, only shape `(19, 15360)`.
+- Sampling rate: Any input fs is resampled to 256 Hz internally; notch filters are computed at 256 Hz.
+- Missing channels: No handling in OSS; upstream loader must deliver 19-channel unipolar data.
 
-### 5. **CLINICAL METRICS**
+### 4. **EXACT OSS POST-PROCESSING**
+- Threshold: 0.8 (hardcoded in utils.py:101)
+- Morphological kernel sizes: 5 (both opening and closing)
+- Min event duration: 2.0 seconds
+- All parameters are HARDCODED - not configurable
+
+### 5. **CLINICAL METRICS** (Proposed — not in OSS repo)
 ```python
 # src/brain_go_brrr/infra/eval/nedc_metrics.py
 
@@ -297,9 +330,10 @@ class NEDCEvaluator:
         # AUROC
         auroc = roc_auc_score(y_true, y_pred)
         
-        # False alarms per 24 hours
-        false_alarms = np.sum((y_pred == 1) & (y_true == 0))
-        fa_per_24h = (false_alarms / patient_hours) * 24
+        # False alarms per 24 hours (event-based recommended)
+        # NOTE: Implement FA/24h on merged event segments after post-processing,
+        # not per-sample counts. Placeholder below for structure only.
+        fa_per_24h = self._events_per_24h(y_true, y_pred, patient_hours)
         
         # TAES (Time-Aligned Event Scoring)
         taes_score = self._calculate_taes(y_true, y_pred)
@@ -329,23 +363,62 @@ class NEDCEvaluator:
 
 ---
 
+## 🧠 Model Architecture Details (OSS exact)
+
+- Input: `(batch, 19, 15360)`; forward asserts exact shape.
+- Encoder: 1D Conv + MaxPool x len(filters)
+  - Filters: `[32, 64, 128, 256, 512]`
+  - Kernel sizes: `[11, 9, 7, 7, 5, 5, 3]` (applied per stage; see code mapping)
+  - Activation: `ELU` in encoder blocks
+  - Pre-pool padding: if odd length, right-pad with `-1e10` before `MaxPool1d(2)`
+- ResCNN stack: kernels `[3, 3, 3, 3, 2, 3, 2]`
+  - Blocks use `BatchNorm1d(eps=1e-3)` + `ReLU` + `SpatialDropout1d(drop_rate)` + Conv
+  - For `ker == 2`, manual right padding is applied to emulate TF padding
+- Transformer encoder:
+  - `d_model=512`, `nhead=4`, `dim_feedforward=2048`, `num_layers=8`
+  - Positional encoding: sinusoidal, `dropout=0.1`, `max_len=6000`
+- Decoder: Nearest-neighbor upsample x stages with skip additions from encoder
+- Output: `Conv1d(in=self.filters[0], out=1, kernel_size=11, padding=5)` + `sigmoid`
+- Dropout: `drop_rate=0.1` used in ResCNN `SpatialDropout1d`; positional dropout is fixed at 0.1
+- Init: No custom initialization beyond PyTorch defaults
+- Skips: Added (not concatenated)
+
+Code reference: `wu_2025/src/wu_2025/architecture.py` (all details above verified).
+
+---
+
+## 📦 Dependencies & Weights (from OSS)
+
+- Python: `>=3.10`
+- Packages: `numpy>=1.25`, `scipy>=1.14.1`, `torch>=2.0.1`, `epilepsy2bids>=0.0.6`
+- Weights: Place `model.pth` in `wu_2025/src/wu_2025/` (loaded by `utils.load_models`) 
+
+---
+
+---
+
 ## 📈 Expected Results
 
 With correct implementation:
-- AUROC: 0.876 (matching paper)
+- AUROC: 0.876 (matching paper Figure 3)
 - FA/24h: ≤5 at 90% sensitivity
-- Processing: ~2 batches/second on V100
+- Processing: 3.98 seconds per 1-hour EEG (from paper Table II)
 - Convergence: ~20 epochs
+- Inference batch size: 512 (main.py:17)
+- Training batch size: 256 (from paper)
 
 ---
 
 ## ⚠️ Critical Success Factors
 
-1. **Unipolar montage** - Model ONLY works with referential EEG
-2. **Exact preprocessing** - Order matters: normalize → resample → filter
-3. **Window alignment** - 60s windows, no overlap for inference
-4. **Post-processing params** - Must match OSS exactly
-5. **Channel order** - 19 standard channels in correct order
+1. **Unipolar montage** - Model REQUIRES unipolar (will assert error if bipolar)
+2. **Exact preprocessing** - Order matters: normalize → resample → bandpass → notch
+3. **Window alignment** - 60s windows (15360 samples), 0% overlap for inference, 75% for training
+4. **Post-processing params** - All hardcoded: threshold=0.8, kernel=5, min_duration=2.0s
+5. **Channel requirements** - EXACTLY 19 channels, hardcoded in architecture
+6. **Sampling rate** - Auto-resamples to 256Hz, not configurable
+7. **Filter details** - Butterworth order=3, uses lfilter (causal) not filtfilt
+8. **Padding strategy** - Zero-padding at END for windows < 15360 samples
 
 ---
 
@@ -372,6 +445,7 @@ uv remove wu_2025
 ### Phase 4: Add Preprocessing
 - Implement in dataset or wrapper
 - Ensure EXACT order from OSS
+- Note: Preprocessing split between get_dataloader and preprocess_clip functions
 
 ### Phase 5: Validate
 - Train for 1 epoch

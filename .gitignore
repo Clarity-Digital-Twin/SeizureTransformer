@@ -1,3 +1,36 @@
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Data and models - NEVER commit these
+/data/
+data/
+*.pth
+*.pt
+*.ckpt
+*.h5
+*.pkl
+*.pickle
+
+# Dataset files
+*.edf
+*.csv
+*.tsv
+*.mat
+
+# Specific paths
 /wu_2025/src/wu_2025/__pycache__
 wu_2025/src/wu_2025/model.pth
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
