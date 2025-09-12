@@ -33,7 +33,14 @@
       "Bash(uv pip compile:*)",
       "WebSearch",
       "Bash(uv sync:*)",
-      "Bash(make test-inference:*)"
+      "Bash(make test-inference:*)",
+      "Bash(. .venv/bin/activate)",
+      "Bash(tar:*)",
+      "Bash(cat:*)",
+      "Bash(pip install:*)",
+      "Bash(tmux kill-session:*)",
+      "Bash(tmux list-sessions:*)",
+      "Bash(tmux attach:*)"
     ],
     "deny": [],
     "ask": []

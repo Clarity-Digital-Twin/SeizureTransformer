@@ -46,9 +46,13 @@ clean:
 	find . -type f -name "*.pyc" -delete
 
 # Run evaluation
-run-eval:
+run-eval-tusz:
 	@echo "Running TUSZ evaluation..."
-	. .venv/bin/activate && python evaluation/run_tusz_eval.py
+	. .venv/bin/activate && python evaluation/tusz/run_tusz_eval.py
+
+run-eval-nedc:
+	@echo "Running NEDC official evaluation..."
+	. .venv/bin/activate && python evaluation/nedc/run_nedc_eval.py
 
 # Quick inference test
 test-inference:

@@ -8,6 +8,7 @@ __pycache__/
 # Data and models - NEVER commit these
 wu_2025/data/
 wu_2025/src/wu_2025/model.pth
+wu_2025/src/wu_2025/model*.pth
 *.pth
 *.pt
 *.ckpt
@@ -44,6 +45,9 @@ env/
 nedc_eeg_eval_v6.0.0.tar.gz
 nedc_eeg_eval_v6.0.0/
 nedc_eval/
+
+# Reference repositories (external tools)
+reference_repos/
 
 # Literature and papers (private)
 literature/
