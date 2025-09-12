@@ -26,7 +26,8 @@
       "Bash(pip3:*)",
       "Bash(uv venv:*)",
       "Bash(source:*)",
-      "Bash(uv pip install:*)"
+      "Bash(uv pip install:*)",
+      "Bash(python test:*)"
     ],
     "deny": [],
     "ask": []

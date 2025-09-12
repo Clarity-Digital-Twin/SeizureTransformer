@@ -34,3 +34,13 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# NEDC evaluation tools
+nedc_eeg_eval_v6.0.0.tar.gz
+nedc_eeg_eval_v6.0.0/
+nedc_eval/
