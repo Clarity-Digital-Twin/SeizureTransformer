@@ -1,25 +1,89 @@
-# SeizureTransformer
-Preprint: https://arxiv.org/abs/2504.00336
+# SeizureTransformer - Private Development Fork
 
-## Abstract
-We introduce a novel deep-learning architecture for simultaneous seizure detection that departs from traditional window-level classification methods. Instead of assigning a single label to segmented windows, our approach utilizes a deep encoder, comprising 1D convolutions, Network-in-Network modules, residual connections, and a transformer encoder with global attention, to process raw EEG signals in the time domain. This design produces high-level representations that capture rich temporal dependencies at each time step. A streamlined decoder then converts these features into a sequence of probabilities, directly indicating the presence or absence of seizures at every time step. By operating at the time-step level, our method avoids the need for complex post-processing to map window labels to events and eliminates redundant overlapping inferences, thereby enhancing the model’s efficiency and accuracy. Extensive experiments on a public EEG seizure detection dataset demonstrate that our model significantly outperforms existing approaches, underscoring its potential for real-time, precise seizure detection.
+This is a private development fork of [SeizureTransformer](https://github.com/keruiwu/SeizureTransformer) for testing, evaluation, and potential contributions.
 
-## Docker Image
+## Repository Structure
+
+```
+.
+├── wu_2025/           # ORIGINAL CODE (untouched) - from upstream
+├── scripts/           # Utility scripts (data download, etc.)
+├── tests/            # Test suite for validation
+├── evaluation/       # NEDC evaluation tools and metrics
+├── docs/            # Additional documentation
+└── literature/      # Paper references (gitignored)
+```
+
+## Quick Start
+
+### 1. Environment Setup
 ```bash
-docker pull yujjio/seizure_transformer
+# Create virtual environment
+uv venv
+source .venv/bin/activate
+
+# Install original package
+uv pip install ./wu_2025
 ```
 
-## Implementation Instruction
-1. Download the model's weight from [here](https://drive.google.com/drive/folders/17pKhwFc4x1_2zwXTndKawoNKlaXIW-VE?usp=sharing)
-2. Put the weight file in **wu_2025/src/wu_2025**
+### 2. Run Inference
+```bash
+# Run on single EDF file
+python -m wu_2025 input.edf output.tsv
 
-## Reference
-If you find our model useful, please cite our paper:
+# Test inference works
+python tests/test_inference.py
 ```
-@article{wu2025seizuretransformer,
-  title={SeizureTransformer: Scaling U-Net with Transformer for Simultaneous Time-Step Level Seizure Detection from Long EEG Recordings},
-  author={Wu, Kerui and Zhao, Ziyue and Yener, B{\"u}lent},
-  journal={arXiv preprint arXiv:2504.00336},
-  year={2025}
-}
+
+### 3. Data Setup
+```bash
+# Download Siena dataset (if needed)
+bash scripts/download_siena.sh
+
+# TUSZ dataset must be obtained separately
 ```
+
+## Development Workflow
+
+### For Local Development
+- Add new features in `scripts/`, `tests/`, or `evaluation/`
+- DO NOT modify anything in `wu_2025/` directory
+- Document changes in `docs/`
+
+### For Contributing Back
+1. Create feature branch from public fork
+2. Cherry-pick clean commits (no private data)
+3. Submit PR from public fork to upstream
+
+## Key Files
+
+- `wu_2025/src/wu_2025/model.pth` - Pretrained weights (168MB)
+- `docs/IDEAL_REFERENCE_SEIZURE_TRANSFORMER_DATAFLOW.md` - Implementation guide
+- `evaluation/nedc_eeg_eval_v6.0.0.tar.gz` - NEDC evaluation tools
+
+## Git Remotes
+
+- `origin` - Our private repo (Clarity-Digital-Twin/SeizureTransformer)
+- `upstream` - Original repo (keruiwu/SeizureTransformer)
+- `fork` - Public fork for PRs (Clarity-Digital-Twin/SeizureTransformer-Fork)
+
+## Testing
+
+```bash
+# Run all tests
+pytest tests/
+
+# Run specific test
+python tests/test_inference.py
+```
+
+## Notes
+
+- Model requires exactly 19 channels, unipolar montage
+- Preprocessing: z-score → resample 256Hz → bandpass 0.5-120Hz → notch 1,60Hz
+- Post-processing: threshold 0.8 → morphological ops → remove <2s events
+
+## License
+
+Original code: MIT License (see wu_2025/LICENSE)
+Our additions: MIT License
