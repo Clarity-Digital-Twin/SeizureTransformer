@@ -26,6 +26,7 @@ make run-eval-nedc
 - Uses Temple/NEDC's official TAES scoring
 - Provides standardized metrics for comparison
 - Includes FA/24h and sensitivity metrics
+ - See `NEDC_INTEGRATION_PLAN.md` for exact steps (SSOT)
 
 ## Data Requirements
 - TUSZ eval set at: `/data/tusz_1_5_2/edf/eval/`

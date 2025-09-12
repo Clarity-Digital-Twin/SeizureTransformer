@@ -59,7 +59,8 @@ bash scripts/download_siena.sh
 
 - `wu_2025/src/wu_2025/model.pth` - Pretrained weights (168MB)
 - `docs/IDEAL_REFERENCE_SEIZURE_TRANSFORMER_DATAFLOW.md` - Implementation guide
-- `evaluation/nedc_eeg_eval_v6.0.0.tar.gz` - NEDC evaluation tools
+- `evaluation/nedc_eeg_eval/v6.0.0/` - NEDC evaluation tools (in-repo)
+  - See `NEDC_INTEGRATION_PLAN.md` for end-to-end usage
 
 ## Git Remotes
 

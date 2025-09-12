@@ -51,8 +51,8 @@ run-eval-tusz:
 	. .venv/bin/activate && python evaluation/tusz/run_tusz_eval.py
 
 run-eval-nedc:
-	@echo "Running NEDC official evaluation..."
-	. .venv/bin/activate && python evaluation/nedc/run_nedc_eval.py
+    @echo "Running NEDC official evaluation..."
+    . .venv/bin/activate && python evaluation/nedc_scoring/run_nedc_scoring.py
 
 # Quick inference test
 test-inference:

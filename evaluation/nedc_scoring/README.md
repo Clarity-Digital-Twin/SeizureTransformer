@@ -9,9 +9,10 @@ evaluation/
 ├── nedc_eeg_eval/         # Official NEDC software from Temple (v6.0.0)
 │   └── v6.0.0/           # Unmodified NEDC tools
 ├── nedc_scoring/          # Our integration scripts
-│   ├── convert_to_csv.py # Convert SeizureTransformer output to NEDC format
-│   ├── run_scoring.py     # Run NEDC evaluation
-│   └── parse_results.py   # Parse NEDC output for metrics
+│   ├── convert_predictions.py  # Convert checkpoint to NEDC CSV (ref/hyp)
+│   ├── create_lists.py         # Generate ref.list / hyp.list (abs paths)
+│   ├── post_processing.py      # Threshold + morph ops + eventization
+│   └── run_nedc.py             # Run NEDC scorer and parse outputs
 └── tusz/                  # TUSZ-specific evaluation
 ```
 
@@ -25,16 +26,23 @@ evaluation/
 ## Usage
 
 ```bash
-# After running TUSZ evaluation
-python evaluation/nedc_scoring/convert_to_csv.py
+# 1) After running TUSZ evaluation (produces evaluation/tusz/checkpoint.pkl)
+python evaluation/nedc_scoring/convert_predictions.py \
+  --checkpoint evaluation/tusz/checkpoint.pkl \
+  --outdir evaluation/nedc_scoring/output
 
-# Run official NEDC scoring
-python evaluation/nedc_scoring/run_scoring.py
+# 2) Environment for NEDC tools
+export NEDC_NFC=$(pwd)/evaluation/nedc_eeg_eval/v6.0.0
+export PATH=$NEDC_NFC/bin:$PATH
+export PYTHONPATH=$NEDC_NFC/lib:$PYTHONPATH
 
-# Results will show:
-# - TAES Sensitivity
-# - False Alarms/24h
-# - Other NEDC metrics
+# 3) Run official NEDC scoring
+python evaluation/nedc_scoring/run_nedc.py
+
+# Results include:
+# - TAES Sensitivity / F1
+# - False Alarms per 24h
+# - Overlap and Epoch summaries
 ```
 
 ## Why Two Directories?

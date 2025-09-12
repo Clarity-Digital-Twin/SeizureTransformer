@@ -2,14 +2,18 @@
 """
 Wrapper for NEDC official scoring tools.
 Converts SeizureTransformer output to NEDC format and runs scoring.
+
+Note: This is a thin wrapper around the in-repo NEDC v6.0.0 tools
+located under `evaluation/nedc_eeg_eval/v6.0.0`.
 """
 
 import subprocess
+import os
 from pathlib import Path
 
-# Point to NEDC tools in reference_repos
-NEDC_PATH = Path(__file__).parent.parent.parent / "reference_repos/nedc/nedc_eeg_eval/v6.0.0"
-NEDC_SCRIPT = NEDC_PATH / "src/nedc_eeg_eval/nedc_eeg_eval.py"
+# Point to in-repo NEDC tools
+NEDC_PATH = Path(__file__).parent.parent / "nedc_eeg_eval/v6.0.0"
+NEDC_BIN = NEDC_PATH / "bin/nedc_eeg_eval"
 
 def convert_to_nedc_format(predictions, output_dir):
     """Convert model predictions to NEDC hypothesis format."""
@@ -17,15 +21,18 @@ def convert_to_nedc_format(predictions, output_dir):
     # start_time end_time label confidence
     pass
 
-def run_nedc_scoring(ref_file, hyp_file):
+def run_nedc_scoring(ref_file, hyp_file, outdir: Path | None = None):
     """Run NEDC scoring tool."""
-    cmd = [
-        "python", str(NEDC_SCRIPT),
-        "-r", ref_file,  # Reference annotations
-        "-h", hyp_file,  # Hypothesis predictions
-    ]
+    cmd = [str(NEDC_BIN), ref_file, hyp_file]
+    if outdir is not None:
+        cmd.extend(["-o", str(outdir)])
 
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    env = os.environ.copy()
+    env.setdefault("NEDC_NFC", str(NEDC_PATH))
+    env["PATH"] = f"{NEDC_PATH / 'bin'}:{env.get('PATH','')}"
+    env["PYTHONPATH"] = f"{NEDC_PATH / 'lib'}:{env.get('PYTHONPATH','')}"
+
+    result = subprocess.run(cmd, capture_output=True, text=True, env=env)
     return result.stdout
 
 def parse_nedc_output(output):

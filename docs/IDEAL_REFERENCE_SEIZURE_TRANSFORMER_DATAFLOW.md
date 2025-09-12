@@ -254,6 +254,8 @@ class SeizureTransformerWrapper:
         return y_pred
 ```
 
+> Note: For canonical NEDC integration steps and commands, see NEDC_INTEGRATION_PLAN.md (SSOT).
+
 ### 6. TRAINING SCRIPT (Clean Import)
 ```python
 # experiments/seizure_transformer/train_tusz.py

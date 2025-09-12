@@ -67,24 +67,25 @@ NEDC needs:
 ### The Conversion Process
 
 ```python
-# SeizureTransformer output (per-second probabilities)
+# SeizureTransformer output (per-sample probabilities @256 Hz)
 probabilities = [0.1, 0.2, 0.9, 0.95, 0.88, 0.3, 0.1, ...]
 
-# Step 1: Apply threshold (paper uses 0.8)
+# Step 1: Downsample/aggregate to per-second (if needed) or operate per-sample
+# Step 2: Apply threshold (paper uses 0.8)
 binary = probabilities > 0.8  # [0, 0, 1, 1, 1, 0, 0, ...]
 
-# Step 2: Post-process (morphological operations)
+# Step 3: Post-process (morphological operations)
 # - Opening (kernel=5): Remove small false positives
 # - Closing (kernel=5): Fill small gaps
 # - Remove events < 2 seconds
 
-# Step 3: Convert to events
+# Step 4: Convert to events (seconds)
 events = [
     {"start": 2.0, "stop": 5.0, "label": "seiz"},
     {"start": 45.0, "stop": 67.0, "label": "seiz"}
 ]
 
-# Step 4: Write NEDC CSV format
+# Step 5: Write NEDC CSV format
 ```
 
 ## Why Use NEDC for SeizureTransformer?
@@ -103,28 +104,37 @@ events = [
 
 ## Implementation Strategy for Our Fork
 
-### Option 1: Direct NEDC Integration (Complex)
+### Option 1: Direct NEDC Integration (Canonical)
 ```bash
-# Convert SeizureTransformer output to CSV
-python convert_to_nedc.py
+# Convert SeizureTransformer output to NEDC CSV
+python evaluation/nedc_scoring/convert_predictions.py \
+  --checkpoint evaluation/tusz/checkpoint.pkl \
+  --outdir evaluation/nedc_scoring/output
 
-# Run NEDC scoring
-./reference_repos/nedc/bin/nedc_eeg_eval ref.list hyp.list
+# Environment for NEDC tools (in-repo)
+export NEDC_NFC=$(pwd)/evaluation/nedc_eeg_eval/v6.0.0
+export PATH=$NEDC_NFC/bin:$PATH
+export PYTHONPATH=$NEDC_NFC/lib:$PYTHONPATH
+
+# Run NEDC scoring (lists contain absolute paths)
+nedc_eeg_eval \
+  evaluation/nedc_scoring/output/lists/ref.list \
+  evaluation/nedc_scoring/output/lists/hyp.list \
+  -o evaluation/nedc_scoring/output/results
 ```
 
 ### Option 2: Extract Key Metrics (Simpler)
 ```python
 # evaluation/nedc/simple_metrics.py
 def calculate_metrics(predictions, labels):
-    # Implement core TAES logic
-    # Calculate sensitivity, FA/24h
-    # No dependency on NEDC codebase
+    # Implement simplified event metrics if NEDC is not required
+    # Calculate sensitivity, FA/24h, AUROC
 ```
 
 ## Current Status
-- **TUSZ Evaluation Running**: 49% complete (21/43 subjects)
-- **Next Step**: After TUSZ completes, we'll have predictions to convert to NEDC format
-- **Decision Needed**: Full NEDC integration vs. simplified metrics extraction
+- TUSZ evaluation produces per-sample probabilities and event labels
+- Predictions are stored in `evaluation/tusz/checkpoint.pkl`
+- Full NEDC integration is the chosen path (see NEDC_INTEGRATION_PLAN.md)
 
 ## Key Insight
 NEDC is NOT just for SeizureTransformer - it's Temple's universal seizure detection scoring system. Any seizure detection model (CNN, RNN, Transformer) can be evaluated with NEDC if you convert outputs to their event format.
