@@ -42,7 +42,8 @@
       "Bash(tmux list-sessions:*)",
       "Bash(tmux attach:*)",
       "Bash(tee:*)",
-      "Bash(ruff check:*)"
+      "Bash(ruff check:*)",
+      "Bash(mypy:*)"
     ],
     "deny": [],
     "ask": []
