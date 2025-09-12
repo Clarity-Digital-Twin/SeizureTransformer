@@ -1,133 +1,207 @@
-# NEDC Integration Plan for SeizureTransformer
+# NEDC Integration Plan for SeizureTransformer (Full Implementation)
 
-## Current Situation
-- **Running**: TUSZ evaluation at 49% (ETA: ~15 minutes)
-- **Output**: Will produce per-second seizure probabilities
-- **Goal**: Use NEDC to get standardized metrics
+## Decision: Full NEDC Software Integration ✅
 
-## Implementation Decision Tree
+We've committed to **full NEDC integration** rather than simplified metrics. This provides:
+- Official TAES scores for publication
+- Temple/NEDC certification compatibility
+- Direct comparison with other TUSZ systems
+- Industry-standard evaluation pipeline
 
-### Critical Question: Do We Need Full NEDC?
+## Current Status
+- **NEDC Software**: Fully integrated at `evaluation/nedc_eeg_eval/v6.0.0/`
+- **TUSZ Evaluation**: Running (18% complete, ETA ~15 minutes)
+- **Next Step**: Build complete pipeline from SeizureTransformer → NEDC
 
-**YES if:**
-- Publishing paper comparing to other TUSZ systems
-- Need exact TAES scores for comparison
-- Want Temple/NEDC certification
+## Complete Pipeline Architecture
 
-**NO if:**
-- Just verifying model works
-- Internal evaluation only  
-- Don't need exact TAES implementation
-
-## Recommended Approach: Hybrid Solution
-
-### Phase 1: Simple Metrics (Today)
-```python
-# evaluation/metrics/seizure_metrics.py
-def calculate_simple_metrics(predictions, labels):
-    """
-    Calculate basic metrics without NEDC dependency
-    """
-    # Sensitivity/Specificity
-    # False Alarms per 24h
-    # AUROC (already in our script)
-    return metrics
+```
+SeizureTransformer → Predictions → CSV Converter → NEDC Scorer → Results
+     (Model)         (Checkpoint)    (Pipeline)      (TAES)     (Metrics)
 ```
 
-### Phase 2: NEDC Format Export (Optional)
+## Implementation Components
+
+### 1. Prediction Storage (✅ Complete)
 ```python
-# evaluation/converters/to_nedc_format.py
-def export_nedc_csv(predictions, output_dir):
+# evaluation/tusz/checkpoint.pkl
+{
+    "file_id": {
+        "predictions": [0.1, 0.9, 0.8, ...],  # Per-sample probabilities
+        "seizure_events": [(42.3, 81.7), ...], # Ground truth
+        "error": None
+    }
+}
+```
+
+### 2. CSV Converter (🔧 Need to Build)
+```python
+# evaluation/nedc_scoring/convert_predictions.py
+def convert_to_nedc_csv(checkpoint_file, output_dir):
     """
-    Convert SeizureTransformer output to NEDC CSV
+    Convert SeizureTransformer predictions to NEDC CSV format
+    
+    Input: checkpoint.pkl with predictions
+    Output: 
+      - output/hyp/*.csv_bi (predictions)
+      - output/ref/*.csv_bi (ground truth)
     """
-    # Apply threshold and post-processing
+    # Apply threshold (0.8)
+    # Post-processing (morphological ops)
     # Convert to events
-    # Write CSV files
+    # Write NEDC CSV format
 ```
 
-### Phase 3: Full NEDC Integration (If Needed)
-```bash
-# Only if publishing/comparing
-./reference_repos/nedc/bin/nedc_eeg_eval \
-    data/tusz_ref.list \
-    output/tusz_hyp.list
-```
-
-## What We Actually Need
-
-### For Paper Replication
-- **AUROC**: ✅ Already calculating
-- **Sensitivity**: ⚠️ Need to add
-- **FA/24h**: ⚠️ Need to add
-
-### For Clinical Use
-- **FA/24h < 10**: Critical threshold
-- **Sensitivity > 80%**: Minimum useful
-- **Latency**: How fast to detect onset
-
-## Implementation Steps
-
-### Step 1: Finish Current Evaluation
-```bash
-# Wait for completion
-tmux attach -t seizure_eval
-```
-
-### Step 2: Add Simple Metrics
+### 3. List File Generator (🔧 Need to Build)
 ```python
-# After line 190 in run_tusz_eval.py
-def calculate_event_metrics(predictions, labels, threshold=0.8):
+# evaluation/nedc_scoring/create_lists.py
+def create_list_files(csv_dir):
+    """
+    Create ref.list and hyp.list for NEDC
+    """
+    # Generate absolute paths to CSV files
+    # Write to ref.list and hyp.list
+```
+
+### 4. NEDC Runner (🔧 Need to Build)
+```python
+# evaluation/nedc_scoring/run_nedc.py
+def run_full_nedc_evaluation():
+    """
+    Execute complete NEDC pipeline
+    """
+    # 1. Convert predictions to CSV
+    # 2. Create list files
+    # 3. Set NEDC environment
+    # 4. Run NEDC scorer
+    # 5. Parse results
+    return {
+        "taes_sensitivity": 0.823,
+        "taes_fa_per_24h": 7.2,
+        "taes_f1": 0.765
+    }
+```
+
+### 5. Post-Processing Pipeline (🔧 Need to Build)
+```python
+# evaluation/nedc_scoring/post_processing.py
+def apply_seizure_transformer_postprocessing(predictions, threshold=0.8):
+    """
+    Apply paper's post-processing:
+    1. Threshold at 0.8
+    2. Morphological opening (kernel=5)
+    3. Morphological closing (kernel=5)
+    4. Remove events < 2 seconds
+    """
+    binary = predictions > threshold
+    # Apply morphological ops
     # Convert to events
-    # Calculate overlaps
-    # Return sensitivity, FA/24h
+    return events
 ```
 
-### Step 3: Document Results
-```markdown
-## Results
-- AUROC: 0.XXX (Paper: 0.876)
-- Sensitivity: XX% 
-- FA/24h: XX
-```
+## File Structure (Current)
 
-## File Structure Decision
-
-### Keep It Simple
 ```
 evaluation/
 ├── tusz/
-│   ├── run_tusz_eval.py      # Current script
-│   └── results/               # AUROC, etc.
-├── nedc/
-│   ├── convert_to_nedc.py    # Format converter
-│   └── run_nedc_scoring.py   # Wrapper (if needed)
-└── metrics/
-    └── event_metrics.py       # Our implementation
+│   ├── run_tusz_eval.py         # ✅ Running now
+│   ├── checkpoint.pkl           # ✅ Saves predictions
+│   └── results.json             # ✅ AUROC metrics
+├── nedc_eeg_eval/
+│   └── v6.0.0/                  # ✅ Full NEDC software
+├── nedc_scoring/
+│   ├── convert_predictions.py   # 🔧 TODO: Build converter
+│   ├── create_lists.py          # 🔧 TODO: List generator
+│   ├── post_processing.py       # 🔧 TODO: Post-processor
+│   └── run_nedc.py             # 🔧 TODO: Main runner
 ```
 
-### Don't Overthink
-- NEDC is powerful but complex (1695 lines for TAES alone)
-- Start with simple metrics
-- Add NEDC only if required for publication
+## Implementation Timeline
 
-## Action Items
+### Phase 1: Get AUROC (Today) ✅
+1. Complete TUSZ evaluation (~10 min remaining)
+2. Verify AUROC ≈ 0.876
 
-### Immediate (After TUSZ Completes)
-1. ✅ Check if AUROC ≈ 0.876
-2. ⚠️ Calculate sensitivity and FA/24h
-3. ⚠️ Document performance
+### Phase 2: Build Pipeline (Next) 🔧
+1. Create CSV converter
+2. Implement post-processing
+3. Generate list files
+4. Test NEDC execution
 
-### Later (If Publishing)
-1. Convert outputs to NEDC format
-2. Run official NEDC scoring
-3. Compare with other published systems
+### Phase 3: Full Integration 🎯
+1. Run complete pipeline
+2. Get official TAES scores
+3. Compare with paper's metrics
 
-## Bottom Line
+## NEDC CSV Format Reference
 
-**For now**: Focus on getting basic metrics working. NEDC is overkill unless you're:
-1. Publishing results
-2. Comparing to competition entries
-3. Need Temple/NEDC certification
+**Hypothesis (Model Output):**
+```csv
+# version = csv_v1.0.0
+# bname = aaaaaaaq_s006_t000
+# duration = 1800.0000 secs
+channel,start_time,stop_time,label,confidence
+TERM,45.0000,82.0000,seiz,1.0000
+TERM,134.0000,161.0000,seiz,1.0000
+```
 
-**Simple is better**: Can always add NEDC later if needed. The hard part (running inference) is already happening!
+**Reference (Ground Truth):**
+```csv
+# version = csv_v1.0.0
+# bname = aaaaaaaq_s006_t000
+# duration = 1800.0000 secs
+channel,start_time,stop_time,label,confidence
+TERM,42.2786,81.7760,seiz,1.0000
+TERM,133.8040,162.1105,seiz,1.0000
+```
+
+## Environment Setup for NEDC
+
+```bash
+# Set environment variables
+export NEDC_NFC=/path/to/evaluation/nedc_eeg_eval/v6.0.0
+export PATH=$NEDC_NFC/bin:$PATH
+export PYTHONPATH=$NEDC_NFC/lib:$PYTHONPATH
+
+# Run NEDC scorer
+python $NEDC_NFC/src/nedc_eeg_eval/nedc_eeg_eval.py \
+    output/ref.list \
+    output/hyp.list
+```
+
+## Expected Output from NEDC
+
+```
+TAES Metrics:
+  Sensitivity: 0.823 (82.3%)
+  False Alarms/24h: 7.2
+  F1 Score: 0.765
+  
+OVLP Metrics:
+  Overlap ratio: 0.791
+  
+EPOCH Metrics:
+  Epoch accuracy: 0.884
+```
+
+## Success Criteria
+
+1. **AUROC**: Should be ~0.876 (paper's claim)
+2. **TAES Sensitivity**: Should be >80%
+3. **FA/24h**: Should be <10 for clinical use
+4. **Pipeline**: Fully automated, reproducible
+
+## Next Actions
+
+1. ✅ Let TUSZ evaluation complete
+2. 🔧 Build CSV converter
+3. 🔧 Implement post-processing
+4. 🔧 Create NEDC runner
+5. 🎯 Get official TAES scores
+
+## Notes
+
+- We chose full NEDC integration for publication-quality results
+- The pipeline must exactly match the paper's preprocessing
+- All components should be in `evaluation/nedc_scoring/`
+- Keep NEDC software pristine in `nedc_eeg_eval/`
