@@ -109,14 +109,25 @@ AUROC:           0.9021
 
 ## 📚 Documentation
 
-| Document | Description |
-|----------|-------------|
-| [EVALUATION_RESULTS.md](EVALUATION_RESULTS.md) | Complete evaluation results with analysis |
-| [TESTING_AND_VALIDATION.md](TESTING_AND_VALIDATION.md) | Reproducibility report & validation |
-| [EPILEPSY_BENCH_SUBMISSION.md](EPILEPSY_BENCH_SUBMISSION.md) | Benchmark submission format |
-| [NOTE_TO_EPILEPSY_BENCH.md](NOTE_TO_EPILEPSY_BENCH.md) | Request for policy clarification |
-| [NEDC_INTEGRATION_PLAN.md](NEDC_INTEGRATION_PLAN.md) | NEDC pipeline documentation |
-| [ACKNOWLEDGMENTS.md](ACKNOWLEDGMENTS.md) | Credits and citations |
+### Core Documents
+- [README.md](README.md) - This file, project overview
+- [ACKNOWLEDGMENTS.md](ACKNOWLEDGMENTS.md) - Credits and citations
+- [CLAUDE.md](CLAUDE.md) - AI assistant guidance (for contributors)
+- [CITATION.cff](CITATION.cff) - Structured citation metadata
+
+### Evaluation Results
+- [Complete Results](docs/evaluation/EVALUATION_RESULTS.md) - Full evaluation with analysis
+- [Validation Report](docs/evaluation/TESTING_AND_VALIDATION.md) - Reproducibility & validation
+
+### Technical Documentation
+- [NEDC Integration](docs/technical/NEDC_INTEGRATION_PLAN.md) - NEDC pipeline setup
+- [Architecture Guide](docs/technical/IDEAL_REFERENCE_SEIZURE_TRANSFORMER_DATAFLOW.md) - Model dataflow
+- [NEDC Understanding](docs/technical/NEDC_EVALUATION_UNDERSTANDING.md) - Scoring metrics explained
+- [Repository Structure](docs/technical/REPO_STRUCTURE_PLAN.md) - Project organization
+
+### Benchmark Submissions
+- [Epilepsy Bench Submission](docs/submissions/EPILEPSY_BENCH_SUBMISSION.md) - SzCORE format
+- [Policy Clarification Request](docs/submissions/NOTE_TO_EPILEPSY_BENCH.md) - TUH reporting policy
 
 ## 🔬 Technical Details
 
