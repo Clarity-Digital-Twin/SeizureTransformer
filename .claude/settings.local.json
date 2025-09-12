@@ -28,7 +28,8 @@
       "Bash(source:*)",
       "Bash(uv pip install:*)",
       "Bash(python test:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(git rm:*)"
     ],
     "deny": [],
     "ask": []

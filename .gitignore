@@ -44,3 +44,8 @@ env/
 nedc_eeg_eval_v6.0.0.tar.gz
 nedc_eeg_eval_v6.0.0/
 nedc_eval/
+
+# Literature and papers (private)
+literature/
+*.pdf
+*.PDF
