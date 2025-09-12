@@ -1,0 +1,95 @@
+head	1.3;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.3
+date	2025.08.23.05.19.49;	author tup91526;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2025.07.23.05.07.32;	author tup91526;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2025.07.23.03.59.31;	author tup91526;	state Exp;
+branches;
+next	;
+
+
+desc
+@setup makefile version control
+@
+
+
+1.3
+log
+@updated to final version for v6.0.0
+@
+text
+@#!/bin/bash
+#
+# file: $(NEDF_NFC)/src/Makefile.sh
+#
+# This file makes the python classes.
+#
+
+# important definitions
+#
+PROGRAM_NAME="Makefile.sh";
+
+# make sure the environment is set properly
+#
+if (test -z "$NEDC_NFC") then
+   echo "<$PROGRAM_NAME>:" "\$NEC_NFC is not properly set" "[$NEDC_NFC]";
+   exit 1
+fi
+
+# build the stable libraries
+#
+cd nedc_eeg_eval; make install; cd ../
+cd nedc_eeg_eval_demo; make install; cd ../
+
+#
+# end of file
+@
+
+
+1.2
+log
+@first version
+@
+text
+@a20 3
+cd nedc_eeg_resnet_decode; make install; cd ../
+cd nedc_eeg_resnet_train; make install; cd ../
+cd nedc_eeg_resnet_demo; make install; cd ../
+d22 1
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d3 1
+a3 1
+# file: $(NEDF_NFC)/class/python/Makefile.sh
+d21 4
+a24 10
+cd nedc_dpath_ann_tools; make install; cd ../
+cd nedc_dpath_eval_tools; make install; cd ../
+cd nedc_edf_tools; make install; cd ../
+cd nedc_eeg_ann_tools; make install; cd ../
+cd nedc_eeg_eval_tools; make install; cd ../
+cd nedc_image_tools; make install; cd ../
+cd nedc_ml_tools; make install; cd ../
+cd nedc_qml_tools; make install; cd ../
+cd nedc_sys_tools; make install; cd ../
+cd nedc_wfdb_tools; make install; cd ../
+@

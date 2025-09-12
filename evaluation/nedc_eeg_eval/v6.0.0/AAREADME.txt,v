@@ -1,0 +1,921 @@
+head	1.13;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.13
+date	2025.08.24.22.32.59;	author tup91526;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2025.08.24.20.30.53;	author picone;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2025.08.23.05.18.50;	author tup91526;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2024.08.10.16.39.42;	author picone;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2024.08.10.16.34.34;	author picone;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2022.04.24.00.35.43;	author picone;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2022.04.19.01.09.24;	author picone;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2020.08.19.08.22.08;	author picone;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2020.08.19.08.14.30;	author tug70217;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2020.05.28.01.49.25;	author picone;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2020.04.17.12.08.43;	author picone;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2020.04.17.00.56.51;	author picone;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2020.03.29.01.34.32;	author picone;	state Exp;
+branches;
+next	;
+
+
+desc
+@initial version.
+@
+
+
+1.13
+log
+@updated to add info about demo
+@
+text
+@File: $NEDC_NFC/AAREADME.txt
+Package: nedc_eeg_eval
+Version: 6.0.0
+
+-------------------------------------------------------------------------------
+Change Log:
+
+(20250807) (DH): updated for v6.0.0 release
+(20240810) (JP): updated the tool for the new libraries
+(20240528) (BL): removed the competition interface and changed name
+(20220418) (JP): updated support for the ann tools library
+(20200817) (LV): updated for new version of nedc_eeg_eval
+(20200515) (JP): added check for duplicate and overlapping hypotheses
+(20200417) (JP): made optional parameters work properly
+(20200328) (JP): initial version
+-------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+Summary:
+-------------------------------------------------------------------------------
+
+This package contains the standard version of our scoring
+software. Starting with v5.0.0, we included support for csv and xml
+files that contain annotation information. Note that starting with
+v4.0.0, NIST integration was obsoleted as it became too difficult for
+people to install and manage the NIST scoring software.
+
+This software is designed to score system output from machine learning
+systems that operate on sequential data. To learn more about the
+theory behind how we score seizure detection systems, please refer to
+this document:
+
+ V. Shah, M. Golmohammadi, I. Obeid, and J. Picone, “Objective
+ Evaluation Metrics for Automatic Classification of EEG Events,” in
+ Signal Processing in Medicine and Biology: Emerging Trends in
+ Research and Applications, 1st ed., I. Obeid, I. Selesnick, and
+ J. Picone, Eds. New York City, New York, USA: Springer, 2021,
+ pp. 1–26.
+ URL: https://www.isip.piconepress.com/publications/unpublished/book_sections/2021/springer/metrics/
+
+--------------------------------------------------------------------------------
+INSTALLATION REQUIREMENTS
+--------------------------------------------------------------------------------
+
+Python code unfortunately often depends on a large number of add-ons, making
+it very challenging to port code into new environments. This tool has been
+tested extensively on Windows and Mac machines running Python v3.9.x.
+
+Software tools required include:
+
+ o Numpy (2.0.2): https://numpy.org/
+ o SciPy (1.14.1): https://scipy.org/
+ o lxml (5.3.0): https://lxml.de/
+ o toml (0.10.2): https://pypi.org/project/toml/
+
+There is a requirements.txt included in the release that helps you automate
+the process of updating your environment.
+
+C. USER'S GUIDE
+
+C.1. WINDOWS USERS
+
+For Window users, we recommend users install Anaconda in order to run
+a bash emulator.
+
+Through the Anaconda prompt, create a new environment and specify the proper
+python version:
+
+ $ conda create -n <my_environment_name> python=3.9
+
+Install a bash emulator that will allow running the annotation tool:
+
+ $ conda install m2-base
+
+Install the required packages:
+
+ $ conda install numpy
+ $ conda install lxml
+ $ conda install scipy
+ $ conda install toml
+ 
+Once the software has been installed, you need to do the following things if
+you want to run this from any directory:
+
+ - set the environment variable NEDC_NFC to the root directory
+   of the installation:
+
+   for WINDOWS CMD:
+    $ set NEDC_NFC=<my_install_location>/nedc_eeg_eval/v6.0.0
+   for WINDOWS POWERSHELL:
+    $ $env:NEDC_NFC = "<my_install_location>/nedc_eeg_eval/v6.0.0"
+
+ - put $NEDC_NFC\bin in your path:
+
+   for WINDOWS CMD:
+    $ set PATH=%NEDC_NFC%\bin;%PATH%
+    $ set PATH=%NEDC_NFC%\lib;%PATH%
+
+   for WINDOWS POWERSHELL:
+    $ $env:PATH = "$env:NEDC_NFC\bin;$env:PATH"
+    $ $env:PATH = "$env:NEDC_NFC\lib;$env:PATH"
+
+Afterwards you must make the bin directory by changing your current working
+directory to $NEDC_NFC/src, and then run the Makefile, i.e. "sh Makefile.sh".
+
+You should be able to type:
+
+ $ which nedc_eeg_eval
+ 
+and see the command. Then you can simply type:
+
+ $ nedc_eeg_eval
+
+The easiest way to run this is to change your current working directory
+to the root directory of the installation and execute the tool as follows:
+
+ $ cd <my_install_location>
+ $ ./bin/nedc_eeg_eval ./data/lists/ref.list ./data/lists/hyp.list
+
+C.2. LINUX/MAC USERS
+
+For Mac users, since Mac OS X 10.8 comes with Python 2.7, you may
+need to utilize pip3 when attempting to install dependencies:
+
+ pip3 install numpy
+ pip3 install lxml
+ pip3 install scipy
+ pip3 install toml
+ 
+Once the software has been installed, you need to do the following things if
+you want to run this from any directory:
+
+ - set the environment variable NEDC_NFC to the root directory
+   of the installation:
+
+   $ export NEDC_NFC='<my_install_location>/nedc_eeg_eval/v6.0.0'
+
+ - put $NEDC_NFC/bin in your path:
+
+   $ export PATH=$NEDC_NFC/bin:$PATH
+   $ export PYTHONPATH=$NEDC_NFC/lib:$PYTHONPATH
+
+Afterwards you must make the bin directory by changing your current working
+directory to $NEDC_NFC/src, and then run sh on the Makefile, i.e. "sh Makefile.sh".
+
+You should be able to type:
+
+ $ which nedc_eeg_eval
+
+and see the command. Then you can simply type:
+
+ $ nedc_eeg_eval --help
+
+------------------------------------------------------------------------------
+Running NEDC EEG Eval:
+------------------------------------------------------------------------------
+
+The easiest way to run this is to change your current working directory
+to the root directory of the installation and execute the tool as follows:
+
+ cd <my_install_location>
+ ./bin/nedc_eeg_eval ./data/lists/ref.list ./data/lists/hyp.list
+
+The output scoring files will be located in a directory called output.
+
+The file output/summary.txt contains an extremely detailed analysis of the
+performance of your system. The output directory also contains per-file
+output so you can better understand the performance on individual files.
+All this is described in the above publication.
+
+Other than a difference in some header information, these two files should
+be identical. A typical output that you might see is:
+
+ nedc_000_[1]: diff answers/summary.txt output/summary.txt 
+ 4,5c4,5
+ <  File: answers/summary.txt
+ <  Date: Mon Aug 17 13:14:48 2020
+ ---
+ >  File: output/summary.txt
+ >  Date: Tue Aug 18 11:27:08 2020
+ 476c476
+ < NEDC EEG Eval Successfully Completed on Mon Aug 17 13:14:49 2020
+ ---
+ > NEDC EEG Eval Successfully Completed on Tue Aug 18 11:27:13 2020
+
+This means everything ran fine and the only differences are the date and
+location of the file.
+
+------------------------------------------------------------------------------
+Input Files:
+------------------------------------------------------------------------------
+
+STANDARD VERSION:
+
+ The file "ref.list" represents a list of reference annotation files. 
+ The format for these files is straightforward:
+
+ nedc_000_[1]: more data/ref/00000258_s001_t000.csv 
+ # version = csv_v1.0.0
+ # bname = 00000258_s001_t000
+ # duration = 1750.0000 secs
+ # map file: /data/isip/tools/master/nfc/lib/nedc_eas_default_montage.txt
+ # annotation label file: /data/isip/tools/master/nfc/lib/default_map.txt
+ #
+ channel,start_time,stop_time,label,confidence
+ TERM,0.0000,14.3320,bckg,1.0000
+ TERM,14.3320,163.0320,seiz,1.0000
+ TERM,163.0320,251.9720,bckg,1.0000
+ TERM,251.9720,317.4720,seiz,1.0000
+ TERM,317.4720,481.7640,bckg,1.0000
+ TERM,481.7640,598.1640,seiz,1.0000
+ TERM,598.1640,710.8280,bckg,1.0000
+ TERM,710.8280,878.3280,seiz,1.0000
+ TERM,878.3280,1077.0480,bckg,1.0000
+ TERM,1077.0480,1315.0480,seiz,1.0000
+ TERM,1315.0480,1590.5840,bckg,1.0000
+ TERM,1590.5840,1679.8840,seiz,1.0000
+ TERM,1679.8840,1750.0000,bckg,1.0000
+
+ "TERM" can be ignored - it refers to the type of annotation (TERM means
+ the annotation applies to all channels).
+
+ The next two fields are the start and stop time in seconds of the event. The
+ next field is the event label followed by a confidence.
+
+ The hypothesis files listed in hyp.list have the same format, but the
+ information contained in them should be generated by your system that you
+ are evaluating.
+
+ Note that starting with v5.0.0 you only need to provide
+ non-background events. We fill in the gaps with an event designated
+ as background.
+
+DEMO VERSION:
+
+ nedc_eeg_eval_demo runs nedc_eeg_eval on a list hypothesis and reference csv_bi
+ annotation files found within the data directory. It then compares the output
+ directory to archived results that comes with nedc_eeg_eval v6.0.0 to ensure
+ there are no differences. The hypothesis and reference files the demo uses are
+ located here:
+
+  $NEDC_NFC/data/csv/hyp
+  $NEDC_NFC/data/csv/hyp
+
+ The hypothesis and reference file lists the demo uses as input is located here:
+
+  $NEDC_NFC/data/lists/hyp.list
+  $NEDC_NFC/data/lists/csv.list
+
+ The hyp.list and csv.list files contents can be changed if necessary, but the
+ paths of these list files can not change unless you edit the demo. To change
+ the paths of the hypothesis and reference list files open the following file
+ in a text editor:
+ 
+  $NEDC_NFC/scr/nedc_eeg_eval_demo/nedc_eeg_eval_demo.sh
+ 
+ And change the following variables to the new wanted path:
+
+  # set ref and hyp list variables
+  # 
+  HYP_LIST="$LIST_DIR/hyp.list"
+  REF_LIST="$LIST_DIR/ref.list"
+
+ And make install to bin. Additionally, you can disable the output verification
+ by commenting out all lines below line 61 by placing a "#" symbol at the begining
+ of each line. And again make install to bin to see the changes.
+
+OTHER IMPORTANT NOTES:
+
+ This scoring software can be configured to do multiclass scoring. Instead of
+ having only two events (bckg and seiz), you can edit the parameter file
+ in the source directory (nedc_eeg_eval_params_v00.txt) to describe whatever
+ classes you wish to score.
+
+If you have any additional comments or questions about this software,
+please direct them to help@@nedcdata.org. We will do our best to answer
+your questions promptly.
+
+Best regards,
+
+Joseph Picone
+@
+
+
+1.12
+log
+@some small changes.
+@
+text
+@d236 31
+a266 1
+ [... explain how to use nedc_eeg_eval_demo ...]
+@
+
+
+1.11
+log
+@updated to final version for v6.0.0 release
+@
+text
+@d1 1
+a1 1
+File: nedc_eeg_eval/v6.0.0/_AAREADME.txt
+d136 1
+a136 1
+    $ export NEDC_NFC='<my_install_location>/nedc_eeg_eval/v6.0.0'
+d138 1
+a138 1
+    - put $NEDC_NFC/bin in your path:
+d140 2
+a141 3
+    $ export PATH=$NEDC_NFC/bin:$PATH
+
+    $ export PYTHONPATH=$NEDC_NFC/lib:$PYTHONPATH
+d152 5
+a156 1
+ $ nedc_eeg_eval
+a163 6
+------------------------------------------------------------------------------
+Running NEDC EEG Eval:
+------------------------------------------------------------------------------
+
+<TBD>
+
+a170 2
+<TBD>
+  
+d233 4
+@
+
+
+1.10
+log
+@updated.
+@
+text
+@d8 1
+d40 120
+@
+
+
+1.9
+log
+@updated.
+@
+text
+@d8 1
+d22 4
+a25 4
+software. v5.0.0 includes support for csv and xml files that contain
+annotation information. Note that starting with v4.0.0, NIST integration
+was obsoleted as it became too difficult for people to install and manage
+the NIST scoring software.
+a39 17
+This software can be retrieved from the following URL:
+
+ https://www.isip.piconepress.com/projects/tuh_eeg/downloads/nedc_eeg_eval/
+
+You will be prompted for a username and password that you received when you
+registered on our web site. If you have not registered, please go here:
+
+ https://www.isip.piconepress.com/projects/tuh_eeg/html/downloads.shtml
+
+and follow the instructions for registration. It is an automatic process and
+you will receive the username and password immediately.
+
+To install this software, download the tar file at the above URL, and
+untar it:
+
+ tar xvfz nedc_eeg_eval.v5.0.0.tar.gz
+
+d41 1
+a41 1
+Running NEDC Eval EEG:
+d44 1
+a44 38
+This software requires Python 3 and is written entirely in Python.
+The software can be run in two ways: standard (supports all
+NEDC annotation file formats), competition (supports a single csv file
+containing all the annotations (used for the Neureka 2020 Epilepsy Challenge).
+
+There is no installation of this software needed. Download and unpack
+the software into a directory whose full pathname is <root>.
+
+Edit this file: <root>/bin/nedc_eeg_eval
+
+Change this line:
+
+ NEDC_NFC=/data/isip/tools/master/nfc/util/python/nedc_eeg_eval/v5.0.0;
+
+to the full pathname of your installation directory.
+
+You can, of course, put the bin directory in your path. You can get information
+about the available options by executing the script with the "--help" option:
+
+ ../../bin/nedc_eeg_eval --help
+
+After editing the driver script, Then go to the test directory:
+
+ cd <root>/src/test/00
+
+and execute the following command:
+
+ ../../bin/nedc_eeg_eval ref.list hyp.list
+
+If it ran successfully, you will see this output:
+
+ nedc_000_[1]: ../scripts/nedc_eeg_eval.py ref.txt hyp.txt 
+  ... creating the output directory ...
+  ... executing NEDC DP Alignment scoring ...
+  ... executing NEDC Epoch scoring ...
+  ... executing NEDC Overlap scoring ...
+  ... executing NEDC Time-Aligned Event scoring ...
+  ... done ...
+d53 1
+a53 4
+To confirm that	your test was successful, run the following command in the
+test case directory:
+
+ diff answers/summary.txt output/summary.txt
+d114 3
+a116 21
+ Note that with v5.0.0 you only need to provide non-background events. We
+ fill in the gaps with an event designated as background.
+
+COMPETITION VERSION:
+
+ You can also store all your hypotheses in one file. This is what we call
+ the competition format. This was used in the Neureka 2020 Epilepsy Challenge.
+ The single reference file contains entries of the form:
+  
+  00000258_s002_t000  0.0000 20.0000 bckg 1.0000
+  00000258_s002_t002  0.0000 15.9375 bckg 1.0000
+  00000258_s002_t002  15.9375 136.4375 seiz 1.0000
+  00000258_s002_t002  136.4375 272.0000 bckg 1.0000
+  ...
+
+  The tag is a unique identifier for each EEG file (the basename). The
+  next two fields are the start and stop times of the event respectively.
+  The next field is one of two values: "bckg" or "seiz". The latter is used
+  to identify a seizure event. The last field is a confidence value.
+
+  The hypothesis file follows the same format.
+@
+
+
+1.8
+log
+@updated.
+@
+text
+@d1 3
+a3 3
+File: nedc_eval_eeg_v5.0.0/_AAREADME.txt
+Package: nedc_eval_eeg
+Version: 5.0.0
+d8 1
+d10 1
+a10 1
+(20200817) (LV): updated for new version of nedc_eval_eeg
+d41 1
+a41 1
+ https://www.isip.piconepress.com/projects/tuh_eeg/downloads/nedc_eval_eeg/
+d54 1
+a54 1
+ tar xvfz nedc_eval_eeg.v5.0.0.tar.gz
+d68 1
+a68 1
+Edit this file: <root>/bin/nedc_eval_eeg
+d72 1
+a72 1
+ NEDC_NFC=/data/isip/tools/master/nfc/util/python/nedc_eval_eeg/v5.0.0;
+d79 1
+a79 1
+ ../../bin/nedc_eval_eeg --help
+d87 1
+a87 1
+ ../../bin/nedc_eval_eeg ref.list hyp.list
+d91 1
+a91 1
+ nedc_000_[1]: ../scripts/nedc_eval_eeg.py ref.txt hyp.txt 
+d196 1
+a196 1
+ in the source directory (nedc_eval_eeg_params_v00.txt) to describe whatever
+@
+
+
+1.7
+log
+@updated.
+@
+text
+@d60 3
+a62 1
+The software can be run in three different ways:
+d64 2
+a65 1
+ (1) Standard
+d67 1
+a67 1
+     This version does not require any external software.
+d69 1
+a69 1
+     Test case: test_01_release_no_nist/
+d71 1
+a71 4
+ (2) Competition
+ 
+     This version is simplified for academic research competitions and requires
+     a different input file format.
+d73 1
+a73 1
+     Test case: test_02_comp_no_nist/
+d75 2
+a76 2
+To run the software, simply use the run_ scripts under our test case
+directories. For example:
+d78 1
+a78 2
+ cd nedc_eval_eeg_v4.0.0/test_00_release
+ sh run.sh
+d80 1
+a80 2
+The scoring software should display this information to the command line
+if it ran successfully:
+d82 17
+a98 7
+  nedc_000_[1]: ../scripts/nedc_eval_eeg.py ref.txt hyp.txt 
+   ... creating the output directory ...
+   ... executing NEDC DP Alignment scoring ...
+   ... executing NEDC Epoch scoring ...
+   ... executing NEDC Overlap scoring ...
+   ... executing NEDC Time-Aligned Event scoring ...
+   ... done ...
+d125 3
+d132 1
+a132 32
+Standard versions
+
+  The file "ref.list" represents a list of reference annotation files. 
+  The format for these files is straightforward. They contain the file
+  name and .tse file version. After the "data starts here" delimeter
+  is the start and stop time of an event, the label, and confidence value
+  respectively:
+
+    # example: 00000258_s003_t002.tse_bi
+    #
+    version = tse_v1.0.0
+
+    # data starts here
+    #
+    0.0000    8.8275   bckg   1.0000
+    8.8275    125.0325 seiz   1.0000
+    125.0325  203.0000 bckg   1.0000
+    
+  The hypothesis files listed in hyp.list have the same format, and
+  corresponding unique basename (in this example 00000258_s003_t002),
+  but instead specifies the events that your system has found. Therefore,
+  it will contain a confidence value between 0 and 1: 
+
+    # example: 00000258_s003_t002.tse
+    #
+    version = tse_v1.0.0
+
+    # data starts here
+    #
+    0.0000	21.0000	        bckg	0.864358
+    21.0000	138.0000	seiz	0.737451
+    138.0000	203.0000	bckg	0.886244
+d134 2
+a135 1
+Competition version:
+d137 40
+a176 2
+  The file "ref.txt" represents a reference annotation file. The format
+  for this file is straightforward:
+d178 5
+a182 5
+    00000258_s002_t000  0.0000 20.0000 bckg 1.0000
+    00000258_s002_t002  0.0000 15.9375 bckg 1.0000
+    00000258_s002_t002  15.9375 136.4375 seiz 1.0000
+    00000258_s002_t002  136.4375 272.0000 bckg 1.0000
+    ...
+d189 8
+a196 17
+  The hypothesis file, hyp.txt, specifies the seizure events that your
+  system has found. The format is similar:
+  
+   00000258_s002_t002 16.0000 153.0000 0.804087
+   00000258_s003_t004 22.0000 129.0000 0.793330
+   00000258_s003_t002 13.0000 122.0000 0.769164
+   00000258_s003_t000 16.0000 145.0000 0.754231
+
+  The fields are the tag, the start and stop time of the seizure event,
+  and the confidence.
+
+  ***
+  Note that in the competition format all portions of the input signal
+  are annotated in the reference file, which we provide for our corpora.
+  The hypothesis file only has seizure events, and they are not identified
+  with a label because they are assumed to be seizure events.
+  ***
+@
+
+
+1.6
+log
+@updated.
+@
+text
+@d1 1
+a1 1
+File: nedc_eval_eeg_v4.0.0/_AAREADME.txt
+d3 1
+a3 1
+Version: 4.0.0
+d8 1
+d20 4
+a23 4
+software. v4.0.0 brings several important new features to the table:
+(1) our research version and the 'competition' version can be run from
+the same code base, and (2) the NIST software is no longer required
+(it can be enabled with a command line option).
+d53 1
+a53 1
+ tar xvfz nedc_eval_eeg.v4.0.0.tar.gz
+d62 1
+a62 10
+ (1) Standard (with NIST)
+
+     Prerequisites for running NIST:
+       - Install the NIST software found here:
+            https://github.com/usnistgov/F4DE
+       - add `F4DE/bin/` your PATH variable
+
+     Test case: test_00_release/
+   
+ (2) Standard (without NIST)
+d68 1
+a68 1
+ (3) Competition
+d121 1
+a121 1
+Standard versions (with and without NIST):
+@
+
+
+1.5
+log
+@interim check-in.
+@
+text
+@d18 10
+a27 5
+This package contains the standard version of our scoring software with
+the option to add the NIST algorithm, as well as our competition version.
+This software is designed to score system output from machine learning systems
+that operate on sequential data. To learn more about the theory behind
+how we score seizure detection systems, please refer to this document:
+d59 1
+a59 1
+There are three versions of this software contained in this release:
+d63 4
+a66 3
+   Prerequisites for running NIST:
+    - Install the NIST software found here: https://github.com/usnistgov/F4DE
+    - add `F4DE/bin/` your PATH variable
+d68 1
+a68 1
+   Test case: test_00_release/
+d72 1
+a72 1
+   This version does not require any external software.
+d74 1
+a74 1
+   Test case: test_01_release_no_nist/
+d78 2
+a79 2
+   This version is simplified for academic research competitions and requires
+   a different input file format.
+d81 1
+a81 1
+   Test case: test_02_comp_no_nist/
+d83 1
+a83 1
+To run NEDC Eval EEG, simply use the run_ scripts under our test case
+d87 1
+a87 1
+ sh run_NIST.sh
+d191 1
+a191 1
+  are annotated in thevreference file, which we provide for our corpora.
+@
+
+
+1.4
+log
+@updated.
+@
+text
+@d1 1
+a1 1
+File: nedc_eval_eeg_v3.3.3/_AAREADME.txt
+d3 1
+a3 1
+Version: 3.3.3
+d8 1
+d14 9
+a22 5
+This package contains a modified version of our standard scoring
+software.  This software is designed to score system output from
+machine learning system that operate on sequential data. It is modeled
+after To learn more about the theory behind how we score seizure
+detection systems, please refer to this document:
+d47 5
+a51 1
+ tar xvfz nedc_eval_eeg.v3.3.3.tar.gz
+d54 15
+a68 1
+Running this software is simple. Try running our example:
+d70 4
+a73 3
+ cd nedc_eeg_eval_v3.3.3/example_1
+ ../scripts/nedc_eval_eeg.py ref.txt hyp.txt
+ diff answers/summary.txt ./output/summary.txt
+d75 4
+a78 2
+Other than a difference in some header information, these two files should
+be identical. A typical output that you might see is:
+d80 2
+a81 43
+| nedc_000_[1]: diff answers/summary.txt output/summary.txt 
+| 4,5c4,5
+| <  File: /data/isip/exp/tuh_eeg/exp_3482/example/output/summary.txt
+| <  Date: Sat Mar 28 16:19:48 2020
+| ---
+| >  File: /data/isip/exp/tuh_eeg/exp_3482/nedc_eeg_eval_v3.3.1/example/output/summary.txt
+| >  Date: Sat Mar 28 19:55:23 2020
+| 358c358
+| < NEDC EEG Eval Successfully Completed on Sat Mar 28 16:19:53 2020
+| ---
+| > NEDC EEG Eval Successfully Completed on Sat Mar 28 19:55:28 2020
+
+The file "ref.txt" represents the reference annotation information. Its
+format is straightforward:
+
+ 00000258_s002_t000  0.0000 20.0000 bckg 1.0000
+ 00000258_s002_t002  0.0000 15.9375 bckg 1.0000
+ 00000258_s002_t002  15.9375 136.4375 seiz 1.0000
+ 00000258_s002_t002  136.4375 272.0000 bckg 1.0000
+ ...
+
+The tag is a unique identifier for each EEG file (the basename). The
+next two fields are the start and stop times of the event respectively.
+The next field is one of two values: "bckg" or "seiz". The latter is used
+to identify a seizure event. The last field is a confidence value.
+
+The hypothesis file, hyp.txt, specifies the seizure events that your
+system has found. The format is similar:
+
+ 00000258_s002_t002 16.0000 153.0000 0.804087
+ 00000258_s003_t004 22.0000 129.0000 0.793330
+ 00000258_s003_t002 13.0000 122.0000 0.769164
+ 00000258_s003_t000 16.0000 145.0000 0.754231
+
+The fields are the tag, the start and stop time of the seizure event,
+and the confidence.
+
+***
+Note that all portions of the input signal are annotated in the
+reference file, which we provide for our corpora. The hypothesis file
+only has seizure events, and they are not identified with a label
+because they are assumed to be seizure events.
+***
+d86 7
+a92 7
+ nedc_000_[1]: ../scripts/nedc_eval_eeg.py ref.txt hyp.txt 
+  ... creating the output directory ...
+  ... executing NEDC DP Alignment scoring ...
+  ... executing NEDC Epoch scoring ...
+  ... executing NEDC Overlap scoring ...
+  ... executing NEDC Time-Aligned Event scoring ...
+  ... done ...
+d95 1
+a95 1
+performance of your system. The output directory also contains per file
+d98 91
+@
+
+
+1.3
+log
+@updated.
+@
+text
+@d1 1
+a1 1
+File: nedc_eval_eeg_v3.3.1/_AAREADME.txt
+d3 1
+a3 1
+Version: 3.3.1
+d8 3
+a10 2
+(20200417) (JP) made optional parameters work properly
+(20200328) (JP) initial version
+d19 1
+a19 1
+  V. Shah, M. Golmohammadi, I. Obeid, and J. Picone, “Objective
+d42 1
+a42 1
+ tar xvfz nedc_eval_eeg.v3.3.1.tar.gz
+d47 1
+a47 1
+ cd nedc_eeg_eval_v3.3.1/example
+@
+
+
+1.2
+log
+@updated.
+@
+text
+@d8 1
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d17 7
+a23 4
+ Shah, V., Golmohammadi, M., Obeid, I., & Picone, J. (2019).
+ Objective evaluation metrics for automatic classification of EEG events.
+ Submitted to the Journal of Neural Engineering, 1–22.
+ URL: https://www.isip.piconepress.com/publications/unpublished/journals/2019/iop_jne/metrics/
+@

@@ -1,0 +1,301 @@
+head	1.12;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.12
+date	2025.07.01.16.01.03;	author picone;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2024.08.10.15.38.29;	author picone;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2024.05.16.00.32.17;	author tup86891;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2021.02.02.22.17.08;	author picone;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2020.08.17.14.14.55;	author picone;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2020.08.14.16.17.48;	author tug70217;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2020.05.17.05.50.14;	author picone;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2020.05.01.12.55.17;	author tuj64267;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2019.04.01.17.40.04;	author tuf90967;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2017.06.25.04.24.11;	author picone;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2017.05.27.14.38.37;	author picone;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2017.05.18.03.49.53;	author picone;	state Exp;
+branches;
+next	;
+
+
+desc
+@initial version.
+initial version.
+@
+
+
+1.12
+log
+@changed the parameter file name.
+@
+text
+@name: nedc_eeg_eval
+synopsis: nedc_eeg_eval [options] ref.txt hyp.txt
+descr: evaluates hypotheses using standard scoring metrics
+
+options:
+ -o, --odir: the output directory [$PWD/output]
+ -p, --parameters: scoring parameters [nedc_eeg_eval_params_v00.toml]
+  
+arguments:
+ ref.txt: a list of reference annotation files (see below)
+ hyp.txt: a list of hypothesis files (see below)
+
+example:
+ nedc_eeg_eval -odir ./output/report ref.list hyp.list
+
+  generates a scoring report and outputs it to the default directory.
+  the report contains results of the following algorithms:
+    (1) NEDC's dynamic programming alignment scoring algorithm (dpalign)
+    (2) NEDC's epoch scoring algorithm: (epoch)
+    (3) NEDC's overlap scoring algorithm (ovlp)
+    (4) NEDC's time-aligned event scoring algorithm (taes)
+    (5) NEDC's inter-rater agreement (ira)
+
+notes:
+
+(1) To learn more about these algorithms, see this publication:
+
+    Shah, V., Golmohammadi, M., Obeid, I., & Picone,
+    J. (2021). Objective Evaluation Metrics for Automatic
+    Classification of EEG Events. In I. Obeid, I. Selesnick, &
+    J. Picone (Eds.), Biomedical Signal Processing: Innovation and
+    Applications (1st ed., pp. 1–26). Springer. (Download).
+@
+
+
+1.11
+log
+@updated.
+@
+text
+@d7 1
+a7 1
+ -p, --parameters: scoring parameters [nedc_eeg_eval_params_v00.txt]
+@
+
+
+1.10
+log
+@changed naming convention, removed mention of comp mode.
+@
+text
+@d26 1
+a26 4
+(1) When run in research mode (the default), this inputs are files lists of
+    all the hypothesis files.
+
+(2) To learn more about these algorithms, see this publication:
+@
+
+
+1.9
+log
+@deprecated the NIST software.
+@
+text
+@d1 2
+a2 2
+name: nedc_eval_eeg
+synopsis: nedc_eval_eeg [options] ref.txt hyp.txt
+d7 2
+a8 3
+ -p, --parameters: scoring parameters [nedc_eval_eeg_params_v00.txt]
+ -c, --competition: use competition version of this software
+ 
+d14 1
+a14 1
+ nedc_eval_eeg -odir ./output/report ref.list hyp.list
+d22 1
+a22 1
+    (5) NEDC's inter-rater agreement (ira) (not included in comp version)
+d26 2
+a27 4
+(1) When run in competition mode, the inputs are single files
+    containing all the data to be scored. When run in research
+    mode (the default), this inputs are files lists of all the hypothesis
+    files.
+d29 1
+a29 3
+(2) When using competition version, --parameters may not be used.
+
+(3) To learn more about these algorithms, see this publication:
+@
+
+
+1.8
+log
+@updated.
+@
+text
+@a7 1
+ -n, --nist: include the NIST scoring algorithm
+d19 5
+a23 6
+    (1) NIST KWS scoring software algorithm (nist) (use --nist option)
+    (2) NEDC's dynamic programming alignment scoring algorithm (dpalign)
+    (3) NEDC's epoch scoring algorithm: (epoch)
+    (4) NEDC's overlap scoring algorithm (ovlp)
+    (5) NEDC's time-aligned event scoring algorithm (taes)
+    (6) NEDC's inter-rater agreement (ira) (not included in comp version)
+d32 1
+a32 2
+(2) When using competition version, --nist and --parameters may not be
+    used.
+@
+
+
+1.7
+log
+@*** empty log message ***
+@
+text
+@d20 6
+a25 6
+    (1) NEDC's dynamic programming alignment scoring algorithm (dpalign)
+    (2) NEDC's epoch scoring algorithm: (epoch)
+    (3) NEDC's inter-rater agreement (ira) (not included in comp version)
+    (4) NIST KWS scoring software algorithm (nist) (use --NIST option)
+    (5) NEDC's overlap scoring algorithm (ovlp)
+    (6) NEDC's time-aligned event scoring algorithm (taes)
+@
+
+
+1.6
+log
+@updated.
+@
+text
+@d2 1
+a2 1
+synopsis: nedc_eval_eeg [options] ref.list hyp.list
+d7 3
+a9 1
+ -p, --parameters: a parameter file containing scoring algorithm parameters
+d12 2
+a13 2
+ ref.list: a list of reference annotation files
+ hyp.list: a list of hypothesis files (must match ref.list line by line)
+d16 1
+a16 1
+ nedc_eval_eeg --odir ./output/report ref.list hyp.list
+d18 26
+a43 2
+  generates a scoring report and outputs it to the directory "./output/report".
+  the report contains inter-rater agreement scores
+@
+
+
+1.5
+log
+@*** empty log message ***
+@
+text
+@d6 2
+a7 3
+ -help: display this help message
+ -odir: the output directory [$PWD/output]
+ -parameters: a parameter file containing scoring algorithm parameters
+d14 1
+a14 1
+ nedc_eval_eeg -odir ./output/report ref.list hyp.list
+@
+
+
+1.4
+log
+@*** empty log message ***
+@
+text
+@d6 2
+d9 1
+a9 3
+ -odir: the output directory [$PWD/output]
+ -help: display this help message
+
+@
+
+
+1.3
+log
+@added per file output.
+@
+text
+@d18 1
+a18 1
+  the report contains inter-rater agreement scores.
+@
+
+
+1.2
+log
+@changed the name of the utility.
+@
+text
+@d7 1
+a7 1
+ -odir: the output directory [$PWD]
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d1 2
+a2 2
+name: nedc_eeg_eval
+synopsis: nedc_eeg_eval [options] ref.list hyp.list
+d15 1
+a15 1
+ nedc_eeg_eval -odir ./output/report ref.list hyp.list
+@

@@ -1,0 +1,432 @@
+head	1.22;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.22
+date	2025.07.04.11.56.53;	author picone;	state Exp;
+branches;
+next	1.21;
+
+1.21
+date	2025.07.04.11.51.52;	author picone;	state Exp;
+branches;
+next	1.20;
+
+1.20
+date	2025.07.01.16.46.16;	author picone;	state Exp;
+branches;
+next	1.19;
+
+1.19
+date	2025.07.01.16.42.41;	author picone;	state Exp;
+branches;
+next	1.18;
+
+1.18
+date	2025.07.01.16.02.37;	author picone;	state Exp;
+branches;
+next	1.17;
+
+1.17
+date	2024.08.10.16.46.40;	author picone;	state Exp;
+branches;
+next	1.16;
+
+1.16
+date	2024.05.16.00.16.06;	author tup86891;	state Exp;
+branches;
+next	1.15;
+
+1.15
+date	2023.01.29.21.49.11;	author tun39360;	state Exp;
+branches;
+next	1.14;
+
+1.14
+date	2023.01.29.21.14.53;	author tun39360;	state Exp;
+branches;
+next	1.13;
+
+1.13
+date	2023.01.28.18.28.58;	author tun39360;	state Exp;
+branches;
+next	1.12;
+
+1.12
+date	2022.05.14.14.27.34;	author picone;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2022.04.23.23.19.37;	author picone;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2022.04.23.16.46.01;	author picone;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2020.10.19.15.35.05;	author picone;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2020.10.16.03.48.49;	author picone;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2020.10.10.00.29.40;	author picone;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2020.10.10.00.27.19;	author picone;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2020.06.07.20.07.24;	author picone;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2017.05.28.05.27.20;	author picone;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2017.05.27.16.28.16;	author picone;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2017.05.20.22.26.19;	author tud22978;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2017.05.18.03.49.53;	author picone;	state Exp;
+branches;
+next	;
+
+
+desc
+@initial version.
+@
+
+
+1.22
+log
+@updated.
+@
+text
+@# file: $(NEDC_NFC)/util/python/nedc_eeg_eval/Makefile
+#
+
+# define source and object files
+#
+SRC = nedc_eeg_eval.py
+EXE := $(basename $(SRC))
+HLP := $(wildcard *.help)
+USG := $(wildcard *.usage)
+PRM = $(wildcard *.toml)
+
+# define an installation target
+#
+install:
+	rm -f $(NEDC_NFC)/bin/$(EXE)
+	rm -f $(NEDC_NFC)/docs/help/$(HLP)
+	rm -f $(NEDC_NFC)/docs/usage/$(USG)
+	rm -f $(NEDC_NFC)/docs/params/$(PRM)
+
+	cp -f $(SRC) $(NEDC_NFC)/bin/$(EXE)
+	chmod u+rwx,g+rwx,o+rx $(NEDC_NFC)/bin/$(EXE)
+
+	cp -f $(HLP) $(NEDC_NFC)/docs/help/$(HLP)
+	chmod u+rw,g+rw,o+r $(NEDC_NFC)/docs/help/$(HLP)
+
+	cp -f $(USG) $(NEDC_NFC)/docs/usage/$(USG)
+	chmod u+rw,g+rw,o+r $(NEDC_NFC)/docs/usage/$(USG)
+
+	cp -f $(PRM) $(NEDC_NFC)/docs/params/$(PRM)
+	chmod u+rw,g+rw,o+r $(NEDC_NFC)/docs/params/$(PRM)
+
+#
+# end of file
+@
+
+
+1.21
+log
+@updated and simplified.
+@
+text
+@d6 1
+a6 1
+SRC = $(wildcard *.py)
+@
+
+
+1.20
+log
+@updated.
+@
+text
+@d7 3
+a9 3
+BFILE := $(basename $(SRC))
+HLP = $(wildcard *.help)
+USG = $(wildcard *.usage)
+d15 1
+a15 1
+	rm -f $(NEDC_NFC)/bin/$(BFILE)
+d20 2
+a21 2
+	cp -f $(SRC) $(NEDC_NFC)/bin/$(BFILE)
+	chmod u+rwx,g+rwx,o+rx $(NEDC_NFC)/bin/$(BFILE)
+d31 1
+@
+
+
+1.19
+log
+@fixed permissions.
+@
+text
+@d29 1
+a29 1
+	cp -f $(SRC) $(NEDC_NFC)/docs/params/$(PRM)
+@
+
+
+1.18
+log
+@updated
+@
+text
+@d24 1
+a24 1
+	chmod u+rwx,g+rwx,o+rx $(NEDC_NFC)/docs/help/$(HLP)
+d27 1
+a27 1
+	chmod u+rwx,g+rwx,o+rx $(NEDC_NFC)/docs/usage/$(USG)
+d30 1
+a30 1
+	chmod u+rwx,g+rwx,o+rx $(NEDC_NFC)/docs/params/$(PRM)
+@
+
+
+1.17
+log
+@change the way the source file is identified - small change.
+@
+text
+@d1 1
+a1 1
+# file: $(NEDC_NFC)/util/python/nedc_eeg_eval/v5.0.0/src/Makefile
+d8 3
+d16 4
+d23 8
+@
+
+
+1.16
+log
+@changed naming convention
+@
+text
+@d6 1
+a6 1
+SRC = nedc_eeg_eval.sh
+@
+
+
+1.15
+log
+@*** empty log message ***
+@
+text
+@d1 1
+a1 1
+# file: $(NEDC_NFC)/util/python/nedc_eval_eeg/v5.0.0/src/Makefile
+d6 1
+a6 1
+SRC = nedc_eval_eeg.sh
+@
+
+
+1.14
+log
+@*** empty log message ***
+@
+text
+@d12 3
+a14 3
+	rm -f $NEDC_NFC/bin/$(BFILE)
+	cp -f $(SRC) $NEDC_NFC/bin/$(BFILE)
+	chmod u+rwx,g+rwx,o+rx $NEDC_NFC/bin/$(BFILE)
+@
+
+
+1.13
+log
+@*** empty log message ***
+@
+text
+@d12 3
+a14 3
+	rm -f ../bin/$(BFILE)
+	cp -f $(SRC) ../bin/$(BFILE)
+	chmod u+rwx,g+rwx,o+rx ../bin/$(BFILE)
+@
+
+
+1.12
+log
+@cosmetic.
+@
+text
+@d12 3
+a14 3
+	rm -f $(NEDC_NFC)/bin/$(BFILE)
+	cp -f $(SRC) $(NEDC_NFC)/bin/$(BFILE)
+	chmod u+rwx,g+rwx,o+rx $(NEDC_NFC)/bin/$(BFILE)
+@
+
+
+1.11
+log
+@updated.
+@
+text
+@d1 1
+a1 1
+# file: $(NEDC_NFC)/util/python/nedc_eval_eeg/Makefile
+@
+
+
+1.10
+log
+@tweaked for release.
+@
+text
+@a7 1
+PRM = nedc_eval_eeg_params_v00.txt
+a14 3
+	rm -f $(NEDC_NFC)/lib/$(PRM)
+	cp -f $(PRM) $(NEDC_NFC)/lib/$(PRM)
+	chmod u+rwx,g+rw,o+r $(NEDC_NFC)/lib/$(PRM)
+@
+
+
+1.9
+log
+@changed "rm" to "rm -f".
+@
+text
+@d6 1
+a6 1
+SRC = nedc_eval_eeg.py
+d15 1
+a15 1
+	cd $(NEDC_NFC)/bin; chmod u+rwx,g+rwx,o+rw $(BFILE)
+d18 1
+a18 1
+	cd $(NEDC_NFC)/lib; chmod u+rwx,g+rwx,o+rw $(PRM)
+@
+
+
+1.8
+log
+@fixed the permissions problem.
+@
+text
+@d13 1
+a13 1
+	rm $(NEDC_NFC)/bin/$(BFILE)
+d16 1
+a16 1
+	rm $(NEDC_NFC)/lib/$(PRM)
+@
+
+
+1.7
+log
+@fixed a bug with the parameter file installation.
+@
+text
+@d13 1
+d16 1
+@
+
+
+1.6
+log
+@fixed a long-standing bug with file permissions.
+@
+text
+@d16 1
+a16 1
+	cd $(NEDC_NFC)/bin; chmod u+rwx,g+rwx,o+rw $(PRM)
+@
+
+
+1.5
+log
+@updated.
+@
+text
+@d14 1
+d16 1
+@
+
+
+1.4
+log
+@changed the name of the utility.
+@
+text
+@d8 1
+d13 2
+a14 1
+	cp -f $(SRC) ../../../bin/$(BFILE)
+@
+
+
+1.3
+log
+@changed the program name.
+@
+text
+@d6 1
+a6 1
+SRC = nedc_eeg_eval.py
+@
+
+
+1.2
+log
+@changed patsubst with basename for portability
+@
+text
+@d1 1
+a1 1
+# file: $(NEDC_NFC)/util/python/nedc_eeg_eval/Makefile
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d7 1
+a7 1
+BFILE := $(patsubst %.py,%,$(SRC))
+@

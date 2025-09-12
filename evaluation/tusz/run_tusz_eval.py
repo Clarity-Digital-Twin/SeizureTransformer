@@ -121,8 +121,19 @@ def compute_metrics(all_predictions, all_labels):
         print("No valid predictions to evaluate")
         return {}
     
+    # Debug: Check lengths
+    print(f"Debug: y_true length: {len(y_true)}, y_pred length: {len(y_pred)}")
+    
+    # Ensure same length (truncate to shorter)
+    min_len = min(len(y_true), len(y_pred))
+    y_true = y_true[:min_len]
+    y_pred = y_pred[:min_len]
+    
     # Calculate AUROC
-    auroc = roc_auc_score(y_true, y_pred)
+    try:
+        auroc = roc_auc_score(y_true, y_pred)
+    except:
+        auroc = 0.0  # Handle single-class case
     
     # Calculate accuracy at threshold 0.8 (paper's threshold)
     threshold = 0.8

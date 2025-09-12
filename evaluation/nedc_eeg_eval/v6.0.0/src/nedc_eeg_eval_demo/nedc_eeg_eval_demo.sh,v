@@ -1,0 +1,231 @@
+head	1.4;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.4
+date	2025.08.23.05.34.40;	author tup91526;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2025.08.23.05.28.19;	author tup91526;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2025.08.23.05.19.32;	author tup91526;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2025.08.21.03.06.07;	author tup91526;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.4
+log
+@final v6.0.0 version
+@
+text
+@#!/bin/bash
+#
+# file: $NEDC_NFC/src/nedc_eeg_eval_demo/nedc_eeg_eval_demo.sh
+#
+# revision history:
+#
+# 20250721 (DH): initial version
+#
+#==============================================================================
+#
+# setup and run scoring algorithm on experiment
+#
+#==============================================================================
+
+# set ROOT_DIR variable
+#
+ROOT_DIR=$(realpath "$(dirname "$0")/..")
+export ROOT_DIR
+
+# necessary paths
+#
+OUTPUT_DIR="$ROOT_DIR/test/output"
+RESULTS_DIR="$ROOT_DIR/test/results"
+LIST_DIR="$ROOT_DIR/data/lists"
+LIB_DIR="$ROOT_DIR/lib"
+TOOL_DIR="$ROOT_DIR/src"
+DOCS_DIR="$ROOT_DIR/docs"
+
+# create the final nedc_eeg_eval output directories
+#
+mkdir -p $OUTPUT_DIR
+mkdir -p $RESULTS_DIR
+
+# set ref and hyp list variables
+#
+HYP_LIST="$LIST_DIR/hyp.list"
+REF_LIST="$LIST_DIR/ref.list"
+
+# set the parameter file
+#
+PARAM="$DOCS_DIR/params/nedc_eeg_eval_params_v00.toml"
+
+# set the command line arguments
+#
+CMD_ARG="-p $PARAM -o $OUTPUT_DIR $REF_LIST $HYP_LIST"
+
+# set the python script
+#
+DRIVER_SCRIPT="$TOOL_DIR/nedc_eeg_eval/nedc_eeg_eval.py"
+
+# set the final command
+#
+CMD="python $DRIVER_SCRIPT $CMD_ARG"
+
+# run scoring on the train dataset
+#
+echo "==== Scoring the Dataset ===="
+echo "Scoring the Train Dataset Started on: $(date "+%D %T")"
+$CMD
+echo "Scoring the Train Dataset Finished on: $(date "+%D %T")"
+
+echo "==== Verifying output vs results ===="
+
+# lines to ignore (timestamps / run metadata)
+#
+IGNORE_PATTERNS=(
+  '^[[:space:]]*=\+$'
+  '^[[:space:]]*Date:'
+  '^[[:space:]]*File:'                            
+  '^[[:space:]]*Version:'
+  '^[[:space:]]*Mod Time:'
+  '^[[:space:]]*NEDC EEG Eval Successfully Completed'
+  '^[[:space:]]*[^:]*:[[:space:]]*/.*$'           
+  '^[[:space:]]*/.*$'                            
+)
+
+# build args for diff
+#
+DIFF_IGNORE_ARGS=()
+for pat in "${IGNORE_PATTERNS[@@]}"; do
+  DIFF_IGNORE_ARGS+=(-I "$pat")
+done
+
+# quiet check first
+#
+if diff -qr "${DIFF_IGNORE_ARGS[@@]}" "$RESULTS_DIR" "$OUTPUT_DIR" > /dev/null; then
+  echo "No differences between $OUTPUT_DIR and $RESULTS_DIR"
+else
+  echo "Differences found between $OUTPUT_DIR and $RESULTS_DIR:"
+
+  # show full diff but keep the same ignore rules
+  #
+  diff -ruN "${DIFF_IGNORE_ARGS[@@]}" "$RESULTS_DIR" "$OUTPUT_DIR"
+  exit 1
+fi
+
+ echo "==== Verification finished ===="
+#
+# end of file
+@
+
+
+1.3
+log
+@rewrote regex
+@
+text
+@d69 1
+a69 1
+  '^[[:space:]]*File:'
+d73 2
+a74 2
+  '^[[:space:]]*[0-9]\+:[[:space:]]*/.*$' 
+  '^[[:space:]]*/.*$'
+@
+
+
+1.2
+log
+@updated to final version for v6.0.0
+@
+text
+@d73 2
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d2 2
+a3 2
+
+# file: $NEDC_NFC/util/python/nedc_eeg_resnet/v2.0.2/src/nedc_eeg_resnet/nedc_eeg_resnet.sh
+d15 1
+a15 1
+# set the output directory
+d17 2
+a18 3
+TRAIN_OUT_DIR="$OUTPUT_DIR/train/report"
+DEV_OUT_DIR="$OUTPUT_DIR/dev/report"
+EVAL_OUT_DIR="$OUTPUT_DIR/eval/report"
+d20 1
+a20 1
+# set the directory leading to the decoded csv files
+d22 6
+a27 3
+TRAIN_DECODE_OUT_DIR="$OUTPUT_DIR/train"
+DEV_DECODE_OUT_DIR="$OUTPUT_DIR/dev"
+EVAL_DECODE_OUT_DIR="$OUTPUT_DIR/eval"
+d31 7
+a37 7
+mkdir -p $TRAIN_OUT_DIR
+mkdir -p $DEV_OUT_DIR
+mkdir -p $EVAL_OUT_DIR
+
+HYP_TRAIN_LIST="$LIST_DIR/hyp_train_csv.list"
+HYP_DEV_LIST="$LIST_DIR/hyp_dev_csv.list"
+HYP_EVAL_LIST="$LIST_DIR/hyp_eval_csv.list"
+d45 1
+a45 3
+TRAIN_CMD_ARG="-p $PARAM -o $TRAIN_OUT_DIR $REF_TRAIN_CSV_LIST $HYP_TRAIN_LIST"
+DEV_CMD_ARG="-p $PARAM -o $DEV_OUT_DIR $REF_DEV_CSV_LIST $HYP_DEV_LIST"
+EVAL_CMD_ARG="-p $PARAM -o $EVAL_OUT_DIR $REF_EVAL_CSV_LIST $HYP_EVAL_LIST"
+d53 1
+a53 3
+TRAIN_CMD="python $DRIVER_SCRIPT $TRAIN_CMD_ARG"
+DEV_CMD="python $DRIVER_SCRIPT $DEV_CMD_ARG"
+EVAL_CMD="python $DRIVER_SCRIPT $EVAL_CMD_ARG"
+d57 1
+a57 1
+echo "==== Scoring the Train Dataset ===="
+d59 1
+a59 1
+$TRAIN_CMD
+d62 3
+a64 1
+# run scoring on the dev dataset
+d66 28
+a93 11
+echo "==== Scoring the Dev Dataset ===="
+echo "Scoring the Dev Dataset Started on: $(date "+%D %T")"
+$DEV_CMD
+echo "Scoring the Dev Dataset Finished on: $(date "+%D %T")"
+
+# run scoring on the eval dataset
+#
+echo "==== Scoring the Eval Dataset ===="
+echo "Scoring the Eval Dataset Started on: $(date "+%D %T")"
+$EVAL_CMD
+echo "Scoring the Eval Dataset Finished on: $(date "+%D %T")"
+d95 1
+@

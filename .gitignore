@@ -46,8 +46,8 @@ nedc_eeg_eval_v6.0.0.tar.gz
 nedc_eeg_eval_v6.0.0/
 nedc_eval/
 
-# Reference repositories (external tools)
-reference_repos/
+# Reference repositories (now moved to evaluation/)
+# reference_repos/  # No longer needed
 
 # Literature and papers (private)
 literature/

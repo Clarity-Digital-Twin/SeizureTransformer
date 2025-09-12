@@ -1,0 +1,212 @@
+head	1.12;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.12
+date	2025.08.04.12.22.13;	author tup91526;	state Exp;
+branches;
+next	1.11;
+
+1.11
+date	2025.03.13.20.09.41;	author tup91526;	state Exp;
+branches;
+next	1.10;
+
+1.10
+date	2025.03.12.23.22.58;	author tup91526;	state Exp;
+branches;
+next	1.9;
+
+1.9
+date	2025.03.12.20.14.39;	author tup91526;	state Exp;
+branches;
+next	1.8;
+
+1.8
+date	2025.03.04.20.34.25;	author tup91526;	state Exp;
+branches;
+next	1.7;
+
+1.7
+date	2025.02.02.03.45.34;	author tup91526;	state Exp;
+branches;
+next	1.6;
+
+1.6
+date	2025.01.25.20.04.37;	author tup91526;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2025.01.11.22.45.28;	author tup91526;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2023.04.11.19.48.42;	author tun39360;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2023.04.08.02.53.43;	author tun39360;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2023.04.03.16.17.24;	author tun39360;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2023.01.18.18.52.45;	author tun39360;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.12
+log
+@updated for eeg eval
+ls
+@
+text
+@numpy==2.0.2
+scipy==1.14.1
+lxml==5.3.0
+toml==0.10.2
+@
+
+
+1.11
+log
+@removed psutil as a reqiurement
+@
+text
+@a1 3
+pillow==10.4.0
+torch==2.5.1
+torchvision==0.20.1
+a3 1
+scikit-learn==1.5.1
+@
+
+
+1.10
+log
+@removed python version requirement, moved to AAREADME.txt
+so userS can pip install -r requirements.txt easily
+@
+text
+@a7 1
+psutil==6.0.0
+@
+
+
+1.9
+log
+@added python 3.11 as a requirement
+@
+text
+@a0 1
+python==3.11.9 
+@
+
+
+1.8
+log
+@updated to add toml requirement
+@
+text
+@d1 1
+@
+
+
+1.7
+log
+@added new requirement
+@
+text
+@d9 1
+@
+
+
+1.6
+log
+@fixed requirements bug
+@
+text
+@d8 1
+@
+
+
+1.5
+log
+@updated requirement versions
+@
+text
+@d4 2
+a5 2
+torchvision=0.20.1
+scipy=1.14.1
+@
+
+
+1.4
+log
+@*** empty log message ***
+@
+text
+@d1 7
+a7 7
+numpy==1.24.2
+pillow==9.5.0
+torch==2.0.0
+torchvision=0.15.1
+scipy=1.10.1
+lxml==4.9.2
+scikit-learn==1.2.2
+@
+
+
+1.3
+log
+@*** empty log message ***
+@
+text
+@d7 1
+@
+
+
+1.2
+log
+@*** empty log message ***
+@
+text
+@d2 4
+a5 2
+scikit-learn==1.2.2
+torchvision==0.15.1
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d1 4
+a4 7
+lxml==4.6.3
+numpy==1.19.5
+Pillow==9.4.0
+scikit_learn==1.2.0
+scipy==1.7.1
+torch==1.13.1
+torchvision==0.14.1
+@

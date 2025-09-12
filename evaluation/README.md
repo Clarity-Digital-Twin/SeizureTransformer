@@ -3,9 +3,10 @@
 ## Organization
 ```
 evaluation/
-├── tusz/         # TUSZ-specific evaluation (paper replication)
-├── nedc/         # NEDC official scoring tools
-└── siena/        # Siena evaluation (future)
+├── tusz/             # TUSZ-specific evaluation (paper replication)
+├── nedc_eeg_eval/    # Official NEDC software from Temple (v6.0.0)
+├── nedc_scoring/     # Our scripts to integrate with NEDC
+└── siena/            # Siena evaluation (future)
 ```
 
 ## Running Evaluations

@@ -1,0 +1,73 @@
+head	1.2;
+access;
+symbols;
+locks; strict;
+comment	@# @;
+
+
+1.2
+date	2025.08.24.23.55.22;	author tup91526;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2025.08.21.03.05.29;	author tup91526;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.2
+log
+@final v6.0.0 update
+@
+text
+@# file: $(NEDC_NFC)/src/nedc_eeg_eval_demo/Makefile
+#
+# revision history:
+#
+# 20250820 (DH): refactored
+#
+# This Makefile builds all the bash scripts in this directory and places
+# them in $NEDC_NFC/bin.
+#
+
+# define source and object files
+#
+SRC = nedc_eeg_eval_demo.sh
+EXE := $(basename $(SRC))
+
+# define an installation target
+#
+install:
+	rm -f $(NEDC_NFC)/bin/$(EXE)
+
+	cp $(SRC) $(NEDC_NFC)/bin/$(EXE)
+	cd $(NEDC_NFC)/bin/; chmod u+rwx,g+rwx,o+rx $(EXE)
+
+#
+# end of file
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d1 1
+a1 1
+# file: $(NEDC_NFC)/src/nedc_eeg_resent_demo/Makefile
+d5 1
+a5 4
+# 20240723 (DH): refactored
+# 20250225 (JP): refactored
+# 20250525 (DH): updated make file to account for its new path location
+# 20221216 (ML): initial version
+d13 1
+a13 1
+SRC = nedc_eeg_resnet_demo.sh
+@
