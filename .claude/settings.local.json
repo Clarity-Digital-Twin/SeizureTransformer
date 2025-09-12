@@ -6,7 +6,13 @@
       "Bash(git remote remove:*)",
       "Bash(gh repo create:*)",
       "Bash(git remote add:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(tree:*)",
+      "Bash(wget:*)",
+      "Bash(tmux new-session:*)",
+      "Bash(tmux ls:*)",
+      "Bash(echo \"Download running in tmux session ''siena_download''\n\nTo monitor progress:\n  tmux attach -t siena_download\n\nTo check download status without attaching:\n  tmux capture-pane -t siena_download -p | tail -20\n\nTo detach from tmux: Ctrl+B then D\")",
+      "Bash(tmux capture-pane:*)"
     ],
     "deny": [],
     "ask": []

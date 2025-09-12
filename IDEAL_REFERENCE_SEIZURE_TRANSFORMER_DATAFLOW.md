@@ -267,6 +267,14 @@ def train():
     # D = Dps ∪ D*fs ∪ D*ns where:
     # - |D*fs| = 0.3 × |Dps| (30% of partial-seizure windows)
     # - |D*ns| = 2.5 × |Dps| (250% of partial-seizure windows)
+    # 
+    # NOTE: Paper trained on TUSZ + Siena datasets, OSS only shows TUSZ handling
+    # 
+    # To add Siena support:
+    # 1. Download from PhysioNet (13GB)
+    # 2. Parse Seizures-list-PNxx.txt files for annotations
+    # 3. Resample from 512Hz to 256Hz
+    # 4. Combine with TUSZ in training
     
     # Training loop...
 ```
@@ -411,24 +419,65 @@ Code reference: `wu_2025/src/wu_2025/architecture.py` (all details above verifie
 
 With correct implementation:
 - AUROC: 0.876 (matching paper Figure 3)
-- FA/24h: ≤5 at 90% sensitivity
+- FA/24h: ≤5 at 90% sensitivity (Note: Paper used 80% threshold in competition)
 - Processing: 3.98 seconds per 1-hour EEG (from paper Table II)
 - Convergence: ~20 epochs
 - Inference batch size: 512 (main.py:17)
 - Training batch size: 256 (from paper)
+- GPUs used in paper: 2x NVIDIA L40S 46GB (not in OSS code)
 
 ---
 
 ## ⚠️ Critical Success Factors
 
+### IMPLEMENT FROM CODE (Primary Source):
 1. **Unipolar montage** - Model REQUIRES unipolar (will assert error if bipolar)
 2. **Exact preprocessing** - Order matters: normalize → resample → bandpass → notch
-3. **Window alignment** - 60s windows (15360 samples), 0% overlap for inference, 75% for training
+3. **Window alignment** - 60s windows (15360 samples), 0% overlap for inference
 4. **Post-processing params** - All hardcoded: threshold=0.8, kernel=5, min_duration=2.0s
 5. **Channel requirements** - EXACTLY 19 channels, hardcoded in architecture
 6. **Sampling rate** - Auto-resamples to 256Hz, not configurable
 7. **Filter details** - Butterworth order=3, uses lfilter (causal) not filtfilt
 8. **Padding strategy** - Zero-padding at END for windows < 15360 samples
+9. **Dropout** - Code uses `model.eval()` which DISABLES dropout at test time (standard practice)
+
+---
+
+## 📝 Paper vs Code Discrepancies (For GitHub Issues)
+
+### PAPER CLAIMS (Not in Code):
+1. **Datasets**: Paper used TUSZ + Siena Scalp EEG Database
+   - Code only shows TUSZ handling via epilepsy2bids
+   - To achieve paper parity: Need to add Siena dataset loader
+
+2. **Dropout at test**: Paper says "dropout=0.1 at test time"
+   - Likely a PAPER ERROR (dropout should be off at test)
+   - Code correctly uses `model.eval()` 
+
+3. **Channel order**: Paper shows channels but no exact sequence
+   - Code doesn't validate channel names, only count
+
+4. **Multi-GPU**: Paper used 2x NVIDIA L40S
+   - Code has no multi-GPU implementation
+
+5. **Training overlap**: Paper says 75% overlap
+   - Code allows configuration but doesn't show 75% default
+
+### ACTION ITEMS:
+- **For full paper parity**: Download Siena Scalp EEG Database
+  - Available at: https://physionet.org/content/siena-scalp-eeg/1.0.0/
+  - DOI: https://doi.org/10.13026/5d4a-j060
+  - Size: 20.3 GB uncompressed (13.0 GB ZIP)
+  - Contents: 128 hours from 14 subjects at 512Hz
+  - 47 seizures total
+  - Format: EDF files with 10-20 system + EKG
+  - Download: `wget -r -N -c -np https://physionet.org/files/siena-scalp-eeg/1.0.0/`
+  - Would need custom loader (not in OSS code)
+- **Create GitHub issues** asking about:
+  - Dropout at test time (likely paper typo?)
+  - Exact channel ordering used
+  - Multi-GPU training code
+  - Why Siena dataset handling not in OSS?
 
 ---
 
