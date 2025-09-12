@@ -55,7 +55,11 @@ class SeizurePreprocessor:
             eeg = resample(eeg, new_n_samples, axis=1)
         
         # Bandpass filter (order=3 specifically, causal filtering)
-        eeg = self.butter_bandpass_filter(eeg, order=3)
+        nyq = 0.5 * 256
+        low = self.lowcut / nyq
+        high = self.highcut / nyq
+        b, a = butter(3, [low, high], btype='band')
+        eeg = lfilter(b, a, eeg)
         
         # Notch filters
         eeg = lfilter(self.notch_1_b, self.notch_1_a, eeg)
@@ -382,6 +386,7 @@ class NEDCEvaluator:
 - Dropout: `drop_rate=0.1` used in ResCNN `SpatialDropout1d`; positional dropout is fixed at 0.1
 - Init: No custom initialization beyond PyTorch defaults
 - Skips: Added (not concatenated)
+- Note: `forward()` has unused `logits=True` parameter (dead code in OSS)
 
 Code reference: `wu_2025/src/wu_2025/architecture.py` (all details above verified).
 
@@ -391,7 +396,12 @@ Code reference: `wu_2025/src/wu_2025/architecture.py` (all details above verifie
 
 - Python: `>=3.10`
 - Packages: `numpy>=1.25`, `scipy>=1.14.1`, `torch>=2.0.1`, `epilepsy2bids>=0.0.6`
-- Weights: Place `model.pth` in `wu_2025/src/wu_2025/` (loaded by `utils.load_models`) 
+- Weights: Place `model.pth` in `wu_2025/src/wu_2025/` (loaded by `utils.load_models`)
+- **CRITICAL**: When loading pretrained weights, model MUST be initialized with default params:
+  ```python
+  model = SeizureTransformer()  # NO parameters - uses all defaults
+  ```
+- Output format: Results saved as TSV via `epilepsy2bids.Annotations.saveTsv()` 
 
 ---
 
