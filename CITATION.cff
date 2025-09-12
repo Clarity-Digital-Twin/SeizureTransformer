@@ -2,17 +2,12 @@ cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 title: "SeizureTransformer: Independent Evaluation Framework with NEDC Integration"
 version: 1.0.0
-doi: 10.5281/zenodo.XXXXXXX
 date-released: 2025-09-12
 url: "https://github.com/Clarity-Digital-Twin/SeizureTransformer"
 authors:
-  - family-names: "JJ"
+  - family-names: "Clarity Digital Twin Team"
     given-names: ""
     affiliation: "Clarity Digital Twin"
-  - family-names: "Claude"
-    given-names: ""
-    affiliation: "Anthropic"
-    orcid: "https://orcid.org/0000-0000-0000-0000"
 keywords:
   - seizure detection
   - EEG
@@ -56,7 +51,6 @@ references:
     title: "SeizureTransformer: Versatile Seizure Detection Model for Generalization Across Patients, Datasets, and Seizure Types"
     year: 2025
     journal: "arXiv preprint"
-    doi: "10.48550/arXiv.2501.XXXXX"
   - type: article
     authors:
       - family-names: "Shah"

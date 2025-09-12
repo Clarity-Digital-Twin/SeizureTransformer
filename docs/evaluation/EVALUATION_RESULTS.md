@@ -1,7 +1,7 @@
 # SeizureTransformer Clinical Evaluation Results
 
 **Date**: September 12, 2025  
-**Dataset**: Temple University Hospital EEG Seizure Corpus (TUSZ) v2.0.0  
+**Dataset**: Temple University Hospital EEG Seizure Corpus (TUSZ) v2.0.3  
 **Evaluator**: NEDC EEG Eval v6.0.0 (Official Temple University Scoring)
 
 ## Executive Summary
