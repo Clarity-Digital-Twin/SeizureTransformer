@@ -53,3 +53,9 @@ nedc_eval/
 literature/
 *.pdf
 *.PDF
+
+# Checkpoint files (HUGE - NEVER COMMIT)
+evaluation/tusz/checkpoint*.pkl*
+evaluation/tusz/*.pkl
+evaluation/nedc_scoring/output/
+evaluation/nedc_scoring/test_output/

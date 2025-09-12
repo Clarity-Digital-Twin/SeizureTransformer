@@ -88,7 +88,7 @@ def run_conversion(checkpoint_file, output_dir, force=False):
     return 0
 
 
-def run_nedc_scorer(output_dir, scoring_method='TAES'):
+def run_nedc_scorer(output_dir):
     """
     Run NEDC official scorer on converted files.
     
@@ -136,7 +136,6 @@ def run_nedc_scorer(output_dir, scoring_method='TAES'):
     ]
     
     print(f"Running: {' '.join(cmd)}")
-    print(f"Scoring method: {scoring_method}")
     print(f"Results will be saved to: {results_dir}")
     
     # Run NEDC scorer
@@ -150,12 +149,12 @@ def run_nedc_scorer(output_dir, scoring_method='TAES'):
     print(result.stdout)
     
     # Parse and display key metrics
-    parse_nedc_output(results_dir, scoring_method)
+    parse_nedc_output(results_dir)
     
     return 0
 
 
-def parse_nedc_output(results_dir, scoring_method):
+def parse_nedc_output(results_dir):
     """
     Parse and display key metrics from NEDC output.
     
@@ -167,34 +166,29 @@ def parse_nedc_output(results_dir, scoring_method):
     print("KEY METRICS")
     print("=" * 70)
     
-    # Look for summary files based on scoring method
-    if scoring_method == 'TAES':
-        summary_file = results_dir / "taes_summary.txt"
-    elif scoring_method == 'OVLP':
-        summary_file = results_dir / "ovlp_summary.txt"
-    elif scoring_method == 'EPOCH':
-        summary_file = results_dir / "epoch_summary.txt"
-    else:
-        summary_file = results_dir / "summary.txt"
-    
-    # Try to find and parse the summary
-    for possible_file in results_dir.glob("*.txt"):
-        if possible_file.exists():
-            print(f"\nReading: {possible_file.name}")
+    # Known summary files from NEDC
+    preferred = [
+        "summary_taes.txt",
+        "summary_ovlp.txt",
+        "summary_epoch.txt",
+        "summary.txt",
+    ]
+
+    for name in preferred:
+        sf = results_dir / name
+        if sf.exists():
+            print(f"\nReading: {sf.name}")
             try:
-                with open(possible_file, 'r') as f:
+                with open(sf, 'r') as f:
                     content = f.read()
-                    # Look for key metrics
-                    if 'sensitivity' in content.lower():
-                        print(content[:500])  # Print first 500 chars
-                        break
+                    print(content[:800])  # show first 800 chars for quick view
             except Exception as e:
-                print(f"Could not read {possible_file}: {e}")
+                print(f"Could not read {sf}: {e}")
     
     print(f"\nFull results saved to: {results_dir}")
 
 
-def run_full_pipeline(checkpoint_file, output_dir, scoring_method='TAES', force=False):
+def run_full_pipeline(checkpoint_file, output_dir, force=False):
     """
     Run the complete NEDC evaluation pipeline.
     
@@ -212,7 +206,7 @@ def run_full_pipeline(checkpoint_file, output_dir, scoring_method='TAES', force=
     print("=" * 70)
     print(f"Checkpoint: {checkpoint_file}")
     print(f"Output: {output_dir}")
-    print(f"Method: {scoring_method}")
+    
     print(f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     
     # Step 1: Convert predictions
@@ -222,7 +216,7 @@ def run_full_pipeline(checkpoint_file, output_dir, scoring_method='TAES', force=
         return ret
     
     # Step 2: Run NEDC scorer
-    ret = run_nedc_scorer(output_dir, scoring_method)
+    ret = run_nedc_scorer(output_dir)
     if ret != 0:
         print("NEDC scoring failed")
         return ret
@@ -269,13 +263,7 @@ Examples:
         default="evaluation/nedc_scoring/output",
         help="Output directory for NEDC files"
     )
-    parser.add_argument(
-        "--method",
-        type=str,
-        default="TAES",
-        choices=['TAES', 'OVLP', 'EPOCH', 'IRA'],
-        help="NEDC scoring method (default: TAES)"
-    )
+    # NEDC runs all methods; no method flag needed
     parser.add_argument(
         "--force",
         action="store_true",
@@ -304,13 +292,12 @@ Examples:
     if args.convert_only:
         return run_conversion(checkpoint_file, args.outdir, args.force)
     elif args.score_only:
-        return run_nedc_scorer(args.outdir, args.method)
+        return run_nedc_scorer(args.outdir)
     else:
         return run_full_pipeline(
-            checkpoint_file, 
-            args.outdir, 
-            args.method, 
-            args.force
+            checkpoint_file,
+            args.outdir,
+            args.force,
         )
 
 

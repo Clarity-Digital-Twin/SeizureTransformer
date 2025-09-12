@@ -43,7 +43,8 @@
       "Bash(tmux attach:*)",
       "Bash(tee:*)",
       "Bash(ruff check:*)",
-      "Bash(mypy:*)"
+      "Bash(mypy:*)",
+      "Bash(git reset:*)"
     ],
     "deny": [],
     "ask": []

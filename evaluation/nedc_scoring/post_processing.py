@@ -32,7 +32,7 @@ def apply_seizure_transformer_postprocessing(
     binary = predictions > threshold
     
     # Step 2: Morphological opening (remove small false positives)
-    kernel = np.ones(morph_kernel_size)
+    kernel = np.ones(morph_kernel_size, dtype=bool)
     binary = binary_opening(binary, structure=kernel)
     
     # Step 3: Morphological closing (fill small gaps)

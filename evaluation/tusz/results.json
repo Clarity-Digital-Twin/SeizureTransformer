@@ -1,0 +1,9 @@
+{
+  "auroc": NaN,
+  "sensitivity": 0,
+  "specificity": 0.9780309697592748,
+  "threshold": 0.8,
+  "total_samples": 117604918,
+  "seizure_percentage": 0.0,
+  "timestamp": "2025-09-12T13:47:14.120517"
+}

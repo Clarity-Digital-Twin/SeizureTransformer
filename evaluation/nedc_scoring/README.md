@@ -10,7 +10,7 @@ evaluation/
 │   └── v6.0.0/           # Unmodified NEDC tools
 ├── nedc_scoring/          # Our integration scripts
 │   ├── convert_predictions.py  # Convert checkpoint to NEDC CSV_bi format
-│   ├── create_lists.py         # Generate ref.list / hyp.list (abs paths)
+│   │                           # (also generates ref.list / hyp.list)
 │   ├── post_processing.py      # Threshold + morph ops + eventization
 │   └── run_nedc.py             # Run NEDC scorer and parse outputs
 └── tusz/                  # TUSZ-specific evaluation
