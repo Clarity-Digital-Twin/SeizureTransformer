@@ -44,7 +44,9 @@
       "Bash(tee:*)",
       "Bash(ruff check:*)",
       "Bash(mypy:*)",
-      "Bash(git reset:*)"
+      "Bash(git reset:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
