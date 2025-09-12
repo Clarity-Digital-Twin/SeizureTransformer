@@ -56,8 +56,8 @@ NEDC provides multiple scoring methods:
 
 ### Current SeizureTransformer Output
 SeizureTransformer produces:
-- **Per-second probabilities**: [0.1, 0.2, 0.9, 0.8, ...] 
-- Values between 0-1 for each second of EEG
+- **Per-sample probabilities @256 Hz**: [0.1, 0.2, 0.9, 0.8, ...]
+- Values between 0-1 for each sample; convert to events in seconds for NEDC
 
 ### What NEDC Needs
 NEDC needs:
