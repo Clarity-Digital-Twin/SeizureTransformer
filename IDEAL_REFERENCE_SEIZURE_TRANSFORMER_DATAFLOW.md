@@ -508,9 +508,7 @@ New Data → Different Preprocessing → Same Model → ⚠️ DEGRADED PERFORMA
 
 ### 🔴 REMAINING GAPS (Professional GitHub Issues Created):
 
-#### Issue 1: Siena Dataset Integration Clarification
-**GitHub Issue**: https://github.com/keruiwu/SeizureTransformer/issues/1
-**Status**: Created Dec 12, 2024
+#### Issue 1: Siena Dataset Integration Clarification (Proposed to file)
 
 **Gap Identified**: 
 - Paper mentions training on TUSZ + Siena (128 hours, 14 subjects)
@@ -521,9 +519,7 @@ New Data → Different Preprocessing → Same Model → ⚠️ DEGRADED PERFORMA
 **Why This Matters**: Without Siena loader, we cannot fully reproduce the paper's training 
 methodology, though we can still use pretrained weights for inference.
 
-#### Issue 2: Channel Ordering Specification  
-**GitHub Issue**: https://github.com/keruiwu/SeizureTransformer/issues/2
-**Status**: Created Dec 12, 2024
+#### Issue 2: Channel Ordering Specification (Proposed to file)
 
 **Gap Identified**:
 - Model requires exactly 19 channels (hardcoded assertion in architecture)
@@ -536,7 +532,7 @@ the pretrained weights are applied to the correct channels, potentially degradin
 
 #### ~~Issue 3: Test-Time Dropout~~ [RESOLVED - NOT AN ISSUE]
 **Analysis**: The paper states "drop rate of 0.1 for all dropout layers both at training and test time" 
-but the code correctly uses `model.eval()` which disables dropout at test time (line 89 in utils.py).
+but the code correctly uses `model.eval()` inside `utils.predict()` which disables dropout at test time.
 
 **Resolution**: This is a paper typo/error. The implementation is correct - dropout MUST be disabled 
 during inference per standard deep learning practice. No clarification needed from authors.
