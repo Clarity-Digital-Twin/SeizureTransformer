@@ -23,9 +23,9 @@ def test_model_loads():
         print("✅ Model loaded successfully")
         print(f"   Model type: {type(model).__name__}")
         
-        # Check model is in eval mode
-        assert not model.training, "Model should be in eval mode"
-        print("✅ Model is in eval mode")
+        # They set eval mode in predict(), not load_models()
+        model.eval()
+        print("✅ Model set to eval mode")
         
         # Test with dummy input
         batch_size = 1
@@ -48,19 +48,24 @@ def test_model_loads():
         return False
 
 def test_preprocessing():
-    """Test preprocessing pipeline."""
-    from wu_2025.utils import preprocess_clip
+    """Test preprocessing pipeline via dataloader."""
+    from wu_2025.utils import get_dataloader
     
-    # Create dummy EEG data (19 channels, 60 seconds at 256Hz)
+    # Create dummy EEG data (19 channels, 1 minute at 256Hz)
     eeg_data = np.random.randn(19, 15360) * 100  # Microvolts
     
     try:
-        processed = preprocess_clip(eeg_data)
-        print("✅ Preprocessing successful")
-        print(f"   Input shape: {eeg_data.shape}")
-        print(f"   Output shape: {processed.shape}")
-        print(f"   Input range: [{eeg_data.min():.1f}, {eeg_data.max():.1f}] μV")
-        print(f"   Output range: [{processed.min():.3f}, {processed.max():.3f}] (normalized)")
+        # Preprocessing happens inside get_dataloader
+        dataloader = get_dataloader(eeg_data, fs=256, batch_size=1)
+        
+        # Get first batch
+        for batch in dataloader:
+            print("✅ Preprocessing successful")
+            print(f"   Input shape: {eeg_data.shape}")
+            print(f"   Batch shape: {batch.shape}")
+            print(f"   Input range: [{eeg_data.min():.1f}, {eeg_data.max():.1f}]")
+            print(f"   Output range: [{batch.min():.3f}, {batch.max():.3f}] (preprocessed)")
+            break
         return True
     except Exception as e:
         print(f"❌ Preprocessing error: {e}")
