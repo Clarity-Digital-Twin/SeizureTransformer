@@ -83,11 +83,25 @@ class TestNEDCConformance:
         if not nedc_binary.exists():
             pytest.skip("NEDC binary not available")
 
-        ref_list = fixture_path / "ref.list"
-        hyp_list = fixture_path / "hyp.list"
+        # Generate list files dynamically with absolute paths
+        ref_dir = (fixture_path / "ref").resolve()
+        hyp_dir = (fixture_path / "hyp").resolve()
 
-        assert ref_list.exists(), f"Reference list not found: {ref_list}"
-        assert hyp_list.exists(), f"Hypothesis list not found: {hyp_list}"
+        # Create list files in tmp directory
+        ref_list = tmp_path / "ref.list"
+        hyp_list = tmp_path / "hyp.list"
+
+        # Write list files with absolute paths to CSV_bi files
+        with open(ref_list, "w", newline='\n') as f:
+            for csv_bi in sorted(ref_dir.glob("*.csv_bi")):
+                f.write(f"{csv_bi.resolve()}\n")
+
+        with open(hyp_list, "w", newline='\n') as f:
+            for csv_bi in sorted(hyp_dir.glob("*.csv_bi")):
+                f.write(f"{csv_bi.resolve()}\n")
+
+        assert ref_list.exists(), f"Failed to create reference list"
+        assert hyp_list.exists(), f"Failed to create hypothesis list"
 
         # Run NEDC scorer
         output_dir = tmp_path / "nedc_output"
