@@ -17,14 +17,21 @@ We need this for:
 - Comparing with other papers (apples-to-apples)
 - Clinical certification
 
-## Current Integration Status ✅
+## Integration Has TWO Parts
 
-### What's Done
+### Part 1: Temple Binary Integration ✅ DONE
 - NEDC v6.0.0 binary installed at `evaluation/nedc_eeg_eval/v6.0.0/`
 - CSV converter built: `evaluation/nedc_scoring/convert_predictions.py`
 - Post-processor built: `evaluation/nedc_scoring/post_processing.py`
 - Runner built: `evaluation/nedc_scoring/run_nedc.py`
 - Sweep tool built: `evaluation/nedc_scoring/sweep_operating_point.py`
+- **STATUS**: Working, being used by parameter sweep RIGHT NOW
+
+### Part 2: Native Python Implementation 🚧 IN PROGRESS
+- Location: `seizure_evaluation/taes/scorer.py`
+- **STATUS**: Partially implemented (243 lines), needs completion
+- **GOAL**: Replace Temple binary with our own code
+- **THIS IS THE MAIN WORK TO BE DONE**
 
 ### What Works
 ```bash
