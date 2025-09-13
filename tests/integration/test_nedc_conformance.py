@@ -126,23 +126,20 @@ class TestNEDCConformance:
         assert 0 <= metrics["sensitivity"] <= 100, f"Invalid sensitivity: {metrics['sensitivity']}"
         assert metrics["fa_per_24h"] >= 0, f"Invalid FA rate: {metrics['fa_per_24h']}"
 
-        # Save as golden metrics if not exists
+        # Compare with expected golden metrics (must be committed)
         golden_metrics_file = fixture_path / "golden_metrics.json"
         if not golden_metrics_file.exists():
-            with open(golden_metrics_file, "w") as f:
-                json.dump(metrics, f, indent=2)
-            print(f"\nGenerated golden metrics: {golden_metrics_file}")
-        else:
-            # Compare with golden metrics
-            with open(golden_metrics_file) as f:
-                golden = json.load(f)
+            pytest.skip(f"Golden metrics not found at {golden_metrics_file}")
 
-            # Allow small tolerance for floating point
-            for key in ["sensitivity", "fa_per_24h", "f1_score"]:
-                if key in golden and key in metrics:
-                    assert abs(metrics[key] - golden[key]) < 0.01, (
-                        f"{key} mismatch: {metrics[key]} vs golden {golden[key]}"
-                    )
+        with open(golden_metrics_file) as f:
+            golden = json.load(f)
+
+        # Allow small tolerance for floating point
+        for key in ["sensitivity", "fa_per_24h", "f1_score"]:
+            if key in golden and key in metrics:
+                assert abs(metrics[key] - golden[key]) < 0.01, (
+                    f"{key} mismatch: {metrics[key]} vs golden {golden[key]}"
+                )
 
     def test_csv_bi_format_validation(self, fixture_path):
         """Validate CSV_bi format compliance."""
