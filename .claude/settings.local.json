@@ -67,7 +67,8 @@
       "Bash(evaluation/utils/monitor_evaluation.sh:*)",
       "Bash(git stash:*)",
       "Bash(./evaluation/utils/monitor_evaluation.sh:*)",
-      "Bash(bash:*)"
+      "Bash(bash:*)",
+      "Bash(ruff format:*)"
     ],
     "deny": [],
     "ask": []

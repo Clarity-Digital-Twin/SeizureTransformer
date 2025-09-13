@@ -8,7 +8,6 @@ import json
 import os
 import subprocess
 from pathlib import Path
-from typing import Dict, Any
 
 import pytest
 
@@ -32,7 +31,7 @@ def fixture_path():
     return Path(__file__).parent.parent / "fixtures" / "nedc"
 
 
-def parse_nedc_summary(summary_file: Path) -> Dict[str, float]:
+def parse_nedc_summary(summary_file: Path) -> dict[str, float]:
     """Parse NEDC summary.txt for key metrics."""
     import re
 
