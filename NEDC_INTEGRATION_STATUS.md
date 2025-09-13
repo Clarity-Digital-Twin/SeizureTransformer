@@ -17,11 +17,12 @@
 ### Native TAES Backend (PRIMARY GOAL) 🎯
 - Python implementation at `seizure_evaluation/taes/scorer.py` (243 lines)
 - Integrated with `--backend native-taes` flag
-- **CRITICAL BUG**: Native scorer gives WRONG results!
-  - Native on eval: FA=23.89/24h @ 7.68% sensitivity
-  - Temple on eval: FA=12.41/24h @ 27.72% sensitivity
-  - **MASSIVE DISCREPANCY - Native is broken!**
-- **Next**: FIX native implementation to match Temple binary
+- **BUG FOUND & UNDERSTOOD**: Not a scorer bug - a metrics extraction bug!
+  - Native implements OVERLAP scoring: FA=9.97/24h @ 23.45% sensitivity ✅
+  - Temple OVERLAP section: FA=9.97/24h @ 23.45% sensitivity ✅
+  - **PERFECT MATCH when using overlap_threshold=0.0**
+  - Issue: metrics.json extracts DP ALIGNMENT (27.72%) not OVERLAP (23.45%)
+- **Next**: Decide which scoring method to use (OVERLAP vs DP ALIGNMENT)
 
 ### Parameter Tuning Progress
 - Dev checkpoint: `experiments/dev/baseline/checkpoint.pkl` (~1.5GB)
@@ -63,13 +64,16 @@ tmux attach -t sweep_dev   # Ctrl+B then D to detach
 - **Improvement**: FA reduced by 91%! (137.5 → 12.41)
 - **Near target**: Only 2.41 FA/24h over our goal of 10
 
-### Native TAES is BROKEN:
-- Native gives FA=23.89 while Temple gives FA=12.41 on SAME data
-- Native must be fixed before we can remove Temple dependency
+### Native Scorer Actually WORKS:
+- Native with overlap=0.0: FA=9.97/24h @ 23.45% (matches Temple OVERLAP)
+- Native with overlap=0.5: FA=23.89/24h @ 7.68% (wrong threshold)
+- Temple has 4 scoring methods: DP ALIGN, OVERLAP, TAES, EPOCH
+- Our metrics.json extracts DP ALIGN (27.72%) but calls it "taes"
+- **Native correctly implements OVERLAP scoring!**
 
 ## CRITICAL NEXT STEPS 🚨
 
-### 1. FIX Native TAES Implementation (CRITICAL)
+### 1. Fix Metrics Extraction or Choose Scoring Method
 ```bash
 # Run same data through both backends
 python evaluation/nedc_scoring/run_nedc.py \
@@ -80,17 +84,10 @@ python evaluation/nedc_scoring/run_nedc.py \
   --checkpoint experiments/dev/baseline/checkpoint.pkl \
   --backend native-taes --outdir test_native
 
-# Compare metrics (key fields must match within tolerance)
-python - << 'PY'
-import json
-import sys
-from pathlib import Path
-b = json.load(open('test_binary/results/metrics.json'))
-n = json.load(open('test_native/results/metrics.json'))
-for k in ('sensitivity_percent','fa_per_24h','f1_score'):
-    if k in b.get('taes',{}) and k in n.get('taes',{}):
-        print(k, abs(b['taes'][k]-n['taes'][k]))
-PY
+# Native scorer WORKS with overlap_threshold=0.0!
+# Matches Temple OVERLAP: 23.45% sens, 9.97 FA/24h
+# Issue is metrics.json extracts wrong section (DP ALIGN not OVERLAP)
+# See NEDC_SCORING_BUG_ANALYSIS.md for full details
 ```
 
 ### 2. Finalize Operating Point Selection
