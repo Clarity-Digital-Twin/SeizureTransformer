@@ -189,7 +189,8 @@ def main() -> int:
         best = max(feasible, key=lambda r: (r.taes_sensitivity, -r.taes_fa_per_24h))
         print("\nRecommended (subject to FA<=target):")
         print(
-            f"  threshold={best.threshold} kernel={best.kernel} min_dur={best.min_duration} merge_gap={best.merge_gap}"
+            f"  threshold={best.threshold} kernel={best.kernel} "
+            f"min_dur={best.min_duration} merge_gap={best.merge_gap}"
         )
         print(f"  TAES sensitivity={best.taes_sensitivity:.2f}% FA/24h={best.taes_fa_per_24h:.2f}")
         rec_path = base / "recommended_params.json"
@@ -204,7 +205,8 @@ def main() -> int:
             )
     else:
         print(
-            "\nNo feasible operating point met the FA/24h target. See sweep_results.csv for trade-offs."
+            "\nNo feasible operating point met the FA/24h target. "
+            "See sweep_results.csv for trade-offs."
         )
 
     print(f"\nResults written to: {csv_path}")

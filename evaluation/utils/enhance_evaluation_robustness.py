@@ -5,8 +5,8 @@ This script adds improvements to the evaluation pipeline without disrupting curr
 """
 
 import json
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 
 def add_evaluation_logging_improvements():

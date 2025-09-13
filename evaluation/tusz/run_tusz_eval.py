@@ -84,7 +84,7 @@ def load_labels_for_file(edf_path):
                         start = float(parts[1])
                         end = float(parts[2])
                         seizure_events.append((start, end))
-    except:
+    except Exception:
         pass
 
     return seizure_events
@@ -208,12 +208,14 @@ def main():
         label_coverage = files_with_labels / processed_files
         if label_coverage < 0.1:
             print(
-                f"\n⚠️  WARNING: Only {files_with_labels}/{processed_files} files ({label_coverage:.1%}) have ground truth labels (.csv_bi files)"
+                f"\n⚠️  WARNING: Only {files_with_labels}/{processed_files} files "
+                f"({label_coverage:.1%}) have ground truth labels (.csv_bi files)"
             )
             print("   This suggests potential dataset path issues or missing annotations.")
         else:
             print(
-                f"\n✅ Ground truth coverage: {files_with_labels}/{processed_files} files ({label_coverage:.1%}) with {total_label_events} seizure events"
+                f"\n✅ Ground truth coverage: {files_with_labels}/{processed_files} files "
+                f"({label_coverage:.1%}) with {total_label_events} seizure events"
             )
 
     print("\n" + "=" * 60)
