@@ -128,8 +128,12 @@ class TestNEDCConformance:
 
         # Temple's OVERLAP reports Total FA Rate = SEIZ FP + BCKG FP
         # For this fixture: 2 SEIZ FP + 2 BCKG FP = 4 total @ 64.0/24h
-        assert metrics["sensitivity"] == 100.0, f"Expected 100% sensitivity, got {metrics['sensitivity']}"
-        assert abs(metrics["fa_per_24h"] - 64.0) < 0.1, f"Expected 64.0 FA/24h, got {metrics['fa_per_24h']}"
+        assert metrics["sensitivity"] == 100.0, (
+            f"Expected 100% sensitivity, got {metrics['sensitivity']}"
+        )
+        assert abs(metrics["fa_per_24h"] - 64.0) < 0.1, (
+            f"Expected 64.0 FA/24h, got {metrics['fa_per_24h']}"
+        )
 
     def test_csv_bi_format_validation(self, fixture_path):
         """Validate CSV_bi format compliance."""

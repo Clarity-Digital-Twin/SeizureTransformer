@@ -75,7 +75,9 @@ class TestNativeOverlap:
 
             # Temple's Total FA Rate = SEIZ + BCKG false alarms
             native_fa_per_24h = (
-                (total_metrics["false_alarms"] + total_metrics["bckg_false_alarms"]) * 86400.0 / total_metrics["total_duration"]
+                (total_metrics["false_alarms"] + total_metrics["bckg_false_alarms"])
+                * 86400.0
+                / total_metrics["total_duration"]
             )
 
             # Compare with NEDC (allow 0.1% tolerance)
