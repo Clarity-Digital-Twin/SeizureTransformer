@@ -73,8 +73,8 @@ def plot_roc_curve(checkpoint):
         label=f"Operating Point (θ=0.8)\nSensitivity={tpr[idx_08]:.3f}, FPR={fpr[idx_08]:.3f}",
     )
 
-    ax.set_xlim([0.0, 1.0])
-    ax.set_ylim([0.0, 1.05])
+    ax.set_xlim((0.0, 1.0))
+    ax.set_ylim((0.0, 1.05))
     ax.set_xlabel("False Positive Rate", fontsize=14)
     ax.set_ylabel("True Positive Rate (Sensitivity)", fontsize=14)
     ax.set_title("ROC Curve - SeizureTransformer on TUSZ v2.0.3", fontsize=16)
@@ -107,7 +107,7 @@ def plot_performance_comparison():
     ax.set_xticks(x)
     ax.set_xticklabels(metrics)
     ax.legend(fontsize=12)
-    ax.set_ylim([0, 1.0])
+    ax.set_ylim((0, 1.0))
 
     # Add value labels on bars
     for bars in [bars1, bars2]:
@@ -216,7 +216,7 @@ def plot_prediction_distribution(checkpoint):
     fig, ax = plt.subplots(figsize=(12, 6))
 
     # Plot histograms
-    bins = np.linspace(0, 1, 51)
+    bins = np.linspace(0, 1, 51).tolist()
     ax.hist(background_preds, bins=bins, alpha=0.5, label="Background", color="blue", density=True)
     ax.hist(seizure_preds, bins=bins, alpha=0.5, label="Seizure", color="red", density=True)
 
