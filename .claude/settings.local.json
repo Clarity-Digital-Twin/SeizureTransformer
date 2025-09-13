@@ -91,7 +91,8 @@
       "Bash(echo:*)",
       "Bash(do)",
       "Bash(then)",
-      "Bash(sort:*)"
+      "Bash(sort:*)",
+      "Bash(do if [ -f \"$dir/results/metrics.json\" ])"
     ],
     "deny": [],
     "ask": []

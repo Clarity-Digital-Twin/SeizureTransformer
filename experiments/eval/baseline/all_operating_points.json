@@ -1,0 +1,102 @@
+{
+  "dev": {
+    "default": {
+      "nedc-binary": {
+        "sensitivity": 23.5349,
+        "fa_per_24h": 19.4529,
+        "f1_score": 0.3213
+      },
+      "native-taes": {
+        "sensitivity": 23.16,
+        "fa_per_24h": 18.41,
+        "f1_score": 0.3
+      }
+    },
+    "10fa": {
+      "nedc-binary": {
+        "sensitivity": 23.5349,
+        "fa_per_24h": 19.4529,
+        "f1_score": 0.3213
+      },
+      "native-taes": {
+        "sensitivity": 23.16,
+        "fa_per_24h": 18.41,
+        "f1_score": 0.3
+      }
+    },
+    "2.5fa": {
+      "nedc-binary": {
+        "sensitivity": 7.4419,
+        "fa_per_24h": 2.2594,
+        "f1_score": 0.1362
+      },
+      "native-taes": {
+        "sensitivity": 7.26,
+        "fa_per_24h": 1.6,
+        "f1_score": 0.132
+      }
+    },
+    "1fa": {
+      "nedc-binary": {
+        "sensitivity": 0.6512,
+        "fa_per_24h": 0.2204,
+        "f1_score": 0.0129
+      },
+      "native-taes": {
+        "sensitivity": 0.65,
+        "fa_per_24h": 0.0,
+        "f1_score": 0.013
+      }
+    }
+  },
+  "eval": {
+    "default": {
+      "nedc-binary": {
+        "sensitivity": 45.629,
+        "fa_per_24h": 25.0138,
+        "f1_score": 0.5654
+      },
+      "native-taes": {
+        "sensitivity": 45.2,
+        "fa_per_24h": 24.83,
+        "f1_score": 0.522
+      }
+    },
+    "10fa": {
+      "nedc-binary": {
+        "sensitivity": 45.629,
+        "fa_per_24h": 25.0138,
+        "f1_score": 0.5654
+      },
+      "native-taes": {
+        "sensitivity": 45.2,
+        "fa_per_24h": 24.83,
+        "f1_score": 0.522
+      }
+    },
+    "2.5fa": {
+      "nedc-binary": {
+        "sensitivity": 11.5139,
+        "fa_per_24h": 2.445,
+        "f1_score": 0.2038
+      },
+      "native-taes": {
+        "sensitivity": 11.51,
+        "fa_per_24h": 2.44,
+        "f1_score": 0.201
+      }
+    },
+    "1fa": {
+      "nedc-binary": {
+        "sensitivity": 1.2793,
+        "fa_per_24h": 0.3761,
+        "f1_score": 0.0253
+      },
+      "native-taes": {
+        "sensitivity": 1.28,
+        "fa_per_24h": 0.38,
+        "f1_score": 0.025
+      }
+    }
+  }
+}
