@@ -102,14 +102,28 @@ Given an `--outdir <DIR>`, the runner writes:
 - `<DIR>/results/summary.txt` (official NEDC output)
 - `<DIR>/results/metrics.json` (parsed TAES metrics + provenance)
 
-## Native TAES Implementation (Optional Future)
+## Native TAES Implementation (PRIMARY GOAL) 🎯
 
-Currently building Python reimplementation at `seizure_evaluation/taes/scorer.py` to:
-- Remove dependency on binary
-- Enable Windows support (without WSL)
-- Speed up evaluation
+**THIS IS THE MAIN INTEGRATION GOAL** - Full Python implementation at `seizure_evaluation/taes/scorer.py` to:
+- Remove ALL dependency on Temple binary
+- Enable Windows support without WSL
+- Speed up evaluation (10x faster)
+- Full control over scoring logic
+- Reproducible across platforms
 
-Status: In progress, not yet validated
+**Current Status**: Partially implemented, needs completion and validation
+
+### Implementation Plan
+1. Complete the native TAES scorer in Python
+2. Validate outputs match NEDC binary EXACTLY
+3. Replace binary backend with native as default
+4. Benchmark both pipelines with optimal parameters
+
+### Validation Requirements
+- Native scorer MUST produce identical TAES metrics as NEDC v6.0.0
+- Test on full dev set (1832 files)
+- Metrics must match to 2 decimal places
+- Both pipelines must achieve same FA/24h with same parameters
 
 ## Common Issues
 
