@@ -104,7 +104,7 @@ Target: Clinical viability (FA/24h ≤ 10, Sensitivity ≥ 50%)
 
 - [`wu_2025/`](../wu_2025/) - Original implementation (external)
 - [`evaluation/`](../evaluation/) - Our evaluation pipeline
-- [`OPERATING_POINT_TUNING_PLAN.md`](../OPERATING_POINT_TUNING_PLAN.md) - Parameter optimization strategy
+- [`SEIZURE_TRANSFORMER_TUNING_PLAN.md`](../SEIZURE_TRANSFORMER_TUNING_PLAN.md) - Parameter optimization strategy
 - [`CLAUDE.md`](../CLAUDE.md) - Repository context and architecture
 
 ## 📝 Citations

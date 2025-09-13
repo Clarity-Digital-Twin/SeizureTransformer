@@ -157,7 +157,7 @@ AUROC:           0.9021
 - Probability threshold: 0.8
 - Morphological operations (kernel=5)
 - Minimum event duration: 2.0 seconds
-- *See [Operating Point Tuning](OPERATING_POINT_TUNING_PLAN.md) for optimization*
+- *See [Operating Point Tuning](SEIZURE_TRANSFORMER_TUNING_PLAN.md) for optimization*
 
 ### Evaluation Protocol
 - **Dataset**: TUSZ v2.0.3 eval split

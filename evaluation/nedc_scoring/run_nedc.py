@@ -175,6 +175,7 @@ def run_nedc_scorer(
     elif backend == "native-taes":
         # Native Python TAES implementation
         import sys
+
         sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
         from seizure_evaluation.taes.scorer import TAESScorer
 
@@ -188,7 +189,7 @@ def run_nedc_scorer(
             "true_positives": 0,
             "false_positives": 0,
             "false_negatives": 0,
-            "total_duration": 0.0
+            "total_duration": 0.0,
         }
 
         # Read list files to get CSV_bi paths
@@ -198,7 +199,7 @@ def run_nedc_scorer(
             hyp_files = [Path(line.strip()) for line in f if line.strip()]
 
         # Score each file pair
-        for ref_csv, hyp_csv in zip(ref_files, hyp_files):
+        for ref_csv, hyp_csv in zip(ref_files, hyp_files, strict=False):
             if ref_csv.stem == hyp_csv.stem:
                 metrics = scorer.score_from_files(ref_csv, hyp_csv)
                 total_metrics["true_positives"] += metrics.true_positives
@@ -218,12 +219,16 @@ def run_nedc_scorer(
             sensitivity = 100.0 * tp / (tp + fn) if (tp + fn) > 0 else 0.0
             fa_per_24h = fp * 86400.0 / duration if duration > 0 else 0.0
             precision = 100.0 * tp / (tp + fp) if (tp + fp) > 0 else 0.0
-            f1 = 2 * precision * sensitivity / (precision + sensitivity) if (precision + sensitivity) > 0 else 0.0
+            f1 = (
+                2 * precision * sensitivity / (precision + sensitivity)
+                if (precision + sensitivity) > 0
+                else 0.0
+            )
 
             f.write("=== NATIVE TAES SCORING RESULTS ===\n\n")
             f.write(f"Sensitivity (TPR, Recall): {sensitivity:.2f}%\n")
             f.write(f"Total False Alarm Rate: {fa_per_24h:.2f} per 24 hours\n")
-            f.write(f"F1 Score: {f1/100:.3f}\n")
+            f.write(f"F1 Score: {f1 / 100:.3f}\n")
 
         print(f"Native TAES scoring complete. Results in {summary_file}")
     else:
@@ -306,7 +311,9 @@ def extract_and_save_metrics(results_dir, metrics_file, backend="nedc-binary"):
 
                 # Extract metrics from OVERLAP section
                 sens_match = re.search(r"Sensitivity \(TPR, Recall\):\s+([\d.]+)%", overlap_content)
-                fa_match = re.search(r"Total False Alarm Rate:\s+([\d.]+)\s+per 24 hours", overlap_content)
+                fa_match = re.search(
+                    r"Total False Alarm Rate:\s+([\d.]+)\s+per 24 hours", overlap_content
+                )
                 f1_match = re.search(r"F1 Score(?: \(F Ratio\))?:\s+([\d.]+)", overlap_content)
 
                 # Store as "overlap" metrics (more accurate naming)

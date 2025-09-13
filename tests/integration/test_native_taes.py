@@ -5,15 +5,16 @@ Ensures our Python implementation matches official scorer.
 """
 
 import json
-from pathlib import Path
-import pytest
 import sys
+from pathlib import Path
+
+import pytest
 
 # Add seizure_evaluation to path
 repo_root = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(repo_root))
 
-from seizure_evaluation.taes.scorer import TAESScorer, compare_with_nedc
+from seizure_evaluation.taes.scorer import TAESScorer
 
 
 @pytest.mark.taes
@@ -47,7 +48,7 @@ class TestNativeTAES:
             "true_positives": 0,
             "false_positives": 0,
             "false_negatives": 0,
-            "total_duration": 0.0
+            "total_duration": 0.0,
         }
 
         for ref_file in sorted(ref_dir.glob("*.csv_bi")):
@@ -63,11 +64,17 @@ class TestNativeTAES:
 
         # Calculate aggregate metrics
         if total_metrics["total_duration"] > 0:
-            native_sensitivity = 100.0 * total_metrics["true_positives"] / (
-                total_metrics["true_positives"] + total_metrics["false_negatives"]
-            ) if (total_metrics["true_positives"] + total_metrics["false_negatives"]) > 0 else 0.0
+            native_sensitivity = (
+                100.0
+                * total_metrics["true_positives"]
+                / (total_metrics["true_positives"] + total_metrics["false_negatives"])
+                if (total_metrics["true_positives"] + total_metrics["false_negatives"]) > 0
+                else 0.0
+            )
 
-            native_fa_per_24h = total_metrics["false_positives"] * 86400.0 / total_metrics["total_duration"]
+            native_fa_per_24h = (
+                total_metrics["false_positives"] * 86400.0 / total_metrics["total_duration"]
+            )
 
             # Compare with NEDC (allow 0.1% tolerance)
             if "sensitivity" in nedc_metrics:
@@ -95,11 +102,7 @@ class TestNativeTAES:
         """Test scorer with perfectly matching events."""
         from seizure_evaluation.taes.scorer import Event
 
-        ref_events = [
-            Event(10.0, 20.0),
-            Event(30.0, 45.0),
-            Event(60.0, 75.0)
-        ]
+        ref_events = [Event(10.0, 20.0), Event(30.0, 45.0), Event(60.0, 75.0)]
         hyp_events = ref_events.copy()
 
         scorer = TAESScorer()
