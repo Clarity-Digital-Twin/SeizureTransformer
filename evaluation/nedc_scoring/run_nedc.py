@@ -38,7 +38,15 @@ def setup_nedc_environment():
     return env
 
 
-def run_conversion(checkpoint_file, output_dir, force=False):
+def run_conversion(
+    checkpoint_file,
+    output_dir,
+    force=False,
+    threshold: float | None = None,
+    kernel: int | None = None,
+    min_duration_sec: float | None = None,
+    merge_gap_sec: float | None = None,
+):
     """
     Convert checkpoint.pkl to NEDC CSV_bi format.
 
@@ -74,6 +82,14 @@ def run_conversion(checkpoint_file, output_dir, force=False):
         "--checkpoint", str(checkpoint_file),
         "--outdir", str(output_dir)
     ]
+    if threshold is not None:
+        cmd += ["--threshold", str(threshold)]
+    if kernel is not None:
+        cmd += ["--kernel", str(kernel)]
+    if min_duration_sec is not None:
+        cmd += ["--min_duration_sec", str(min_duration_sec)]
+    if merge_gap_sec is not None:
+        cmd += ["--merge_gap_sec", str(merge_gap_sec)]
 
     print(f"Running: {' '.join(cmd)}")
     result = subprocess.run(cmd, capture_output=True, text=True)
@@ -186,7 +202,15 @@ def parse_nedc_output(results_dir):
     print(f"\nFull results saved to: {results_dir}")
 
 
-def run_full_pipeline(checkpoint_file, output_dir, force=False):
+def run_full_pipeline(
+    checkpoint_file,
+    output_dir,
+    force=False,
+    threshold: float | None = None,
+    kernel: int | None = None,
+    min_duration_sec: float | None = None,
+    merge_gap_sec: float | None = None,
+):
     """
     Run the complete NEDC evaluation pipeline.
 
@@ -208,7 +232,15 @@ def run_full_pipeline(checkpoint_file, output_dir, force=False):
     print(f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
     # Step 1: Convert predictions
-    ret = run_conversion(checkpoint_file, output_dir, force)
+    ret = run_conversion(
+        checkpoint_file,
+        output_dir,
+        force,
+        threshold=threshold,
+        kernel=kernel,
+        min_duration_sec=min_duration_sec,
+        merge_gap_sec=merge_gap_sec,
+    )
     if ret != 0:
         print("Conversion failed")
         return ret
@@ -267,6 +299,11 @@ Examples:
         action="store_true",
         help="Force overwrite existing output"
     )
+    # Conversion tuning parameters
+    parser.add_argument("--threshold", type=float, default=None, help="Probability threshold")
+    parser.add_argument("--kernel", type=int, default=None, help="Morphological kernel size (samples)")
+    parser.add_argument("--min_duration_sec", type=float, default=None, help="Minimum event duration (s)")
+    parser.add_argument("--merge_gap_sec", type=float, default=None, help="Merge events with gaps less than this (s)")
     parser.add_argument(
         "--convert-only",
         action="store_true",
@@ -288,7 +325,15 @@ Examples:
 
     # Run appropriate pipeline components
     if args.convert_only:
-        return run_conversion(checkpoint_file, args.outdir, args.force)
+        return run_conversion(
+            checkpoint_file,
+            args.outdir,
+            args.force,
+            threshold=args.threshold,
+            kernel=args.kernel,
+            min_duration_sec=args.min_duration_sec,
+            merge_gap_sec=args.merge_gap_sec,
+        )
     elif args.score_only:
         return run_nedc_scorer(args.outdir)
     else:
@@ -296,6 +341,10 @@ Examples:
             checkpoint_file,
             args.outdir,
             args.force,
+            threshold=args.threshold,
+            kernel=args.kernel,
+            min_duration_sec=args.min_duration_sec,
+            merge_gap_sec=args.merge_gap_sec,
         )
 
 

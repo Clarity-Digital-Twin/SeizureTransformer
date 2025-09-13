@@ -36,7 +36,14 @@ def write_nedc_csv(events, file_path, file_id, duration_sec):
             f.write(f"TERM,{start_sec:.4f},{end_sec:.4f},seiz,1.0000\n")
 
 
-def convert_checkpoint_to_nedc(checkpoint_file, output_dir):
+def convert_checkpoint_to_nedc(
+    checkpoint_file,
+    output_dir,
+    threshold: float = 0.8,
+    morph_kernel_size: int = 5,
+    min_duration_sec: float = 2.0,
+    merge_gap_sec: float | None = None,
+):
     """
     Convert checkpoint.pkl to NEDC CSV_bi format.
 
@@ -80,10 +87,11 @@ def convert_checkpoint_to_nedc(checkpoint_file, output_dir):
         # Process predictions to get hypothesis events
         hyp_events = apply_seizure_transformer_postprocessing(
             predictions,
-            threshold=0.8,
-            morph_kernel_size=5,
-            min_duration_sec=2.0,
-            fs=256
+            threshold=threshold,
+            morph_kernel_size=morph_kernel_size,
+            min_duration_sec=min_duration_sec,
+            fs=256,
+            merge_gap_sec=merge_gap_sec,
         )
 
         # Write hypothesis file
@@ -159,6 +167,10 @@ def main():
         default="evaluation/nedc_scoring/output",
         help="Output directory for NEDC files"
     )
+    parser.add_argument("--threshold", type=float, default=0.8, help="Probability threshold")
+    parser.add_argument("--kernel", type=int, default=5, help="Morphological kernel size (samples)")
+    parser.add_argument("--min_duration_sec", type=float, default=2.0, help="Minimum event duration (s)")
+    parser.add_argument("--merge_gap_sec", type=float, default=None, help="Merge events with gaps less than this (s)")
 
     args = parser.parse_args()
 
@@ -167,7 +179,14 @@ def main():
         print(f"Error: Checkpoint file not found: {checkpoint_file}")
         return 1
 
-    convert_checkpoint_to_nedc(checkpoint_file, args.outdir)
+    convert_checkpoint_to_nedc(
+        checkpoint_file,
+        args.outdir,
+        threshold=args.threshold,
+        morph_kernel_size=args.kernel,
+        min_duration_sec=args.min_duration_sec,
+        merge_gap_sec=args.merge_gap_sec,
+    )
     return 0
 
 

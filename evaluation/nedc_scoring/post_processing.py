@@ -9,11 +9,12 @@ from scipy.ndimage import binary_closing, binary_opening
 
 
 def apply_seizure_transformer_postprocessing(
-    predictions: np.ndarray,
+    predictions: np.ndarray, 
     threshold: float = 0.8,
     morph_kernel_size: int = 5,
     min_duration_sec: float = 2.0,
-    fs: int = 256
+    fs: int = 256,
+    merge_gap_sec: float | None = None,
 ) -> list:
     """
     Apply paper's post-processing pipeline.
@@ -50,6 +51,10 @@ def apply_seizure_transformer_postprocessing(
             start_sec = start_idx / fs
             end_sec = end_idx / fs
             filtered_events.append((start_sec, end_sec))
+
+    # Optional Step 6: Merge nearby events to reduce fragmentation
+    if merge_gap_sec is not None and merge_gap_sec > 0 and filtered_events:
+        filtered_events = merge_nearby_events(filtered_events, gap_sec=merge_gap_sec)
 
     return filtered_events
 
