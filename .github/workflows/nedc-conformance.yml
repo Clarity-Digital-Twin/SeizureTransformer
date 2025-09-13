@@ -46,7 +46,8 @@ jobs:
       run: |
         uv venv
         source .venv/bin/activate
-        uv pip install -e . --extra dev
+        uv pip install ./wu_2025  # Install model package first
+        uv pip install -e .[dev]  # Correct syntax for extras
         uv pip install lxml  # Required by NEDC
 
     - name: Lint with ruff (exclude vendor)
@@ -108,7 +109,8 @@ jobs:
         echo "$HOME/.cargo/bin" >> $GITHUB_PATH
         uv venv
         source .venv/bin/activate
-        uv pip install -e . --extra dev
+        uv pip install ./wu_2025  # Install model package first
+        uv pip install -e .[dev]  # Correct syntax for extras
         uv pip install lxml
 
     - name: Run integration tests

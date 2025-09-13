@@ -191,7 +191,7 @@ def extract_and_save_metrics(results_dir, metrics_file):
         git_sha = "unknown"
 
     # Get Python version
-    py_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.patch}"
+    py_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
 
     metrics: dict[str, Any] = {
         "timestamp": datetime.now().isoformat(),
