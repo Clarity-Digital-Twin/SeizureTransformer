@@ -127,7 +127,7 @@ class TestNEDCConformance:
         assert metrics["fa_per_24h"] >= 0, f"Invalid FA rate: {metrics['fa_per_24h']}"
 
         # Compare with expected golden metrics (must be committed)
-        golden_metrics_file = fixture_path / "golden_metrics.json"
+        golden_metrics_file = fixture_path / "expected_metrics.json"
         if not golden_metrics_file.exists():
             pytest.skip(f"Golden metrics not found at {golden_metrics_file}")
 

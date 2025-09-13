@@ -22,6 +22,8 @@ evaluation/nedc_scoring/output/
 evaluation/nedc_scoring/test_output/
 experiments/*/checkpoint*.pkl*
 experiments/*/*.pkl
+experiments/*/nedc_results/
+experiments/*/*/nedc_results/
 
 # Dataset files (potentially large/sensitive)
 *.edf
