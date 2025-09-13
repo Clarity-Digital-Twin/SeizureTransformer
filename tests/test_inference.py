@@ -42,11 +42,11 @@ def test_model_loads():
         print(f"   Output shape: {output.shape}")
         print(f"   Output range: [{output.min().item():.3f}, {output.max().item():.3f}]")
 
-        return True
+        assert True
 
     except Exception as e:
         print(f"❌ Error: {e}")
-        return False
+        assert False
 
 def test_preprocessing():
     """Test preprocessing pipeline via dataloader."""
@@ -67,10 +67,10 @@ def test_preprocessing():
             print(f"   Input range: [{eeg_data.min():.1f}, {eeg_data.max():.1f}]")
             print(f"   Output range: [{batch.min():.3f}, {batch.max():.3f}] (preprocessed)")
             break
-        return True
+        assert True
     except Exception as e:
         print(f"❌ Preprocessing error: {e}")
-        return False
+        assert False
 
 def check_weights():
     """Check if model weights exist."""
