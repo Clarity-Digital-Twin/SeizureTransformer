@@ -107,13 +107,18 @@ def run_conversion(
     return 0
 
 
-def run_nedc_scorer(output_dir, backend="nedc-binary"):
+def run_nedc_scorer(output_dir, backend="nedc-binary",
+                   threshold=None, kernel=None, min_duration_sec=None, merge_gap_sec=None):
     """
     Run NEDC official scorer on converted files.
 
     Args:
         output_dir: Directory containing NEDC files
         backend: Scoring backend ("nedc-binary" or "native-taes")
+        threshold: Probability threshold used (for metadata)
+        kernel: Morphological kernel size used (for metadata)
+        min_duration_sec: Minimum duration used (for metadata)
+        merge_gap_sec: Merge gap used (for metadata)
 
     Returns:
         int: Return code (0 for success)
