@@ -2,5 +2,5 @@
   "sensitivity": 100.0,
   "fa_per_24h": 32.0,
   "f1_score": 0.8438,
-  "note": "Updated for OVERLAP scorer (any-overlap semantics)"
+  "note": "Expected values for OVERLAP scorer (any-overlap semantics)"
 }
