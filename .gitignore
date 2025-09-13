@@ -1,4 +1,3 @@
-
 # Python
 __pycache__/
 *.py[cod]
@@ -13,18 +12,22 @@ wu_2025/src/wu_2025/model*.pth
 *.pt
 *.ckpt
 *.h5
+
+# Large pickles and checkpoints (HUGE - NEVER COMMIT)
 *.pkl
 *.pickle
+evaluation/tusz/checkpoint*.pkl*
+evaluation/tusz/*.pkl
+evaluation/nedc_scoring/output/
+evaluation/nedc_scoring/test_output/
+experiments/*/checkpoint*.pkl*
+experiments/*/*.pkl
 
-# Dataset files
+# Dataset files (potentially large/sensitive)
 *.edf
 *.csv
 *.tsv
 *.mat
-
-# Specific paths
-/wu_2025/src/wu_2025/__pycache__
-wu_2025/src/wu_2025/model.pth
 
 # OS files
 .DS_Store
@@ -41,21 +44,20 @@ Thumbs.db
 venv/
 env/
 
-# NEDC evaluation tools
-nedc_eeg_eval_v6.0.0.tar.gz
-nedc_eeg_eval_v6.0.0/
-nedc_eval/
+# Build artifacts
+dist/
+build/
+*.egg-info/
 
-# Reference repositories (now moved to evaluation/)
-# reference_repos/  # No longer needed
+# Testing and coverage
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
 
-# Literature and papers (private)
-literature/
-*.pdf
-*.PDF
+# Logs
+*.log
 
-# Checkpoint files (HUGE - NEVER COMMIT)
-evaluation/tusz/checkpoint*.pkl*
-evaluation/tusz/*.pkl
-evaluation/nedc_scoring/output/
-evaluation/nedc_scoring/test_output/
+# NOTE: literature/ is NOT ignored - we want this public for transparency!
+# NOTE: evaluation/nedc_eeg_eval/ is NOT ignored - it's open source Temple software
