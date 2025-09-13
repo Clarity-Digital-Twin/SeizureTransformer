@@ -1,9 +1,9 @@
 # 📊 NEDC INTEGRATION STATUS
 ## Quick Status Dashboard
 
-**Last Updated**: 2025-09-13 12:00
+**Last Updated**: 2025-09-13 12:40
 **Sweep Progress**: 108/108 combinations (complete) ✅
-**Native TAES**: PRIMARY GOAL — **CRITICAL BUG FOUND** - gives wrong metrics!
+**Native TAES**: Parity achieved (OVERLAP sens/FA) ✅ — F1 differs slightly by aggregation
 
 ## What's Done ✅
 
@@ -15,14 +15,13 @@
 - Note: If the binary errors on Python invocation, ensure a `python` alias is available on PATH (some environments only provide `python3`).
 
 ### Native TAES Backend (PRIMARY GOAL) 🎯
-- Python implementation at `seizure_evaluation/taes/scorer.py` (243 lines)
-- Integrated with `--backend native-taes` flag
-- **BUG FOUND & UNDERSTOOD**: Not a scorer bug - a metrics extraction bug!
-  - Native implements OVERLAP scoring: FA=9.97/24h @ 23.45% sensitivity ✅
-  - Temple OVERLAP section: FA=9.97/24h @ 23.45% sensitivity ✅
-  - **PERFECT MATCH when using overlap_threshold=0.0**
-  - Issue: metrics.json extracts DP ALIGNMENT (27.72%) not OVERLAP (23.45%)
-- **Next**: Decide which scoring method to use (OVERLAP vs DP ALIGNMENT)
+- Python implementation at `seizure_evaluation/taes/scorer.py` (integrated)
+- Backend flag: `--backend native-taes`
+- Parity (OVERLAP): Native matches Temple for sensitivity and FA/24h at overlap_threshold=0.0
+  - Temple OVERLAP: Sens=23.4542%, FA=9.9679/24h
+  - Native TAES:    Sens=23.45%,   FA=9.97/24h
+- F1 note: Native computes dataset-level F1 from aggregated TP/FP/FN; Temple reports per-label F1 in OVERLAP. Small differences are expected unless we mirror Temple’s F1 aggregation.
+- Metrics extraction in `run_nedc.py` now targets OVERLAP section explicitly and stores under `overlap` (duplicated to `taes` for backward-compat).
 
 ### Parameter Tuning Progress
 - Dev checkpoint: `experiments/dev/baseline/checkpoint.pkl` (~1.5GB)
@@ -30,7 +29,7 @@
 - Results:
   - CSV: `experiments/dev/baseline/sweeps/sweep_results.csv`
   - Recommended: `experiments/dev/baseline/sweeps/recommended_params.json` (threshold=0.95, kernel=5, min_duration=2.0s, merge_gap=5.0s)
-  - Dev TAES (Temple binary): sensitivity=13.67%, FA/24h=9.97
+  - Important: Current sweep parses the first section in Temple `summary.txt` (DP ALIGNMENT), not OVERLAP. If OVERLAP is the target for gating, update the sweep parser accordingly.
 
 ## How to Monitor 🏃
 
@@ -58,22 +57,22 @@ tmux attach -t sweep_dev   # Ctrl+B then D to detach
 
 ## EVAL FINDINGS 📊
 
-### Tuning SUCCESS with Temple Binary:
-- **Baseline (no tuning)**: FA=137.5/24h @ 82% sensitivity
-- **After tuning (eval)**: FA=12.41/24h @ 27.72% sensitivity
-- **Improvement**: FA reduced by 91%! (137.5 → 12.41)
-- **Near target**: Only 2.41 FA/24h over our goal of 10
+### Temple Binary (Eval baseline):
+- DP ALIGNMENT: Sens=27.72%, FA=12.41/24h, F1=0.4114
+- OVERLAP:      Sens=23.4542%, FA=9.9679/24h, F1=0.3704
 
-### Native Scorer Actually WORKS:
-- Native with overlap=0.0: FA=9.97/24h @ 23.45% (matches Temple OVERLAP)
-- Native with overlap=0.5: FA=23.89/24h @ 7.68% (wrong threshold)
-- Temple has 4 scoring methods: DP ALIGN, OVERLAP, TAES, EPOCH
-- Our metrics.json extracts DP ALIGN (27.72%) but calls it "taes"
-- **Native correctly implements OVERLAP scoring!**
+### Native TAES (overlap_threshold=0.0):
+- OVERLAP-equivalent summary: Sens=23.45%, FA=9.97/24h
+- F1: differs from Temple OVERLAP due to aggregation method; not a gating metric for us
+
+### Sweep Results (Dev set):
+- Recommended params (DP ALIGNMENT-optimal): threshold=0.95, kernel=5, min_duration=2.0s, merge_gap=5.0s
+- At these params (DP ALIGNMENT section): Sens≈13.67%, FA≈9.97/24h
+- OVERLAP section at those params differs (e.g., Sens≈11.91%, FA≈6.67/24h for one example); choose target scoring method and align parser
 
 ## CRITICAL NEXT STEPS 🚨
 
-### 1. Fix Metrics Extraction or Choose Scoring Method
+### 1. Choose and align the target scoring method
 ```bash
 # Run same data through both backends
 python evaluation/nedc_scoring/run_nedc.py \
@@ -84,10 +83,9 @@ python evaluation/nedc_scoring/run_nedc.py \
   --checkpoint experiments/dev/baseline/checkpoint.pkl \
   --backend native-taes --outdir test_native
 
-# Native scorer WORKS with overlap_threshold=0.0!
-# Matches Temple OVERLAP: 23.45% sens, 9.97 FA/24h
-# Issue is metrics.json extracts wrong section (DP ALIGN not OVERLAP)
-# See NEDC_SCORING_BUG_ANALYSIS.md for full details
+# Native scorer matches Temple OVERLAP for sens/FA at overlap_threshold=0.0.
+# Decide which method (DP ALIGNMENT vs OVERLAP) gates tuning and reporting,
+# then make sweep parser match that section.
 ```
 
 ### 2. Finalize Operating Point Selection
@@ -119,11 +117,11 @@ echo '{
 
 ## Key Metrics Target
 
-- MUST ACHIEVE: FA/24h ≤ 10
-- Dev results (Temple binary): FA=9.97/24h @ 13.67% sensitivity
-- **Eval results (Temple binary): FA=12.41/24h @ 27.72% sensitivity**
-- Baseline without tuning: FA=137.5/24h @ 82% sensitivity
-- Goal: Push sensitivity higher while keeping FA ≤ 10
+- MUST ACHIEVE: FA/24h ≤ 10 (method must be specified: DP ALIGNMENT or OVERLAP)
+- Dev (DP ALIGNMENT at recommended params): FA≈9.97/24h @ Sens≈13.67%
+- Eval baseline (OVERLAP at thr=0.8): FA≈9.97/24h @ Sens≈23.45%
+- Baseline without tuning: FA≈137.5/24h @ Sens≈82%
+- Goal: Maximize sensitivity subject to FA ≤ 10 under the chosen scoring method
 
 ## Quick Commands
 

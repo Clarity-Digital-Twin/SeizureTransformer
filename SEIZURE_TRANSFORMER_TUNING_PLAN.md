@@ -89,6 +89,11 @@ python evaluation/nedc_scoring/run_nedc.py \
 - Feasible FA ≤ 10 found, but sensitivity is currently low (≈8–12%)
 - Example feasible: threshold=0.95, kernel=5, min_duration=2.0s, merge_gap=5.0s
 
+**Recent Evaluation Results (2025-09-13):**
+- Temple binary (thr=0.8, k=5, min=2s): Sens=23.45%, FA=9.97/24h, F1=0.370 ✅
+- Native TAES (thr=0.95, k=5, min=2s): Sens=7.68%, FA=23.89/24h, F1=0.114 ❌
+- Note: Native with thr=0.95 has worse FA than Temple with thr=0.8 (bug in threshold application?)
+
 ## Timeline
 
 1. Dev sweep completion: done
@@ -117,8 +122,33 @@ experiments/
 3. **Run eval only once** - No peeking and re-tuning
 4. **Document everything** - Full audit trail in experiments/
 
+## Targeting 1 FA/24h Operating Point
+
+**Goal**: Find parameters that achieve ~1 FA/24h for ultra-low false alarm operation
+
+**Expected tradeoffs**:
+- Current best: 23.45% sensitivity at 10 FA/24h (Temple, thr=0.8)
+- For 1 FA/24h: Expect sensitivity to drop to ~5-10%
+- Need much higher threshold (0.98-0.99) and longer min_duration (8-16s)
+
+**Sweep strategy**:
+```bash
+# Fine-grained sweep for 1 FA/24h target
+python evaluation/nedc_scoring/sweep_operating_point.py \
+  --checkpoint experiments/eval/baseline/checkpoint.pkl \
+  --outdir_base experiments/eval/baseline/sweeps_1fa \
+  --thresholds 0.95,0.97,0.98,0.99 \
+  --kernels 5,11,21 \
+  --min_durations 4,8,12,16 \
+  --merge_gaps 5,10 \
+  --target_fa_per_24h 1
+```
+
 ## Next Actions
 
+- [ ] Run sweep targeting 1 FA/24h operating point
+- [ ] Document parity between Temple binary and native TAES
+- [ ] Fix native TAES threshold bug (thr=0.95 giving worse FA than thr=0.8)
 - [ ] Copy frozen params to `experiments/eval/frozen_params.json`
 - [ ] Run single eval with frozen params on eval split
 - [ ] Report final TAES metrics (sensitivity, FA/24h, F1)

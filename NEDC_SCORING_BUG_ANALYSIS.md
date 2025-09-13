@@ -2,9 +2,9 @@
 
 ## Executive Summary
 
-**THE BUG IS NOT IN THE NATIVE SCORER - IT'S IN THE METRICS EXTRACTION!**
+**Root cause was metrics extraction, not native scoring. Fixed.**
 
-Our native Python scorer CORRECTLY implements OVERLAP scoring and produces identical results to Temple NEDC's OVERLAP section. The confusion arose because `metrics.json` was extracting metrics from the wrong section (DP ALIGNMENT instead of OVERLAP).
+Our native Python scorer correctly implements OVERLAP scoring (with `overlap_threshold=0.0`) and matches Temple NEDC's OVERLAP section for sensitivity and FA/24h. The confusion arose because `metrics.json` used to extract metrics from the first section in Temple’s `summary.txt` (DP ALIGNMENT) instead of the OVERLAP section. `run_nedc.py` now explicitly parses the OVERLAP block and stores those values under `overlap` (duplicated to `taes` for backward-compat).
 
 ## Key Findings
 
@@ -33,23 +33,11 @@ Temple NEDC v6.0.0 outputs four different scoring sections, each with different 
 When configured with `overlap_threshold=0.0` (any overlap), our native scorer produces:
 - Sensitivity: 23.45% ✅ (Temple OVERLAP: 23.4542%)
 - FA/24h: 9.97 ✅ (Temple OVERLAP: 9.9679%)
-- F1: 0.3704 ✅ (Temple OVERLAP: 0.3704)
-- TP: 110, FP: 15, FN: 359 ✅ (Matches Temple OVERLAP section)
+- F1: differs slightly (native aggregates TP/FP/FN; Temple OVERLAP reports per-label F1). We treat F1 as informational and gate on sens/FA.
 
 ### 3. The Metrics Extraction Bug
 
-The bug is in `evaluation/nedc_scoring/run_nedc.py::extract_and_save_metrics()`:
-
-```python
-# Current behavior: Extracts first occurrence of "Sensitivity (TPR, Recall)"
-# This gets DP ALIGNMENT metrics (27.72% sensitivity)
-taes_sens_match = re.search(r"Sensitivity \(TPR, Recall\):\s+([\d.]+)%", content)
-
-# But saves it as "taes" in metrics.json
-metrics["taes"]["sensitivity_percent"] = float(taes_sens_match.group(1))
-```
-
-This incorrectly labels DP ALIGNMENT metrics as "taes" metrics.
+The original issue was in `evaluation/nedc_scoring/run_nedc.py::extract_and_save_metrics()` (extracting the first “Sensitivity” from DP ALIGNMENT). This has been fixed to target the OVERLAP section explicitly.
 
 ## Which Scoring Method Should We Use?
 
@@ -73,9 +61,9 @@ This incorrectly labels DP ALIGNMENT metrics as "taes" metrics.
    - For publication: Which method do other papers use?
    - For clinical: Which meets our FA < 10/24h requirement?
 
-2. **Fix the metrics extraction**
-   - Either extract from OVERLAP section (to match native)
-   - Or implement DP ALIGNMENT in native scorer
+2. **Fix the metrics extraction** ✅
+   - Extract from OVERLAP section (done; matches native)
+   - If DP ALIGNMENT becomes the target, either change parser or implement DP ALIGNMENT in native
 
 3. **Update documentation**
    - Clearly specify which NEDC scoring method we're targeting
@@ -97,14 +85,11 @@ This incorrectly labels DP ALIGNMENT metrics as "taes" metrics.
 ## Test Commands
 
 ```bash
-# Verify native scorer matches OVERLAP
-python debug_taes_aggregation.py  # With overlap_threshold=0.0
+# Verify parity on eval baseline
+python experiments/eval/baseline/compare_all_results.py
 
-# Check Temple output sections
-grep -E "NEDC .* SCORING SUMMARY" experiments/eval/baseline/nedc_results_frozen_temple/results/summary.txt
-
-# See what metrics.json actually contains
-jq '.taes' experiments/eval/baseline/nedc_results_frozen_temple/results/metrics.json
+# Inspect which section sweep is using (DP ALIGNMENT vs OVERLAP)
+sed -n '1,220p' experiments/dev/baseline/sweeps/thr0.95_k5_min2.0_gap5.0/results/summary.txt | less
 ```
 
 ## Resolution

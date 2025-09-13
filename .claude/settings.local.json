@@ -82,7 +82,12 @@
       "Read(//usr/bin/**)",
       "Bash(do [ -f \"$dir/results/metrics.json\" ])",
       "Bash(ln:*)",
-      "Bash(jq:*)"
+      "Bash(jq:*)",
+      "Bash(do echo \"=== $dir ===\")",
+      "Bash([ -f \"$dir/results/metrics.json\" ])",
+      "Bash(if [ -f \"$dir/results/metrics.json\" ])",
+      "Bash(then jq '.taes' \"$dir/results/metrics.json\")",
+      "Bash(fi)"
     ],
     "deny": [],
     "ask": []
