@@ -20,15 +20,15 @@ def add_evaluation_logging_improvements():
                 "Patient directory traversal validation",
                 "Checkpoint integrity verification",
                 "Automatic resume from last valid checkpoint",
-                "Memory monitoring for large datasets"
+                "Memory monitoring for large datasets",
             ],
             "robustness_checks": {
                 "verify_all_directories": True,
                 "log_to_file": True,
                 "checkpoint_validation": True,
                 "memory_monitoring": True,
-                "graceful_error_recovery": True
-            }
+                "graceful_error_recovery": True,
+            },
         }
     }
 
@@ -113,7 +113,7 @@ def validate_checkpoint_integrity(checkpoint_path):
             "total_files": total_files,
             "failed_files": failed_files,
             "next_idx": ck["next_idx"],
-            "complete": ck["next_idx"] >= total_files
+            "complete": ck["next_idx"] >= total_files,
         }
 
     except Exception as e:

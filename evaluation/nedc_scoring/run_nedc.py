@@ -170,6 +170,7 @@ def run_nedc_scorer(output_dir):
 def extract_and_save_metrics(results_dir, metrics_file):
     """Extract machine-readable metrics from NEDC output and save to JSON."""
     from typing import Any
+
     metrics: dict[str, Any] = {
         "timestamp": datetime.now().isoformat(),
         "taes": {},
