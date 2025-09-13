@@ -35,9 +35,9 @@ def plot_roc_curve(checkpoint):
     """Plot ROC curve with AUC."""
     # Collect all predictions and labels
     all_preds = []
-    all_labels = []
+    all_labels: list[int] = []
 
-    for file_id, result in checkpoint['results'].items():
+    for _file_id, result in checkpoint['results'].items():
         if result['predictions'] is not None and result['seizure_events'] is not None:
             preds = result['predictions']
 
@@ -172,7 +172,7 @@ def plot_prediction_distribution(checkpoint):
     seizure_preds = []
     background_preds = []
 
-    for file_id, result in checkpoint['results'].items():
+    for _file_id, result in checkpoint['results'].items():
         if result['predictions'] is not None and result['seizure_events'] is not None:
             preds = np.array(result['predictions'])
 
@@ -240,3 +240,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
