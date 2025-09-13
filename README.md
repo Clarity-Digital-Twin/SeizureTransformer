@@ -133,6 +133,7 @@ AUROC:           0.9021
 - [NEDC Integration](NEDC_INTEGRATION_PLAN.md) - NEDC pipeline setup
 - [Architecture Guide](docs/technical/IDEAL_REFERENCE_SEIZURE_TRANSFORMER_DATAFLOW.md) - Model dataflow
 - [NEDC Understanding](docs/technical/NEDC_EVALUATION_UNDERSTANDING.md) - Scoring metrics explained
+- [Temple Divergence Analysis](docs/TEMPLE_DIVERGENCE_ANALYSIS.md) - Native vs Temple NEDC edge cases
 - [Repository Structure](docs/technical/REPO_STRUCTURE_PLAN.md) - Project organization
 - [Third-Party Notices](THIRD_PARTY_NOTICES.md) - Licenses and attributions
 
