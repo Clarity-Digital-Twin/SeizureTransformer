@@ -10,8 +10,7 @@ Replace the external NEDC v6.0.0 binary dependency with our own clean, tested, t
 ```
 seizure_evaluation/
 ├── taes/
-│   ├── overlap_scorer.py  ✅ OVERLAP scoring (PRIMARY)
-│   └── scorer.py          🛈 Legacy greedy scorer (not used)
+│   └── overlap_scorer.py  ✅ OVERLAP scoring (PRIMARY)
 ├── epoch/                 # Epoch-based scoring (future)
 │   └── scorer.py          ⏳ TODO
 ├── dpalign/               # Dynamic Programming Alignment (future)
