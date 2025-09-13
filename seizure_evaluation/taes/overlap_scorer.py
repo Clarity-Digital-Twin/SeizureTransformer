@@ -11,13 +11,12 @@ OVERLAP scoring rules:
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Tuple, Dict, Optional
-import numpy as np
 
 
 @dataclass
 class Event:
     """Represents a seizure event with start/stop times."""
+
     start_time: float
     stop_time: float
     label: str = "seiz"
@@ -38,6 +37,7 @@ class Event:
 @dataclass
 class OverlapMetrics:
     """OVERLAP scoring metrics matching Temple NEDC."""
+
     hits: int  # Number of ref events with any overlap
     misses: int  # Number of ref events with no overlap
     false_alarms: int  # Number of hyp events with no overlap
@@ -57,14 +57,14 @@ class OverlapMetrics:
     def fa_per_24h(self) -> float:
         """False alarms per 24 hours."""
         if self.total_duration_sec == 0:
-            return float('inf')
+            return float("inf")
         return self.false_alarms * 86400.0 / self.total_duration_sec
 
     @property
     def total_fa_per_24h(self) -> float:
         """Temple 'Total False Alarm Rate' across SEIZ + BCKG labels."""
         if self.total_duration_sec == 0:
-            return float('inf')
+            return float("inf")
         return (self.false_alarms + self.bckg_false_alarms) * 86400.0 / self.total_duration_sec
 
     @property
@@ -96,10 +96,7 @@ class OverlapScorer:
     """
 
     def score_events(
-        self,
-        ref_events: List[Event],
-        hyp_events: List[Event],
-        total_duration_sec: float
+        self, ref_events: list[Event], hyp_events: list[Event], total_duration_sec: float
     ) -> OverlapMetrics:
         """
         Score hypothesis events against reference events using OVERLAP method.
@@ -151,11 +148,7 @@ class OverlapScorer:
             bckg_false_alarms=bckg_false_alarms,
         )
 
-    def score_from_files(
-        self,
-        ref_csv_bi: Path,
-        hyp_csv_bi: Path
-    ) -> OverlapMetrics:
+    def score_from_files(self, ref_csv_bi: Path, hyp_csv_bi: Path) -> OverlapMetrics:
         """
         Score events from CSV_bi files.
 
@@ -172,12 +165,12 @@ class OverlapScorer:
         # Use reference duration for scoring
         return self.score_events(ref_events, hyp_events, ref_duration)
 
-    def _parse_csv_bi(self, csv_bi_path: Path) -> Tuple[List[Event], float]:
+    def _parse_csv_bi(self, csv_bi_path: Path) -> tuple[list[Event], float]:
         """Parse events from CSV_bi file."""
         events = []
         duration = 0.0
 
-        with open(csv_bi_path, 'r') as f:
+        with open(csv_bi_path) as f:
             for line in f:
                 line = line.strip()
 
@@ -192,23 +185,25 @@ class OverlapScorer:
                 # Parse event
                 parts = line.split(",")
                 if len(parts) >= 5:
-                    events.append(Event(
-                        start_time=float(parts[1]),
-                        stop_time=float(parts[2]),
-                        label=parts[3],
-                        confidence=float(parts[4])
-                    ))
+                    events.append(
+                        Event(
+                            start_time=float(parts[1]),
+                            stop_time=float(parts[2]),
+                            label=parts[3],
+                            confidence=float(parts[4]),
+                        )
+                    )
 
         return events, duration
 
     # --- helpers ---
-    def _merge_intervals(self, events: List[Event]) -> List[Event]:
+    def _merge_intervals(self, events: list[Event]) -> list[Event]:
         """Merge overlapping/contiguous intervals in the event list."""
         if not events:
             return []
         # sort by start
         sorted_events = sorted(events, key=lambda e: (e.start_time, e.stop_time))
-        merged: List[Event] = []
+        merged: list[Event] = []
         cur = Event(sorted_events[0].start_time, sorted_events[0].stop_time)
         for ev in sorted_events[1:]:
             if ev.start_time <= cur.stop_time:
@@ -221,10 +216,10 @@ class OverlapScorer:
         merged.append(cur)
         return merged
 
-    def _complement_of_events(self, events: List[Event], total_duration_sec: float) -> List[Event]:
+    def _complement_of_events(self, events: list[Event], total_duration_sec: float) -> list[Event]:
         """Return background intervals as complement of events within [0, total_duration_sec]."""
         merged = self._merge_intervals(events)
-        background: List[Event] = []
+        background: list[Event] = []
         prev = 0.0
         for ev in merged:
             if ev.start_time > prev:

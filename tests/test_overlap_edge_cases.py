@@ -4,7 +4,7 @@ Test OVERLAP scorer edge cases to verify Temple NEDC parity.
 These tests demonstrate the key differences between OVERLAP and greedy 1-to-1 matching.
 """
 
-from seizure_evaluation.taes.overlap_scorer import OverlapScorer, Event
+from seizure_evaluation.taes.overlap_scorer import Event, OverlapScorer
 from seizure_evaluation.taes.scorer import TAESScorer
 
 
@@ -28,25 +28,25 @@ def test_case_a_one_hyp_multiple_refs():
     overlap_scorer = OverlapScorer()
     overlap_metrics = overlap_scorer.score_events(ref_events, hyp_events, 100.0)
 
-    print(f"Refs: [10-20], [25-35]")
-    print(f"Hyp:  [15-30] (overlaps both)")
-    print(f"\nOVERLAP Scorer (Correct):")
+    print("Refs: [10-20], [25-35]")
+    print("Hyp:  [15-30] (overlaps both)")
+    print("\nOVERLAP Scorer (Correct):")
     print(
         f"  Hits: {overlap_metrics.hits}, Misses: {overlap_metrics.misses}, FA: {overlap_metrics.false_alarms}"
     )
     print(f"  Sensitivity: {overlap_metrics.sensitivity:.1f}%")
-    print(f"  Expected: 2 hits, 0 misses, 0 FA → 100% sensitivity ✓")
+    print("  Expected: 2 hits, 0 misses, 0 FA → 100% sensitivity ✓")
 
     # Compare with greedy 1-to-1
     taes_scorer = TAESScorer(overlap_threshold=0.0)
     taes_metrics = taes_scorer.score_events(ref_events, hyp_events, 100.0)
 
-    print(f"\nGreedy 1-to-1 (Wrong for OVERLAP):")
+    print("\nGreedy 1-to-1 (Wrong for OVERLAP):")
     print(
         f"  TP: {taes_metrics.true_positives}, FP: {taes_metrics.false_positives}, FN: {taes_metrics.false_negatives}"
     )
     print(f"  Sensitivity: {taes_metrics.sensitivity:.1f}%")
-    print(f"  Gets: 1 TP, 0 FP, 1 FN → 50% sensitivity ✗")
+    print("  Gets: 1 TP, 0 FP, 1 FN → 50% sensitivity ✗")
 
 
 def test_case_b_multiple_hyps_one_ref():
@@ -69,25 +69,25 @@ def test_case_b_multiple_hyps_one_ref():
     overlap_scorer = OverlapScorer()
     overlap_metrics = overlap_scorer.score_events(ref_events, hyp_events, 100.0)
 
-    print(f"Ref:  [20-40]")
-    print(f"Hyps: [15-25], [35-45] (both overlap ref)")
-    print(f"\nOVERLAP Scorer (Correct):")
+    print("Ref:  [20-40]")
+    print("Hyps: [15-25], [35-45] (both overlap ref)")
+    print("\nOVERLAP Scorer (Correct):")
     print(
         f"  Hits: {overlap_metrics.hits}, Misses: {overlap_metrics.misses}, FA: {overlap_metrics.false_alarms}"
     )
     print(f"  FA/24h: {overlap_metrics.fa_per_24h:.1f}")
-    print(f"  Expected: 1 hit, 0 misses, 0 FA → 0 FA/24h ✓")
+    print("  Expected: 1 hit, 0 misses, 0 FA → 0 FA/24h ✓")
 
     # Compare with greedy 1-to-1
     taes_scorer = TAESScorer(overlap_threshold=0.0)
     taes_metrics = taes_scorer.score_events(ref_events, hyp_events, 100.0)
 
-    print(f"\nGreedy 1-to-1 (Wrong for OVERLAP):")
+    print("\nGreedy 1-to-1 (Wrong for OVERLAP):")
     print(
         f"  TP: {taes_metrics.true_positives}, FP: {taes_metrics.false_positives}, FN: {taes_metrics.false_negatives}"
     )
     print(f"  FA/24h: {taes_metrics.fa_per_24h:.1f}")
-    print(f"  Gets: 1 TP, 1 FP, 0 FN → 864 FA/24h ✗")
+    print("  Gets: 1 TP, 1 FP, 0 FN → 864 FA/24h ✗")
 
 
 def test_case_c_no_overlaps():
@@ -110,23 +110,23 @@ def test_case_c_no_overlaps():
     overlap_scorer = OverlapScorer()
     overlap_metrics = overlap_scorer.score_events(ref_events, hyp_events, 100.0)
 
-    print(f"Refs: [10-20], [30-40]")
-    print(f"Hyps: [50-60], [70-80] (no overlaps)")
-    print(f"\nOVERLAP Scorer:")
+    print("Refs: [10-20], [30-40]")
+    print("Hyps: [50-60], [70-80] (no overlaps)")
+    print("\nOVERLAP Scorer:")
     print(
         f"  Hits: {overlap_metrics.hits}, Misses: {overlap_metrics.misses}, FA: {overlap_metrics.false_alarms}"
     )
-    print(f"  Expected: 0 hits, 2 misses, 2 FA ✓")
+    print("  Expected: 0 hits, 2 misses, 2 FA ✓")
 
     # Compare with greedy 1-to-1
     taes_scorer = TAESScorer(overlap_threshold=0.0)
     taes_metrics = taes_scorer.score_events(ref_events, hyp_events, 100.0)
 
-    print(f"\nGreedy 1-to-1:")
+    print("\nGreedy 1-to-1:")
     print(
         f"  TP: {taes_metrics.true_positives}, FP: {taes_metrics.false_positives}, FN: {taes_metrics.false_negatives}"
     )
-    print(f"  Both methods agree here ✓")
+    print("  Both methods agree here ✓")
 
 
 def test_real_scenario():
@@ -153,8 +153,8 @@ def test_real_scenario():
     overlap_scorer = OverlapScorer()
     overlap_metrics = overlap_scorer.score_events(ref_events, hyp_events, 1800.0)
 
-    print(f"Complex scenario with multiple overlaps")
-    print(f"\nOVERLAP Scorer (Temple method):")
+    print("Complex scenario with multiple overlaps")
+    print("\nOVERLAP Scorer (Temple method):")
     print(
         f"  Hits: {overlap_metrics.hits}, Misses: {overlap_metrics.misses}, FA: {overlap_metrics.false_alarms}"
     )
@@ -166,12 +166,12 @@ def test_real_scenario():
     taes_scorer = TAESScorer(overlap_threshold=0.0)
     taes_metrics = taes_scorer.score_events(ref_events, hyp_events, 1800.0)
 
-    print(f"\nGreedy 1-to-1 (our current method):")
+    print("\nGreedy 1-to-1 (our current method):")
     print(
         f"  TP: {taes_metrics.true_positives}, FP: {taes_metrics.false_positives}, FN: {taes_metrics.false_negatives}"
     )
     print(f"  Sensitivity: {taes_metrics.sensitivity:.1f}%, FA/24h: {taes_metrics.fa_per_24h:.2f}")
-    print(f"\n  → Greedy counts hyp[210-215] as FP, but OVERLAP doesn't!")
+    print("\n  → Greedy counts hyp[210-215] as FP, but OVERLAP doesn't!")
 
 
 if __name__ == "__main__":

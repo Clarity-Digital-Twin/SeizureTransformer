@@ -220,7 +220,6 @@ def run_nedc_scorer(
             duration = total_metrics["total_duration"]
 
             sensitivity = 100.0 * tp / (tp + fn) if (tp + fn) > 0 else 0.0
-            fa_per_24h = fp * 86400.0 / duration if duration > 0 else 0.0
             precision = 100.0 * tp / (tp + fp) if (tp + fp) > 0 else 0.0
             f1 = (
                 2 * precision * sensitivity / (precision + sensitivity)
