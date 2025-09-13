@@ -188,8 +188,8 @@ def run_nedc_scorer(
         total_metrics = {
             "hits": 0,
             "misses": 0,
-            "false_alarms": 0,           # SEIZ-only FAs
-            "bckg_false_alarms": 0,      # BCKG FAs (for Temple total)
+            "false_alarms": 0,  # SEIZ-only FAs
+            "bckg_false_alarms": 0,  # BCKG FAs (for Temple total)
             "total_duration": 0.0,
         }
 
@@ -232,8 +232,11 @@ def run_nedc_scorer(
             f.write(f"Sensitivity (TPR, Recall): {sensitivity:.2f}%\n")
             # Temple reports TOTAL False Alarms across labels in OVERLAP summary
             fa_per_24h_total = (
-                (total_metrics["false_alarms"] + total_metrics["bckg_false_alarms"]) * 86400.0 / duration
-                if duration > 0 else 0.0
+                (total_metrics["false_alarms"] + total_metrics["bckg_false_alarms"])
+                * 86400.0
+                / duration
+                if duration > 0
+                else 0.0
             )
             f.write(f"Total False Alarm Rate: {fa_per_24h_total:.2f} per 24 hours\n")
             f.write(f"F1 Score: {f1 / 100:.3f}\n")
