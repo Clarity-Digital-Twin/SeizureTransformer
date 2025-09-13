@@ -5,7 +5,9 @@ Converts predictions to NEDC format and runs official NEDC scorer.
 """
 
 import argparse
+import json
 import os
+import re
 import subprocess
 import sys
 from datetime import datetime
