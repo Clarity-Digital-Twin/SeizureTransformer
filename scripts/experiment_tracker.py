@@ -26,19 +26,19 @@ def create_experiment_config(
             "description": description,
             "timestamp": datetime.now().isoformat(),
             "target_fa_per_24h": target_fa_per_24h,
-            "notes": notes
+            "notes": notes,
         },
         "parameters": {
             "threshold": threshold,
             "kernel": kernel,
             "min_duration_sec": min_duration_sec,
-            "merge_gap_sec": merge_gap_sec
+            "merge_gap_sec": merge_gap_sec,
         },
         "paths": {
             "data_dir": f"/path/to/TUSZ/v2.0.3/{split}",
             "checkpoint": f"experiments/{split}/{description}/checkpoint.pkl",
-            "nedc_results": f"experiments/{split}/{description}/nedc_results/"
-        }
+            "nedc_results": f"experiments/{split}/{description}/nedc_results/",
+        },
     }
 
 
@@ -50,7 +50,7 @@ def log_experiment_results(
     auroc: float,
     total_seizures: int,
     detected_seizures: int,
-    notes: str = ""
+    notes: str = "",
 ) -> None:
     """Log experiment results in standardized format."""
     results = {
@@ -61,18 +61,18 @@ def log_experiment_results(
             "taes_f1_score": taes_f1,
             "auroc": auroc,
             "total_seizures": total_seizures,
-            "detected_seizures": detected_seizures
+            "detected_seizures": detected_seizures,
         },
         "clinical_assessment": {
             "clinically_viable": taes_fa_per_24h <= 10,
             "sensitivity_acceptable": taes_sensitivity >= 50,
-            "deployment_ready": taes_fa_per_24h <= 10 and taes_sensitivity >= 50
+            "deployment_ready": taes_fa_per_24h <= 10 and taes_sensitivity >= 50,
         },
-        "notes": notes
+        "notes": notes,
     }
 
     results_file = experiment_dir / "summary.json"
-    with open(results_file, 'w') as f:
+    with open(results_file, "w") as f:
         json.dump(results, f, indent=2)
 
     print(f"Results logged to: {results_file}")
@@ -137,7 +137,7 @@ def main():
             min_duration_sec=args.min_duration_sec,
             merge_gap_sec=args.merge_gap_sec,
             target_fa_per_24h=args.target_fa_per_24h,
-            notes=args.notes
+            notes=args.notes,
         )
 
         # Create experiment directory
@@ -146,7 +146,7 @@ def main():
 
         # Write config
         config_file = exp_dir / "run_config.json"
-        with open(config_file, 'w') as f:
+        with open(config_file, "w") as f:
             json.dump(config, f, indent=2)
 
         print(f"Experiment config created: {config_file}")

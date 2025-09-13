@@ -26,7 +26,6 @@ from tqdm import tqdm
 sys.path.append(str(Path(__file__).parent.parent.parent / "wu_2025/src"))
 
 from epilepsy2bids.eeg import Eeg
-
 from wu_2025.utils import get_dataloader, load_models
 
 
@@ -191,33 +190,31 @@ def main():
         results[file_id] = {
             "predictions": predictions,
             "seizure_events": seizure_events,
-            "error": error
+            "error": error,
         }
 
         # Save checkpoint every 10 files
         if idx % 10 == 0:
             with open(checkpoint_file, "wb") as f:
-                pickle.dump({
-                    "results": results,
-                    "next_idx": idx + 1
-                }, f)
+                pickle.dump({"results": results, "next_idx": idx + 1}, f)
 
     # Save final checkpoint
     with open(checkpoint_file, "wb") as f:
-        pickle.dump({
-            "results": results,
-            "next_idx": len(edf_files)
-        }, f)
+        pickle.dump({"results": results, "next_idx": len(edf_files)}, f)
 
     # Ground truth validation warning
     processed_files = len([r for r in results.values() if r.get("error") is None])
     if processed_files > 0:
         label_coverage = files_with_labels / processed_files
         if label_coverage < 0.1:
-            print(f"\n⚠️  WARNING: Only {files_with_labels}/{processed_files} files ({label_coverage:.1%}) have ground truth labels (.csv_bi files)")
+            print(
+                f"\n⚠️  WARNING: Only {files_with_labels}/{processed_files} files ({label_coverage:.1%}) have ground truth labels (.csv_bi files)"
+            )
             print("   This suggests potential dataset path issues or missing annotations.")
         else:
-            print(f"\n✅ Ground truth coverage: {files_with_labels}/{processed_files} files ({label_coverage:.1%}) with {total_label_events} seizure events")
+            print(
+                f"\n✅ Ground truth coverage: {files_with_labels}/{processed_files} files ({label_coverage:.1%}) with {total_label_events} seizure events"
+            )
 
     print("\n" + "=" * 60)
     print("COMPUTING METRICS")
@@ -251,8 +248,10 @@ def main():
 
         print("\n📊 Data Statistics:")
         print(f"   Total samples: {len(all_preds_array):,}")
-        print(f"   Seizure samples: {all_labels_array.sum():,} ({100*all_labels_array.mean():.1f}%)")
-        print(f"   Non-seizure samples: {(1-all_labels_array).sum():,}")
+        print(
+            f"   Seizure samples: {all_labels_array.sum():,} ({100 * all_labels_array.mean():.1f}%)"
+        )
+        print(f"   Non-seizure samples: {(1 - all_labels_array).sum():,}")
 
         # AUROC
         try:
@@ -286,15 +285,19 @@ def main():
         # Save results
         results_file = out_dir / "results.json"
         with open(results_file, "w") as f:
-            json.dump({
-                "auroc": (float(auroc) if auroc is not None else None),
-                "sensitivity": sensitivity,
-                "specificity": specificity,
-                "threshold": threshold,
-                "total_samples": len(all_preds_array),
-                "seizure_percentage": float(all_labels_array.mean()),
-                "timestamp": datetime.now().isoformat()
-            }, f, indent=2)
+            json.dump(
+                {
+                    "auroc": (float(auroc) if auroc is not None else None),
+                    "sensitivity": sensitivity,
+                    "specificity": specificity,
+                    "threshold": threshold,
+                    "total_samples": len(all_preds_array),
+                    "seizure_percentage": float(all_labels_array.mean()),
+                    "timestamp": datetime.now().isoformat(),
+                },
+                f,
+                indent=2,
+            )
 
         print(f"\n✅ Results saved to {results_file}")
     else:

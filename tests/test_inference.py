@@ -48,6 +48,7 @@ def test_model_loads():
         print(f"❌ Error: {e}")
         assert False
 
+
 def test_preprocessing():
     """Test preprocessing pipeline via dataloader."""
     from wu_2025.utils import get_dataloader
@@ -72,6 +73,7 @@ def test_preprocessing():
         print(f"❌ Preprocessing error: {e}")
         assert False
 
+
 def check_weights():
     """Check if model weights exist."""
     weight_path = Path("wu_2025/src/wu_2025/model.pth")
@@ -83,6 +85,7 @@ def check_weights():
     else:
         print(f"❌ Model weights not found at {weight_path}")
         return False
+
 
 if __name__ == "__main__":
     print("=" * 60)

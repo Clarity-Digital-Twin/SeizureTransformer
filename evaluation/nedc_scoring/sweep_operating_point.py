@@ -68,8 +68,8 @@ def run_once(
     env = os.environ.copy()
     nedc_root = Path.cwd() / "evaluation" / "nedc_eeg_eval" / "v6.0.0"
     env["NEDC_NFC"] = str(nedc_root)
-    env["PATH"] = f"{nedc_root / 'bin'}:{env.get('PATH','')}"
-    env["PYTHONPATH"] = f"{nedc_root / 'lib'}:{env.get('PYTHONPATH','')}"
+    env["PATH"] = f"{nedc_root / 'bin'}:{env.get('PATH', '')}"
+    env["PYTHONPATH"] = f"{nedc_root / 'lib'}:{env.get('PYTHONPATH', '')}"
 
     subprocess.run(cmd_conv, env=env, check=True, capture_output=True, text=True)
 
@@ -89,6 +89,7 @@ def run_once(
         content = f.read()
 
     import re
+
     taes_sens_match = re.search(r"Sensitivity \(TPR, Recall\):\s+([\d.]+)%", content)
     taes_fa_match = re.search(r"Total False Alarm Rate:\s+([\d.]+)\s+per 24 hours", content)
 
@@ -145,7 +146,9 @@ def main() -> int:
         try:
             res = run_once(checkpoint, outdir, thr, ker, mind, gap)
             results.append(res)
-            print(f"OK: {name} -> sens={res.taes_sensitivity:.2f}% FA/24h={res.taes_fa_per_24h:.2f}")
+            print(
+                f"OK: {name} -> sens={res.taes_sensitivity:.2f}% FA/24h={res.taes_fa_per_24h:.2f}"
+            )
         except subprocess.CalledProcessError as e:
             print(f"ERROR running {name}: {e}")
         except Exception as e:
@@ -155,9 +158,29 @@ def main() -> int:
     csv_path = base / "sweep_results.csv"
     with open(csv_path, "w", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["threshold", "kernel", "min_duration", "merge_gap", "taes_sensitivity", "taes_fa_per_24h", "workdir"])
+        w.writerow(
+            [
+                "threshold",
+                "kernel",
+                "min_duration",
+                "merge_gap",
+                "taes_sensitivity",
+                "taes_fa_per_24h",
+                "workdir",
+            ]
+        )
         for r in results:
-            w.writerow([r.threshold, r.kernel, r.min_duration, r.merge_gap if r.merge_gap is not None else 0, r.taes_sensitivity, r.taes_fa_per_24h, str(r.workdir)])
+            w.writerow(
+                [
+                    r.threshold,
+                    r.kernel,
+                    r.min_duration,
+                    r.merge_gap if r.merge_gap is not None else 0,
+                    r.taes_sensitivity,
+                    r.taes_fa_per_24h,
+                    str(r.workdir),
+                ]
+            )
 
     # Recommend best: minimize FA/24h subject to FA<=target, maximize sensitivity
     target = args.target_fa_per_24h
@@ -165,20 +188,24 @@ def main() -> int:
     if feasible:
         best = max(feasible, key=lambda r: (r.taes_sensitivity, -r.taes_fa_per_24h))
         print("\nRecommended (subject to FA<=target):")
-        print(f"  threshold={best.threshold} kernel={best.kernel} min_dur={best.min_duration} merge_gap={best.merge_gap}")
+        print(
+            f"  threshold={best.threshold} kernel={best.kernel} min_dur={best.min_duration} merge_gap={best.merge_gap}"
+        )
         print(f"  TAES sensitivity={best.taes_sensitivity:.2f}% FA/24h={best.taes_fa_per_24h:.2f}")
         rec_path = base / "recommended_params.json"
         with open(rec_path, "w") as f:
             f.write(
                 "{\n"
-                f"  \"threshold\": {best.threshold},\n"
-                f"  \"kernel\": {best.kernel},\n"
-                f"  \"min_duration_sec\": {best.min_duration},\n"
-                f"  \"merge_gap_sec\": {0 if best.merge_gap is None else best.merge_gap}\n"
+                f'  "threshold": {best.threshold},\n'
+                f'  "kernel": {best.kernel},\n'
+                f'  "min_duration_sec": {best.min_duration},\n'
+                f'  "merge_gap_sec": {0 if best.merge_gap is None else best.merge_gap}\n'
                 "}\n"
             )
     else:
-        print("\nNo feasible operating point met the FA/24h target. See sweep_results.csv for trade-offs.")
+        print(
+            "\nNo feasible operating point met the FA/24h target. See sweep_results.csv for trade-offs."
+        )
 
     print(f"\nResults written to: {csv_path}")
     return 0
@@ -186,4 +213,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

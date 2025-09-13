@@ -38,30 +38,34 @@ def create_test_checkpoint(output_file, num_files=5):
             # Add 2 seizure events
             seizure_start1 = duration_samples // 4
             seizure_end1 = seizure_start1 + 256 * 20  # 20 second seizure
-            predictions[seizure_start1:seizure_end1] = 0.9 + np.random.random(seizure_end1 - seizure_start1) * 0.1
+            predictions[seizure_start1:seizure_end1] = (
+                0.9 + np.random.random(seizure_end1 - seizure_start1) * 0.1
+            )
 
             seizure_start2 = duration_samples // 2
             seizure_end2 = seizure_start2 + 256 * 30  # 30 second seizure
-            predictions[seizure_start2:seizure_end2] = 0.85 + np.random.random(seizure_end2 - seizure_start2) * 0.15
+            predictions[seizure_start2:seizure_end2] = (
+                0.85 + np.random.random(seizure_end2 - seizure_start2) * 0.15
+            )
 
             # Ground truth events (in seconds)
             seizure_events = [
                 (seizure_start1 / 256, seizure_end1 / 256),
-                (seizure_start2 / 256, seizure_end2 / 256)
+                (seizure_start2 / 256, seizure_end2 / 256),
             ]
         else:
             seizure_events = []
 
         test_results[file_id] = {
-            'predictions': predictions,
-            'seizure_events': seizure_events,
-            'error': None
+            "predictions": predictions,
+            "seizure_events": seizure_events,
+            "error": None,
         }
 
     # Save checkpoint
     output_file.parent.mkdir(parents=True, exist_ok=True)
-    with open(output_file, 'wb') as f:
-        pickle.dump({'results': test_results}, f)
+    with open(output_file, "wb") as f:
+        pickle.dump({"results": test_results}, f)
 
     print(f"Test checkpoint saved to: {output_file}")
     return test_results
@@ -85,8 +89,10 @@ def validate_conversion(test_checkpoint, output_dir):
     cmd = [
         sys.executable,
         "evaluation/nedc_scoring/convert_predictions.py",
-        "--checkpoint", str(test_checkpoint),
-        "--outdir", str(output_dir)
+        "--checkpoint",
+        str(test_checkpoint),
+        "--outdir",
+        str(output_dir),
     ]
 
     print(f"Running: {' '.join(cmd)}")
@@ -210,6 +216,7 @@ def run_full_test():
     # Clean up previous test
     if test_dir.exists():
         import shutil
+
         shutil.rmtree(test_dir)
 
     # Step 1: Create test data
@@ -235,9 +242,11 @@ def run_full_test():
     cmd = [
         sys.executable,
         "evaluation/nedc_scoring/run_nedc.py",
-        "--checkpoint", str(test_checkpoint),
-        "--outdir", str(test_dir),
-        "--force"
+        "--checkpoint",
+        str(test_checkpoint),
+        "--outdir",
+        str(test_dir),
+        "--force",
     ]
 
     print(f"Running: {' '.join(cmd)}")
@@ -271,13 +280,9 @@ def main():
     """Main entry point."""
     import argparse
 
-    parser = argparse.ArgumentParser(
-        description="Test NEDC pipeline with synthetic data"
-    )
+    parser = argparse.ArgumentParser(description="Test NEDC pipeline with synthetic data")
     parser.add_argument(
-        "--keep-output",
-        action="store_true",
-        help="Keep test output directory after completion"
+        "--keep-output", action="store_true", help="Keep test output directory after completion"
     )
 
     args = parser.parse_args()
@@ -289,6 +294,7 @@ def main():
         test_dir = Path("evaluation/nedc_scoring/test_output")
         if test_dir.exists():
             import shutil
+
             shutil.rmtree(test_dir)
             print("\nTest output cleaned up")
 

@@ -33,9 +33,9 @@ def setup_nedc_environment():
 
     # Set up environment
     env = os.environ.copy()
-    env['NEDC_NFC'] = str(nedc_root)
-    env['PATH'] = f"{nedc_root}/bin:{env.get('PATH', '')}"
-    env['PYTHONPATH'] = f"{nedc_root}/lib:{env.get('PYTHONPATH', '')}"
+    env["NEDC_NFC"] = str(nedc_root)
+    env["PATH"] = f"{nedc_root}/bin:{env.get('PATH', '')}"
+    env["PYTHONPATH"] = f"{nedc_root}/lib:{env.get('PYTHONPATH', '')}"
 
     return env
 
@@ -81,8 +81,10 @@ def run_conversion(
     cmd = [
         sys.executable,
         "evaluation/nedc_scoring/convert_predictions.py",
-        "--checkpoint", str(checkpoint_file),
-        "--outdir", str(output_dir)
+        "--checkpoint",
+        str(checkpoint_file),
+        "--outdir",
+        str(output_dir),
     ]
     if threshold is not None:
         cmd += ["--threshold", str(threshold)]
@@ -138,18 +140,13 @@ def run_nedc_scorer(output_dir):
     results_dir.mkdir(parents=True, exist_ok=True)
 
     # Build NEDC command
-    nedc_binary = Path(env['NEDC_NFC']) / "bin" / "nedc_eeg_eval"
+    nedc_binary = Path(env["NEDC_NFC"]) / "bin" / "nedc_eeg_eval"
 
     if not nedc_binary.exists():
         print(f"Error: NEDC binary not found at {nedc_binary}")
         return 1
 
-    cmd = [
-        str(nedc_binary),
-        str(ref_list),
-        str(hyp_list),
-        "-o", str(results_dir)
-    ]
+    cmd = [str(nedc_binary), str(ref_list), str(hyp_list), "-o", str(results_dir)]
 
     print(f"Running: {' '.join(cmd)}")
     print(f"Results will be saved to: {results_dir}")
@@ -176,7 +173,7 @@ def extract_and_save_metrics(results_dir, metrics_file):
         "timestamp": datetime.now().isoformat(),
         "taes": {},
         "ovlp": {},
-        "epoch": {}
+        "epoch": {},
     }
 
     # Parse TAES metrics (most important)
@@ -198,17 +195,17 @@ def extract_and_save_metrics(results_dir, metrics_file):
             metrics["taes"]["f1_score"] = float(taes_f1_match.group(1))
 
     # Clinical assessment
-    fa_rate = metrics["taes"].get("fa_per_24h", float('inf'))
+    fa_rate = metrics["taes"].get("fa_per_24h", float("inf"))
     sensitivity = metrics["taes"].get("sensitivity_percent", 0)
 
     metrics["clinical_assessment"] = {
         "clinically_viable": fa_rate <= 10,
         "sensitivity_acceptable": sensitivity >= 50,
-        "deployment_ready": fa_rate <= 10 and sensitivity >= 50
+        "deployment_ready": fa_rate <= 10 and sensitivity >= 50,
     }
 
     # Save metrics
-    with open(metrics_file, 'w') as f:
+    with open(metrics_file, "w") as f:
         json.dump(metrics, f, indent=2)
 
     return metrics
@@ -321,40 +318,41 @@ Examples:
 
   # Force overwrite existing output
   python evaluation/nedc_scoring/run_nedc.py --force ...
-        """
+        """,
     )
 
     parser.add_argument(
         "--checkpoint",
         type=str,
         default="experiments/eval/baseline/checkpoint.pkl",
-        help="Path to checkpoint.pkl file"
+        help="Path to checkpoint.pkl file",
     )
     parser.add_argument(
         "--outdir",
         type=str,
         default="evaluation/nedc_scoring/output",
-        help="Output directory for NEDC files"
+        help="Output directory for NEDC files",
     )
-    parser.add_argument(
-        "--force",
-        action="store_true",
-        help="Force overwrite existing output"
-    )
+    parser.add_argument("--force", action="store_true", help="Force overwrite existing output")
     # Conversion tuning parameters
     parser.add_argument("--threshold", type=float, default=None, help="Probability threshold")
-    parser.add_argument("--kernel", type=int, default=None, help="Morphological kernel size (samples)")
-    parser.add_argument("--min_duration_sec", type=float, default=None, help="Minimum event duration (s)")
-    parser.add_argument("--merge_gap_sec", type=float, default=None, help="Merge events with gaps less than this (s)")
     parser.add_argument(
-        "--convert-only",
-        action="store_true",
-        help="Only run conversion, skip NEDC scoring"
+        "--kernel", type=int, default=None, help="Morphological kernel size (samples)"
     )
     parser.add_argument(
-        "--score-only",
-        action="store_true",
-        help="Only run NEDC scoring (assumes conversion done)"
+        "--min_duration_sec", type=float, default=None, help="Minimum event duration (s)"
+    )
+    parser.add_argument(
+        "--merge_gap_sec",
+        type=float,
+        default=None,
+        help="Merge events with gaps less than this (s)",
+    )
+    parser.add_argument(
+        "--convert-only", action="store_true", help="Only run conversion, skip NEDC scoring"
+    )
+    parser.add_argument(
+        "--score-only", action="store_true", help="Only run NEDC scoring (assumes conversion done)"
     )
 
     args = parser.parse_args()

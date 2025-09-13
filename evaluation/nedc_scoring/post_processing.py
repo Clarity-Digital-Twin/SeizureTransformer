@@ -71,12 +71,12 @@ def binary_mask_to_events(binary_mask: np.ndarray, fs: int = 256) -> list:
         List of (start_sample, end_sample) tuples
     """
     # Add padding to handle edge cases
-    padded = np.pad(binary_mask, (1, 1), mode='constant', constant_values=0)
+    padded = np.pad(binary_mask, (1, 1), mode="constant", constant_values=0)
 
     # Find edges (transitions)
     diff = np.diff(padded.astype(int))
     starts = np.where(diff == 1)[0]  # 0→1 transitions
-    ends = np.where(diff == -1)[0]   # 1→0 transitions
+    ends = np.where(diff == -1)[0]  # 1→0 transitions
 
     # Pair up starts and ends
     events = []

@@ -23,7 +23,7 @@ def write_nedc_csv(events, file_path, file_id, duration_sec):
     """
     file_path.parent.mkdir(parents=True, exist_ok=True)
 
-    with open(file_path, 'w') as f:
+    with open(file_path, "w") as f:
         # Write header
         f.write("# version = csv_v1.0.0\n")
         f.write(f"# bname = {file_id}\n")
@@ -52,11 +52,11 @@ def convert_checkpoint_to_nedc(
         output_dir: Base output directory
     """
     print(f"Loading checkpoint from {checkpoint_file}...")
-    with open(checkpoint_file, 'rb') as f:
+    with open(checkpoint_file, "rb") as f:
         checkpoint = pickle.load(f)
 
     # Handle both checkpoint formats (with/without "results" key)
-    results = checkpoint.get('results', checkpoint)
+    results = checkpoint.get("results", checkpoint)
 
     # Create output directories
     hyp_dir = Path(output_dir) / "hyp"
@@ -70,12 +70,12 @@ def convert_checkpoint_to_nedc(
     print(f"Processing {len(results)} files...")
     for file_id, result in results.items():
         # Skip files with errors
-        if result.get('error') is not None:
+        if result.get("error") is not None:
             print(f"  Skipping {file_id}: {result['error']}")
             continue
 
-        predictions = result.get('predictions')
-        seizure_events = result.get('seizure_events', [])
+        predictions = result.get("predictions")
+        seizure_events = result.get("seizure_events", [])
 
         if predictions is None:
             print(f"  Skipping {file_id}: No predictions")
@@ -136,13 +136,13 @@ def create_list_files(output_dir, file_ids):
 
     # Write hypothesis list
     hyp_list = lists_dir / "hyp.list"
-    with open(hyp_list, 'w') as f:
+    with open(hyp_list, "w") as f:
         for file_id in sorted(file_ids):
             f.write(f"{hyp_dir / file_id}.csv_bi\n")
 
     # Write reference list
     ref_list = lists_dir / "ref.list"
-    with open(ref_list, 'w') as f:
+    with open(ref_list, "w") as f:
         for file_id in sorted(file_ids):
             f.write(f"{ref_dir / file_id}.csv_bi\n")
 
@@ -159,18 +159,25 @@ def main():
         "--checkpoint",
         type=str,
         default="evaluation/tusz/checkpoint.pkl",
-        help="Path to checkpoint.pkl file"
+        help="Path to checkpoint.pkl file",
     )
     parser.add_argument(
         "--outdir",
         type=str,
         default="evaluation/nedc_scoring/output",
-        help="Output directory for NEDC files"
+        help="Output directory for NEDC files",
     )
     parser.add_argument("--threshold", type=float, default=0.8, help="Probability threshold")
     parser.add_argument("--kernel", type=int, default=5, help="Morphological kernel size (samples)")
-    parser.add_argument("--min_duration_sec", type=float, default=2.0, help="Minimum event duration (s)")
-    parser.add_argument("--merge_gap_sec", type=float, default=None, help="Merge events with gaps less than this (s)")
+    parser.add_argument(
+        "--min_duration_sec", type=float, default=2.0, help="Minimum event duration (s)"
+    )
+    parser.add_argument(
+        "--merge_gap_sec",
+        type=float,
+        default=None,
+        help="Merge events with gaps less than this (s)",
+    )
 
     args = parser.parse_args()
 
