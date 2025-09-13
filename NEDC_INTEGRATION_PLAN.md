@@ -27,10 +27,14 @@ We need this for:
 - Sweep tool built: `evaluation/nedc_scoring/sweep_operating_point.py`
 - **STATUS**: Working, being used by parameter sweep RIGHT NOW
 
-### Part 2: Native Python Implementation 🚧 IN PROGRESS
+### Part 2: Native Python Implementation 🚧 BROKEN - CRITICAL BUG
 - Location: `seizure_evaluation/taes/scorer.py`
-- **STATUS**: Partially implemented (243 lines), needs completion
-- **GOAL**: Replace Temple binary with our own code
+- **STATUS**: Partially implemented (243 lines), integrated behind `--backend native-taes`
+- **CRITICAL BUG FOUND (2025-09-13)**:
+  - Native gives: FA=23.89/24h @ 7.68% sensitivity
+  - Temple gives: FA=12.41/24h @ 27.72% sensitivity (CORRECT)
+  - **Native is producing WRONG metrics - DO NOT USE until fixed!**
+- **GOAL**: Fix native implementation to match Temple binary EXACTLY
 - **THIS IS THE MAIN WORK TO BE DONE**
 
 ### What Works
