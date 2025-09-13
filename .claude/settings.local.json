@@ -90,7 +90,8 @@
       "Bash(fi)",
       "Bash(echo:*)",
       "Bash(do)",
-      "Bash(then)"
+      "Bash(then)",
+      "Bash(sort:*)"
     ],
     "deny": [],
     "ask": []
