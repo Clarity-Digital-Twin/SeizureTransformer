@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Test native TAES implementation against NEDC golden outputs.
-Ensures our Python implementation matches official scorer.
+Test native OVERLAP implementation against NEDC golden outputs.
+Ensures our Python implementation matches Temple NEDC OVERLAP scorer.
 """
 
 import json
@@ -14,16 +14,16 @@ import pytest
 repo_root = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(repo_root))
 
-from seizure_evaluation.taes.scorer import TAESScorer
+from seizure_evaluation.taes.overlap_scorer import OverlapScorer
 
 
-@pytest.mark.taes
+@pytest.mark.overlap
 @pytest.mark.conformance
-class TestNativeTAES:
-    """Test native TAES scorer conformance with NEDC."""
+class TestNativeOverlap:
+    """Test native OVERLAP scorer conformance with Temple NEDC."""
 
-    def test_taes_on_fixtures(self):
-        """Run native TAES on golden fixtures and compare with NEDC."""
+    def test_overlap_on_fixtures(self):
+        """Run native OVERLAP on golden fixtures and compare with Temple NEDC."""
         fixture_path = Path(__file__).parent.parent / "fixtures" / "nedc"
 
         # Check if fixtures exist
@@ -100,7 +100,7 @@ class TestNativeTAES:
 
     def test_perfect_match(self):
         """Test scorer with perfectly matching events."""
-        from seizure_evaluation.taes.scorer import Event
+        from seizure_evaluation.taes.overlap_scorer import Event
 
         ref_events = [Event(10.0, 20.0), Event(30.0, 45.0), Event(60.0, 75.0)]
         hyp_events = ref_events.copy()
@@ -116,7 +116,7 @@ class TestNativeTAES:
 
     def test_partial_overlap(self):
         """Test scorer with partial overlaps."""
-        from seizure_evaluation.taes.scorer import Event
+        from seizure_evaluation.taes.overlap_scorer import Event
 
         ref_events = [Event(10.0, 20.0)]  # 10 second event
         hyp_events = [Event(15.0, 25.0)]  # 50% overlap

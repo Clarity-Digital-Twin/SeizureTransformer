@@ -120,7 +120,7 @@ def run_nedc_scorer(
 
     Args:
         output_dir: Directory containing NEDC files
-        backend: Scoring backend ("nedc-binary" or "native-taes")
+        backend: Scoring backend ("nedc-binary" or "native-overlap")
         threshold: Probability threshold used (for metadata)
         kernel: Morphological kernel size used (for metadata)
         min_duration_sec: Minimum duration used (for metadata)
@@ -172,7 +172,7 @@ def run_nedc_scorer(
             return result.returncode
 
         print(result.stdout)
-    elif backend == "native-taes":
+    elif backend == "native-overlap":
         # Native Python TAES implementation
         import sys
 
@@ -241,7 +241,7 @@ def run_nedc_scorer(
         print(f"Native OVERLAP scoring complete. Results in {summary_file}")
     else:
         print(f"Error: Unknown backend '{backend}'")
-        print("Valid backends: nedc-binary, native-taes")
+        print("Valid backends: nedc-binary, native-overlap")
         return 1
 
     # Parse and display key metrics with operating point params
@@ -295,7 +295,7 @@ def extract_and_save_metrics(results_dir, metrics_file, backend="nedc-binary"):
             content = f.read()
 
         # Handle both Temple binary and native outputs
-        if backend == "native-taes":
+        if backend == "native-overlap":
             # Native outputs simpler format
             sens_match = re.search(r"Sensitivity \(TPR, Recall\):\s+([\d.]+)%", content)
             fa_match = re.search(r"Total False Alarm Rate:\s+([\d.]+)\s+per 24 hours", content)
@@ -532,7 +532,7 @@ Examples:
         "--backend",
         type=str,
         default="nedc-binary",
-        choices=["nedc-binary", "native-taes"],
+        choices=["nedc-binary", "native-overlap"],
         help="Scoring backend to use (default: nedc-binary)",
     )
 
