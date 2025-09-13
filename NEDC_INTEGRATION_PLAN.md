@@ -72,8 +72,8 @@ TERM,42.2786,81.7760,seiz,1.0000
 - Channel always "TERM"
 - Label always "seiz"
 - Headers must match exactly
- - List files (`ref.list`, `hyp.list`) contain absolute paths (one per line)
- - Use LF newlines when writing list and CSV files (Windows/WSL safe)
+- List files (`ref.list`, `hyp.list`) contain absolute paths (one per line)
+- Use LF newlines when writing list and CSV files (Windows/WSL safe)
 
 ## File Structure
 
@@ -101,6 +101,8 @@ export PATH=$NEDC_NFC/bin:$PATH
 export PYTHONPATH=$NEDC_NFC/lib:$PYTHONPATH
 ```
 
+Note: `run_nedc.py` auto-sets these env vars when using the `nedc-binary` backend; explicit export is only needed when invoking the NEDC binary directly.
+
 ## Outputs
 
 Given an `--outdir <DIR>`, the runner writes:
@@ -118,7 +120,7 @@ Given an `--outdir <DIR>`, the runner writes:
 - Full control over scoring logic
 - Reproducible across platforms
 
-**Current Status**: Partially implemented, needs completion and validation
+**Current Status**: Partially implemented (243 lines), integrated behind `--backend native-taes`; needs completion and validation
 
 ### Implementation Plan
 1. Complete the native TAES scorer in Python
@@ -128,9 +130,9 @@ Given an `--outdir <DIR>`, the runner writes:
 
 ### Validation Requirements
 - Native scorer MUST produce identical TAES metrics as NEDC v6.0.0
-- Test on full dev set (1832 files)
-- Metrics must match to 2 decimal places
-- Both pipelines must achieve same FA/24h with same parameters
+- Validate on representative fixtures and the dev split used for sweeps
+- Metrics must match to within 0.1 (percentage points) for sensitivity and FA/24h
+- Both backends must yield the same FA/24h at the same operating point
 
 ## Common Issues
 
@@ -142,11 +144,11 @@ Given an `--outdir <DIR>`, the runner writes:
 ## Testing
 
 ```bash
-# Test pipeline with synthetic data
+# Test pipeline with synthetic data (no NEDC install required)
 cd evaluation/nedc_scoring
 make test
 
-# Validate against golden outputs
+# Validate against golden NEDC outputs (requires NEDC binary)
 python test_pipeline.py
 ```
 
@@ -172,4 +174,10 @@ python evaluation/nedc_scoring/convert_predictions.py \
 
 python evaluation/nedc_scoring/run_nedc.py \
   --outdir experiments/dev/baseline/nedc_results --score-only
+
+# Optional: use native Python backend instead of NEDC binary
+python evaluation/nedc_scoring/run_nedc.py \
+  --checkpoint experiments/dev/baseline/checkpoint.pkl \
+  --outdir experiments/dev/baseline/nedc_results_native \
+  --backend native-taes
 ```
