@@ -107,8 +107,14 @@ def run_conversion(
     return 0
 
 
-def run_nedc_scorer(output_dir, backend="nedc-binary",
-                   threshold=None, kernel=None, min_duration_sec=None, merge_gap_sec=None):
+def run_nedc_scorer(
+    output_dir,
+    backend="nedc-binary",
+    threshold=None,
+    kernel=None,
+    min_duration_sec=None,
+    merge_gap_sec=None,
+):
     """
     Run NEDC official scorer on converted files.
 
@@ -177,8 +183,13 @@ def run_nedc_scorer(output_dir, backend="nedc-binary",
         return 1
 
     # Parse and display key metrics with operating point params
-    parse_nedc_output(results_dir, threshold=threshold, kernel=kernel,
-                     min_duration_sec=min_duration_sec, merge_gap_sec=merge_gap_sec)
+    parse_nedc_output(
+        results_dir,
+        threshold=threshold,
+        kernel=kernel,
+        min_duration_sec=min_duration_sec,
+        merge_gap_sec=merge_gap_sec,
+    )
 
     return 0
 
@@ -349,9 +360,14 @@ def run_full_pipeline(
         return ret
 
     # Step 2: Run NEDC scorer with operating point params for metadata
-    ret = run_nedc_scorer(output_dir, backend=backend,
-                         threshold=threshold, kernel=kernel,
-                         min_duration_sec=min_duration_sec, merge_gap_sec=merge_gap_sec)
+    ret = run_nedc_scorer(
+        output_dir,
+        backend=backend,
+        threshold=threshold,
+        kernel=kernel,
+        min_duration_sec=min_duration_sec,
+        merge_gap_sec=merge_gap_sec,
+    )
     if ret != 0:
         print("NEDC scoring failed")
         return ret
