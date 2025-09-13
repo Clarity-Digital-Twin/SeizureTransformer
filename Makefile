@@ -43,7 +43,8 @@ lint:
 	. .venv/bin/activate && ruff check .
 
 typecheck:
-	. .venv/bin/activate && mypy evaluation/ scripts/ tests/ --exclude="evaluation/nedc_eeg_eval"
+	@echo "🔍 Type checking our code only (excluding wu_2025 and NEDC external code)"
+	. .venv/bin/activate && mypy evaluation/nedc_scoring/ evaluation/tusz/ scripts/ tests/ --ignore-missing-imports
 
 check-all: lint typecheck test
 	@echo "✅ All quality checks passed!"
