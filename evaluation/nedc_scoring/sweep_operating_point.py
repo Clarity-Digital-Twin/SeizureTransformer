@@ -67,7 +67,8 @@ def run_once(
         cmd_conv += ["--merge_gap_sec", str(merge_gap)]
 
     env = os.environ.copy()
-    nedc_root = Path.cwd() / "evaluation" / "nedc_eeg_eval" / "v6.0.0"
+    repo_root = Path(__file__).resolve().parent.parent.parent
+    nedc_root = repo_root / "evaluation" / "nedc_eeg_eval" / "v6.0.0"
     env["NEDC_NFC"] = str(nedc_root)
     env["PATH"] = f"{nedc_root / 'bin'}:{env.get('PATH', '')}"
     env["PYTHONPATH"] = f"{nedc_root / 'lib'}:{env.get('PYTHONPATH', '')}"
