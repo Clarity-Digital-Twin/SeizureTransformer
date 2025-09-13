@@ -1,222 +1,82 @@
-# TEMPLE NEDC FULL PARITY FIX PLAN
+# TEMPLE NEDC OVERLAP PARITY FIX PLAN (Corrected)
 
-## THE PROBLEM
+## The Problem (What’s actually mismatched)
 
-Our Native TAES implementation uses **binary matching** (event matches or doesn't), while Temple NEDC uses **fractional TAES scoring** (partial credit for partial overlaps).
+Our pipeline reports Temple’s OVERLAP metrics (any-overlap event scoring). The native “TAESScorer” currently uses a greedy 1-to-1 matching between hyp and ref events and then derives TP/FP/FN. That is not equivalent to Temple’s OVERLAP algorithm, which counts:
+- Hits = number of reference events overlapped by at least one hypothesis event (no 1–1 constraint)
+- Misses = number of reference events with no overlap
+- False Alarms = number of hypothesis events that overlap no reference event
 
-This causes differences when:
-- Events partially overlap
-- One hyp spans multiple refs
-- Multiple hyps overlap one ref
+This discrepancy creates two edge-case mismatches versus Temple OVERLAP:
+- One hyp overlaps multiple refs → Temple counts multiple hits (one per ref). Greedy 1–1 counts only 1 TP → sensitivity too low.
+- Multiple hyps overlap one ref → Temple counts 1 hit, 0 FA. Greedy 1–1 matches one hyp, and (incorrectly) counts the others as FP → FA too high.
 
-## THE EXACT FIX NEEDED
+We do NOT need fractional TAES (DP alignment) to achieve parity with the OVERLAP section that we use. We need exact any-overlap counting.
 
-### 1. WHAT WE HAVE NOW (WRONG)
+## The Fix (Exact OVERLAP logic)
 
-```python
-# seizure_evaluation/taes/scorer.py - CURRENT BROKEN APPROACH
-class TAESScorer:
-    def score_events(self, ref_events, hyp_events, total_duration_sec):
-        # WRONG: Binary matching - each event is 1 or 0
-        for h_idx, hyp in enumerate(hyp_events):
-            for r_idx, ref in enumerate(ref_events):
-                if overlap_exists:
-                    ref_matched[r_idx] = True  # BINARY!
-                    hyp_matched[h_idx] = True  # BINARY!
+Replace the greedy matcher with any-overlap counting for OVERLAP mode:
 
-        # WRONG: Counts matched events
-        true_positives = sum(hyp_matched)  # Integer count
-        false_positives = len(hyp_events) - true_positives
+Pseudo-code (per file, per label):
+```
+ref_overlapped = [False] * len(ref_events)
+hyp_overlapped = [False] * len(hyp_events)
+
+for r, ref in enumerate(ref_events):
+  for h, hyp in enumerate(hyp_events):
+    if overlap(ref, hyp) > 0:
+      ref_overlapped[r] = True     # each ref can be ‘hit’ by any number of hyps
+      hyp_overlapped[h] = True     # any overlapping hyp is NOT a false alarm
+
+hits = sum(ref_overlapped)
+misses = len(ref_events) - hits
+false_alarms = len(hyp_events) - sum(hyp_overlapped)
+
+sensitivity_percent = 100 * hits / len(ref_events) if len(ref_events) > 0 else 0
+fa_per_24h = false_alarms * 86400.0 / total_duration_sec
 ```
 
-### 2. WHAT TEMPLE DOES (CORRECT)
+This matches Temple’s `nedc_eeg_eval_ovlp.py` definitions and avoids 1–1 assignment entirely.
 
-```python
-# Temple's fractional TAES algorithm
-class NedcTAES:
-    def compute(self, ref, hyp):
-        # CORRECT: Fractional scoring
-        hit = 0.0  # Can be 0.0 to N (fractional)
-        mis = 0.0  # Can be 0.0 to N (fractional)
-        fal = 0.0  # Can be 0.0 to N (fractional)
+## Implementation Steps
 
-        for each ref_event:
-            for each overlapping hyp_event:
-                # Calculate fractional hit/miss/fa
-                ref_dur = ref.stop - ref.start
-                overlap_dur = min(ref.stop, hyp.stop) - max(ref.start, hyp.start)
+1) Add explicit OVERLAP mode to native scorer
+- Option A: Add a new `OverlapScorer` in `seizure_evaluation/taes/overlap_scorer.py` implementing the above.
+- Option B: Extend `TAESScorer` with a `mode="overlap"` path that uses any-overlap counting instead of greedy matching.
 
-                # Fractional hit based on overlap percentage
-                p_hit = overlap_dur / ref_dur
+2) Wire native backend to use OVERLAP mode
+- In `evaluation/nedc_scoring/run_nedc.py` where we create `TAESScorer(overlap_threshold=0.0)`, either:
+  - switch to `OverlapScorer()`, or
+  - pass `mode="overlap"` so it uses the any-overlap path.
 
-                # Fractional FA for parts outside ref
-                pre_ref = max(0, ref.start - hyp.start)
-                post_ref = max(0, hyp.stop - ref.stop)
-                p_fa = (pre_ref + post_ref) / ref_dur
+3) Tests for exact parity on edge cases
+- Case A: One hyp spans two refs → expect 2 hits, 0 FA.
+- Case B: Two hyps overlap one ref → expect 1 hit, 0 FA (both hyps non-FA).
+- Case C: No overlaps → 0 hits, FA = #hyps.
 
-                # Fractional miss for uncovered ref
-                p_miss = 1.0 - p_hit
+4) End-to-end verification
+- Re-run `run_nedc.py` with `--backend native-taes` on dev/eval baselines and compare to Temple OVERLAP section. Require ≤0.01 tolerance for both sensitivity and FA/24h.
 
-                hit += p_hit
-                mis += p_miss
-                fal += p_fa
-```
+## Scope Boundaries (What this plan is NOT)
 
-### 3. THE EXACT FIX TO IMPLEMENT
+- Not implementing DP ALIGNMENT or fractional TAES. Those are separate scoring methods in NEDC and are not what our pipeline currently gates on.
+- Not changing which section the pipeline parses (it already targets OVERLAP correctly). If we later choose DP ALIGNMENT for tuning/reporting, we’ll add a separate plan to mirror that method.
 
-Create new file: `seizure_evaluation/taes/fractional_scorer.py`
+## Success Criteria
 
-```python
-class FractionalTAESScorer:
-    """
-    EXACT Temple NEDC v6.0.0 fractional TAES implementation.
-    This MUST match Temple's algorithm exactly for full parity.
-    """
+- Exact parity with Temple OVERLAP for sensitivity and FA/24h on dev and eval baselines (≤0.01 tolerance).
+- Edge cases above match Temple semantics.
+- `metrics.json` continues to store results under `overlap` (and duplicate to `taes` only for backward compatibility, if needed).
 
-    def score_events(self, ref_events, hyp_events, total_duration_sec):
-        # Initialize fractional counters
-        total_hits = 0.0
-        total_misses = 0.0
-        total_false_alarms = 0.0
+## Notes on F1
 
-        # Track which events have been processed
-        ref_used = [False] * len(ref_events)
-        hyp_used = [False] * len(hyp_events)
+- Temple’s OVERLAP reports per-label F1 and a summary; our current native path calculates dataset-level F1 from aggregated TP/FP/FN. If F1 must match exactly, implement per-label accumulation and Temple’s summary formatting. Sens/FA parity is the primary goal.
 
-        # Process each reference event
-        for r_idx, ref in enumerate(ref_events):
-            ref_dur = ref.stop_time - ref.start_time
+## Optional Future Work
 
-            # Find all overlapping hypothesis events
-            overlapping_hyps = []
-            for h_idx, hyp in enumerate(hyp_events):
-                overlap_start = max(ref.start_time, hyp.start_time)
-                overlap_stop = min(ref.stop_time, hyp.stop_time)
-                if overlap_stop > overlap_start:
-                    overlapping_hyps.append((h_idx, hyp))
-
-            if overlapping_hyps:
-                # Distribute fractional scores
-                for h_idx, hyp in overlapping_hyps:
-                    if not hyp_used[h_idx]:
-                        # Calculate fractional components
-                        overlap_start = max(ref.start_time, hyp.start_time)
-                        overlap_stop = min(ref.stop_time, hyp.stop_time)
-                        overlap_dur = overlap_stop - overlap_start
-
-                        # Fractional hit (portion of ref covered)
-                        fractional_hit = overlap_dur / ref_dur
-
-                        # Fractional FA (portions of hyp outside ref)
-                        pre_ref = max(0, ref.start_time - hyp.start_time)
-                        post_ref = max(0, hyp.stop_time - ref.stop_time)
-                        fractional_fa = (pre_ref + post_ref) / ref_dur
-
-                        # Cap FA at 1.0 per Temple's implementation
-                        fractional_fa = min(1.0, fractional_fa)
-
-                        total_hits += fractional_hit
-                        total_false_alarms += fractional_fa
-
-                        hyp_used[h_idx] = True
-                        ref_used[r_idx] = True
-                        break  # Use first overlapping hyp (Temple's greedy approach)
-
-                # Fractional miss for uncovered portion
-                if ref_used[r_idx]:
-                    total_misses += (1.0 - fractional_hit)
-            else:
-                # No overlapping hyp - full miss
-                total_misses += 1.0
-
-        # Count remaining unused hyps as full false alarms
-        for h_idx, used in enumerate(hyp_used):
-            if not used:
-                total_false_alarms += 1.0
-
-        # Calculate final metrics matching Temple's formulas
-        num_ref_events = len(ref_events)
-        sensitivity = 100.0 * total_hits / num_ref_events if num_ref_events > 0 else 0.0
-        fa_per_24h = total_false_alarms * 86400.0 / total_duration_sec
-
-        return {
-            "sensitivity_percent": round(sensitivity, 4),  # Match Temple's 4 decimals
-            "fa_per_24h": round(fa_per_24h, 4),
-            "fractional_hits": total_hits,
-            "fractional_misses": total_misses,
-            "fractional_fa": total_false_alarms
-        }
-```
-
-## IMPLEMENTATION STEPS
-
-### Step 1: Create Fractional Scorer
-1. Create `seizure_evaluation/taes/fractional_scorer.py` with above code
-2. Port EXACT logic from Temple's `calc_hf()` and `compute_partial()` methods
-3. Handle all 4 overlap cases Temple handles:
-   - Pre-prediction (hyp starts before ref)
-   - Post-prediction (hyp ends after ref)
-   - Over-prediction (hyp contains ref)
-   - Under-prediction (ref contains hyp)
-
-### Step 2: Update Pipeline
-1. Modify `evaluation/nedc_scoring/native_taes_scoring.py` to use `FractionalTAESScorer`
-2. Change import from `TAESScorer` to `FractionalTAESScorer`
-3. Keep all other pipeline code identical
-
-### Step 3: Test Edge Cases
-1. Run `test_mathematical_differences.py` with new scorer
-2. Verify Edge Case 1 now gives ~50% sensitivity (not 100%)
-3. Verify Edge Case 2 distributes credit across all refs
-4. All edge cases should now match Temple's behavior
-
-### Step 4: Validate Full Parity
-1. Run on dev set - should match Temple exactly
-2. Run on eval set - should still match (already does)
-3. Document any remaining differences
-
-## SUCCESS CRITERIA
-
-✅ Dev set results MUST match Temple exactly:
-- Default: 23.53% @ 19.45 FA/24h (both Temple and Native)
-- 2.5fa: 7.44% @ 2.26 FA/24h (both Temple and Native)
-- 1fa: 0.65% @ 0.22 FA/24h (both Temple and Native)
-
-✅ Eval set results MUST remain matched:
-- Already perfect parity, should stay that way
-
-✅ Edge cases MUST behave like Temple:
-- Partial overlaps give fractional credit
-- Multiple overlaps handled with fractional distribution
-
-## WHY THIS FIX IS CORRECT
-
-1. **Temple is the gold standard** - NEDC v6.0.0 is what the research community uses
-2. **Fractional scoring is more accurate** - Gives partial credit for partial detections
-3. **Required for reproducibility** - Papers using NEDC expect this exact algorithm
-4. **Clinical deployment** - FDA/regulatory approval based on Temple's metrics
-
-## DO NOT DO THESE THINGS
-
-❌ Do NOT create a "better" algorithm - we want EXACT Temple parity
-❌ Do NOT optimize or simplify - match Temple's logic exactly, even if inefficient
-❌ Do NOT change precision/rounding - use Temple's exact approach
-❌ Do NOT fix Temple's bugs - if Temple has a bug, we replicate it for parity
-
-## FINAL VALIDATION
-
-After implementation, this command MUST show identical results:
-
-```bash
-# Both should give EXACT same metrics
-python evaluation/nedc_scoring/run_nedc.py      # Temple binary
-python evaluation/nedc_scoring/native_taes.py    # Our fractional implementation
-```
-
-If ANY difference exists, the implementation is WRONG and must be fixed.
+- Add a native DP ALIGNMENT/“true TAES” implementation if we decide to gate on that section.
+- Add a flag in `run_nedc.py` to choose which section’s semantics the native backend should emulate (`--scoring {overlap, dpalign}`), keeping parsing/outputs consistent.
 
 ---
 
-**THIS PLAN MUST BE APPROVED BEFORE IMPLEMENTATION**
-
-The goal is 100% mathematical parity with Temple NEDC v6.0.0, not a "better" algorithm.
+This corrected plan targets EXACT parity with the Temple OVERLAP section, which is what our pipeline currently reports. No fractional TAES required.
