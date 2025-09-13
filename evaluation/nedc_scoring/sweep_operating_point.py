@@ -135,8 +135,8 @@ def main() -> int:
     thresholds = parse_floats_list(args.thresholds)
     kernels = parse_ints_list(args.kernels)
     min_durations = parse_floats_list(args.min_durations)
-    merge_gaps = parse_floats_list(args.merge_gaps)
-    merge_gaps = [None if g == 0 else g for g in merge_gaps]
+    merge_gaps_raw = parse_floats_list(args.merge_gaps)
+    merge_gaps: list[float | None] = [None if g == 0 else g for g in merge_gaps_raw]
 
     results: list[Result] = []
     for thr, ker, mind, gap in itertools.product(thresholds, kernels, min_durations, merge_gaps):
