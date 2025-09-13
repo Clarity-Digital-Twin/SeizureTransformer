@@ -9,23 +9,22 @@ Replace the external NEDC v6.0.0 binary dependency with our own clean, tested, t
 
 ```
 seizure_evaluation/
-├── taes/           # Time-Aligned Event Scoring (PRIMARY)
-│   └── scorer.py   ✅ Implemented
-├── ovlp/           # Overlap scoring
-│   └── scorer.py   ⏳ TODO
-├── epoch/          # Epoch-based scoring
-│   └── scorer.py   ⏳ TODO
-├── dpalign/        # Dynamic Programming Alignment
-│   └── scorer.py   ⏳ TODO
-└── ira/            # Inter-Rater Agreement
-    └── scorer.py   ⏳ TODO
+├── taes/
+│   ├── overlap_scorer.py  ✅ OVERLAP scoring (PRIMARY)
+│   └── scorer.py          🛈 Legacy greedy scorer (not used)
+├── epoch/                 # Epoch-based scoring (future)
+│   └── scorer.py          ⏳ TODO
+├── dpalign/               # Dynamic Programming Alignment (future)
+│   └── scorer.py          ⏳ TODO
+└── ira/                   # Inter-Rater Agreement (future)
+    └── scorer.py          ⏳ TODO
 ```
 
 ## Implementation Status
 
-### Phase 4.1: TAES (CRITICAL PATH) ✅
-- Core algorithm implemented
-- Matches NEDC for sensitivity, FA/24h, F1
+### Phase 4.1: OVERLAP (CRITICAL PATH) ✅
+- Exact any-overlap semantics implemented (SEIZ + BCKG totals)
+- Matches Temple OVERLAP for SEIZ sensitivity and TOTAL FA/24h
 - Integrated with `run_nedc.py --backend native-taes`
 
 ### Phase 4.2: Other Scorers (OPTIONAL)
@@ -37,9 +36,9 @@ seizure_evaluation/
 ## Usage
 
 ```python
-# Direct usage
-from seizure_evaluation.taes.scorer import TAESScorer
-scorer = TAESScorer(overlap_threshold=0.5)
+# Direct usage (OVERLAP)
+from seizure_evaluation.taes.overlap_scorer import OverlapScorer
+scorer = OverlapScorer()
 metrics = scorer.score_from_files(ref_csv_bi, hyp_csv_bi)
 
 # Via run_nedc.py
@@ -50,10 +49,10 @@ python evaluation/nedc_scoring/run_nedc.py \
 
 ## Validation
 
-Must match NEDC within tolerance:
-- Sensitivity: ±0.1%
-- FA/24h: ±0.1
-- F1 Score: ±0.001
+Must match NEDC OVERLAP within tolerance:
+- SEIZ Sensitivity: ±0.1%
+- Total FA/24h (SEIZ + BCKG): ±0.1
+- F1 Score: informational (aggregation differences)
 
 ## Why This Matters
 

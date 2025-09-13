@@ -2,9 +2,10 @@
 
 ## Executive Summary
 
-**Root cause was metrics extraction, not native scoring. Fixed.**
+Two issues, both resolved:
 
-Our native Python scorer correctly implements OVERLAP scoring (with `overlap_threshold=0.0`) and matches Temple NEDC's OVERLAP section for sensitivity and FA/24h. The confusion arose because `metrics.json` used to extract metrics from the first section in Temple’s `summary.txt` (DP ALIGNMENT) instead of the OVERLAP section. `run_nedc.py` now explicitly parses the OVERLAP block and stores those values under `overlap` (duplicated to `taes` for backward-compat).
+1) Metrics extraction parsed DP ALIGNMENT rather than OVERLAP. Fixed to parse OVERLAP explicitly and store under `overlap` (duplicated to `taes`).
+2) Native scorer semantics were greedy 1–1 and didn’t match Temple’s OVERLAP totals. Implemented exact any-overlap with background complements in `seizure_evaluation/taes/overlap_scorer.py`, and updated the native backend to report Temple’s TOTAL False Alarm Rate (SEIZ + BCKG).
 
 ## Key Findings
 
@@ -28,12 +29,12 @@ Temple NEDC v6.0.0 outputs four different scoring sections, each with different 
    - Very high FA rate (4549.93/24h)
    - Not event-based
 
-### 2. Our Native Scorer Matches OVERLAP Perfectly
+### 2. Our Native Scorer Now Matches OVERLAP Perfectly
 
-When configured with `overlap_threshold=0.0` (any overlap), our native scorer produces:
-- Sensitivity: 23.45% ✅ (Temple OVERLAP: 23.4542%)
-- FA/24h: 9.97 ✅ (Temple OVERLAP: 9.9679%)
-- F1: differs slightly (native aggregates TP/FP/FN; Temple OVERLAP reports per-label F1). We treat F1 as informational and gate on sens/FA.
+With the OverlapScorer:
+- SEIZ sensitivity matches Temple’s OVERLAP “SEIZ” sensitivity (per-label block).
+- Reported FA/24h matches Temple’s OVERLAP “Total False Alarm Rate” (SEIZ + BCKG), by summing false alarms across both labels using background complements.
+- F1: native prints dataset-level F1 for convenience; Temple prints per-label and summary F1. Treat as informational unless exact match is required.
 
 ### 3. The Metrics Extraction Bug
 
@@ -61,9 +62,9 @@ The original issue was in `evaluation/nedc_scoring/run_nedc.py::extract_and_save
    - For publication: Which method do other papers use?
    - For clinical: Which meets our FA < 10/24h requirement?
 
-2. **Fix the metrics extraction** ✅
+2. **Fix the metrics extraction and semantics** ✅
    - Extract from OVERLAP section (done; matches native)
-   - If DP ALIGNMENT becomes the target, either change parser or implement DP ALIGNMENT in native
+   - Native backend now mirrors Temple OVERLAP including TOTAL FA/24h
 
 3. **Update documentation**
    - Clearly specify which NEDC scoring method we're targeting
@@ -71,9 +72,8 @@ The original issue was in `evaluation/nedc_scoring/run_nedc.py::extract_and_save
 
 ## Code Location of Issues
 
-1. **Native scorer**: `seizure_evaluation/taes/scorer.py`
-   - Actually implements OVERLAP correctly!
-   - Just needs `overlap_threshold=0.0` setting
+1. **Native scorer**: `seizure_evaluation/taes/overlap_scorer.py`
+   - Implements any-overlap + background complements (SEIZ + BCKG totals)
 
 2. **Metrics extraction**: `evaluation/nedc_scoring/run_nedc.py::extract_and_save_metrics()`
    - Lines 285-295 extract from wrong section
@@ -94,10 +94,4 @@ sed -n '1,220p' experiments/dev/baseline/sweeps/thr0.95_k5_min2.0_gap5.0/results
 
 ## Resolution
 
-The "bug" is actually a **misunderstanding of which scoring method to use**. Our native implementation is CORRECT for OVERLAP scoring. We need to decide:
-
-1. Use OVERLAP scoring (native already works, just fix metrics extraction)
-2. Use DP ALIGNMENT scoring (need to implement in native)
-3. Use true TAES scoring (complex fractional implementation needed)
-
-**Recommendation**: Use OVERLAP since it meets our FA < 10/24h target and our native implementation already works!
+We target OVERLAP for gating and reporting, and native now matches Temple exactly (SEIZ sensitivity + TOTAL FA/24h) on dev/eval baselines. If we ever choose DP ALIGNMENT or true TAES (fractional), we’ll implement those separately in native and switch the parser accordingly.

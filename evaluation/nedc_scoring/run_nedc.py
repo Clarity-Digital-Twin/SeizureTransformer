@@ -177,18 +177,19 @@ def run_nedc_scorer(
         import sys
 
         sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
-        from seizure_evaluation.taes.scorer import TAESScorer
+        from seizure_evaluation.taes.overlap_scorer import OverlapScorer
 
-        print("Running native Python TAES scorer...")
+        print("Running native Python OVERLAP scorer...")
 
-        # Initialize scorer with 0.0 threshold to match Temple OVERLAP
-        scorer = TAESScorer(overlap_threshold=0.0)
+        # Initialize OVERLAP scorer (matches Temple NEDC OVERLAP section)
+        scorer = OverlapScorer()
 
         # Process each file pair
         total_metrics = {
-            "true_positives": 0,
-            "false_positives": 0,
-            "false_negatives": 0,
+            "hits": 0,
+            "misses": 0,
+            "false_alarms": 0,           # SEIZ-only FAs
+            "bckg_false_alarms": 0,      # BCKG FAs (for Temple total)
             "total_duration": 0.0,
         }
 
@@ -202,18 +203,20 @@ def run_nedc_scorer(
         for ref_csv, hyp_csv in zip(ref_files, hyp_files, strict=False):
             if ref_csv.stem == hyp_csv.stem:
                 metrics = scorer.score_from_files(ref_csv, hyp_csv)
-                total_metrics["true_positives"] += metrics.true_positives
-                total_metrics["false_positives"] += metrics.false_positives
-                total_metrics["false_negatives"] += metrics.false_negatives
+                total_metrics["hits"] += metrics.hits
+                total_metrics["misses"] += metrics.misses
+                total_metrics["false_alarms"] += metrics.false_alarms
+                # include background FAs to match Temple's Total False Alarm Rate
+                total_metrics["bckg_false_alarms"] += getattr(metrics, "bckg_false_alarms", 0)
                 total_metrics["total_duration"] += metrics.total_duration_sec
 
         # Write summary file for compatibility
         summary_file = results_dir / "summary.txt"
         with open(summary_file, "w") as f:
-            # Calculate aggregate metrics
-            tp = total_metrics["true_positives"]
-            fp = total_metrics["false_positives"]
-            fn = total_metrics["false_negatives"]
+            # Calculate aggregate metrics (map OVERLAP to TP/FP/FN for compatibility)
+            tp = total_metrics["hits"]  # Hits are true positives
+            fp = total_metrics["false_alarms"]  # False alarms are false positives
+            fn = total_metrics["misses"]  # Misses are false negatives
             duration = total_metrics["total_duration"]
 
             sensitivity = 100.0 * tp / (tp + fn) if (tp + fn) > 0 else 0.0
@@ -225,12 +228,17 @@ def run_nedc_scorer(
                 else 0.0
             )
 
-            f.write("=== NATIVE TAES SCORING RESULTS ===\n\n")
+            f.write("=== NATIVE OVERLAP SCORING RESULTS ===\n\n")
             f.write(f"Sensitivity (TPR, Recall): {sensitivity:.2f}%\n")
-            f.write(f"Total False Alarm Rate: {fa_per_24h:.2f} per 24 hours\n")
+            # Temple reports TOTAL False Alarms across labels in OVERLAP summary
+            fa_per_24h_total = (
+                (total_metrics["false_alarms"] + total_metrics["bckg_false_alarms"]) * 86400.0 / duration
+                if duration > 0 else 0.0
+            )
+            f.write(f"Total False Alarm Rate: {fa_per_24h_total:.2f} per 24 hours\n")
             f.write(f"F1 Score: {f1 / 100:.3f}\n")
 
-        print(f"Native TAES scoring complete. Results in {summary_file}")
+        print(f"Native OVERLAP scoring complete. Results in {summary_file}")
     else:
         print(f"Error: Unknown backend '{backend}'")
         print("Valid backends: nedc-binary, native-taes")

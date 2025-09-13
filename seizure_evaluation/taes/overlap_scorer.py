@@ -42,6 +42,8 @@ class OverlapMetrics:
     misses: int  # Number of ref events with no overlap
     false_alarms: int  # Number of hyp events with no overlap
     total_duration_sec: float
+    # Optional: background false alarms for Temple 'Total False Alarm Rate'
+    bckg_false_alarms: int = 0
 
     @property
     def sensitivity(self) -> float:
@@ -57,6 +59,13 @@ class OverlapMetrics:
         if self.total_duration_sec == 0:
             return float('inf')
         return self.false_alarms * 86400.0 / self.total_duration_sec
+
+    @property
+    def total_fa_per_24h(self) -> float:
+        """Temple 'Total False Alarm Rate' across SEIZ + BCKG labels."""
+        if self.total_duration_sec == 0:
+            return float('inf')
+        return (self.false_alarms + self.bckg_false_alarms) * 86400.0 / self.total_duration_sec
 
     @property
     def precision(self) -> float:
@@ -103,7 +112,7 @@ class OverlapScorer:
         Returns:
             OverlapMetrics with scoring results
         """
-        # Track which events have any overlap
+        # Track which events have any overlap (SEIZ label)
         ref_has_overlap = [False] * len(ref_events)
         hyp_has_overlap = [False] * len(hyp_events)
 
@@ -116,16 +125,30 @@ class OverlapScorer:
                     hyp_has_overlap[h_idx] = True
                     # Don't break - one hyp can overlap multiple refs
 
-        # Count results
-        hits = sum(ref_has_overlap)  # Refs with any overlap
-        misses = len(ref_events) - hits  # Refs with no overlap
-        false_alarms = len(hyp_events) - sum(hyp_has_overlap)  # Hyps with no overlap
+        # Count SEIZ label results
+        hits = sum(ref_has_overlap)  # Refs with any overlap (SEIZ)
+        misses = len(ref_events) - hits  # Refs with no overlap (SEIZ)
+        false_alarms = len(hyp_events) - sum(hyp_has_overlap)  # Hyps with no overlap (SEIZ)
+
+        # Derive background (BCKG) events from complements and count BCKG false alarms
+        ref_bckg = self._complement_of_events(ref_events, total_duration_sec)
+        hyp_bckg = self._complement_of_events(hyp_events, total_duration_sec)
+
+        # Any-overlap for BCKG
+        hyp_bckg_has_overlap = [False] * len(hyp_bckg)
+        for h_idx, hyp_bg in enumerate(hyp_bckg):
+            for ref_bg in ref_bckg:
+                if hyp_bg.overlaps(ref_bg):
+                    hyp_bckg_has_overlap[h_idx] = True
+                    break
+        bckg_false_alarms = len(hyp_bckg) - sum(hyp_bckg_has_overlap)
 
         return OverlapMetrics(
             hits=hits,
             misses=misses,
             false_alarms=false_alarms,
-            total_duration_sec=total_duration_sec
+            total_duration_sec=total_duration_sec,
+            bckg_false_alarms=bckg_false_alarms,
         )
 
     def score_from_files(
@@ -177,3 +200,36 @@ class OverlapScorer:
                     ))
 
         return events, duration
+
+    # --- helpers ---
+    def _merge_intervals(self, events: List[Event]) -> List[Event]:
+        """Merge overlapping/contiguous intervals in the event list."""
+        if not events:
+            return []
+        # sort by start
+        sorted_events = sorted(events, key=lambda e: (e.start_time, e.stop_time))
+        merged: List[Event] = []
+        cur = Event(sorted_events[0].start_time, sorted_events[0].stop_time)
+        for ev in sorted_events[1:]:
+            if ev.start_time <= cur.stop_time:
+                # overlap or touch, extend
+                if ev.stop_time > cur.stop_time:
+                    cur.stop_time = ev.stop_time
+            else:
+                merged.append(cur)
+                cur = Event(ev.start_time, ev.stop_time)
+        merged.append(cur)
+        return merged
+
+    def _complement_of_events(self, events: List[Event], total_duration_sec: float) -> List[Event]:
+        """Return background intervals as complement of events within [0, total_duration_sec]."""
+        merged = self._merge_intervals(events)
+        background: List[Event] = []
+        prev = 0.0
+        for ev in merged:
+            if ev.start_time > prev:
+                background.append(Event(prev, ev.start_time, label="bckg"))
+            prev = max(prev, ev.stop_time)
+        if prev < total_duration_sec:
+            background.append(Event(prev, total_duration_sec, label="bckg"))
+        return background

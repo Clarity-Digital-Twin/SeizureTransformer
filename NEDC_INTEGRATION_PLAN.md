@@ -27,14 +27,13 @@ We need this for:
 - Sweep tool built: `evaluation/nedc_scoring/sweep_operating_point.py`
 - **STATUS**: Working, being used by parameter sweep RIGHT NOW
 
-### Part 2: Native Python Implementation ✅ DONE
-- Location: `seizure_evaluation/taes/scorer.py`
-- **STATUS**: Implemented and integrated via `--backend native-taes`
-- **PARITY (OVERLAP)**: Matches Temple OVERLAP for sensitivity and FA/24h on eval baseline
-  - Temple OVERLAP: Sensitivity ≈ 23.4542%, FA/24h ≈ 9.9679
-  - Native TAES (overlap_threshold=0.0): Sensitivity ≈ 23.45%, FA/24h ≈ 9.97
-- **NOTE (F1)**: Native summary computes dataset-level F1 from aggregated TP/FP/FN; Temple reports per-label F1 in the OVERLAP section. Expect small F1 differences unless we mirror Temple’s exact aggregation.
-  - We treat F1 as informational; gating metrics are sensitivity and FA/24h.
+### Part 2: Native Python Implementation (OVERLAP) ✅ DONE
+- Location: `seizure_evaluation/taes/overlap_scorer.py`
+- **STATUS**: Implemented and integrated via `--backend native-taes` (now runs OVERLAP scorer)
+- **PARITY (OVERLAP)**: Matches Temple OVERLAP for seizure sensitivity and TOTAL FA/24h (SEIZ + BCKG) on dev/eval
+  - Dev/default: 23.53% @ 19.45 FA/24h (Temple = Native)
+  - Eval/default: 45.63% @ 25.01 FA/24h (Temple = Native)
+- **NOTE (F1)**: Native summary prints dataset-level F1; Temple reports per-label and summary F1. Treat as informational unless exact match is required.
 
 ### What Works
 ```bash
@@ -60,7 +59,7 @@ CSV_bi files (NEDC format)
     ↓ run_nedc.py
 NEDC binary execution
     ↓ parse results
-TAES metrics (sensitivity, FA/24h, F1)
+OVERLAP metrics (sensitivity, Total FA/24h, F1)
 ```
 
 ## Critical Format Requirements
@@ -119,9 +118,9 @@ Given an `--outdir <DIR>`, the runner writes:
 - `<DIR>/results/summary.txt` (official NEDC output)
 - `<DIR>/results/metrics.json` (parsed TAES metrics + provenance)
 
-## Native TAES Implementation (PRIMARY GOAL) 🎯
+## Native OVERLAP Implementation (PRIMARY GOAL) 🎯
 
-Full Python implementation at `seizure_evaluation/taes/scorer.py` to:
+Full Python implementation at `seizure_evaluation/taes/overlap_scorer.py` to:
 - Remove ALL dependency on Temple binary
 - Enable Windows support without WSL
 - Speed up evaluation
@@ -129,8 +128,8 @@ Full Python implementation at `seizure_evaluation/taes/scorer.py` to:
 
 ### Validation Status
 - Backend flag: `--backend native-taes` (in `run_nedc.py`)
-- Overlap threshold set to 0.0 to mirror Temple OVERLAP
-- Parity achieved for sens and FA/24h on eval baseline (see above)
+- Implements Temple OVERLAP semantics including TOTAL false alarms (SEIZ + BCKG)
+- Parity achieved for sens and FA/24h on dev and eval baselines (see above)
 - F1 parity pending unless we mirror Temple’s OVERLAP F1 aggregation
 
 ### Acceptance Criteria

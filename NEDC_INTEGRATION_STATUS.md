@@ -3,7 +3,7 @@
 
 **Last Updated**: 2025-09-13 12:40
 **Sweep Progress**: 108/108 combinations (complete) ✅
-**Native TAES**: Parity achieved (OVERLAP sens/FA) ✅ — F1 differs slightly by aggregation
+**Native OVERLAP**: Parity achieved (OVERLAP sens/Total FA) ✅ — F1 differs slightly by aggregation
 
 ## What's Done ✅
 
@@ -14,14 +14,18 @@
 - Backend toggle implemented (`--backend nedc-binary|native-taes`)
 - Note: If the binary errors on Python invocation, ensure a `python` alias is available on PATH (some environments only provide `python3`).
 
-### Native TAES Backend (PRIMARY GOAL) 🎯
-- Python implementation at `seizure_evaluation/taes/scorer.py` (integrated)
-- Backend flag: `--backend native-taes`
-- Parity (OVERLAP): Native matches Temple for sensitivity and FA/24h at overlap_threshold=0.0
-  - Temple OVERLAP: Sens=23.4542%, FA=9.9679/24h
-  - Native TAES:    Sens=23.45%,   FA=9.97/24h
-- F1 note: Native computes dataset-level F1 from aggregated TP/FP/FN; Temple reports per-label F1 in OVERLAP. Small differences are expected unless we mirror Temple’s F1 aggregation.
-- Metrics extraction in `run_nedc.py` now targets OVERLAP section explicitly and stores under `overlap` (duplicated to `taes` for backward-compat).
+### Native OVERLAP Backend (PRIMARY GOAL) 🎯
+- Python implementation at `seizure_evaluation/taes/overlap_scorer.py` (integrated)
+- Backend flag: `--backend native-taes` (kept for compatibility; now runs OVERLAP scorer)
+- Parity (OVERLAP): Native matches Temple for SEIZ sensitivity and TOTAL FA/24h (SEIZ + BCKG) on dev and eval baselines
+  - Dev/default: Sens=23.53%, Total FA=19.45/24h (Temple = Native)
+  - Dev/2.5fa:  Sens=7.44%,  Total FA=2.26/24h (Temple = Native)
+  - Dev/1fa:    Sens=0.65%,  Total FA=0.22/24h (Temple = Native)
+  - Eval/default+10fa: Sens=45.63%, Total FA=25.01/24h (Temple = Native)
+  - Eval/2.5fa: Sens=11.51%, Total FA=2.45/24h (Temple = Native)
+  - Eval/1fa:   Sens=1.28%,  Total FA=0.38/24h (Temple = Native)
+- F1 note: Native prints dataset-level F1 for convenience; Temple reports per-label F1 and a summary. Treat F1 as informational unless exact match is required.
+- Metrics extraction in `run_nedc.py` targets the OVERLAP section explicitly and stores under `overlap` (duplicated to `taes` for backward-compat).
 
 ### Parameter Tuning Progress
 - Dev checkpoint: `experiments/dev/baseline/checkpoint.pkl` (~1.5GB)
