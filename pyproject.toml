@@ -101,6 +101,7 @@ markers = [
     "integration: Integration tests for the pipeline",
     "clinical: Clinical validation tests",
     "slow: Tests that take > 30 seconds",
+    "overlap: Tests for OVERLAP scorer implementation",
 ]
 
 [tool.coverage.run]

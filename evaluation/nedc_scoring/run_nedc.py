@@ -172,7 +172,7 @@ def run_nedc_scorer(
             return result.returncode
 
         print(result.stdout)
-    elif backend == "native-overlap":
+    elif backend in ("native-overlap", "native-taes"):
         # Native Python TAES implementation
         import sys
 
@@ -243,7 +243,7 @@ def run_nedc_scorer(
         print(f"Native OVERLAP scoring complete. Results in {summary_file}")
     else:
         print(f"Error: Unknown backend '{backend}'")
-        print("Valid backends: nedc-binary, native-overlap")
+        print("Valid backends: nedc-binary, native-overlap, native-taes (alias)")
         return 1
 
     # Parse and display key metrics with operating point params
@@ -297,7 +297,7 @@ def extract_and_save_metrics(results_dir, metrics_file, backend="nedc-binary"):
             content = f.read()
 
         # Handle both Temple binary and native outputs
-        if backend == "native-overlap":
+        if backend in ("native-overlap", "native-taes"):
             # Native outputs simpler format
             sens_match = re.search(r"Sensitivity \(TPR, Recall\):\s+([\d.]+)%", content)
             fa_match = re.search(r"Total False Alarm Rate:\s+([\d.]+)\s+per 24 hours", content)
@@ -394,9 +394,9 @@ def parse_nedc_output(
         with open(metrics_file, "w") as f:
             json.dump(metrics, f, indent=2)
 
-    # Display key TAES metrics
+    # Display key OVERLAP metrics (stored under "overlap" and duplicated to "taes")
     if metrics["taes"]:
-        print("\n🎯 TAES Results:")
+        print("\n🎯 OVERLAP Results:")
         if "sensitivity_percent" in metrics["taes"]:
             print(f"   Sensitivity: {metrics['taes']['sensitivity_percent']:.2f}%")
         if "fa_per_24h" in metrics["taes"]:
@@ -534,8 +534,8 @@ Examples:
         "--backend",
         type=str,
         default="nedc-binary",
-        choices=["nedc-binary", "native-overlap"],
-        help="Scoring backend to use (default: nedc-binary)",
+        choices=["nedc-binary", "native-overlap", "native-taes"],
+        help="Scoring backend to use (default: nedc-binary). 'native-taes' is an alias of 'native-overlap' for compatibility.",
     )
 
     args = parser.parse_args()
