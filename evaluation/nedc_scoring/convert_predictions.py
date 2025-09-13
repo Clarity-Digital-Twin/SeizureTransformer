@@ -164,8 +164,8 @@ def main():
     parser.add_argument(
         "--outdir",
         type=str,
-        default="evaluation/nedc_scoring/output",
-        help="Output directory for NEDC files",
+        default="experiments/dev/baseline/nedc_results",
+        help="Output directory for NEDC files (under experiments/**)",
     )
     parser.add_argument("--threshold", type=float, default=0.8, help="Probability threshold")
     parser.add_argument("--kernel", type=int, default=5, help="Morphological kernel size (samples)")

@@ -171,18 +171,42 @@ def run_nedc_scorer(output_dir, backend="nedc-binary"):
         print("Valid backends: nedc-binary, native-taes")
         return 1
 
-    # Parse and display key metrics
-    parse_nedc_output(results_dir)
+    # Parse and display key metrics with operating point params
+    parse_nedc_output(results_dir, threshold=threshold, kernel=kernel,
+                     min_duration_sec=min_duration_sec, merge_gap_sec=merge_gap_sec)
 
     return 0
 
 
 def extract_and_save_metrics(results_dir, metrics_file):
     """Extract machine-readable metrics from NEDC output and save to JSON."""
+    import platform
     from typing import Any
+
+    # Get git commit SHA if available
+    try:
+        git_sha = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            capture_output=True,
+            text=True,
+            check=False
+        ).stdout.strip()[:8]
+    except:
+        git_sha = "unknown"
+
+    # Get Python version
+    py_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.patch}"
 
     metrics: dict[str, Any] = {
         "timestamp": datetime.now().isoformat(),
+        "provenance": {
+            "git_commit": git_sha,
+            "python_version": py_version,
+            "platform": platform.platform(),
+            "os": platform.system(),
+            "backend": "nedc-binary",
+            "nedc_version": "v6.0.0",
+        },
         "taes": {},
         "ovlp": {},
         "epoch": {},
@@ -223,12 +247,17 @@ def extract_and_save_metrics(results_dir, metrics_file):
     return metrics
 
 
-def parse_nedc_output(results_dir):
+def parse_nedc_output(results_dir, threshold=None, kernel=None,
+                     min_duration_sec=None, merge_gap_sec=None):
     """
     Parse and display key metrics from NEDC output.
 
     Args:
         results_dir: Directory containing NEDC results
+        threshold: Probability threshold used
+        kernel: Morphological kernel size used
+        min_duration_sec: Minimum duration used
+        merge_gap_sec: Merge gap used
     """
     print("\n" + "=" * 70)
     print("KEY METRICS")
@@ -237,6 +266,18 @@ def parse_nedc_output(results_dir):
     # Extract metrics first
     metrics_file = results_dir / "metrics.json"
     metrics = extract_and_save_metrics(results_dir, metrics_file)
+
+    # Add operating point params to metrics
+    if any([threshold, kernel, min_duration_sec, merge_gap_sec]):
+        metrics["operating_point"] = {
+            "threshold": threshold or 0.8,
+            "kernel": kernel or 5,
+            "min_duration_sec": min_duration_sec or 2.0,
+            "merge_gap_sec": merge_gap_sec or 0.0,
+        }
+        # Re-save with operating point
+        with open(metrics_file, "w") as f:
+            json.dump(metrics, f, indent=2)
 
     # Display key TAES metrics
     if metrics["taes"]:
@@ -343,8 +384,8 @@ Examples:
     parser.add_argument(
         "--outdir",
         type=str,
-        default="evaluation/nedc_scoring/output",
-        help="Output directory for NEDC files",
+        default="experiments/dev/baseline/nedc_results",
+        help="Output directory for NEDC files (under experiments/**)",
     )
     parser.add_argument("--force", action="store_true", help="Force overwrite existing output")
     # Conversion tuning parameters
