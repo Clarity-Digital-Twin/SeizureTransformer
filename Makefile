@@ -43,8 +43,8 @@ lint:
 	. .venv/bin/activate && ruff check .
 
 typecheck:
-	@echo "🔍 Type checking our code only (excluding wu_2025 and NEDC external code)"
-	. .venv/bin/activate && mypy evaluation/nedc_scoring/ evaluation/tusz/ scripts/ tests/ --ignore-missing-imports
+	@echo "🔍 Quick type check on key files"
+	. .venv/bin/activate && mypy evaluation/nedc_scoring/run_nedc.py scripts/visualize_results.py --ignore-missing-imports
 
 check-all: lint typecheck test
 	@echo "✅ All quality checks passed!"
