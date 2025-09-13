@@ -14,6 +14,7 @@ import pytest
 repo_root = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(repo_root))
 
+from seizure_evaluation.taes.overlap_scorer import Event, OverlapScorer
 
 
 @pytest.mark.overlap
@@ -38,15 +39,15 @@ class TestNativeOverlap:
             nedc_metrics = json.load(f)
 
         # Run native scorer on each fixture pair
-        scorer = TAESScorer()
+        scorer = OverlapScorer()
 
         ref_dir = fixture_path / "ref"
         hyp_dir = fixture_path / "hyp"
 
         total_metrics = {
-            "true_positives": 0,
-            "false_positives": 0,
-            "false_negatives": 0,
+            "hits": 0,
+            "misses": 0,
+            "false_alarms": 0,
             "total_duration": 0.0,
         }
 
@@ -56,23 +57,21 @@ class TestNativeOverlap:
                 continue
 
             metrics = scorer.score_from_files(ref_file, hyp_file)
-            total_metrics["true_positives"] += metrics.true_positives
-            total_metrics["false_positives"] += metrics.false_positives
-            total_metrics["false_negatives"] += metrics.false_negatives
+            total_metrics["hits"] += metrics.hits
+            total_metrics["false_alarms"] += metrics.false_alarms
+            total_metrics["misses"] += metrics.misses
             total_metrics["total_duration"] += metrics.total_duration_sec
 
         # Calculate aggregate metrics
         if total_metrics["total_duration"] > 0:
             native_sensitivity = (
-                100.0
-                * total_metrics["true_positives"]
-                / (total_metrics["true_positives"] + total_metrics["false_negatives"])
-                if (total_metrics["true_positives"] + total_metrics["false_negatives"]) > 0
+                100.0 * total_metrics["hits"] / (total_metrics["hits"] + total_metrics["misses"])
+                if (total_metrics["hits"] + total_metrics["misses"]) > 0
                 else 0.0
             )
 
             native_fa_per_24h = (
-                total_metrics["false_positives"] * 86400.0 / total_metrics["total_duration"]
+                total_metrics["false_alarms"] * 86400.0 / total_metrics["total_duration"]
             )
 
             # Compare with NEDC (allow 0.1% tolerance)
@@ -88,41 +87,37 @@ class TestNativeOverlap:
 
     def test_empty_events(self):
         """Test scorer with no events."""
-        scorer = TAESScorer()
+        scorer = OverlapScorer()
         metrics = scorer.score_events([], [], 1800.0)
 
-        assert metrics.true_positives == 0
-        assert metrics.false_positives == 0
-        assert metrics.false_negatives == 0
+        assert metrics.hits == 0
+        assert metrics.false_alarms == 0
+        assert metrics.misses == 0
         assert metrics.sensitivity == 0.0
         assert metrics.fa_per_24h == 0.0
 
     def test_perfect_match(self):
         """Test scorer with perfectly matching events."""
-        from seizure_evaluation.taes.overlap_scorer import Event
-
         ref_events = [Event(10.0, 20.0), Event(30.0, 45.0), Event(60.0, 75.0)]
         hyp_events = ref_events.copy()
 
-        scorer = TAESScorer()
+        scorer = OverlapScorer()
         metrics = scorer.score_events(ref_events, hyp_events, 1800.0)
 
-        assert metrics.true_positives == 3
-        assert metrics.false_positives == 0
-        assert metrics.false_negatives == 0
+        assert metrics.hits == 3
+        assert metrics.false_alarms == 0
+        assert metrics.misses == 0
         assert metrics.sensitivity == 100.0
         assert metrics.fa_per_24h == 0.0
 
     def test_partial_overlap(self):
         """Test scorer with partial overlaps."""
-        from seizure_evaluation.taes.overlap_scorer import Event
-
         ref_events = [Event(10.0, 20.0)]  # 10 second event
         hyp_events = [Event(15.0, 25.0)]  # 50% overlap
 
-        scorer = TAESScorer(overlap_threshold=0.5)
+        scorer = OverlapScorer()
         metrics = scorer.score_events(ref_events, hyp_events, 1800.0)
 
-        assert metrics.true_positives == 1  # Meets 50% threshold
-        assert metrics.false_positives == 0
-        assert metrics.false_negatives == 0
+        assert metrics.hits == 1  # Any overlap counts
+        assert metrics.false_alarms == 0
+        assert metrics.misses == 0
