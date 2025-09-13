@@ -84,34 +84,20 @@ def run_once(
     ]
     subprocess.run(cmd_score, env=env, check=True, capture_output=True, text=True)
 
-    # Parse TAES metrics from summary.txt
+    # Parse TAES metrics using robust regex (matches run_nedc.py)
     summary = outdir / "results" / "summary.txt"
-    taes_sens = None
-    taes_fa = None
     with open(summary, "r") as f:
-        lines = f.readlines()
-    # Find TAES block and pull total FA rate and sensitivity
-    in_taes = False
-    for i, line in enumerate(lines):
-        if "NEDC TAES SCORING SUMMARY" in line:
-            in_taes = True
-            continue
-        if in_taes:
-            if "Total False Alarm Rate:" in line:
-                try:
-                    taes_fa = float(line.strip().split()[-3])
-                except Exception:
-                    pass
-            if "Sensitivity (TPR, Recall):" in line and taes_sens is None:
-                try:
-                    taes_sens = float(line.strip().split()[-1].replace("%", ""))
-                except Exception:
-                    pass
-            if taes_fa is not None and taes_sens is not None:
-                break
-
-    if taes_sens is None or taes_fa is None:
+        content = f.read()
+    
+    import re
+    taes_sens_match = re.search(r"Sensitivity \(TPR, Recall\):\s+([\d.]+)%", content)
+    taes_fa_match = re.search(r"Total False Alarm Rate:\s+([\d.]+)\s+per 24 hours", content)
+    
+    if not taes_sens_match or not taes_fa_match:
         raise RuntimeError(f"Could not parse TAES metrics from {summary}")
+    
+    taes_sens = float(taes_sens_match.group(1))
+    taes_fa = float(taes_fa_match.group(1))
 
     return Result(
         threshold=threshold,

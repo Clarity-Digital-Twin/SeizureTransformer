@@ -170,38 +170,85 @@ def run_nedc_scorer(output_dir):
     return 0
 
 
+def extract_and_save_metrics(results_dir, metrics_file):
+    """Extract machine-readable metrics from NEDC output and save to JSON."""
+    metrics = {
+        "timestamp": datetime.now().isoformat(),
+        "taes": {},
+        "ovlp": {},
+        "epoch": {}
+    }
+    
+    # Parse TAES metrics (most important)
+    summary_file = results_dir / "summary.txt"
+    if summary_file.exists():
+        with open(summary_file) as f:
+            content = f.read()
+            
+        # Extract TAES metrics with robust regex
+        taes_sens_match = re.search(r"Sensitivity \(TPR, Recall\):\s+([\d.]+)%", content)
+        taes_fa_match = re.search(r"Total False Alarm Rate:\s+([\d.]+)\s+per 24 hours", content)
+        taes_f1_match = re.search(r"F1 Score:\s+([\d.]+)", content)
+        
+        if taes_sens_match:
+            metrics["taes"]["sensitivity_percent"] = float(taes_sens_match.group(1))
+        if taes_fa_match:
+            metrics["taes"]["fa_per_24h"] = float(taes_fa_match.group(1))
+        if taes_f1_match:
+            metrics["taes"]["f1_score"] = float(taes_f1_match.group(1))
+    
+    # Clinical assessment
+    fa_rate = metrics["taes"].get("fa_per_24h", float('inf'))
+    sensitivity = metrics["taes"].get("sensitivity_percent", 0)
+    
+    metrics["clinical_assessment"] = {
+        "clinically_viable": fa_rate <= 10,
+        "sensitivity_acceptable": sensitivity >= 50,
+        "deployment_ready": fa_rate <= 10 and sensitivity >= 50
+    }
+    
+    # Save metrics
+    with open(metrics_file, 'w') as f:
+        json.dump(metrics, f, indent=2)
+    
+    return metrics
+
+
 def parse_nedc_output(results_dir):
     """
     Parse and display key metrics from NEDC output.
 
     Args:
         results_dir: Directory containing NEDC results
-        scoring_method: The scoring method used
     """
     print("\n" + "=" * 70)
     print("KEY METRICS")
     print("=" * 70)
 
-    # Known summary files from NEDC
-    preferred = [
-        "summary_taes.txt",
-        "summary_ovlp.txt",
-        "summary_epoch.txt",
-        "summary.txt",
-    ]
+    # Extract metrics first
+    metrics_file = results_dir / "metrics.json"
+    metrics = extract_and_save_metrics(results_dir, metrics_file)
+    
+    # Display key TAES metrics
+    if metrics["taes"]:
+        print(f"\n🎯 TAES Results:")
+        if "sensitivity_percent" in metrics["taes"]:
+            print(f"   Sensitivity: {metrics['taes']['sensitivity_percent']:.2f}%")
+        if "fa_per_24h" in metrics["taes"]:
+            print(f"   False Alarms/24h: {metrics['taes']['fa_per_24h']:.2f}")
+        if "f1_score" in metrics["taes"]:
+            print(f"   F1 Score: {metrics['taes']['f1_score']:.3f}")
+    
+    # Clinical assessment
+    assessment = metrics["clinical_assessment"]
+    viable = "✅" if assessment["clinically_viable"] else "❌"
+    print(f"\n🏥 Clinical Viability: {viable}")
+    print(f"   FA/24h ≤ 10: {assessment['clinically_viable']}")
+    print(f"   Sensitivity ≥ 50%: {assessment['sensitivity_acceptable']}")
+    print(f"   Deployment Ready: {assessment['deployment_ready']}")
 
-    for name in preferred:
-        sf = results_dir / name
-        if sf.exists():
-            print(f"\nReading: {sf.name}")
-            try:
-                with open(sf) as f:
-                    content = f.read()
-                    print(content[:800])  # show first 800 chars for quick view
-            except Exception as e:
-                print(f"Could not read {sf}: {e}")
-
-    print(f"\nFull results saved to: {results_dir}")
+    print(f"\n📊 Machine-readable metrics: {metrics_file}")
+    print(f"📁 Full results saved to: {results_dir}")
 
 
 def run_full_pipeline(
