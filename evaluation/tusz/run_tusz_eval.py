@@ -10,8 +10,8 @@ CLI:
     --device auto
 """
 
-import json
 import argparse
+import json
 import pickle
 import sys
 from datetime import datetime
@@ -169,7 +169,7 @@ def main():
     print("\nProcessing files...")
     files_with_labels = 0
     total_label_events = 0
-    
+
     for idx in tqdm(range(start_idx, len(edf_files)), initial=start_idx, total=len(edf_files)):
         edf_path = edf_files[idx]
         file_id = edf_path.stem

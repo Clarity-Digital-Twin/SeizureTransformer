@@ -9,7 +9,7 @@ from scipy.ndimage import binary_closing, binary_opening
 
 
 def apply_seizure_transformer_postprocessing(
-    predictions: np.ndarray, 
+    predictions: np.ndarray,
     threshold: float = 0.8,
     morph_kernel_size: int = 5,
     min_duration_sec: float = 2.0,

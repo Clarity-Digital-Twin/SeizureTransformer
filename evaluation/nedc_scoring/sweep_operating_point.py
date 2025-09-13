@@ -25,7 +25,6 @@ import os
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 
 @dataclass
@@ -33,7 +32,7 @@ class Result:
     threshold: float
     kernel: int
     min_duration: float
-    merge_gap: Optional[float]
+    merge_gap: float | None
     taes_sensitivity: float
     taes_fa_per_24h: float
     workdir: Path
@@ -45,7 +44,7 @@ def run_once(
     threshold: float,
     kernel: int,
     min_duration: float,
-    merge_gap: Optional[float],
+    merge_gap: float | None,
 ) -> Result:
     # Convert
     cmd_conv = [
@@ -86,16 +85,16 @@ def run_once(
 
     # Parse TAES metrics using robust regex (matches run_nedc.py)
     summary = outdir / "results" / "summary.txt"
-    with open(summary, "r") as f:
+    with open(summary) as f:
         content = f.read()
-    
+
     import re
     taes_sens_match = re.search(r"Sensitivity \(TPR, Recall\):\s+([\d.]+)%", content)
     taes_fa_match = re.search(r"Total False Alarm Rate:\s+([\d.]+)\s+per 24 hours", content)
-    
+
     if not taes_sens_match or not taes_fa_match:
         raise RuntimeError(f"Could not parse TAES metrics from {summary}")
-    
+
     taes_sens = float(taes_sens_match.group(1))
     taes_fa = float(taes_fa_match.group(1))
 

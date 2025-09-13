@@ -3,11 +3,10 @@
 Experiment tracking utilities for SeizureTransformer evaluation.
 """
 
-import json
 import argparse
+import json
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
 
 
 def create_experiment_config(
@@ -16,10 +15,10 @@ def create_experiment_config(
     threshold: float = 0.8,
     kernel: int = 5,
     min_duration_sec: float = 2.0,
-    merge_gap_sec: Optional[float] = None,
-    target_fa_per_24h: Optional[float] = None,
+    merge_gap_sec: float | None = None,
+    target_fa_per_24h: float | None = None,
     notes: str = "",
-) -> Dict:
+) -> dict:
     """Create standardized experiment configuration."""
     return {
         "experiment_info": {
@@ -71,11 +70,11 @@ def log_experiment_results(
         },
         "notes": notes
     }
-    
+
     results_file = experiment_dir / "summary.json"
     with open(results_file, 'w') as f:
         json.dump(results, f, indent=2)
-    
+
     print(f"Results logged to: {results_file}")
 
 
@@ -85,33 +84,33 @@ def compare_experiments(experiments_dir: Path) -> None:
     print("=" * 80)
     print(f"{'Experiment':<20} {'TAES Sens':<10} {'FA/24h':<8} {'F1':<6} {'Clinical':<8}")
     print("-" * 80)
-    
+
     for exp_dir in experiments_dir.glob("*/"):
         if not exp_dir.is_dir():
             continue
-            
+
         summary_file = exp_dir / "summary.json"
         if not summary_file.exists():
             continue
-            
+
         with open(summary_file) as f:
             results = json.load(f)
-        
+
         metrics = results.get("metrics", {})
         clinical = results.get("clinical_assessment", {})
-        
+
         sens = metrics.get("taes_sensitivity_percent", 0)
         fa = metrics.get("taes_fa_per_24h", 0)
         f1 = metrics.get("taes_f1_score", 0)
         viable = "✅" if clinical.get("clinically_viable", False) else "❌"
-        
+
         print(f"{exp_dir.name:<20} {sens:<9.1f}% {fa:<7.1f} {f1:<5.2f} {viable:<8}")
 
 
 def main():
     parser = argparse.ArgumentParser(description="Experiment tracking utilities")
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
-    
+
     # Create config command
     create_parser = subparsers.add_parser("create-config", help="Create experiment config")
     create_parser.add_argument("--split", required=True, choices=["dev", "eval"])
@@ -122,13 +121,13 @@ def main():
     create_parser.add_argument("--merge_gap_sec", type=float, default=None)
     create_parser.add_argument("--target_fa_per_24h", type=float, default=None)
     create_parser.add_argument("--notes", default="")
-    
+
     # Compare command
     compare_parser = subparsers.add_parser("compare", help="Compare experiments")
     compare_parser.add_argument("--split", required=True, choices=["dev", "eval"])
-    
+
     args = parser.parse_args()
-    
+
     if args.command == "create-config":
         config = create_experiment_config(
             split=args.split,
@@ -140,22 +139,22 @@ def main():
             target_fa_per_24h=args.target_fa_per_24h,
             notes=args.notes
         )
-        
+
         # Create experiment directory
         exp_dir = Path(f"experiments/{args.split}/{args.description}")
         exp_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Write config
         config_file = exp_dir / "run_config.json"
         with open(config_file, 'w') as f:
             json.dump(config, f, indent=2)
-        
+
         print(f"Experiment config created: {config_file}")
-        
+
     elif args.command == "compare":
         experiments_dir = Path(f"experiments/{args.split}")
         compare_experiments(experiments_dir)
-    
+
     else:
         parser.print_help()
 

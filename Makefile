@@ -15,8 +15,13 @@ help:
 # Environment setup
 install:
 	uv venv
-	. .venv/bin/activate && uv pip install ./wu_2025
-	. .venv/bin/activate && uv pip install ruff pytest pytest-cov
+	@if [ -f uv.lock ]; then \
+		echo "📦 Using uv.lock to sync pinned deps"; \
+		uv sync --dev; \
+	else \
+		echo "⚠️  uv.lock not found; installing base deps"; \
+		. .venv/bin/activate && uv pip install ./wu_2025 ruff pytest pytest-cov; \
+	fi
 	@echo "✅ Environment ready! Activate with: source .venv/bin/activate"
 
 # Testing
@@ -52,7 +57,7 @@ run-eval-tusz:
 
 run-eval-nedc:
 	@echo "Running NEDC official evaluation..."
-	. .venv/bin/activate && python evaluation/nedc_scoring/run_nedc.py
+	. .venv/bin/activate && $(MAKE) -C evaluation/nedc_scoring all
 
 # Quick inference test
 test-inference:

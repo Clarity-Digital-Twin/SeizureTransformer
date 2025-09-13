@@ -57,7 +57,8 @@
       "Bash(sudo apt install:*)",
       "Bash(timeout 2 git status --short)",
       "Bash(git remote:*)",
-      "Bash(uv:*)"
+      "Bash(uv:*)",
+      "Bash(pytest:*)"
     ],
     "deny": [],
     "ask": []
