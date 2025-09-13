@@ -194,7 +194,7 @@ def run_nedc_scorer(
     return 0
 
 
-def extract_and_save_metrics(results_dir, metrics_file):
+def extract_and_save_metrics(results_dir, metrics_file, backend="nedc-binary"):
     """Extract machine-readable metrics from NEDC output and save to JSON."""
     import platform
     from typing import Any
@@ -217,7 +217,7 @@ def extract_and_save_metrics(results_dir, metrics_file):
             "python_version": py_version,
             "platform": platform.platform(),
             "os": platform.system(),
-            "backend": "nedc-binary",
+            "backend": backend,
             "nedc_version": "v6.0.0",
         },
         "taes": {},
@@ -279,7 +279,7 @@ def parse_nedc_output(
 
     # Extract metrics first
     metrics_file = results_dir / "metrics.json"
-    metrics = extract_and_save_metrics(results_dir, metrics_file)
+    metrics = extract_and_save_metrics(results_dir, metrics_file, backend)
 
     # Add operating point params to metrics
     if any([threshold, kernel, min_duration_sec, merge_gap_sec]):

@@ -64,7 +64,7 @@ jobs:
     - name: Run unit tests (no NEDC)
       run: |
         source .venv/bin/activate
-        pytest tests -v -m "not nedc" --cov=evaluation.nedc_scoring --cov=scripts
+        pytest tests -v -m "not nedc" --cov=evaluation.nedc_scoring --cov=scripts --cov-report=xml
 
     - name: Check NEDC binary availability
       id: check_nedc
