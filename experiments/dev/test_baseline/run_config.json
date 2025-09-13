@@ -1,0 +1,20 @@
+{
+  "experiment_info": {
+    "split": "dev",
+    "description": "test_baseline",
+    "timestamp": "2025-09-13T04:22:39.330567",
+    "target_fa_per_24h": null,
+    "notes": "Testing complete workflow"
+  },
+  "parameters": {
+    "threshold": 0.8,
+    "kernel": 5,
+    "min_duration_sec": 2.0,
+    "merge_gap_sec": null
+  },
+  "paths": {
+    "data_dir": "/path/to/TUSZ/v2.0.3/dev",
+    "checkpoint": "experiments/dev/test_baseline/checkpoint.pkl",
+    "nedc_results": "experiments/dev/test_baseline/nedc_results/"
+  }
+}
