@@ -81,7 +81,8 @@
       "Read(//mnt/c/Users/JJ/Desktop/**)",
       "Read(//usr/bin/**)",
       "Bash(do [ -f \"$dir/results/metrics.json\" ])",
-      "Bash(ln:*)"
+      "Bash(ln:*)",
+      "Bash(jq:*)"
     ],
     "deny": [],
     "ask": []

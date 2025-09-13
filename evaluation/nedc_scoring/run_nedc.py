@@ -180,8 +180,8 @@ def run_nedc_scorer(
 
         print("Running native Python TAES scorer...")
 
-        # Initialize scorer
-        scorer = TAESScorer(overlap_threshold=0.5)
+        # Initialize scorer with 0.0 threshold to match Temple OVERLAP
+        scorer = TAESScorer(overlap_threshold=0.0)
 
         # Process each file pair
         total_metrics = {
@@ -275,24 +275,52 @@ def extract_and_save_metrics(results_dir, metrics_file, backend="nedc-binary"):
         "epoch": {},
     }
 
-    # Parse TAES metrics (most important)
+    # Parse metrics from correct section
     summary_file = results_dir / "summary.txt"
     if summary_file.exists():
         with open(summary_file) as f:
             content = f.read()
 
-        # Extract TAES metrics with robust regex
-        taes_sens_match = re.search(r"Sensitivity \(TPR, Recall\):\s+([\d.]+)%", content)
-        taes_fa_match = re.search(r"Total False Alarm Rate:\s+([\d.]+)\s+per 24 hours", content)
-        # Accept both "F1 Score:" and "F1 Score (F Ratio):"
-        taes_f1_match = re.search(r"F1 Score(?: \(F Ratio\))?:\s+([\d.]+)", content)
+        # Handle both Temple binary and native outputs
+        if backend == "native-taes":
+            # Native outputs simpler format
+            sens_match = re.search(r"Sensitivity \(TPR, Recall\):\s+([\d.]+)%", content)
+            fa_match = re.search(r"Total False Alarm Rate:\s+([\d.]+)\s+per 24 hours", content)
+            f1_match = re.search(r"F1 Score:\s+([\d.]+)", content)
 
-        if taes_sens_match:
-            metrics["taes"]["sensitivity_percent"] = float(taes_sens_match.group(1))
-        if taes_fa_match:
-            metrics["taes"]["fa_per_24h"] = float(taes_fa_match.group(1))
-        if taes_f1_match:
-            metrics["taes"]["f1_score"] = float(taes_f1_match.group(1))
+            metrics["overlap"] = {}
+            if sens_match:
+                metrics["overlap"]["sensitivity_percent"] = float(sens_match.group(1))
+            if fa_match:
+                metrics["overlap"]["fa_per_24h"] = float(fa_match.group(1))
+            if f1_match:
+                metrics["overlap"]["f1_score"] = float(f1_match.group(1))
+        else:
+            # Extract OVERLAP metrics from Temple binary output
+            overlap_section_match = re.search(
+                r"NEDC OVERLAP SCORING SUMMARY.*?(?=NEDC|$)", content, re.DOTALL
+            )
+
+            if overlap_section_match:
+                overlap_content = overlap_section_match.group(0)
+
+                # Extract metrics from OVERLAP section
+                sens_match = re.search(r"Sensitivity \(TPR, Recall\):\s+([\d.]+)%", overlap_content)
+                fa_match = re.search(r"Total False Alarm Rate:\s+([\d.]+)\s+per 24 hours", overlap_content)
+                f1_match = re.search(r"F1 Score(?: \(F Ratio\))?:\s+([\d.]+)", overlap_content)
+
+                # Store as "overlap" metrics (more accurate naming)
+                metrics["overlap"] = {}
+                if sens_match:
+                    metrics["overlap"]["sensitivity_percent"] = float(sens_match.group(1))
+                if fa_match:
+                    metrics["overlap"]["fa_per_24h"] = float(fa_match.group(1))
+                if f1_match:
+                    metrics["overlap"]["f1_score"] = float(f1_match.group(1))
+
+        # Also keep as "taes" for backward compatibility
+        if "overlap" in metrics:
+            metrics["taes"] = metrics["overlap"].copy()
 
     # Clinical assessment
     fa_rate = metrics["taes"].get("fa_per_24h", float("inf"))

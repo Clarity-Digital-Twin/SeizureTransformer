@@ -78,12 +78,13 @@ class TAESScorer:
     Matches NEDC v6.0.0 scoring methodology.
     """
 
-    def __init__(self, overlap_threshold: float = 0.5):
+    def __init__(self, overlap_threshold: float = 0.0):
         """
         Initialize TAES scorer.
 
         Args:
             overlap_threshold: Minimum overlap ratio for matching events (0.0-1.0)
+                              Default 0.0 matches Temple NEDC OVERLAP scoring
         """
         self.overlap_threshold = overlap_threshold
 
