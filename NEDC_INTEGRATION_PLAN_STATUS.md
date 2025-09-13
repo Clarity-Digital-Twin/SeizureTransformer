@@ -1,9 +1,11 @@
 # 🏆 NEDC INTEGRATION PLAN - STATUS UPDATE
-## Current Implementation vs Original Plan
+## Current Implementation vs Canonical Plan
+
+Canonical plan: docs/technical/NEDC_INTEGRATION_PLAN.md (SSOT). This status uses the normalized streams: Stream E (Evaluation backend: E1–E4) and Stream T (Tuning: T1–T3).
 
 **Date:** 2025-09-13
 **Branch:** `feature/nedc-integration`
-**Status:** Phase 1 ✅ COMPLETE | Phase 2 🏃 RUNNING | Phase 4 🏗️ IN PROGRESS
+**Status:** E1/E2 ✅ COMPLETE | T1 🏃 RUNNING | E4 🏗️ IN PROGRESS
 
 ---
 
@@ -36,18 +38,11 @@ experiments/
 
 ---
 
-## 🔄 PLAN CLARIFICATIONS NEEDED
+## 🔄 PHASE NAMING NORMALIZED
 
-### 1. Phase Naming Confusion
-The plan uses "Phase 2" for TWO different things:
-- **Architecture Phase 2**: Native TAES implementation
-- **Timeline Phase 2**: Clinical Tuning
-
-**RECOMMENDATION:** Rename to avoid confusion:
-- Phase 1: NEDC Integration ✅
-- Phase 2: Parameter Tuning 🏃
-- Phase 3: Eval Freeze ⏳
-- Phase 4: Native Implementation 🏗️
+We have separated and labeled work into two streams to avoid confusion:
+- Stream E (Evaluation backend): E1 Integration, E2 Conformance, E3 Backend toggle/side-by-side, E4 Native TAES (optional)
+- Stream T (Operating-point tuning): T1 Dev sweep, T2 Freeze, T3 Single eval run
 
 ### 2. Parallel Work Discovery
 We discovered Phase 4 (Native TAES) can run IN PARALLEL with Phase 2 (sweep).
@@ -66,7 +61,7 @@ We discovered Phase 4 (Native TAES) can run IN PARALLEL with Phase 2 (sweep).
 
 ## ✅ COMPLETED (Against Original Plan)
 
-### Phase 1: Integration & Conformance
+### E1/E2: Integration & Conformance
 - [x] Vendor isolation (nedc_eeg_eval untouched)
 - [x] Golden fixtures (`tests/fixtures/nedc/expected_metrics.json`)
 - [x] Backend toggle in `run_nedc.py`
@@ -74,13 +69,13 @@ We discovered Phase 4 (Native TAES) can run IN PARALLEL with Phase 2 (sweep).
 - [x] CI skip when binary missing
 - [x] All P0/P1 issues fixed
 
-### Phase 2: Clinical Tuning (IN PROGRESS)
+### T1: Clinical Tuning (IN PROGRESS)
 - [x] Dev checkpoint generated (1832 files)
 - [x] Baseline metrics: 30.51% sensitivity, 107.29 FA/24h
 - [🏃] Parameter sweep running in tmux
 - [ ] Waiting for `recommended_params.json`
 
-### Phase 4: Native TAES (STARTED EARLY!)
+### E4: Native TAES (STARTED EARLY)
 - [x] `seizure_evaluation/taes/scorer.py` implemented
 - [x] Integrated with `--backend native-taes`
 - [x] Basic tests passing on fixtures
