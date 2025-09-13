@@ -1,0 +1,179 @@
+#!/usr/bin/env python3
+"""
+Native implementation of Temple NEDC OVERLAP scoring.
+This implements any-overlap counting, NOT 1-to-1 matching or fractional TAES.
+
+OVERLAP scoring rules:
+- Hit: Any reference event that has ANY overlap with ANY hypothesis event
+- Miss: Reference event with NO overlap to any hypothesis
+- False Alarm: Hypothesis event with NO overlap to any reference
+"""
+
+from dataclasses import dataclass
+from pathlib import Path
+from typing import List, Tuple, Dict, Optional
+import numpy as np
+
+
+@dataclass
+class Event:
+    """Represents a seizure event with start/stop times."""
+    start_time: float
+    stop_time: float
+    label: str = "seiz"
+    confidence: float = 1.0
+
+    @property
+    def duration(self) -> float:
+        """Event duration in seconds."""
+        return self.stop_time - self.start_time
+
+    def overlaps(self, other: "Event") -> bool:
+        """Check if this event has ANY overlap with another."""
+        overlap_start = max(self.start_time, other.start_time)
+        overlap_stop = min(self.stop_time, other.stop_time)
+        return overlap_stop > overlap_start  # Any overlap counts
+
+
+@dataclass
+class OverlapMetrics:
+    """OVERLAP scoring metrics matching Temple NEDC."""
+    hits: int  # Number of ref events with any overlap
+    misses: int  # Number of ref events with no overlap
+    false_alarms: int  # Number of hyp events with no overlap
+    total_duration_sec: float
+
+    @property
+    def sensitivity(self) -> float:
+        """Sensitivity (TPR, Recall) as percentage."""
+        total_refs = self.hits + self.misses
+        if total_refs == 0:
+            return 0.0
+        return 100.0 * self.hits / total_refs
+
+    @property
+    def fa_per_24h(self) -> float:
+        """False alarms per 24 hours."""
+        if self.total_duration_sec == 0:
+            return float('inf')
+        return self.false_alarms * 86400.0 / self.total_duration_sec
+
+    @property
+    def precision(self) -> float:
+        """Precision as percentage."""
+        total_hyps = self.hits + self.false_alarms
+        if total_hyps == 0:
+            return 0.0
+        return 100.0 * self.hits / total_hyps
+
+    @property
+    def f1_score(self) -> float:
+        """F1 score (harmonic mean of precision and recall)."""
+        prec = self.precision / 100.0
+        rec = self.sensitivity / 100.0
+        if prec + rec == 0:
+            return 0.0
+        return 2 * (prec * rec) / (prec + rec)
+
+
+class OverlapScorer:
+    """
+    OVERLAP scoring implementation matching Temple NEDC v6.0.0.
+
+    This implements ANY-OVERLAP counting:
+    - Each ref event is either hit (has overlap) or missed (no overlap)
+    - Each hyp event is either correct (has overlap) or false alarm (no overlap)
+    - No 1-to-1 matching constraint
+    """
+
+    def score_events(
+        self,
+        ref_events: List[Event],
+        hyp_events: List[Event],
+        total_duration_sec: float
+    ) -> OverlapMetrics:
+        """
+        Score hypothesis events against reference events using OVERLAP method.
+
+        Args:
+            ref_events: Ground truth seizure events
+            hyp_events: Predicted seizure events
+            total_duration_sec: Total recording duration in seconds
+
+        Returns:
+            OverlapMetrics with scoring results
+        """
+        # Track which events have any overlap
+        ref_has_overlap = [False] * len(ref_events)
+        hyp_has_overlap = [False] * len(hyp_events)
+
+        # Check all possible overlaps
+        for r_idx, ref in enumerate(ref_events):
+            for h_idx, hyp in enumerate(hyp_events):
+                if ref.overlaps(hyp):
+                    # Mark both as having overlap
+                    ref_has_overlap[r_idx] = True
+                    hyp_has_overlap[h_idx] = True
+                    # Don't break - one hyp can overlap multiple refs
+
+        # Count results
+        hits = sum(ref_has_overlap)  # Refs with any overlap
+        misses = len(ref_events) - hits  # Refs with no overlap
+        false_alarms = len(hyp_events) - sum(hyp_has_overlap)  # Hyps with no overlap
+
+        return OverlapMetrics(
+            hits=hits,
+            misses=misses,
+            false_alarms=false_alarms,
+            total_duration_sec=total_duration_sec
+        )
+
+    def score_from_files(
+        self,
+        ref_csv_bi: Path,
+        hyp_csv_bi: Path
+    ) -> OverlapMetrics:
+        """
+        Score events from CSV_bi files.
+
+        Args:
+            ref_csv_bi: Path to reference CSV_bi file
+            hyp_csv_bi: Path to hypothesis CSV_bi file
+
+        Returns:
+            OverlapMetrics with scoring results
+        """
+        ref_events, ref_duration = self._parse_csv_bi(ref_csv_bi)
+        hyp_events, hyp_duration = self._parse_csv_bi(hyp_csv_bi)
+
+        # Use reference duration for scoring
+        return self.score_events(ref_events, hyp_events, ref_duration)
+
+    def _parse_csv_bi(self, csv_bi_path: Path) -> Tuple[List[Event], float]:
+        """Parse events from CSV_bi file."""
+        events = []
+        duration = 0.0
+
+        with open(csv_bi_path, 'r') as f:
+            for line in f:
+                line = line.strip()
+
+                # Parse duration from header
+                if line.startswith("# duration ="):
+                    duration = float(line.split("=")[1].replace("secs", "").strip())
+
+                # Skip headers and empty lines
+                if line.startswith("#") or not line or line.startswith("channel"):
+                    continue
+
+                # Parse event
+                parts = line.split(",")
+                if len(parts) >= 5:
+                    events.append(Event(
+                        start_time=float(parts[1]),
+                        stop_time=float(parts[2]),
+                        label=parts[3],
+                        confidence=float(parts[4])
+                    ))
+
+        return events, duration
