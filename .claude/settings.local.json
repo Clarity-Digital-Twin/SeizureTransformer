@@ -65,7 +65,9 @@
       "Bash(tmux send-keys:*)",
       "Bash(./scripts/monitor_evaluation.sh:*)",
       "Bash(evaluation/utils/monitor_evaluation.sh:*)",
-      "Bash(git stash:*)"
+      "Bash(git stash:*)",
+      "Bash(./evaluation/utils/monitor_evaluation.sh:*)",
+      "Bash(bash:*)"
     ],
     "deny": [],
     "ask": []

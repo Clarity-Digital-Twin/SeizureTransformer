@@ -1,0 +1,8 @@
+# version = csv_v1.0.0
+# bname = test_001
+# duration = 1800.0000 secs
+# label = seiz
+channel,start_time,stop_time,label,confidence
+TERM,42.2786,81.7760,seiz,1.0000
+TERM,234.5000,267.8900,seiz,1.0000
+TERM,1234.0000,1289.4500,seiz,1.0000
