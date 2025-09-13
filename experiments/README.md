@@ -2,86 +2,102 @@
 
 This directory tracks all experimental runs, parameter tuning, and model evaluations with full reproducibility.
 
-## Directory Organization
+## Current Directory Structure (ACTUAL)
 
 ```
 experiments/
-├── dev/                    # Dev split tuning experiments
-│   ├── baseline/           # Default parameters (threshold=0.8, etc)
-│   ├── sweep_2025-01-13/   # Parameter sweep runs (timestamped)
-│   └── archive/            # Old/failed experiments
-├── eval/                   # Final eval split runs (run once each)
-│   ├── baseline/           # Default parameters on eval
-│   ├── tuned_v1/           # First tuned parameters on eval
-│   └── final/              # Final submitted results
-└── archive/                # Historical experiments and failed runs
+├── dev/                        # Dev split (1832 EDF files)
+│   ├── baseline/               # Default params COMPLETE ✅
+│   │   ├── checkpoint.pkl      # 1.5GB, all predictions
+│   │   ├── eval_log.txt        # Inference log
+│   │   ├── run_config.json     # thr=0.8, k=5, min=2.0
+│   │   ├── nedc_results/       # 30.51% sens, 107.29 FA/24h
+│   │   └── sweeps/             # Grid search IN PROGRESS 🏃
+│   │       ├── thr0.70_*/      # 37/108 combinations done
+│   │       └── sweep.log       # Running in tmux
+│   └── test_baseline/          # Config test only (no data)
+├── eval/                       # Eval split (865 EDF files)
+│   └── baseline/               # Default params COMPLETE ✅
+│       ├── checkpoint.pkl      # 449MB, all predictions
+│       ├── eval_log.txt        # Inference log
+│       ├── run_config.json     # thr=0.8, k=5, min=2.0
+│       └── summary.json        # 24.15% sens, 137.5 FA/24h
+└── archive/                    # (empty - for old experiments)
 ```
 
-## Experiment Naming Convention
+## Key Results Summary
 
-**Format**: `{split}_{description}_{timestamp}`
+| Split | Experiment | Files | Sensitivity | FA/24h | Status |
+|-------|------------|-------|-------------|---------|---------|
+| eval  | baseline   | 865   | 24.15%     | 137.5   | ✅ Complete |
+| dev   | baseline   | 1832  | 30.51%     | 107.29  | ✅ Complete |
+| dev   | sweeps     | 1832  | TBD        | Target≤10 | 🏃 Running (37/108) |
 
-Examples:
-- `dev_baseline_2025-01-13`
-- `dev_sweep_fa10_2025-01-13` 
-- `eval_tuned_v1_2025-01-14`
+## Parameter Sweep Status
 
-## Required Files Per Experiment
+Currently running in tmux session `sweep_dev`:
+- **Grid**: threshold × kernel × min_duration × merge_gap
+- **Values**: [0.7,0.8,0.9,0.95] × [5,11,21] × [2,4,8] × [0,5,10]
+- **Total**: 108 combinations
+- **Progress**: 37/108 complete (~34%)
+- **Target**: FA/24h ≤ 10 with max sensitivity
 
-Each experiment directory must contain:
+Monitor with: `tmux attach -t sweep_dev`
 
-1. **`run_config.json`** - Exact parameters used
-2. **`checkpoint.pkl`** - Raw model predictions 
-3. **`nedc_results/`** - NEDC scoring outputs
-4. **`summary.json`** - Key metrics extracted
-5. **`command_log.txt`** - Exact commands run
-6. **`notes.md`** - Human observations/decisions
+## File Descriptions
 
-## Experiment Tracking Workflow
+### Core Files
+- `checkpoint.pkl` - Raw model predictions at 256Hz (per-sample probabilities)
+- `run_config.json` - Exact parameters and metadata for reproducibility
+- `eval_log.txt` - Inference runtime log with progress
+- `nedc_results/` - NEDC scoring outputs (CSV_bi files, lists, results/)
 
-### Dev Split Experiments
+### Sweep Outputs
+- `sweeps/thr*_k*_min*_gap*/` - Individual parameter combination results
+- `sweeps/sweep_results.csv` - Summary table (will be created at end)
+- `sweeps/recommended_params.json` - Best params meeting FA target
+
+## Workflow Commands
+
+### Run NEDC Scoring on Existing Checkpoint
 ```bash
-# 1. Create timestamped experiment
-EXPNAME="dev_sweep_fa10_$(date +%Y-%m-%d)"
-mkdir -p experiments/dev/$EXPNAME
-
-# 2. Run experiment with logging
-python evaluation/tusz/run_tusz_eval.py \
-  --data_dir /path/to/TUSZ/dev \
-  --out_dir experiments/dev/$EXPNAME \
-  --device auto 2>&1 | tee experiments/dev/$EXPNAME/command_log.txt
-
-# 3. Parameter sweep with results tracking
-python evaluation/nedc_scoring/sweep_operating_point.py \
-  --checkpoint experiments/dev/$EXPNAME/checkpoint.pkl \
-  --outdir_base experiments/dev/$EXPNAME/nedc_sweeps \
-  --target_fa_per_24h 10
-
-# 4. Archive experiment
-echo "FA target: 10/24h, Grid: thr=0.5-0.9, kernel=5-11" > experiments/dev/$EXPNAME/notes.md
-```
-
-### Eval Split Experiments (Final)
-```bash
-# Only run once per parameter set
-EXPNAME="eval_tuned_v1_$(date +%Y-%m-%d)"
-mkdir -p experiments/eval/$EXPNAME
-
-# Use frozen parameters from dev
 python evaluation/nedc_scoring/run_nedc.py \
-  --checkpoint experiments/eval/$EXPNAME/checkpoint.pkl \
-  --threshold 0.6 --kernel 11 --min_duration_sec 4 \
-  --outdir experiments/eval/$EXPNAME/nedc_results
+  --checkpoint experiments/dev/baseline/checkpoint.pkl \
+  --outdir experiments/dev/baseline/nedc_results \
+  --threshold 0.8 --kernel 5 --min_duration_sec 2.0
 ```
 
-## Current Status
+### Run Parameter Sweep (Dev Only)
+```bash
+python evaluation/nedc_scoring/sweep_operating_point.py \
+  --checkpoint experiments/dev/baseline/checkpoint.pkl \
+  --outdir_base experiments/dev/baseline/sweeps \
+  --thresholds 0.7,0.8,0.9 \
+  --kernels 5,11,21 \
+  --min_durations 2,4,8 \
+  --target_fa_per_24h 10
+```
 
-- **Dev experiments**: Need to run parameter sweeps
-- **Eval experiments**: Have baseline results in `evaluation/tusz/`
-- **Migration needed**: Move existing results to proper experiment structure
+### Final Eval Run (After Tuning)
+```bash
+# Use best params from dev sweep
+python evaluation/nedc_scoring/run_nedc.py \
+  --checkpoint experiments/eval/tuned/checkpoint.pkl \
+  --outdir experiments/eval/tuned/nedc_results \
+  --threshold <best> --kernel <best> --min_duration_sec <best>
+```
 
-## Tools Integration
+## Important Notes
 
-- **Sweep tool**: `evaluation/nedc_scoring/sweep_operating_point.py`
-- **Experiment comparison**: `python scripts/experiment_tracker.py compare --split {dev|eval}`
-- **Best model selection**: Based on dev results, frozen for eval
+1. **Dev vs Eval**: Dev has 2x more files (1832 vs 865) and is "easier" (better baseline metrics)
+2. **No Retraining**: We only tune post-processing params, model weights are frozen
+3. **One Shot Eval**: Run eval split ONCE with frozen params from dev
+4. **Sweep Reuses Predictions**: All 108 combinations use same checkpoint.pkl
+
+## Next Steps
+
+1. ⏳ Wait for sweep completion (~2 more hours)
+2. 📊 Analyze `sweep_results.csv` for best params
+3. ❄️ Freeze best params as `operating_point.json`
+4. 🎯 Run final eval with frozen params
+5. 📝 Report final metrics
