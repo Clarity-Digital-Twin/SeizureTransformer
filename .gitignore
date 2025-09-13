@@ -81,5 +81,13 @@ htmlcov/
 # Logs
 *.log
 
+# Test artifacts
+*.list
+tests/fixtures/nedc/temple_results/
+tests/fixtures/nedc/nedc_output/
+evaluation/nedc_scoring/test_output/
+evaluation/nedc_scoring/output/
+experiments/
+
 # NOTE: literature/ is NOT ignored - we want this public for transparency!
 # NOTE: evaluation/nedc_eeg_eval/ is NOT ignored - it's open source Temple software
