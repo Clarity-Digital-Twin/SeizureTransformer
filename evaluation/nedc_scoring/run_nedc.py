@@ -185,10 +185,7 @@ def extract_and_save_metrics(results_dir, metrics_file):
     # Get git commit SHA if available
     try:
         git_sha = subprocess.run(
-            ["git", "rev-parse", "HEAD"],
-            capture_output=True,
-            text=True,
-            check=False
+            ["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=False
         ).stdout.strip()[:8]
     except:
         git_sha = "unknown"
@@ -246,8 +243,9 @@ def extract_and_save_metrics(results_dir, metrics_file):
     return metrics
 
 
-def parse_nedc_output(results_dir, threshold=None, kernel=None,
-                     min_duration_sec=None, merge_gap_sec=None):
+def parse_nedc_output(
+    results_dir, threshold=None, kernel=None, min_duration_sec=None, merge_gap_sec=None
+):
     """
     Parse and display key metrics from NEDC output.
 

@@ -92,11 +92,11 @@ class TestNEDCConformance:
         hyp_list = tmp_path / "hyp.list"
 
         # Write list files with absolute paths to CSV_bi files
-        with open(ref_list, "w", newline='\n') as f:
+        with open(ref_list, "w", newline="\n") as f:
             for csv_bi in sorted(ref_dir.glob("*.csv_bi")):
                 f.write(f"{csv_bi.resolve()}\n")
 
-        with open(hyp_list, "w", newline='\n') as f:
+        with open(hyp_list, "w", newline="\n") as f:
             for csv_bi in sorted(hyp_dir.glob("*.csv_bi")):
                 f.write(f"{csv_bi.resolve()}\n")
 
