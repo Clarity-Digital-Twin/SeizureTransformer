@@ -4,7 +4,6 @@ NEDC Conformance Test Suite
 Ensures our integration matches official NEDC scorer output.
 """
 
-import json
 import os
 import subprocess
 from pathlib import Path
