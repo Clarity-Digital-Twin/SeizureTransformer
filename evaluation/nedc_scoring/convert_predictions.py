@@ -23,7 +23,7 @@ def write_nedc_csv(events, file_path, file_id, duration_sec):
     """
     file_path.parent.mkdir(parents=True, exist_ok=True)
 
-    with open(file_path, "w") as f:
+    with open(file_path, "w", newline='\n') as f:
         # Write header
         f.write("# version = csv_v1.0.0\n")
         f.write(f"# bname = {file_id}\n")
@@ -136,13 +136,13 @@ def create_list_files(output_dir, file_ids):
 
     # Write hypothesis list
     hyp_list = lists_dir / "hyp.list"
-    with open(hyp_list, "w") as f:
+    with open(hyp_list, "w", newline='\n') as f:
         for file_id in sorted(file_ids):
             f.write(f"{hyp_dir / file_id}.csv_bi\n")
 
     # Write reference list
     ref_list = lists_dir / "ref.list"
-    with open(ref_list, "w") as f:
+    with open(ref_list, "w", newline='\n') as f:
         for file_id in sorted(file_ids):
             f.write(f"{ref_dir / file_id}.csv_bi\n")
 
