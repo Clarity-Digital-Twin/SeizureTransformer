@@ -23,7 +23,7 @@ class TestOverlapScorer:
         e1 = Event(10.0, 20.0)
         e2 = Event(15.0, 25.0)  # Overlaps
         e3 = Event(25.0, 30.0)  # No overlap
-        e4 = Event(5.0, 12.0)   # Overlaps
+        e4 = Event(5.0, 12.0)  # Overlaps
 
         assert e1.overlaps(e2) is True
         assert e1.overlaps(e3) is False
@@ -135,7 +135,7 @@ channel,start_time,stop_time,label,confidence
 TERM,100.0000,200.0000,seiz,1.0000
 TERM,300.0000,400.0000,seiz,1.0000
 """
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.csv_bi', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".csv_bi", delete=False) as f:
             f.write(csv_content)
             filepath = Path(f.name)
 
