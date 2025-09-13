@@ -8,14 +8,24 @@ This directory contains **tools and infrastructure** for SeizureTransformer eval
 
 ```
 evaluation/
+├── nedc_scoring/           # NEDC evaluation and parameter optimization
+│   ├── convert_predictions.py    # Convert predictions to NEDC CSV_bi format
+│   ├── post_processing.py        # Apply thresholds and morphological operations
+│   ├── run_nedc.py              # Run NEDC scorer and extract metrics
+│   ├── sweep_operating_point.py # Grid search for optimal parameters
+│   └── test_pipeline.py         # Validate pipeline with synthetic data
+│
 ├── tusz/                   # TUSZ dataset evaluation scripts
 │   └── run_tusz_eval.py    # Main evaluation script (generates checkpoints)
-├── nedc_scoring/           # NEDC pipeline tools
-│   ├── convert_predictions.py
-│   ├── run_nedc.py
-│   ├── sweep_operating_point.py
-│   └── post_processing.py
-└── nedc_eeg_eval/v6.0.0/   # Official NEDC binaries and libraries
+│
+├── siena/                  # Siena dataset tools
+│   └── download_siena.sh  # Download Siena EEG dataset
+│
+├── utils/                  # Shared evaluation utilities
+│   ├── monitor_evaluation.sh    # Monitor running evaluations
+│   └── enhance_evaluation_robustness.py # Add robustness improvements
+│
+└── nedc_eeg_eval/v6.0.0/   # Official NEDC binaries and libraries (do not modify)
 ```
 
 ## Tools vs Results Separation
