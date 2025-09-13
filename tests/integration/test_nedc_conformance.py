@@ -40,11 +40,7 @@ def parse_nedc_summary(summary_file: Path) -> dict[str, float]:
     metrics = {}
 
     # Extract just the OVERLAP section
-    overlap_match = re.search(
-        r"NEDC OVERLAP SCORING SUMMARY.*?(?=\n={5,}|\Z)",
-        content,
-        re.DOTALL
-    )
+    overlap_match = re.search(r"NEDC OVERLAP SCORING SUMMARY.*?(?=\n={5,}|\Z)", content, re.DOTALL)
 
     if overlap_match:
         overlap_section = overlap_match.group(0)
