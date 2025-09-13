@@ -100,8 +100,8 @@ class TestNEDCConformance:
             for csv_bi in sorted(hyp_dir.glob("*.csv_bi")):
                 f.write(f"{csv_bi.resolve()}\n")
 
-        assert ref_list.exists(), f"Failed to create reference list"
-        assert hyp_list.exists(), f"Failed to create hypothesis list"
+        assert ref_list.exists(), "Failed to create reference list"
+        assert hyp_list.exists(), "Failed to create hypothesis list"
 
         # Run NEDC scorer
         output_dir = tmp_path / "nedc_output"

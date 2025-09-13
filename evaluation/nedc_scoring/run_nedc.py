@@ -171,9 +171,8 @@ def run_nedc_scorer(output_dir, backend="nedc-binary"):
         print("Valid backends: nedc-binary, native-taes")
         return 1
 
-    # Parse and display key metrics with operating point params
-    parse_nedc_output(results_dir, threshold=threshold, kernel=kernel,
-                     min_duration_sec=min_duration_sec, merge_gap_sec=merge_gap_sec)
+    # Parse and display key metrics (operating point params will be added when available)
+    parse_nedc_output(results_dir)
 
     return 0
 
