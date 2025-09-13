@@ -1,6 +1,6 @@
-# NEDC Integration Plan for SeizureTransformer (Full Implementation)
+# NEDC Integration Plan (Technical)
 
-This document is the single source of truth (SSOT) for NEDC integration in this repo.
+Note: The canonical, up-to-date plan now lives at `NEDC_INTEGRATION_PLAN.md` in the repository root. Keep this technical note in sync or replace with a short link if preferred.
 
 ## Decision: Full NEDC Software Integration ✅
 
