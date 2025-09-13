@@ -16,13 +16,13 @@ test:
 
 convert:
 	@echo "Converting predictions to NEDC format..."
-	python evaluation/nedc_scoring/convert_predictions.py \
+	python convert_predictions.py \
 		--checkpoint $(CHECKPOINT) \
 		--outdir $(OUTDIR)
 
 score:
 	@echo "Running NEDC scorer..."
-	python evaluation/nedc_scoring/run_nedc.py \
+	python run_nedc.py \
 		--outdir $(OUTDIR) \
 		--score-only
 

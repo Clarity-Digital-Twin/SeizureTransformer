@@ -1,0 +1,20 @@
+{
+  "experiment_info": {
+    "split": "dev",
+    "description": "baseline",
+    "timestamp": "2025-09-13T05:42:11.600367",
+    "target_fa_per_24h": null,
+    "notes": "Default parameters baseline on dev split for parameter tuning"
+  },
+  "parameters": {
+    "threshold": 0.8,
+    "kernel": 5,
+    "min_duration_sec": 2.0,
+    "merge_gap_sec": null
+  },
+  "paths": {
+    "data_dir": "/path/to/TUSZ/v2.0.3/dev",
+    "checkpoint": "experiments/dev/baseline/checkpoint.pkl",
+    "nedc_results": "experiments/dev/baseline/nedc_results/"
+  }
+}
