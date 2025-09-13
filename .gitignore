@@ -24,6 +24,8 @@ experiments/*/checkpoint*.pkl*
 experiments/*/*.pkl
 experiments/*/nedc_results/
 experiments/*/*/nedc_results/
+experiments/*/sweeps/
+experiments/*/*/sweeps/
 
 # Dataset files (potentially large/sensitive)
 *.edf

@@ -68,7 +68,8 @@
       "Bash(git stash:*)",
       "Bash(./evaluation/utils/monitor_evaluation.sh:*)",
       "Bash(bash:*)",
-      "Bash(ruff format:*)"
+      "Bash(ruff format:*)",
+      "Bash(echo \"Parameter sweep running in tmux session ''sweep_dev''\n\nTo monitor progress:\n  tmux attach -t sweep_dev\n\nTo check status without attaching:\n  tmux capture-pane -t sweep_dev -p | tail -20\n\nTo detach from tmux: Ctrl+B then D\")"
     ],
     "deny": [],
     "ask": []
