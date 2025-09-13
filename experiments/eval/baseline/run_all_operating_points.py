@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """Run comprehensive operating point tests with both Temple and Native backends."""
 
-import subprocess
 import json
+import subprocess
 from pathlib import Path
-import sys
 
 # Operating points to test
 OPERATING_POINTS = {

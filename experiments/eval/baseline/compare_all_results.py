@@ -4,6 +4,7 @@
 import json
 from pathlib import Path
 
+
 def load_metrics(path):
     """Load metrics.json file."""
     with open(path) as f:
