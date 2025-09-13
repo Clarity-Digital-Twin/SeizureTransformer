@@ -167,6 +167,9 @@ def main():
 
     # Process files
     print("\nProcessing files...")
+    files_with_labels = 0
+    total_label_events = 0
+    
     for idx in tqdm(range(start_idx, len(edf_files)), initial=start_idx, total=len(edf_files)):
         edf_path = edf_files[idx]
         file_id = edf_path.stem
@@ -180,6 +183,9 @@ def main():
 
         # Load labels
         seizure_events = load_labels_for_file(edf_path)
+        if seizure_events:
+            files_with_labels += 1
+            total_label_events += len(seizure_events)
 
         # Store result
         results[file_id] = {
@@ -202,6 +208,16 @@ def main():
             "results": results,
             "next_idx": len(edf_files)
         }, f)
+
+    # Ground truth validation warning
+    processed_files = len([r for r in results.values() if r.get("error") is None])
+    if processed_files > 0:
+        label_coverage = files_with_labels / processed_files
+        if label_coverage < 0.1:
+            print(f"\n⚠️  WARNING: Only {files_with_labels}/{processed_files} files ({label_coverage:.1%}) have ground truth labels (.csv_bi files)")
+            print("   This suggests potential dataset path issues or missing annotations.")
+        else:
+            print(f"\n✅ Ground truth coverage: {files_with_labels}/{processed_files} files ({label_coverage:.1%}) with {total_label_events} seizure events")
 
     print("\n" + "=" * 60)
     print("COMPUTING METRICS")
