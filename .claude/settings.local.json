@@ -59,7 +59,8 @@
       "Bash(git remote:*)",
       "Bash(uv:*)",
       "Bash(pytest:*)",
-      "Bash(make:*)"
+      "Bash(make:*)",
+      "Bash(git check-ignore:*)"
     ],
     "deny": [],
     "ask": []
