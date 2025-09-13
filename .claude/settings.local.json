@@ -92,7 +92,9 @@
       "Bash(do)",
       "Bash(then)",
       "Bash(sort:*)",
-      "Bash(do if [ -f \"$dir/results/metrics.json\" ])"
+      "Bash(do if [ -f \"$dir/results/metrics.json\" ])",
+      "Bash(do echo \"=== DEV $d ===\" python evaluation/nedc_scoring/run_nedc.py --outdir experiments/dev/baseline/$d --backend native-overlap --score-only)",
+      "Bash(do echo \"=== DEV $d ===\")"
     ],
     "deny": [],
     "ask": []
