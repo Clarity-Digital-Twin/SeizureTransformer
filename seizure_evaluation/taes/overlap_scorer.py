@@ -109,7 +109,7 @@ class OverlapScorer:
         Returns:
             OverlapMetrics with scoring results
         """
-        # Track which events have any overlap (SEIZ label)
+        # SEIZ label scoring: any-overlap counting on original events
         ref_has_overlap = [False] * len(ref_events)
         hyp_has_overlap = [False] * len(hyp_events)
 
@@ -117,28 +117,44 @@ class OverlapScorer:
         for r_idx, ref in enumerate(ref_events):
             for h_idx, hyp in enumerate(hyp_events):
                 if ref.overlaps(hyp):
-                    # Mark both as having overlap
                     ref_has_overlap[r_idx] = True
                     hyp_has_overlap[h_idx] = True
-                    # Don't break - one hyp can overlap multiple refs
 
         # Count SEIZ label results
-        hits = sum(ref_has_overlap)  # Refs with any overlap (SEIZ)
-        misses = len(ref_events) - hits  # Refs with no overlap (SEIZ)
-        false_alarms = len(hyp_events) - sum(hyp_has_overlap)  # Hyps with no overlap (SEIZ)
+        hits = sum(ref_has_overlap)  # Refs with any overlap
+        misses = len(ref_events) - hits  # Refs with no overlap
+        false_alarms = len(hyp_events) - sum(hyp_has_overlap)  # Hyps with no overlap
 
-        # Derive background (BCKG) events from complements and count BCKG false alarms
-        ref_bckg = self._complement_of_events(ref_events, total_duration_sec)
-        hyp_bckg = self._complement_of_events(hyp_events, total_duration_sec)
+        # Temple's BCKG label: timeline segmentation approach
+        # Build partition from all event boundaries
+        partition_points = {0.0, total_duration_sec}
+        for ev in ref_events + hyp_events:
+            partition_points.add(ev.start_time)
+            partition_points.add(ev.stop_time)
+        partition = sorted(partition_points)
 
-        # Any-overlap for BCKG
-        hyp_bckg_has_overlap = [False] * len(hyp_bckg)
-        for h_idx, hyp_bg in enumerate(hyp_bckg):
-            for ref_bg in ref_bckg:
-                if hyp_bg.overlaps(ref_bg):
-                    hyp_bckg_has_overlap[h_idx] = True
-                    break
-        bckg_false_alarms = len(hyp_bckg) - sum(hyp_bckg_has_overlap)
+        # Count BCKG false alarms per segment
+        bckg_false_alarms = 0
+        for i in range(len(partition) - 1):
+            seg_start = partition[i]
+            seg_stop = partition[i + 1]
+            if seg_stop <= seg_start:
+                continue
+
+            # Check if segment is background in ref (no SEIZ overlap)
+            ref_is_bckg = not any(
+                ev.start_time < seg_stop and seg_start < ev.stop_time
+                for ev in ref_events
+            )
+
+            # Check if segment has hyp activity but is ref background
+            if ref_is_bckg:
+                hyp_has_activity = any(
+                    ev.start_time < seg_stop and seg_start < ev.stop_time
+                    for ev in hyp_events
+                )
+                if hyp_has_activity:
+                    bckg_false_alarms += 1
 
         return OverlapMetrics(
             hits=hits,

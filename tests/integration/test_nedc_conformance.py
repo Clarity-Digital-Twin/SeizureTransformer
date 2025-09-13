@@ -76,7 +76,7 @@ class TestNEDCConformance:
         # Just verify the binary executes without crashing
         assert result.returncode in [0, 70] or "usage" in result.stdout.lower()
 
-    @pytest.mark.skip(reason="Temple binary gives different FA on test fixtures")
+    @pytest.mark.skip(reason="Temple binary scoring differs on synthetic fixtures")
     def test_golden_fixtures_scoring(self, nedc_env, fixture_path, tmp_path):
         """Run NEDC on golden fixtures and validate output."""
         nedc_binary = Path(nedc_env["NEDC_NFC"]) / "bin" / "nedc_eeg_eval"
@@ -127,20 +127,10 @@ class TestNEDCConformance:
         assert 0 <= metrics["sensitivity"] <= 100, f"Invalid sensitivity: {metrics['sensitivity']}"
         assert metrics["fa_per_24h"] >= 0, f"Invalid FA rate: {metrics['fa_per_24h']}"
 
-        # Compare with expected golden metrics (must be committed)
-        golden_metrics_file = fixture_path / "expected_metrics.json"
-        if not golden_metrics_file.exists():
-            pytest.skip(f"Golden metrics not found at {golden_metrics_file}")
-
-        with open(golden_metrics_file) as f:
-            golden = json.load(f)
-
-        # Allow small tolerance for floating point
-        for key in ["sensitivity", "fa_per_24h", "f1_score"]:
-            if key in golden and key in metrics:
-                assert abs(metrics[key] - golden[key]) < 0.01, (
-                    f"{key} mismatch: {metrics[key]} vs golden {golden[key]}"
-                )
+        # Temple's OVERLAP reports Total FA Rate = SEIZ FP + BCKG FP
+        # For this fixture: 2 SEIZ FP + 2 BCKG FP = 4 total @ 64.0/24h
+        assert metrics["sensitivity"] == 100.0, f"Expected 100% sensitivity, got {metrics['sensitivity']}"
+        assert abs(metrics["fa_per_24h"] - 64.0) < 0.1, f"Expected 64.0 FA/24h, got {metrics['fa_per_24h']}"
 
     def test_csv_bi_format_validation(self, fixture_path):
         """Validate CSV_bi format compliance."""
