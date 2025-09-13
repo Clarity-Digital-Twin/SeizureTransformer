@@ -1,5 +1,5 @@
 # Modern Python project Makefile - 2025 best practices
-.PHONY: help install test format lint clean run-eval
+.PHONY: help install test format lint typecheck check-all clean run-eval
 
 # Default target
 help:
@@ -9,6 +9,8 @@ help:
 	@echo "make test       - Run test suite with coverage"
 	@echo "make format     - Format code with ruff"
 	@echo "make lint       - Check code style with ruff"
+	@echo "make typecheck  - Run mypy type checking"
+	@echo "make check-all  - Run all quality checks (lint + typecheck + tests)"
 	@echo "make clean      - Remove build artifacts and cache"
 	@echo "make run-eval   - Run TUSZ evaluation (requires data)"
 
@@ -39,6 +41,12 @@ format:
 
 lint:
 	. .venv/bin/activate && ruff check .
+
+typecheck:
+	. .venv/bin/activate && mypy evaluation/ scripts/ tests/ --exclude="evaluation/nedc_eeg_eval"
+
+check-all: lint typecheck test
+	@echo "✅ All quality checks passed!"
 
 # Clean up
 clean:

@@ -58,7 +58,8 @@
       "Bash(timeout 2 git status --short)",
       "Bash(git remote:*)",
       "Bash(uv:*)",
-      "Bash(pytest:*)"
+      "Bash(pytest:*)",
+      "Bash(make:*)"
     ],
     "deny": [],
     "ask": []

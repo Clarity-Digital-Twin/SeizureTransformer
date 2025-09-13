@@ -46,7 +46,7 @@ def test_model_loads():
 
     except Exception as e:
         print(f"❌ Error: {e}")
-        assert False
+        raise AssertionError("Model loading failed")
 
 
 def test_preprocessing():
@@ -71,7 +71,7 @@ def test_preprocessing():
         assert True
     except Exception as e:
         print(f"❌ Preprocessing error: {e}")
-        assert False
+        raise AssertionError("Preprocessing failed")
 
 
 def check_weights():
