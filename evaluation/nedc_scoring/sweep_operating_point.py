@@ -23,6 +23,7 @@ import csv
 import itertools
 import os
 import subprocess
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -48,7 +49,7 @@ def run_once(
 ) -> Result:
     # Convert
     cmd_conv = [
-        "python",
+        sys.executable,
         "evaluation/nedc_scoring/run_nedc.py",
         "--checkpoint",
         str(checkpoint),
@@ -75,7 +76,7 @@ def run_once(
 
     # Score
     cmd_score = [
-        "python",
+        sys.executable,
         "evaluation/nedc_scoring/run_nedc.py",
         "--outdir",
         str(outdir),

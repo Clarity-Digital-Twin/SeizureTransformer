@@ -8,12 +8,18 @@ import sys
 from pathlib import Path
 
 import numpy as np
+import pytest
 import torch
 
 
 # Test model loading
 def test_model_loads():
     """Test that model and weights load correctly."""
+    # Skip if weights don't exist (common in CI)
+    weight_path = Path("wu_2025/src/wu_2025/model.pth")
+    if not weight_path.exists():
+        pytest.skip(f"Model weights not found at {weight_path}")
+
     from wu_2025.utils import load_models
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -51,6 +57,11 @@ def test_model_loads():
 
 def test_preprocessing():
     """Test preprocessing pipeline via dataloader."""
+    # Skip if weights don't exist (common in CI)
+    weight_path = Path("wu_2025/src/wu_2025/model.pth")
+    if not weight_path.exists():
+        pytest.skip(f"Model weights not found at {weight_path}")
+
     from wu_2025.utils import get_dataloader
 
     # Create dummy EEG data (19 channels, 1 minute at 256Hz)

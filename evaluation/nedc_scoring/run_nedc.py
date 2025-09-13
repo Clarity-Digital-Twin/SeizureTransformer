@@ -185,6 +185,7 @@ def run_nedc_scorer(
     # Parse and display key metrics with operating point params
     parse_nedc_output(
         results_dir,
+        backend=backend,
         threshold=threshold,
         kernel=kernel,
         min_duration_sec=min_duration_sec,
@@ -261,7 +262,12 @@ def extract_and_save_metrics(results_dir, metrics_file, backend="nedc-binary"):
 
 
 def parse_nedc_output(
-    results_dir, threshold=None, kernel=None, min_duration_sec=None, merge_gap_sec=None
+    results_dir,
+    backend="nedc-binary",
+    threshold=None,
+    kernel=None,
+    min_duration_sec=None,
+    merge_gap_sec=None,
 ):
     """
     Parse and display key metrics from NEDC output.
