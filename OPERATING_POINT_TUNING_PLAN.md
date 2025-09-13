@@ -25,54 +25,86 @@ All parameters are now exposed via CLI and supported by the current codebase:
 - `evaluation/nedc_scoring/run_nedc.py` — pass‑through CLI to conversion and runs official scorer.
 - `evaluation/nedc_scoring/sweep_operating_point.py` — performs grid sweeps on dev and summarizes TAES trade‑offs.
 
-## Step‑By‑Step Procedure
+## Step‑By‑Step Procedure (With Full Experiment Tracking)
 
-1) Generate dev predictions checkpoint
+**🗂️ All experiments are tracked in `experiments/` directory with full reproducibility.**
+
+1) **Generate dev predictions checkpoint**
 ```bash
-# Example: run eval script pointed at the TUSZ dev EDF root
+# Create tracked experiment
+python scripts/experiment_tracker.py create-config \
+  --split dev --description "baseline" \
+  --notes "Default parameters baseline on dev split"
+
+# Run dev evaluation with experiment tracking
 python evaluation/tusz/run_tusz_eval.py \
   --data_dir /path/to/TUSZ/v2.0.3/dev \
-  --out_dir evaluation/tusz_dev \
+  --out_dir experiments/dev/baseline \
   --device auto
-# Produces: evaluation/tusz_dev/checkpoint.pkl
+# Produces: experiments/dev/baseline/checkpoint.pkl
 ```
 
-2) Sweep operating points on dev
+2) **Sweep operating points on dev**
 ```bash
+# Create sweep experiment
+SWEEP_NAME="sweep_fa10_$(date +%Y-%m-%d)"
+python scripts/experiment_tracker.py create-config \
+  --split dev --description "$SWEEP_NAME" \
+  --target_fa_per_24h 10 \
+  --notes "Grid search: FA target ≤10/24h"
+
+# Run parameter sweep
 python evaluation/nedc_scoring/sweep_operating_point.py \
-  --checkpoint evaluation/tusz_dev/checkpoint.pkl \
-  --outdir_base evaluation/nedc_scoring/sweeps/dev \
+  --checkpoint experiments/dev/baseline/checkpoint.pkl \
+  --outdir_base experiments/dev/$SWEEP_NAME \
   --thresholds 0.5,0.6,0.7,0.8,0.9 \
   --kernels 5,11 \
   --min_durations 2,4 \
   --merge_gaps 0,10 \
   --target_fa_per_24h 10
-# Outputs:
-#  - sweep_results.csv (TAES sensitivity & FA/24h per setting)
-#  - recommended_params.json (best under FA target, max sensitivity)
+
+# Compare all dev experiments
+python scripts/experiment_tracker.py compare --split dev
 ```
 
-3) Freeze parameters
-- Choose the recommended parameters that meet your FA/24h target with best TAES sensitivity.
-- Commit them in a small JSON (produced by the sweep) or note them explicitly.
-
-4) Evaluate on eval split once (final)
+3) **Freeze parameters (from dev results)**
 ```bash
+# Record best parameters from sweep
+echo "Selected from dev sweep: threshold=0.6, kernel=11, min=4.0, gap=10" \
+  > experiments/dev/$SWEEP_NAME/selected_params.txt
+
+# Copy recommended_params.json to eval experiment template
+cp experiments/dev/$SWEEP_NAME/recommended_params.json \
+   experiments/eval/tuned_v1_params.json
+```
+
+4) **Evaluate on eval split once (final)**
+```bash
+# Create final eval experiment (ONLY RUN ONCE)
+EVAL_NAME="tuned_v1_$(date +%Y-%m-%d)"
+python scripts/experiment_tracker.py create-config \
+  --split eval --description "$EVAL_NAME" \
+  --threshold 0.6 --kernel 11 --min_duration_sec 4.0 --merge_gap_sec 10 \
+  --notes "Final evaluation with dev-optimized parameters"
+
 # Run TUSZ eval predictions
 python evaluation/tusz/run_tusz_eval.py \
   --data_dir /path/to/TUSZ/v2.0.3/eval \
-  --out_dir evaluation/tusz_eval \
+  --out_dir experiments/eval/$EVAL_NAME \
   --device auto
 
 # Convert + score using frozen parameters
 python evaluation/nedc_scoring/run_nedc.py \
-  --checkpoint evaluation/tusz_eval/checkpoint.pkl \
-  --outdir evaluation/nedc_scoring/output_eval \
-  --threshold <THR> --kernel <K> --min_duration_sec <MIN> --merge_gap_sec <GAP>
+  --checkpoint experiments/eval/$EVAL_NAME/checkpoint.pkl \
+  --outdir experiments/eval/$EVAL_NAME/nedc_results \
+  --threshold 0.6 --kernel 11 --min_duration_sec 4.0 --merge_gap_sec 10
+
+# Log final results
+python scripts/experiment_tracker.py compare --split eval
 ```
 
 5) Report
-- Use `evaluation/nedc_scoring/output_eval/results/summary.txt` (TAES section) as the canonical metrics.
+- Use `experiments/eval/$EVAL_NAME/nedc_results/results/summary.txt` (TAES section) as the canonical metrics.
 - Include AUROC from `evaluation/tusz/run_tusz_eval.py` summary if desired (note: AUROC is per‑sample; TAES is event‑level).
 
 ## Constraints & Notes
@@ -82,4 +114,3 @@ python evaluation/nedc_scoring/run_nedc.py \
 
 ## Rationale
 This follows standard ML practice: train on train, tune on dev, test on eval. We do not retrain the model; we only calibrate the eventization and threshold to meet a clinical FA/24h target while maximizing detection sensitivity.
-

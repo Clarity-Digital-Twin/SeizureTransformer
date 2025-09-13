@@ -1,33 +1,72 @@
-# Evaluation Directory Structure
+# Evaluation Tools Directory
 
-## Organization
+This directory contains **tools and infrastructure** for SeizureTransformer evaluation.
+
+**⚠️ Note**: Experimental **results** are stored in `../experiments/` directory.
+
+## Directory Structure
+
 ```
 evaluation/
-├── tusz/             # TUSZ-specific evaluation (paper replication)
-├── nedc_eeg_eval/    # Official NEDC software from Temple (v6.0.0)
-├── nedc_scoring/     # Our scripts to integrate with NEDC
-└── siena/            # Siena evaluation (future)
+├── tusz/                   # TUSZ dataset evaluation scripts
+│   └── run_tusz_eval.py    # Main evaluation script (generates checkpoints)
+├── nedc_scoring/           # NEDC pipeline tools
+│   ├── convert_predictions.py
+│   ├── run_nedc.py
+│   ├── sweep_operating_point.py
+│   └── post_processing.py
+└── nedc_eeg_eval/v6.0.0/   # Official NEDC binaries and libraries
 ```
+
+## Tools vs Results Separation
+
+### 🛠️ Tools (Stay in `evaluation/`)
+- **Scripts**: Evaluation pipelines, converters, scorers
+- **Binaries**: NEDC v6.0.0 official evaluation software
+- **Infrastructure**: Reusable components across experiments
+
+### 📊 Results (Go to `experiments/`)
+- **Checkpoints**: Model predictions (*.pkl files)
+- **Metrics**: NEDC scoring outputs, JSON summaries
+- **Logs**: Execution logs, parameter records
 
 ## Running Evaluations
 
-### TUSZ Evaluation (Paper Replication)
+### Generate Predictions
 ```bash
-make run-eval-tusz
+# Create experiment checkpoint
+python evaluation/tusz/run_tusz_eval.py \
+  --data_dir /path/to/TUSZ/eval \
+  --out_dir experiments/eval/my_experiment \
+  --device auto
 ```
-- Reproduces paper's AUROC of 0.876
-- Uses paper's threshold of 0.8
-- Outputs event-based metrics
 
-### NEDC Official Scoring
+### Score with NEDC
 ```bash
-make run-eval-nedc
+# Run NEDC pipeline
+cd evaluation/nedc_scoring
+make all CHECKPOINT=../../experiments/eval/my_experiment/checkpoint.pkl
 ```
-- Uses Temple/NEDC's official TAES scoring
-- Provides standardized metrics for comparison
-- Includes FA/24h and sensitivity metrics
- - See `NEDC_INTEGRATION_PLAN.md` for exact steps (SSOT)
 
-## Data Requirements
-- TUSZ eval set at: `/data/tusz_1_5_2/edf/eval/`
-- Model weights at: `wu_2025/src/wu_2025/model.pth`
+### Sweep Operating Points
+```bash
+# Parameter optimization (dev split only)
+python evaluation/nedc_scoring/sweep_operating_point.py \
+  --checkpoint experiments/dev/baseline/checkpoint.pkl \
+  --target_fa_per_24h 10
+```
+
+## Migration Complete
+
+✅ **Moved to experiments/eval/baseline/**:
+- `checkpoint.pkl` (470MB baseline predictions)
+- `results.json` (AUROC and sample-level metrics)  
+- `eval_log.txt` (execution log)
+
+✅ **Remaining in evaluation/tusz/**:
+- `run_tusz_eval.py` (evaluation script - reusable tool)
+
+This organization follows ML best practices:
+- **Tools are version-controlled and shared**
+- **Results are experiment-specific and tracked separately**
+- **Clear separation between infrastructure and outputs**

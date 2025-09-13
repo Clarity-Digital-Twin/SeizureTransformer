@@ -1,0 +1,20 @@
+{
+  "experiment_info": {
+    "split": "eval",
+    "description": "baseline",
+    "timestamp": "2025-01-13T00:00:00",
+    "target_fa_per_24h": null,
+    "notes": "Default parameters evaluation on TUSZ eval split (migrated from evaluation/tusz/)"
+  },
+  "parameters": {
+    "threshold": 0.8,
+    "kernel": 5,
+    "min_duration_sec": 2.0,
+    "merge_gap_sec": null
+  },
+  "paths": {
+    "data_dir": "/path/to/TUSZ/v2.0.3/eval",
+    "checkpoint": "experiments/eval/baseline/checkpoint.pkl",
+    "nedc_results": "experiments/eval/baseline/nedc_results/"
+  }
+}

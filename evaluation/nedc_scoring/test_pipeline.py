@@ -237,7 +237,6 @@ def run_full_test():
         "evaluation/nedc_scoring/run_nedc.py",
         "--checkpoint", str(test_checkpoint),
         "--outdir", str(test_dir),
-        "--method", "TAES",
         "--force"
     ]
 

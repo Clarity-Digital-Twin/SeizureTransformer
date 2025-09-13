@@ -100,21 +100,23 @@ For ICU deployment, acceptable thresholds are typically:
 All code, configurations, and results are available in this repository:
 - Evaluation script: `evaluation/tusz/run_tusz_eval.py`
 - NEDC pipeline: `evaluation/nedc_scoring/run_nedc.py`
-- Checkpoint file: `evaluation/tusz/checkpoint.pkl` (470MB)
-- NEDC results: `evaluation/nedc_scoring/output/results/`
+- Checkpoint file: `experiments/eval/baseline/checkpoint.pkl` (migrated)
+- NEDC results: `experiments/eval/baseline/nedc_results/`
 
 ### To Reproduce
 ```bash
 # 1. Run TUSZ evaluation
-python3 evaluation/tusz/run_tusz_eval.py
+python3 evaluation/tusz/run_tusz_eval.py \
+  --data_dir /path/to/TUSZ/v2.0.3/eval \
+  --out_dir experiments/eval/baseline
 
 # 2. Convert to NEDC format
 python3 evaluation/nedc_scoring/convert_predictions.py
 
 # 3. Run NEDC scoring
-export NEDC_NFC=$(pwd)/evaluation/nedc_eeg_eval/v6.0.0
-export PYTHONPATH=$NEDC_NFC/lib:$PYTHONPATH
-python3 evaluation/nedc_scoring/run_nedc.py
+python3 evaluation/nedc_scoring/run_nedc.py \
+  --checkpoint experiments/eval/baseline/checkpoint.pkl \
+  --outdir experiments/eval/baseline/nedc_results
 ```
 
 ## Critical Finding: Paper Discrepancy

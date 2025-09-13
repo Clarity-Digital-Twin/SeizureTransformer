@@ -24,9 +24,9 @@ This repository provides an **independent, reproducible evaluation** of the Seiz
 
 1. **Complete TUSZ evaluation pipeline** with GPU acceleration
 2. **NEDC v6.0.0 integration** for official Temple University scoring
-3. **Comprehensive documentation** of methodology and results
-4. **Reproducible benchmark submission** for Epilepsy Bench/SzCORE
-5. **Analysis revealing discrepancies** in paper's performance claims
+3. **Operating point tuning framework** for clinical threshold optimization
+4. **Comprehensive documentation** of methodology and results
+5. **Reproducible benchmark submission** for Epilepsy Bench/SzCORE
 
 ## 📁 Repository Structure
 
@@ -79,17 +79,20 @@ cd SeizureTransformer
 
 ```bash
 # 1. Run TUSZ evaluation (GPU recommended)
-  python evaluation/tusz/run_tusz_eval.py \
-      --data_dir /path/to/TUSZ/v2.0.3/eval \
-      --out_dir evaluation/tusz \
-      --device auto
+python evaluation/tusz/run_tusz_eval.py \
+    --data_dir /path/to/TUSZ/v2.0.3/eval \
+    --out_dir experiments/eval/baseline \
+    --device auto
 
-# 2. Convert predictions to NEDC format
-python evaluation/nedc_scoring/convert_predictions.py
-
-# 3. Run official NEDC scoring
+# 2. Convert predictions to NEDC format and score
 cd evaluation/nedc_scoring
-make all  # Runs complete NEDC pipeline
+make all CHECKPOINT=../../experiments/eval/baseline/checkpoint.pkl OUTDIR=../../experiments/eval/baseline/nedc_results
+
+# 3. Optional: Tune operating point (requires dev split)
+python evaluation/nedc_scoring/sweep_operating_point.py \
+    --checkpoint experiments/dev/baseline/checkpoint.pkl \
+    --outdir_base experiments/dev/sweeps/fa10 \
+    --target_fa_per_24h 10
 ```
 
 ## 📊 Results Summary
@@ -124,12 +127,14 @@ AUROC:           0.9021
 - [Complete Results](docs/evaluation/EVALUATION_RESULTS.md) - Full evaluation with analysis
 - [Validation Report](docs/evaluation/TESTING_AND_VALIDATION.md) - Reproducibility & validation
 
-  ### Technical Documentation
-  - [NEDC Integration](docs/technical/NEDC_INTEGRATION_PLAN.md) - NEDC pipeline setup
-  - [Architecture Guide](docs/technical/IDEAL_REFERENCE_SEIZURE_TRANSFORMER_DATAFLOW.md) - Model dataflow
-  - [NEDC Understanding](docs/technical/NEDC_EVALUATION_UNDERSTANDING.md) - Scoring metrics explained
-  - [Repository Structure](docs/technical/REPO_STRUCTURE_PLAN.md) - Project organization
-  - [Third-Party Notices](THIRD_PARTY_NOTICES.md) - Licenses and attributions
+### Technical Documentation
+- [Operating Point Tuning](OPERATING_POINT_TUNING_PLAN.md) - Clinical threshold optimization
+- [Dataflow Verification](SEIZURE_TRANSFORMER_DATAFLOW_TRACE.md) - Complete pipeline trace
+- [NEDC Integration](docs/technical/NEDC_INTEGRATION_PLAN.md) - NEDC pipeline setup
+- [Architecture Guide](docs/technical/IDEAL_REFERENCE_SEIZURE_TRANSFORMER_DATAFLOW.md) - Model dataflow
+- [NEDC Understanding](docs/technical/NEDC_EVALUATION_UNDERSTANDING.md) - Scoring metrics explained
+- [Repository Structure](docs/technical/REPO_STRUCTURE_PLAN.md) - Project organization
+- [Third-Party Notices](THIRD_PARTY_NOTICES.md) - Licenses and attributions
 
 ### Benchmark Submissions
 - [Epilepsy Bench Submission](docs/submissions/EPILEPSY_BENCH_SUBMISSION.md) - SzCORE format
@@ -148,10 +153,11 @@ AUROC:           0.9021
 3. Bandpass filter: 0.5-120 Hz
 4. Notch filter: 60 Hz
 
-### Post-processing
+### Post-processing (Default Parameters)
 - Probability threshold: 0.8
 - Morphological operations (kernel=5)
 - Minimum event duration: 2.0 seconds
+- *See [Operating Point Tuning](OPERATING_POINT_TUNING_PLAN.md) for optimization*
 
 ### Evaluation Protocol
 - **Dataset**: TUSZ v2.0.3 eval split
@@ -218,3 +224,4 @@ Also cite the original work:
 - Different datasets (TUSZ vs Dianalund)
 - Different scoring methods (TAES vs event-based)
 - Zero-shot evaluation (model not trained on TUSZ)
+- Default parameters (paper likely tuned on dev split)

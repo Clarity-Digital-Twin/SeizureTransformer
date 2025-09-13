@@ -9,8 +9,8 @@ echo "NEDC EVALUATION PIPELINE"
 echo "=========================================="
 echo ""
 
-# Check if checkpoint exists
-CHECKPOINT="evaluation/tusz/checkpoint.pkl"
+# Check if checkpoint exists (allow override via env)
+CHECKPOINT="${CHECKPOINT:-experiments/eval/baseline/checkpoint.pkl}"
 if [ ! -f "$CHECKPOINT" ]; then
     echo "Error: Checkpoint not found at $CHECKPOINT"
     echo "Please ensure TUSZ evaluation has completed"
@@ -36,28 +36,18 @@ echo ""
 echo "Step 3: Running NEDC scorer (TAES metrics)"
 echo "------------------------------------------"
 python evaluation/nedc_scoring/run_nedc.py \
-    --checkpoint "$CHECKPOINT" \
     --outdir evaluation/nedc_scoring/output \
-    --method TAES \
     --score-only
 
 echo ""
 echo "Step 4: Running NEDC scorer (OVLP metrics)"
 echo "------------------------------------------"
-python evaluation/nedc_scoring/run_nedc.py \
-    --checkpoint "$CHECKPOINT" \
-    --outdir evaluation/nedc_scoring/output \
-    --method OVLP \
-    --score-only
+# OVLP and EPOCH summaries are produced by the same run in v6.0.0; rerun not required.
 
 echo ""
 echo "Step 5: Running NEDC scorer (EPOCH metrics)"
 echo "-------------------------------------------"
-python evaluation/nedc_scoring/run_nedc.py \
-    --checkpoint "$CHECKPOINT" \
-    --outdir evaluation/nedc_scoring/output \
-    --method EPOCH \
-    --score-only
+# See evaluation/nedc_scoring/output/results for all summaries.
 
 echo ""
 echo "=========================================="
@@ -66,6 +56,4 @@ echo "=========================================="
 echo "Results saved to: evaluation/nedc_scoring/output/results/"
 echo ""
 echo "Key metrics files:"
-echo "  - TAES results: evaluation/nedc_scoring/output/results/taes_*.txt"
-echo "  - OVLP results: evaluation/nedc_scoring/output/results/ovlp_*.txt"
-echo "  - EPOCH results: evaluation/nedc_scoring/output/results/epoch_*.txt"
+echo "  - Summaries: evaluation/nedc_scoring/output/results/summary*.txt"

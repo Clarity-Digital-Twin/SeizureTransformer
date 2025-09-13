@@ -265,19 +265,13 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Run full pipeline with default settings
-  python evaluation/nedc_scoring/run_nedc.py
-
-  # Use specific checkpoint and output
-  python evaluation/nedc_scoring/run_nedc.py \\
-    --checkpoint evaluation/tusz/checkpoint.pkl \\
-    --outdir evaluation/nedc_scoring/output
-
-  # Run with different scoring method
-  python evaluation/nedc_scoring/run_nedc.py --method OVLP
+  # Run full pipeline with explicit paths
+  python evaluation/nedc_scoring/run_nedc.py \
+    --checkpoint experiments/eval/baseline/checkpoint.pkl \
+    --outdir experiments/eval/baseline/nedc_results
 
   # Force overwrite existing output
-  python evaluation/nedc_scoring/run_nedc.py --force
+  python evaluation/nedc_scoring/run_nedc.py --force ...
         """
     )
 
@@ -293,7 +287,6 @@ Examples:
         default="evaluation/nedc_scoring/output",
         help="Output directory for NEDC files"
     )
-    # NEDC runs all methods; no method flag needed
     parser.add_argument(
         "--force",
         action="store_true",

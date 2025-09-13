@@ -284,10 +284,9 @@ def main():
     else:
         print("\n❌ No valid predictions to evaluate")
 
-    # Clean up checkpoint
+    # Keep checkpoint in place for downstream tools
     if checkpoint_file.exists():
-        checkpoint_file.rename(checkpoint_file.with_suffix(".pkl.complete"))
-        print("\n🧹 Checkpoint saved as .complete")
+        print("\n💾 Checkpoint available:", checkpoint_file)
 
 
 if __name__ == "__main__":

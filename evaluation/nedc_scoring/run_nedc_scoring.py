@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """
-Wrapper for NEDC official scoring tools.
-Converts SeizureTransformer output to NEDC format and runs scoring.
+DEPRECATED: Use `evaluation/nedc_scoring/run_nedc.py` instead.
 
-Note: This is a thin wrapper around the in-repo NEDC v6.0.0 tools
-located under `evaluation/nedc_eeg_eval/v6.0.0`.
+This legacy stub is kept only to avoid breaking old references. It does not
+implement conversion or scoring.
 """
 
 import os
@@ -16,10 +15,9 @@ NEDC_PATH = Path(__file__).parent.parent / "nedc_eeg_eval/v6.0.0"
 NEDC_BIN = NEDC_PATH / "bin/nedc_eeg_eval"
 
 def convert_to_nedc_format(predictions, output_dir):
-    """Convert model predictions to NEDC hypothesis format."""
-    # NEDC expects .hyp files with format:
-    # start_time end_time label confidence
-    pass
+    raise NotImplementedError(
+        "Deprecated. Use evaluation/nedc_scoring/convert_predictions.py"
+    )
 
 def run_nedc_scoring(ref_file, hyp_file, outdir: Path | None = None):
     """Run NEDC scoring tool."""
@@ -36,11 +34,9 @@ def run_nedc_scoring(ref_file, hyp_file, outdir: Path | None = None):
     return result.stdout
 
 def parse_nedc_output(output):
-    """Parse NEDC scoring output for key metrics."""
-    # Extract TAES metrics, FA/24h, sensitivity, etc.
-    pass
+    raise NotImplementedError(
+        "Deprecated. Use evaluation/nedc_scoring/run_nedc.py to parse summaries"
+    )
 
 if __name__ == "__main__":
-    print("NEDC scoring wrapper - to be implemented after TUSZ eval completes")
-    print(f"NEDC tools located at: {NEDC_PATH}")
-    print("This will convert SeizureTransformer output to NEDC format and score")
+    print("Deprecated. Use evaluation/nedc_scoring/run_nedc.py")

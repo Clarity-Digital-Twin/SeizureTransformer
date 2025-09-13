@@ -4,9 +4,8 @@
 .PHONY: all test convert score clean help
 
 # Default checkpoint path
-CHECKPOINT ?= evaluation/tusz/checkpoint.pkl
+CHECKPOINT ?= experiments/eval/baseline/checkpoint.pkl
 OUTDIR ?= evaluation/nedc_scoring/output
-METHOD ?= TAES
 
 all: test convert score
 	@echo "Complete NEDC evaluation pipeline finished"
@@ -22,35 +21,9 @@ convert:
 		--outdir $(OUTDIR)
 
 score:
-	@echo "Running NEDC scorer ($(METHOD))..."
-	python evaluation/nedc_scoring/run_nedc.py \
-		--checkpoint $(CHECKPOINT) \
-		--outdir $(OUTDIR) \
-		--method $(METHOD) \
-		--score-only
-
-score-all: score-taes score-ovlp score-epoch
-	@echo "All scoring methods complete"
-
-score-taes:
-	@echo "Running TAES scoring..."
+	@echo "Running NEDC scorer..."
 	python evaluation/nedc_scoring/run_nedc.py \
 		--outdir $(OUTDIR) \
-		--method TAES \
-		--score-only
-
-score-ovlp:
-	@echo "Running OVLP scoring..."
-	python evaluation/nedc_scoring/run_nedc.py \
-		--outdir $(OUTDIR) \
-		--method OVLP \
-		--score-only
-
-score-epoch:
-	@echo "Running EPOCH scoring..."
-	python evaluation/nedc_scoring/run_nedc.py \
-		--outdir $(OUTDIR) \
-		--method EPOCH \
 		--score-only
 
 clean:
@@ -72,11 +45,9 @@ help:
 	@echo "  help       - Show this help message"
 	@echo ""
 	@echo "Variables:"
-	@echo "  CHECKPOINT - Path to checkpoint.pkl (default: evaluation/tusz/checkpoint.pkl)"
+	@echo "  CHECKPOINT - Path to checkpoint.pkl (default: experiments/eval/baseline/checkpoint.pkl)"
 	@echo "  OUTDIR     - Output directory (default: evaluation/nedc_scoring/output)"
-	@echo "  METHOD     - Scoring method: TAES|OVLP|EPOCH|IRA (default: TAES)"
 	@echo ""
 	@echo "Examples:"
 	@echo "  make all"
 	@echo "  make convert CHECKPOINT=my_checkpoint.pkl"
-	@echo "  make score METHOD=OVLP"
