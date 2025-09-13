@@ -1,71 +1,81 @@
-# Temple NEDC vs Native Scorer Divergence Analysis
+# Temple NEDC vs Native Scorer Divergence Analysis (Corrected)
 
 ## Executive Summary
 
-We discovered a subtle but important divergence between Temple's NEDC v6.0.0 OVERLAP scorer and our native implementation when processing synthetic test fixtures. While both implementations achieve **exact parity on real TUSZ DEV/EVAL data**, they differ in how they count BCKG false alarms on artificial edge cases.
+Root cause: Our native OVERLAP scorer misinterpreted Temple’s per‑label false‑alarm semantics for the BCKG label. We were counting “background with hyp seizure activity” segments as BCKG false alarms. Temple’s OVERLAP implementation counts false alarms per LABEL, i.e., hyp events labeled BCKG that do not overlap any ref BCKG event. The fix is to compute per‑label events for both SEIZ and BCKG (by augmenting with BCKG and merging repeated labels), then apply the same any‑overlap logic for hits/misses/false‑alarms per label and sum across labels for the “Total False Alarm Rate”. This change aligns our native scorer exactly with Temple v6.0.0 OVERLAP.
 
-## The Divergence
+## What Temple Actually Does
 
-### Test Case
-```
-Duration: 1800 seconds (30 minutes)
+From the vendored Temple code:
+- `nedc_eeg_eval_common.parse_files`: fills gaps with BCKG (`augment_annotation`) and collapses consecutive repeated labels (`remove_repeated_events`).
+- `nedc_eeg_eval_ovlp.NedcOverlap.compute`: counts, per label, events in ref that have any overlapping hyp with the same label (hits/misses) and events in hyp that have no overlapping ref with the same label (false alarms). “Total False Alarm Rate” is the sum of false alarms across labels divided by duration and scaled to per‑24h.
 
-Reference Events (Ground Truth):
-1. [42.28, 81.78] - 39.50 sec seizure
-2. [234.50, 267.89] - 33.39 sec seizure
-3. [1234.00, 1289.45] - 55.45 sec seizure
+Implications:
+- SEIZ false alarms = hyp SEIZ events with no overlap to any ref SEIZ.
+- BCKG false alarms = hyp BCKG events with no overlap to any ref BCKG (i.e., predicted background during a true seizure).
+- There is no counting of “background leakage” around hyp SEIZ events as BCKG false alarms; those tails do not increment BCKG FAs.
 
-Hypothesis Events (Predictions):
-1. [40.00, 85.00] - 45.00 sec (overlaps ref #1)
-2. [235.00, 265.00] - 30.00 sec (overlaps ref #2)
-3. [1235.50, 1290.00] - 54.50 sec (overlaps ref #3)
-4. [1500.00, 1510.00] - 10.00 sec (false alarm)
-```
+## The Prior Misinterpretation
 
-### Results Comparison
+Previously, our native scorer:
+- Counted SEIZ like Temple (any‑overlap hits; FA = hyp SEIZ with no ref overlap).
+- Counted BCKG FAs by partitioning the timeline and incrementing for every segment where ref was background but hyp had seizure activity. This is not Temple’s per‑label FA definition and inflates “Total FA Rate”.
 
-| Metric | Temple NEDC v6.0.0 | Native Scorer | Match? |
-|--------|-------------------|---------------|--------|
-| Sensitivity | 100% | 100% | ✅ |
-| SEIZ Hits | 3 | 3 | ✅ |
-| SEIZ FA | 1 | 1 | ✅ |
-| **BCKG FA** | **2** | **4** | **❌** |
-| Total FA/24h | 64.0 | 240.0 | ❌ |
+## Concrete Example (Revisited)
 
-## Root Cause Analysis
+Duration: 1800s. Ref SEIZ: [42.28,81.78], [234.50,267.89], [1234.00,1289.45]. Hyp SEIZ: [40,85], [235,265], [1235.5,1290], [1500,1510].
 
-### Timeline Segmentation
+Temple OVERLAP per label:
+- SEIZ FA: 1 (only [1500,1510] has no ref overlap)
+- BCKG FA: 0 (no hyp BCKG event exists inside a ref SEIZ; hyp background complements do overlap ref background, so not FAs)
+- Total FAs: 1, not >1. Any “tail” of [40,85] or [1235.5,1290] is not a BCKG FA.
 
-Both implementations create timeline segments by partitioning at event boundaries:
+Note: Some earlier numbers in this doc (e.g., “64.0 per 24h”) were inconsistent with a 30‑min file and are removed here.
 
-```
-Partition Points: [0.0, 40.0, 42.28, 81.78, 85.0, 234.5, 235.0,
-                   265.0, 267.89, 1234.0, 1235.5, 1289.45,
-                   1290.0, 1500.0, 1510.0, 1800.0]
-```
+## Root Cause
 
-### BCKG False Alarm Segments
+- Misinterpreted BCKG false‑alarm semantics. We treated “hyp SEIZ overlapping ref BCKG” segments as BCKG FAs. Temple treats BCKG FAs as “hyp BCKG overlapping ref SEIZ” events. The prior approach double‑counted certain situations and could never match Temple’s OVERLAP totals on synthetic fixtures.
 
-Our native scorer identifies 4 BCKG FA segments:
-1. `[40.00, 42.28]` - Hyp starts before ref
-2. `[81.78, 85.00]` - Hyp extends past ref
-3. `[1289.45, 1290.00]` - Hyp extends past ref
-4. `[1500.00, 1510.00]` - Complete false alarm
+## The Fix (Implemented)
 
-### The Mystery: Why Does Temple Report Only 2?
+We updated the native scorer to mirror Temple’s OVERLAP per‑label pipeline:
 
-Temple appears to **merge adjacent or overlapping BCKG FA segments into events** before counting. This suggests Temple's BCKG scorer:
+- Build labeled event sequences for both ref and hyp over [0, duration]:
+  - Use the input SEIZ events.
+  - Compute BCKG as the complement and merge adjacent intervals.
+- Compute SEIZ metrics (unchanged):
+  - hits/misses on ref SEIZ via any overlap with hyp SEIZ
+  - SEIZ false alarms = hyp SEIZ with no overlap to any ref SEIZ
+- Compute BCKG false alarms (corrected):
+  - BCKG false alarms = hyp BCKG with no overlap to any ref BCKG
+- Total False Alarm Rate = (SEIZ FA + BCKG FA) × 86400 / duration
 
-1. **Creates segments** via timeline partitioning
-2. **Identifies BCKG FA segments** (same as us)
-3. **Merges adjacent/overlapping segments into events** (we don't do this)
-4. **Counts the merged events** as BCKG FAs
+Code change:
+- File: `seizure_evaluation/taes/overlap_scorer.py`
+- Replaced segment‑level BCKG counting with per‑event BCKG FA matching using complement events.
 
-Likely merging:
-- Segments 1+2 → Event A (around first seizure)
-- Segment 3 → (possibly merged with SEIZ FA?)
-- Segment 4 → Event B (isolated FA)
-- **Result: 2 BCKG FA events**
+Tests updated:
+- File: `tests/test_overlap_scorer.py` (`test_total_fa_rate`) now expects BCKG FA = 0 and Total FA/24h = 1.0 when hyp has a single SEIZ FA in a 24h file.
+
+## Validation Plan
+
+- Unit parity: Verify OVERLAP metrics on synthetic fixtures directly against Temple’s summary_ovlp.txt by programmatically parsing both.
+- DEV/EVAL parity: Re‑run the pipeline using `evaluation/nedc_scoring/run_nedc.py` with `--backend nedc-binary` and `--backend native-overlap`; confirm that:
+  - Sensitivity matches within ≤0.01 across operating points.
+  - Total False Alarm Rate matches within ≤0.01 across operating points.
+
+## Notes and Caveats
+
+- OVERLAP is an event‑level method; tails of hyp SEIZ overlapping ref SEIZ do not create BCKG FAs. BCKG FAs arise only when hyp predicts background during a true seizure.
+- If you want a segment/temporal error budget, use epoch scoring; if you want 1:1 event accounting and partial credit, use DP ALIGNMENT or TAES.
+
+## References
+
+- Temple NEDC v6.0.0 source (vendored): `evaluation/nedc_eeg_eval/v6.0.0/`
+  - `lib/nedc_eeg_eval_common.py::parse_files`
+  - `lib/nedc_eeg_ann_tools.py::augment_annotation`, `::remove_repeated_events`
+  - `lib/nedc_eeg_eval_ovlp.py::NedcOverlap.compute`
+- Native OverlapScorer: `seizure_evaluation/taes/overlap_scorer.py`
 
 ## Why This Matters (And Why It Doesn't)
 
