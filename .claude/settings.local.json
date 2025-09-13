@@ -96,7 +96,9 @@
       "Bash(do echo \"=== DEV $d ===\" python evaluation/nedc_scoring/run_nedc.py --outdir experiments/dev/baseline/$d --backend native-overlap --score-only)",
       "Bash(do echo \"=== DEV $d ===\")",
       "Read(///**)",
-      "Bash(do echo \"=== DEV $dir ===\" echo -n \"Temple: \" awk '/NEDC OVERLAP SCORING SUMMARY/,/^=+$/' $dir_nedc_binary/results/summary.txt)"
+      "Bash(do echo \"=== DEV $dir ===\" echo -n \"Temple: \" awk '/NEDC OVERLAP SCORING SUMMARY/,/^=+$/' $dir_nedc_binary/results/summary.txt)",
+      "Bash(/mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/.venv/bin/python convert_predictions.py --checkpoint test_output/test_checkpoint.pkl --outdir test_output)",
+      "Bash(/usr/bin/python3:*)"
     ],
     "deny": [],
     "ask": []
