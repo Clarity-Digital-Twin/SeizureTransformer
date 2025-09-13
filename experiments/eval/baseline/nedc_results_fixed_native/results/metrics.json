@@ -1,0 +1,28 @@
+{
+  "timestamp": "2025-09-13T12:30:26.384707",
+  "provenance": {
+    "git_commit": "9ac6155f",
+    "python_version": "3.10.12",
+    "platform": "Linux-5.15.167.4-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+    "os": "Linux",
+    "backend": "native-taes",
+    "nedc_version": "v6.0.0"
+  },
+  "taes": {
+    "sensitivity_percent": 23.45,
+    "fa_per_24h": 9.97,
+    "f1_score": 0.348
+  },
+  "ovlp": {},
+  "epoch": {},
+  "overlap": {
+    "sensitivity_percent": 23.45,
+    "fa_per_24h": 9.97,
+    "f1_score": 0.348
+  },
+  "clinical_assessment": {
+    "clinically_viable": true,
+    "sensitivity_acceptable": false,
+    "deployment_ready": false
+  }
+}

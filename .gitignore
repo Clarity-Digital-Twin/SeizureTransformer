@@ -29,11 +29,16 @@ experiments/*/*/sweeps/
 
 # NEDC output files (generated, not source)
 *.csv_bi
-experiments/*/baseline/nedc_results*/
-experiments/*/*/nedc_results*/
 experiments/eval/baseline/nedc_results_frozen*/
 experiments/eval/baseline/nedc_results_frozen_native/
 experiments/eval/baseline/nedc_results_frozen_temple/
+experiments/eval/baseline/test_1fa/
+experiments/eval/baseline/sweeps_1fa/
+# Specific NEDC output directories (not broadly ignoring)
+experiments/eval/baseline/*/hyp/
+experiments/eval/baseline/*/ref/
+experiments/eval/baseline/*/lists/
+experiments/eval/baseline/*/results/summary*.txt
 
 # Dataset files (potentially large/sensitive)
 *.edf
