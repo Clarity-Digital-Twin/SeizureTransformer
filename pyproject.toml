@@ -93,6 +93,14 @@ addopts = [
     "--cov=evaluation",
     "--cov-report=term-missing",
     "--cov-report=html",
+    "--strict-markers",
+]
+markers = [
+    "nedc: Tests requiring NEDC binary (deselect with '-m \"not nedc\"')",
+    "conformance: Conformance tests against official NEDC scorer",
+    "integration: Integration tests for the pipeline",
+    "clinical: Clinical validation tests",
+    "slow: Tests that take > 30 seconds",
 ]
 
 [tool.coverage.run]
