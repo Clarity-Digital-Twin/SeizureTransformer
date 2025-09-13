@@ -5,7 +5,7 @@
 **Status**: 📋 PLANNING (Requires Senior Sign-off)  
 **Target**: Transform from wrapper to owned, production-grade seizure detection system
 
-Note: This plan covers model/system architecture and packaging. The NEDC evaluation backend and clinical scoring workflow are specified separately in docs/technical/NEDC_INTEGRATION_PLAN.md (SSOT).
+Note: This plan covers model/system architecture and packaging. The NEDC evaluation backend and clinical scoring workflow are specified separately in NEDC_INTEGRATION_PLAN.md (SSOT).
 
 ---
 

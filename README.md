@@ -130,7 +130,7 @@ AUROC:           0.9021
 ### Technical Documentation
 - [Operating Point Tuning](OPERATING_POINT_TUNING_PLAN.md) - Clinical threshold optimization
 - [Dataflow Verification](SEIZURE_TRANSFORMER_DATAFLOW_TRACE.md) - Complete pipeline trace
-- [NEDC Integration](docs/technical/NEDC_INTEGRATION_PLAN.md) - NEDC pipeline setup
+- [NEDC Integration](NEDC_INTEGRATION_PLAN.md) - NEDC pipeline setup
 - [Architecture Guide](docs/technical/IDEAL_REFERENCE_SEIZURE_TRANSFORMER_DATAFLOW.md) - Model dataflow
 - [NEDC Understanding](docs/technical/NEDC_EVALUATION_UNDERSTANDING.md) - Scoring metrics explained
 - [Repository Structure](docs/technical/REPO_STRUCTURE_PLAN.md) - Project organization

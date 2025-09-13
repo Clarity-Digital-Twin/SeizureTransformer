@@ -65,6 +65,8 @@ TERM,42.2786,81.7760,seiz,1.0000
 - Channel always "TERM"
 - Label always "seiz"
 - Headers must match exactly
+ - List files (`ref.list`, `hyp.list`) contain absolute paths (one per line)
+ - Use LF newlines when writing list and CSV files (Windows/WSL safe)
 
 ## File Structure
 
@@ -91,6 +93,14 @@ export NEDC_NFC=$(pwd)/evaluation/nedc_eeg_eval/v6.0.0
 export PATH=$NEDC_NFC/bin:$PATH
 export PYTHONPATH=$NEDC_NFC/lib:$PYTHONPATH
 ```
+
+## Outputs
+
+Given an `--outdir <DIR>`, the runner writes:
+- `<DIR>/hyp/*.csv_bi` and `<DIR>/ref/*.csv_bi`
+- `<DIR>/lists/{ref,hyp}.list` (absolute paths)
+- `<DIR>/results/summary.txt` (official NEDC output)
+- `<DIR>/results/metrics.json` (parsed TAES metrics + provenance)
 
 ## Native TAES Implementation (Optional Future)
 
@@ -122,7 +132,7 @@ python test_pipeline.py
 ## Key Commands
 
 ```bash
-# Full pipeline
+# Full pipeline (Makefile writes to evaluation/nedc_scoring/output by default)
 make -C evaluation/nedc_scoring all CHECKPOINT=path/to/checkpoint.pkl
 
 # Just conversion
@@ -133,4 +143,12 @@ make -C evaluation/nedc_scoring score
 
 # Clean outputs
 make -C evaluation/nedc_scoring clean
+
+# Preferred: write artifacts under experiments/**
+python evaluation/nedc_scoring/convert_predictions.py \
+  --checkpoint experiments/dev/baseline/checkpoint.pkl \
+  --outdir experiments/dev/baseline/nedc_results
+
+python evaluation/nedc_scoring/run_nedc.py \
+  --outdir experiments/dev/baseline/nedc_results --score-only
 ```

@@ -284,7 +284,8 @@ def extract_and_save_metrics(results_dir, metrics_file, backend="nedc-binary"):
         # Extract TAES metrics with robust regex
         taes_sens_match = re.search(r"Sensitivity \(TPR, Recall\):\s+([\d.]+)%", content)
         taes_fa_match = re.search(r"Total False Alarm Rate:\s+([\d.]+)\s+per 24 hours", content)
-        taes_f1_match = re.search(r"F1 Score:\s+([\d.]+)", content)
+        # Accept both "F1 Score:" and "F1 Score (F Ratio):"
+        taes_f1_match = re.search(r"F1 Score(?: \(F Ratio\))?:\s+([\d.]+)", content)
 
         if taes_sens_match:
             metrics["taes"]["sensitivity_percent"] = float(taes_sens_match.group(1))
