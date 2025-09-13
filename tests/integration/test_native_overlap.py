@@ -22,7 +22,6 @@ from seizure_evaluation.taes.overlap_scorer import Event, OverlapScorer  # noqa:
 class TestNativeOverlap:
     """Test native OVERLAP scorer conformance with Temple NEDC."""
 
-    @pytest.mark.skip(reason="BCKG segment counting differs from Temple on synthetic fixtures")
     def test_overlap_on_fixtures(self):
         """Run native OVERLAP on golden fixtures and compare with Temple NEDC."""
         fixture_path = Path(__file__).parent.parent / "fixtures" / "nedc"

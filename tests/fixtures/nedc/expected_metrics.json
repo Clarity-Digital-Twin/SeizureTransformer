@@ -1,6 +1,6 @@
 {
   "sensitivity": 100.0,
-  "fa_per_24h": 64.0,
-  "f1_score": 0.7143,
-  "note": "Temple OVERLAP Total FA Rate = SEIZ FP (2) + BCKG FP (2) = 4 total @ 64.0/24h"
+  "fa_per_24h": 32.0,
+  "f1_score": 0.8333,
+  "note": "Temple OVERLAP Total FA Rate = 2 SEIZ FA across 2 files @ 32.0/24h for 3600s total"
 }
