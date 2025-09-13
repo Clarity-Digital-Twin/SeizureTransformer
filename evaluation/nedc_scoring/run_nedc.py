@@ -107,19 +107,19 @@ def run_conversion(
     return 0
 
 
-def run_nedc_scorer(output_dir):
+def run_nedc_scorer(output_dir, backend="nedc-binary"):
     """
     Run NEDC official scorer on converted files.
 
     Args:
         output_dir: Directory containing NEDC files
-        scoring_method: Scoring method (TAES, OVLP, EPOCH, IRA)
+        backend: Scoring backend ("nedc-binary" or "native-taes")
 
     Returns:
         int: Return code (0 for success)
     """
     print("\n" + "=" * 70)
-    print("STEP 2: Running NEDC official scorer")
+    print(f"STEP 2: Running NEDC scorer (backend: {backend})")
     print("=" * 70)
 
     output_dir = Path(output_dir)
@@ -132,34 +132,44 @@ def run_nedc_scorer(output_dir):
         print("Error: List files not found. Run conversion first.")
         return 1
 
-    # Set up NEDC environment
-    env = setup_nedc_environment()
-
     # Create results directory
     results_dir = output_dir / "results"
     results_dir.mkdir(parents=True, exist_ok=True)
 
-    # Build NEDC command
-    nedc_binary = Path(env["NEDC_NFC"]) / "bin" / "nedc_eeg_eval"
+    if backend == "nedc-binary":
+        # Set up NEDC environment
+        env = setup_nedc_environment()
 
-    if not nedc_binary.exists():
-        print(f"Error: NEDC binary not found at {nedc_binary}")
+        # Build NEDC command
+        nedc_binary = Path(env["NEDC_NFC"]) / "bin" / "nedc_eeg_eval"
+
+        if not nedc_binary.exists():
+            print(f"Error: NEDC binary not found at {nedc_binary}")
+            return 1
+
+        cmd = [str(nedc_binary), str(ref_list), str(hyp_list), "-o", str(results_dir)]
+
+        print(f"Running: {' '.join(cmd)}")
+        print(f"Results will be saved to: {results_dir}")
+
+        # Run NEDC scorer
+        result = subprocess.run(cmd, env=env, capture_output=True, text=True)
+
+        if result.returncode != 0:
+            print("Error running NEDC scorer:")
+            print(result.stderr)
+            return result.returncode
+
+        print(result.stdout)
+    elif backend == "native-taes":
+        # Native Python TAES implementation (Phase 2)
+        print("Native TAES backend not yet implemented")
+        print("This will be implemented in Phase 2 of the NEDC integration")
         return 1
-
-    cmd = [str(nedc_binary), str(ref_list), str(hyp_list), "-o", str(results_dir)]
-
-    print(f"Running: {' '.join(cmd)}")
-    print(f"Results will be saved to: {results_dir}")
-
-    # Run NEDC scorer
-    result = subprocess.run(cmd, env=env, capture_output=True, text=True)
-
-    if result.returncode != 0:
-        print("Error running NEDC scorer:")
-        print(result.stderr)
-        return result.returncode
-
-    print(result.stdout)
+    else:
+        print(f"Error: Unknown backend '{backend}'")
+        print("Valid backends: nedc-binary, native-taes")
+        return 1
 
     # Parse and display key metrics
     parse_nedc_output(results_dir)
@@ -258,6 +268,7 @@ def run_full_pipeline(
     kernel: int | None = None,
     min_duration_sec: float | None = None,
     merge_gap_sec: float | None = None,
+    backend="nedc-binary",
 ):
     """
     Run the complete NEDC evaluation pipeline.
@@ -294,7 +305,7 @@ def run_full_pipeline(
         return ret
 
     # Step 2: Run NEDC scorer
-    ret = run_nedc_scorer(output_dir)
+    ret = run_nedc_scorer(output_dir, backend=backend)
     if ret != 0:
         print("NEDC scoring failed")
         return ret
@@ -356,6 +367,13 @@ Examples:
     parser.add_argument(
         "--score-only", action="store_true", help="Only run NEDC scoring (assumes conversion done)"
     )
+    parser.add_argument(
+        "--backend",
+        type=str,
+        default="nedc-binary",
+        choices=["nedc-binary", "native-taes"],
+        help="Scoring backend to use (default: nedc-binary)",
+    )
 
     args = parser.parse_args()
 
@@ -377,7 +395,7 @@ Examples:
             merge_gap_sec=args.merge_gap_sec,
         )
     elif args.score_only:
-        return run_nedc_scorer(args.outdir)
+        return run_nedc_scorer(args.outdir, backend=args.backend)
     else:
         return run_full_pipeline(
             checkpoint_file,
@@ -387,6 +405,7 @@ Examples:
             kernel=args.kernel,
             min_duration_sec=args.min_duration_sec,
             merge_gap_sec=args.merge_gap_sec,
+            backend=args.backend,
         )
 
 

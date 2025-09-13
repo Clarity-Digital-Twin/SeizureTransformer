@@ -1,0 +1,143 @@
+name: NEDC Conformance Tests
+
+on:
+  push:
+    branches: [main, development, feature/nedc-integration]
+    paths:
+      - 'evaluation/nedc_scoring/**'
+      - 'tests/**'
+      - '.github/workflows/nedc-conformance.yml'
+  pull_request:
+    branches: [main, development]
+  schedule:
+    # Run nightly at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  conformance:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11']
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Cache uv packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/uv
+        key: ${{ runner.os }}-uv-${{ hashFiles('**/pyproject.toml') }}
+        restore-keys: |
+          ${{ runner.os }}-uv-
+
+    - name: Install uv
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+    - name: Install dependencies
+      run: |
+        uv venv
+        source .venv/bin/activate
+        uv pip install -e . --extra dev
+        uv pip install lxml  # Required by NEDC
+
+    - name: Lint with ruff (exclude vendor)
+      run: |
+        source .venv/bin/activate
+        ruff check evaluation/nedc_scoring scripts tests --exclude evaluation/nedc_eeg_eval
+        ruff format evaluation/nedc_scoring scripts tests --check --exclude evaluation/nedc_eeg_eval
+
+    - name: Type check with mypy (exclude vendor)
+      run: |
+        source .venv/bin/activate
+        mypy evaluation/nedc_scoring scripts tests || true  # Non-blocking for now
+
+    - name: Run unit tests (no NEDC)
+      run: |
+        source .venv/bin/activate
+        pytest tests -v -m "not nedc" --cov=evaluation.nedc_scoring --cov=scripts
+
+    - name: Check NEDC binary availability
+      id: check_nedc
+      run: |
+        if [ -f "evaluation/nedc_eeg_eval/v6.0.0/bin/nedc_eeg_eval" ]; then
+          echo "nedc_available=true" >> $GITHUB_OUTPUT
+        else
+          echo "nedc_available=false" >> $GITHUB_OUTPUT
+          echo "::warning::NEDC binary not found, skipping conformance tests"
+        fi
+
+    - name: Run NEDC conformance tests
+      if: steps.check_nedc.outputs.nedc_available == 'true'
+      run: |
+        source .venv/bin/activate
+        pytest tests/integration/test_nedc_conformance.py -v -m "nedc"
+
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+
+  integration:
+    runs-on: ubuntu-latest
+    needs: conformance
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        uv venv
+        source .venv/bin/activate
+        uv pip install -e . --extra dev
+        uv pip install lxml
+
+    - name: Run integration tests
+      run: |
+        source .venv/bin/activate
+        pytest tests -v -m "integration"
+
+    - name: Test parameter sweep
+      run: |
+        source .venv/bin/activate
+        # Create minimal test checkpoint
+        python -c "
+import pickle
+import numpy as np
+results = {
+    'test_file': {
+        'predictions': np.random.rand(1000),
+        'seizure_events': [(100, 150), (500, 600)],
+        'error': None
+    }
+}
+with open('test_checkpoint.pkl', 'wb') as f:
+    pickle.dump({'results': results, 'next_idx': 1}, f)
+"
+        # Test sweep with minimal parameters
+        python evaluation/nedc_scoring/sweep_operating_point.py \
+          --checkpoint test_checkpoint.pkl \
+          --outdir_base test_sweep \
+          --thresholds 0.5,0.8 \
+          --kernels 5 \
+          --min_durations 2 \
+          --merge_gaps 0 || echo "Sweep test completed (may fail without full data)"

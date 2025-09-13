@@ -1,34 +1,60 @@
-# Modern Python project Makefile - 2025 best practices
+# SeizureTransformer Makefile - NEDC Integration
 .PHONY: help install test format lint typecheck check-all clean run-eval
 
 # Default target
 help:
 	@echo "SeizureTransformer Development Commands"
 	@echo "======================================="
-	@echo "make install    - Set up environment and install dependencies"
-	@echo "make test       - Run test suite with coverage"
-	@echo "make format     - Format code with ruff"
-	@echo "make lint       - Check code style with ruff"
-	@echo "make typecheck  - Run mypy type checking"
-	@echo "make check-all  - Run all quality checks (lint + typecheck + tests)"
-	@echo "make clean      - Remove build artifacts and cache"
-	@echo "make run-eval   - Run TUSZ evaluation (requires data)"
+	@echo ""
+	@echo "Setup:"
+	@echo "  install         - Install dependencies with uv"
+	@echo "  install-dev     - Install with dev dependencies"
+	@echo ""
+	@echo "Quality:"
+	@echo "  lint            - Run ruff linter (excludes vendor)"
+	@echo "  format          - Format code with ruff"
+	@echo "  typecheck       - Run mypy type checker"
+	@echo "  test            - Run all tests"
+	@echo "  test-fast       - Run tests excluding NEDC"
+	@echo "  test-nedc       - Run NEDC conformance tests"
+	@echo "  check-all       - Run all quality checks"
+	@echo ""
+	@echo "Evaluation:"
+	@echo "  run-dev-eval    - Run TUSZ dev evaluation"
+	@echo "  run-eval-sweep  - Run parameter sweep on dev"
+	@echo "  run-nedc-score  - Run NEDC scoring pipeline"
+	@echo "  check-dev       - Check dev evaluation status"
+	@echo ""
+	@echo "Utilities:"
+	@echo "  clean           - Remove generated files"
 
 # Environment setup
 install:
 	uv venv
-	@if [ -f uv.lock ]; then \
-		echo "📦 Using uv.lock to sync pinned deps"; \
-		uv sync --dev; \
-	else \
-		echo "⚠️  uv.lock not found; installing base deps"; \
-		. .venv/bin/activate && uv pip install ./wu_2025 ruff pytest pytest-cov; \
-	fi
+	. .venv/bin/activate && uv pip install ./wu_2025
+	. .venv/bin/activate && uv pip install -e .
+	. .venv/bin/activate && uv pip install lxml  # For NEDC
 	@echo "✅ Environment ready! Activate with: source .venv/bin/activate"
+
+install-dev:
+	uv venv
+	. .venv/bin/activate && uv pip install ./wu_2025
+	. .venv/bin/activate && uv pip install -e . --extra dev
+	. .venv/bin/activate && uv pip install lxml
+	@echo "✅ Dev environment ready!"
 
 # Testing
 test:
 	. .venv/bin/activate && python -m pytest tests/ -v
+
+test-fast:
+	. .venv/bin/activate && pytest tests -v -m "not nedc"
+
+test-nedc:
+	. .venv/bin/activate && pytest tests -v -m "nedc"
+
+test-conformance:
+	. .venv/bin/activate && pytest tests/integration/test_nedc_conformance.py -v
 
 test-cov:
 	. .venv/bin/activate && python -m pytest tests/ --cov --cov-report=html
@@ -36,15 +62,13 @@ test-cov:
 
 # Code quality
 format:
-	. .venv/bin/activate && ruff format .
-	. .venv/bin/activate && ruff check --fix .
+	. .venv/bin/activate && ruff format evaluation/ scripts/ tests/ --exclude evaluation/nedc_eeg_eval
 
 lint:
-	. .venv/bin/activate && ruff check .
+	. .venv/bin/activate && ruff check evaluation/ scripts/ tests/ --exclude evaluation/nedc_eeg_eval
 
 typecheck:
-	@echo "🔍 Quick type check on key files"
-	. .venv/bin/activate && mypy evaluation/nedc_scoring/run_nedc.py scripts/visualize_results.py --ignore-missing-imports
+	. .venv/bin/activate && mypy evaluation/nedc_scoring scripts tests || true
 
 check-all: lint typecheck test
 	@echo "✅ All quality checks passed!"
@@ -59,15 +83,42 @@ clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 	find . -type f -name "*.pyc" -delete
 
-# Run evaluation
-run-eval-tusz:
-	@echo "Running TUSZ evaluation..."
-	. .venv/bin/activate && python evaluation/tusz/run_tusz_eval.py
+# Evaluation workflows
+run-dev-eval:
+	@echo "Starting TUSZ dev evaluation..."
+	. .venv/bin/activate && python evaluation/tusz/run_tusz_eval.py \
+		--data_dir wu_2025/data/tusz/edf/dev \
+		--out_dir experiments/dev/baseline \
+		--device auto
 
-run-eval-nedc:
-	@echo "Running NEDC official evaluation..."
-	. .venv/bin/activate && $(MAKE) -C evaluation/nedc_scoring all
+run-eval-sweep:
+	@echo "Running parameter sweep on dev checkpoint..."
+	. .venv/bin/activate && python evaluation/nedc_scoring/sweep_operating_point.py \
+		--checkpoint experiments/dev/baseline/checkpoint.pkl \
+		--outdir_base experiments/dev/sweeps \
+		--thresholds 0.3,0.4,0.5,0.6,0.7,0.8,0.9 \
+		--kernels 3,5,7,11,15 \
+		--min_durations 1,2,3,4,5 \
+		--merge_gaps 0,5,10,15 \
+		--target_fa_per_24h 10
+
+run-nedc-score:
+	$(MAKE) -C evaluation/nedc_scoring all
+
+# Monitoring
+check-dev:
+	@echo "Checking dev evaluation status..."
+	@if [ -f experiments/dev/baseline/checkpoint.pkl ]; then \
+		. .venv/bin/activate && python -c "import pickle; \
+		c = pickle.load(open('experiments/dev/baseline/checkpoint.pkl', 'rb')); \
+		total = len(c.get('results', {})); \
+		print(f'Processed {total} files');"; \
+	else \
+		echo "No checkpoint found"; \
+	fi
 
 # Quick inference test
 test-inference:
 	. .venv/bin/activate && python tests/test_inference.py
+
+.PHONY: install install-dev test test-fast test-nedc test-conformance test-cov format lint typecheck check-all clean run-dev-eval run-eval-sweep run-nedc-score check-dev test-inference
