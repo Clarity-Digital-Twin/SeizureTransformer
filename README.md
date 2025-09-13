@@ -128,7 +128,7 @@ AUROC:           0.9021
 - [Validation Report](docs/evaluation/TESTING_AND_VALIDATION.md) - Reproducibility & validation
 
 ### Technical Documentation
-- [Operating Point Tuning](OPERATING_POINT_TUNING_PLAN.md) - Clinical threshold optimization
+- [Operating Point Tuning](SEIZURE_TRANSFORMER_TUNING_PLAN.md) - Clinical threshold optimization
 - [Dataflow Verification](SEIZURE_TRANSFORMER_DATAFLOW_TRACE.md) - Complete pipeline trace
 - [NEDC Integration](NEDC_INTEGRATION_PLAN.md) - NEDC pipeline setup
 - [Architecture Guide](docs/technical/IDEAL_REFERENCE_SEIZURE_TRANSFORMER_DATAFLOW.md) - Model dataflow

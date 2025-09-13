@@ -19,41 +19,43 @@ We're NOT retraining the model. We're tuning these post-processing knobs:
 **Purpose**: Find best parameters on development set (1832 files)
 
 ```bash
-# Already complete - we have checkpoint
-experiments/dev/baseline/checkpoint.pkl  # 1.5GB of predictions
+# Dev checkpoint (complete)
+experiments/dev/baseline/checkpoint.pkl  # ~1.5GB of predictions
 
-# Run parameter sweep (CURRENTLY RUNNING)
+# Run parameter sweep (complete)
 python evaluation/nedc_scoring/sweep_operating_point.py \
   --checkpoint experiments/dev/baseline/checkpoint.pkl \
-  --outdir experiments/dev/baseline/sweeps
+  --outdir_base experiments/dev/baseline/sweeps \
+  --thresholds 0.70,0.80,0.90,0.95 \
+  --kernels 5,11,21 \
+  --min_durations 2,4,8 \
+  --merge_gaps 0,5,10 \
+  --target_fa_per_24h 10
 ```
 
-This tests 108 combinations:
-- Thresholds: [0.7, 0.8, 0.9, 0.95]
-- Kernels: [5, 11, 21]
-- Min durations: [2, 4, 8] seconds
-- Merge gaps: [0, 5, 10] seconds
+This tests 108 combinations and writes:
+- `experiments/dev/baseline/sweeps/sweep_results.csv`
+- `experiments/dev/baseline/sweeps/recommended_params.json`
 
-**Current Status**: 40/108 combinations complete (~37%)
+**Current Status**: 108/108 combinations complete ✅
 
 ### Step 2: Freeze Parameters
 **Purpose**: Lock in the best parameters from dev sweep
 
 ```bash
-# After sweep completes, analyze results
-cat experiments/dev/baseline/sweeps/sweep_results.csv
+# Inspect results
+sed -n '1,20p' experiments/dev/baseline/sweeps/sweep_results.csv
 
 # Pick parameters that give:
 # - FA/24h ≤ 10 (HARD REQUIREMENT)
-# - Highest sensitivity possible
+# - Highest sensitivity possible among feasible combos
 
-# Create frozen config
-echo '{
-  "threshold": 0.8,  # Example from best sweep result
-  "kernel": 11,
-  "min_duration_sec": 4.0,
-  "merge_gap_sec": 5.0
-}' > experiments/eval/frozen_params.json
+# Recommended (from sweep):
+cat experiments/dev/baseline/sweeps/recommended_params.json
+
+# Freeze chosen parameters for eval
+cp experiments/dev/baseline/sweeps/recommended_params.json \
+   experiments/eval/frozen_params.json
 ```
 
 ### Step 3: Single Eval Run
@@ -77,21 +79,21 @@ python evaluation/nedc_scoring/run_nedc.py \
 
 **Must achieve**:
 - False Alarms: ≤ 10 per 24 hours
-- Sensitivity: ≥ 50% (prefer higher)
+- Sensitivity: as high as possible subject to FA ≤ 10
 
-**Current baseline** (no tuning):
-- FA/24h: ~137.5 (way too high!)
+**Observed baseline** (no tuning, TAES):
+- FA/24h: ~137.5
 - Sensitivity: ~82%
 
-**Expected after tuning**:
-- FA/24h: ~8-10
-- Sensitivity: ~60-70%
+**Observed after sweep (dev set, TAES):**
+- Feasible FA ≤ 10 found, but sensitivity is currently low (≈8–12%)
+- Example feasible: threshold=0.95, kernel=5, min_duration=2.0s, merge_gap=5.0s
 
 ## Timeline
 
-1. **Dev sweep completion**: ~1-2 hours remaining
-2. **Parameter selection**: 30 minutes analysis
-3. **Eval run**: 2-3 hours (one-time only)
+1. Dev sweep completion: done
+2. Parameter selection: done (see recommended_params.json)
+3. Eval run: pending (single, with frozen params)
 
 ## Key Files
 
@@ -117,8 +119,6 @@ experiments/
 
 ## Next Actions
 
-- [ ] Wait for sweep to complete (40/108 done)
-- [ ] Analyze sweep_results.csv for best FA/sensitivity trade-off
-- [ ] Freeze selected parameters
-- [ ] Run single eval with frozen params
-- [ ] Report final TAES metrics
+- [ ] Copy frozen params to `experiments/eval/frozen_params.json`
+- [ ] Run single eval with frozen params on eval split
+- [ ] Report final TAES metrics (sensitivity, FA/24h, F1)

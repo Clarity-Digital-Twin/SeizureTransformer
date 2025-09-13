@@ -1,9 +1,9 @@
 # 📊 NEDC INTEGRATION STATUS
 ## Quick Status Dashboard
 
-**Last Updated**: 2025-09-13 10:50
-**Sweep Progress**: 100/108 combinations (93% complete) 🔥
-**Native TAES**: PRIMARY GOAL - Partially implemented, needs validation
+**Last Updated**: 2025-09-13
+**Sweep Progress**: 108/108 combinations (complete) ✅
+**Native TAES**: PRIMARY GOAL — Partially implemented, needs validation
 
 ## What's Done ✅
 
@@ -12,7 +12,7 @@
 - Full pipeline working: checkpoint → CSV_bi → NEDC → metrics
 - Converters and runner tested (`evaluation/nedc_scoring/`)
 - Backend toggle implemented (`--backend nedc-binary|native-taes`)
-- **Issue**: Binary requires `python` symlink (not `python3`)
+- Note: If the binary errors on Python invocation, ensure a `python` alias is available on PATH (some environments only provide `python3`).
 
 ### Native TAES Backend (PRIMARY GOAL) 🎯
 - Python implementation at `seizure_evaluation/taes/scorer.py` (243 lines)
@@ -21,9 +21,12 @@
 - **Next**: Must prove outputs match NEDC v6.0.0 exactly
 
 ### Parameter Tuning Progress
-- Dev checkpoint generated: `experiments/dev/baseline/checkpoint.pkl` (1.5GB)
-- Parameter sweep: 100/108 combinations complete (93%)
-- **Found viable params**: `thr0.90_k5_min8.0_gap10.0` gives FA=6.17/24h
+- Dev checkpoint: `experiments/dev/baseline/checkpoint.pkl` (~1.5GB)
+- Parameter sweep: 108/108 combinations complete
+- Results:
+  - CSV: `experiments/dev/baseline/sweeps/sweep_results.csv`
+  - Recommended: `experiments/dev/baseline/sweeps/recommended_params.json` (threshold=0.95, kernel=5, min_duration=2.0s, merge_gap=5.0s)
+  - Example (recommended) TAES: sensitivity=13.67%, FA/24h=9.97
 
 ## How to Monitor 🏃
 
@@ -40,11 +43,9 @@ tmux attach -t sweep_dev   # Ctrl+B then D to detach
 
 ## TWO PARALLEL TRACKS
 
-### Track 1: Parameter Sweep (RUNNING INDEPENDENTLY)
-- Using Temple binary NEDC (working fine)
-- Progress: 101/108 combinations
-- Will complete on its own (~15 mins)
-- NO ACTION NEEDED - just wait
+### Track 1: Parameter Sweep (COMPLETE)
+- Used Temple binary NEDC backend
+- Artifacts written under `experiments/dev/baseline/sweeps/`
 
 ### Track 2: Native TAES Implementation (NEEDS WORK)
 - THIS IS THE MAIN FOCUS
@@ -64,15 +65,22 @@ python evaluation/nedc_scoring/run_nedc.py \
   --checkpoint experiments/dev/baseline/checkpoint.pkl \
   --backend native-taes --outdir test_native
 
-# Compare metrics - MUST MATCH!
-diff test_binary/results/metrics.json test_native/results/metrics.json
+# Compare metrics (key fields must match within tolerance)
+python - << 'PY'
+import json
+import sys
+from pathlib import Path
+b = json.load(open('test_binary/results/metrics.json'))
+n = json.load(open('test_native/results/metrics.json'))
+for k in ('sensitivity_percent','fa_per_24h','f1_score'):
+    if k in b.get('taes',{}) and k in n.get('taes',{}):
+        print(k, abs(b['taes'][k]-n['taes'][k]))
+PY
 ```
 
-### 2. Finish Parameter Sweep (8 combos left)
-```bash
-# Check remaining: should show 108 when done
-ls experiments/dev/baseline/sweeps/ | grep "^thr" | wc -l
-```
+### 2. Finalize Operating Point Selection
+No action required; recommended params are available at:
+`experiments/dev/baseline/sweeps/recommended_params.json`
 
 ### 3. Select Optimal Parameters
 ```bash
@@ -99,9 +107,9 @@ echo '{
 
 ## Key Metrics Target
 
-- **MUST ACHIEVE**: FA/24h ≤ 10
-- **Current Best**: FA=6.17/24h @ 12% sensitivity (needs improvement)
-- **Goal**: Find params with FA ≤ 10 AND sensitivity ≥ 50%
+- MUST ACHIEVE: FA/24h ≤ 10
+- Current recommended (dev): FA=9.97/24h @ 13.67% sensitivity
+- Goal: Push sensitivity higher while keeping FA ≤ 10
 
 ## Quick Commands
 

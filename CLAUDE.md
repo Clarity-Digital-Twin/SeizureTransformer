@@ -96,7 +96,7 @@ The TUSZ evaluation pipeline (`evaluation/tusz/run_tusz_eval.py`) processes 865 
 
 - `SEIZURE_TRANSFORMER_TUNING_PLAN.md` - How to tune post-processing parameters on dev set
 - `NEDC_INTEGRATION_PLAN.md` - How to integrate NEDC scoring backend
-- `docs/IDEAL_REFERENCE_SEIZURE_TRANSFORMER_DATAFLOW.md` - Architecture documentation
+- `docs/technical/IDEAL_REFERENCE_SEIZURE_TRANSFORMER_DATAFLOW.md` - Architecture documentation
 - `evaluation/nedc_eeg_eval/v6.0.0/` - NEDC binaries (do not modify)
 - `wu_2025/src/wu_2025/model.pth` - Pretrained weights (do not modify)
 
