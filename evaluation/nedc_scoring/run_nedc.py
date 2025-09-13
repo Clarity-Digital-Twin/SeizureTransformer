@@ -173,10 +173,59 @@ def run_nedc_scorer(
 
         print(result.stdout)
     elif backend == "native-taes":
-        # Native Python TAES implementation (Phase 2)
-        print("Native TAES backend not yet implemented")
-        print("This will be implemented in Phase 2 of the NEDC integration")
-        return 1
+        # Native Python TAES implementation
+        import sys
+        sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+        from seizure_evaluation.taes.scorer import TAESScorer
+
+        print("Running native Python TAES scorer...")
+
+        # Initialize scorer
+        scorer = TAESScorer(overlap_threshold=0.5)
+
+        # Process each file pair
+        total_metrics = {
+            "true_positives": 0,
+            "false_positives": 0,
+            "false_negatives": 0,
+            "total_duration": 0.0
+        }
+
+        # Read list files to get CSV_bi paths
+        with open(ref_list) as f:
+            ref_files = [Path(line.strip()) for line in f if line.strip()]
+        with open(hyp_list) as f:
+            hyp_files = [Path(line.strip()) for line in f if line.strip()]
+
+        # Score each file pair
+        for ref_csv, hyp_csv in zip(ref_files, hyp_files):
+            if ref_csv.stem == hyp_csv.stem:
+                metrics = scorer.score_from_files(ref_csv, hyp_csv)
+                total_metrics["true_positives"] += metrics.true_positives
+                total_metrics["false_positives"] += metrics.false_positives
+                total_metrics["false_negatives"] += metrics.false_negatives
+                total_metrics["total_duration"] += metrics.total_duration_sec
+
+        # Write summary file for compatibility
+        summary_file = results_dir / "summary.txt"
+        with open(summary_file, "w") as f:
+            # Calculate aggregate metrics
+            tp = total_metrics["true_positives"]
+            fp = total_metrics["false_positives"]
+            fn = total_metrics["false_negatives"]
+            duration = total_metrics["total_duration"]
+
+            sensitivity = 100.0 * tp / (tp + fn) if (tp + fn) > 0 else 0.0
+            fa_per_24h = fp * 86400.0 / duration if duration > 0 else 0.0
+            precision = 100.0 * tp / (tp + fp) if (tp + fp) > 0 else 0.0
+            f1 = 2 * precision * sensitivity / (precision + sensitivity) if (precision + sensitivity) > 0 else 0.0
+
+            f.write("=== NATIVE TAES SCORING RESULTS ===\n\n")
+            f.write(f"Sensitivity (TPR, Recall): {sensitivity:.2f}%\n")
+            f.write(f"Total False Alarm Rate: {fa_per_24h:.2f} per 24 hours\n")
+            f.write(f"F1 Score: {f1/100:.3f}\n")
+
+        print(f"Native TAES scoring complete. Results in {summary_file}")
     else:
         print(f"Error: Unknown backend '{backend}'")
         print("Valid backends: nedc-binary, native-taes")
