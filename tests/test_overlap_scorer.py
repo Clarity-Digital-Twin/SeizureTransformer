@@ -72,9 +72,11 @@ class TestOverlapScorer:
         metrics = scorer.score_events(ref_events, hyp_events, 86400.0)  # 24 hours
 
         assert metrics.false_alarms == 1  # SEIZ FA
-        # Timeline partitioning: segment 30-40 is ref BCKG but has hyp activity = 1 BCKG FA
-        assert metrics.bckg_false_alarms == 1  # BCKG FA
-        assert metrics.total_fa_per_24h == 2.0  # 2 FA total in 24h
+        # Under Temple OVERLAP, BCKG FAs are hyp background events that
+        # do not overlap ref background (i.e., background predicted during ref SEIZ).
+        # In this scenario, hyp has no BCKG FA.
+        assert metrics.bckg_false_alarms == 0
+        assert metrics.total_fa_per_24h == 1.0  # 1 total FA in 24h
 
     def test_sensitivity_calculation(self):
         """Test sensitivity percentage calculation."""

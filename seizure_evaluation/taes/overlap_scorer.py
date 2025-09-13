@@ -125,36 +125,22 @@ class OverlapScorer:
         misses = len(ref_events) - hits  # Refs with no overlap
         false_alarms = len(hyp_events) - sum(hyp_has_overlap)  # Hyps with no overlap
 
-        # Temple's BCKG label: timeline segmentation approach
-        # Build partition from all event boundaries
-        partition_points = {0.0, total_duration_sec}
-        for ev in ref_events + hyp_events:
-            partition_points.add(ev.start_time)
-            partition_points.add(ev.stop_time)
-        partition = sorted(partition_points)
+        # Temple OVERLAP per-label false alarms:
+        # Compute false alarms for the BCKG label by constructing
+        # background event lists for ref and hyp, then applying the
+        # same any-overlap logic at the event level.
+        ref_bckg = self._complement_of_events(ref_events, total_duration_sec)
+        hyp_bckg = self._complement_of_events(hyp_events, total_duration_sec)
 
-        # Count BCKG false alarms per segment
         bckg_false_alarms = 0
-        for i in range(len(partition) - 1):
-            seg_start = partition[i]
-            seg_stop = partition[i + 1]
-            if seg_stop <= seg_start:
-                continue
-
-            # Check if segment is background in ref (no SEIZ overlap)
-            ref_is_bckg = not any(
-                ev.start_time < seg_stop and seg_start < ev.stop_time
-                for ev in ref_events
-            )
-
-            # Check if segment has hyp activity but is ref background
-            if ref_is_bckg:
-                hyp_has_activity = any(
-                    ev.start_time < seg_stop and seg_start < ev.stop_time
-                    for ev in hyp_events
-                )
-                if hyp_has_activity:
-                    bckg_false_alarms += 1
+        for hb in hyp_bckg:
+            # if this hyp background event does NOT overlap any ref background
+            # event, it is a BCKG false alarm under Temple OVERLAP
+            if not any(
+                (hb.start_time < rb.stop_time and rb.start_time < hb.stop_time)
+                for rb in ref_bckg
+            ):
+                bckg_false_alarms += 1
 
         return OverlapMetrics(
             hits=hits,
