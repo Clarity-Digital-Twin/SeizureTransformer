@@ -131,6 +131,13 @@ experiments/
 - For 1 FA/24h: Expect sensitivity to drop to ~5-10%
 - Need much higher threshold (0.98-0.99) and longer min_duration (8-16s)
 
+**ACHIEVED (2025-09-13)**:
+- **Parameters**: threshold=0.99, kernel=21, min_duration=16s, merge_gap=10s
+- **Dev performance**: 0.65% sensitivity @ 0.22 FA/24h (misses 99.35% of seizures!)
+- **Eval performance**: 1.28% sensitivity @ 0.38 FA/24h (misses 98.72% of seizures!)
+- **Result**: Successfully achieved << 1 FA/24h but at MASSIVE sensitivity cost
+- **Clinical reality**: This operating point is useless - it misses >98% of seizures!
+
 **Sweep strategy**:
 ```bash
 # Fine-grained sweep for 1 FA/24h target

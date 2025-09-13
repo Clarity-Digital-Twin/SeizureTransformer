@@ -88,7 +88,9 @@
       "Bash(if [ -f \"$dir/results/metrics.json\" ])",
       "Bash(then jq '.taes' \"$dir/results/metrics.json\")",
       "Bash(fi)",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(do)",
+      "Bash(then)"
     ],
     "deny": [],
     "ask": []

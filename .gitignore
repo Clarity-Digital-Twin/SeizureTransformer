@@ -34,11 +34,13 @@ experiments/eval/baseline/nedc_results_frozen_native/
 experiments/eval/baseline/nedc_results_frozen_temple/
 experiments/eval/baseline/test_1fa/
 experiments/eval/baseline/sweeps_1fa/
+experiments/dev/baseline/test_1fa/
+experiments/dev/baseline/sweeps_1fa/
 # Specific NEDC output directories (not broadly ignoring)
-experiments/eval/baseline/*/hyp/
-experiments/eval/baseline/*/ref/
-experiments/eval/baseline/*/lists/
-experiments/eval/baseline/*/results/summary*.txt
+experiments/*/baseline/*/hyp/
+experiments/*/baseline/*/ref/
+experiments/*/baseline/*/lists/
+experiments/*/baseline/*/results/summary*.txt
 
 # Dataset files (potentially large/sensitive)
 *.edf
