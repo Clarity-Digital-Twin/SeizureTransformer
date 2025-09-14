@@ -99,7 +99,7 @@
 ### Prerequisites
 - Python 3.10+, CUDA GPU (recommended), 32GB RAM
 - TUSZ v2.0.3 dataset (requires Temple University data use agreement, see below)
-- SeizureTransformer pretrained weights (168MB, [download here](https://drive.google.com/file/d/1EYQ44S-rO0TrVsf7aBM2-VE-EuedvS1E/view?usp=sharing))
+- SeizureTransformer pretrained weights (168MB, see [official repo](https://github.com/keruiwu/SeizureTransformer) for download link)
 
 ### Installation
 ```bash
@@ -107,8 +107,8 @@ git clone https://github.com/Clarity-Digital-Twin/SeizureTransformer
 cd SeizureTransformer
 
 # 1. Download the pretrained model weights (required):
-#    - Download model.pth from: https://drive.google.com/file/d/1EYQ44S-rO0TrVsf7aBM2-VE-EuedvS1E/view
-#    - Place it at: wu_2025/src/wu_2025/model.pth
+#    - Get the download link from: https://github.com/keruiwu/SeizureTransformer
+#    - Download model.pth and place it at: wu_2025/src/wu_2025/model.pth
 
 # 2. Download TUSZ v2.0.3 dataset (see "Obtaining TUSZ Dataset" section below)
 #    - Place the data at: wu_2025/data/tusz/v2.0.3/
@@ -289,7 +289,7 @@ SeizureTransformer/
 
 ## Acknowledgments
 
-- Kerui Wu and collaborators for the [SeizureTransformer model](https://github.com/keruiwu/SeizureTransformer) and [pretrained weights](https://drive.google.com/file/d/1EYQ44S-rO0TrVsf7aBM2-VE-EuedvS1E/view?usp=sharing).
+- Kerui Wu and collaborators for the [SeizureTransformer model and pretrained weights](https://github.com/keruiwu/SeizureTransformer).
 - Temple University’s NEDC for the dataset and scoring tools.
 - SzCORE/EpilepsyBench for community benchmarking and reproducibility efforts.
 
