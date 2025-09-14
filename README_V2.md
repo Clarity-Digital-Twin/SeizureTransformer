@@ -1,235 +1,133 @@
-# SeizureTransformer: First Complete NEDC v6.0.0 Evaluation with Clinical Operating Point Tuning
+# SeizureTransformer: TUSZ Evaluation with NEDC v6.0.0 and Clinical Operating-Point Tuning
 
-[![#1 on EpilepsyBench](https://img.shields.io/badge/EpilepsyBench-%231%20Low%20FA-gold.svg)](https://epilepsybench.com)
-[![NEDC v6.0.0](https://img.shields.io/badge/NEDC-v6.0.0%20Pioneer-brightgreen.svg)](https://www.isip.piconepress.com/projects/nedc/)
+[![EpilepsyBench 2025](https://img.shields.io/badge/EpilepsyBench-2025%20Winner%20(Dianalund)-gold.svg)](https://www.epfl.ch/labs/esl/research/systems-for-biomedicals/seizure-detection-challenge-2025/)
+[![NEDC v6.0.0](https://img.shields.io/badge/NEDC-v6.0.0-brightgreen.svg)](https://www.isip.piconepress.com/projects/nedc/)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## 🏆 What Makes This Groundbreaking
+## What This Repository Provides
 
-**We are the FIRST to:**
-1. **Faithfully implement SeizureTransformer** (#1 on EpilepsyBench for low false alarms) with complete TUSZ evaluation
-2. **Integrate NEDC v6.0.0** (Temple's official scorer, just released) for reproducible benchmarking
-3. **Systematically tune post-processing parameters** on TUSZ dev set (never done before!)
-4. **Provide complete operating point curves** showing sensitivity at any FA/24h target
-5. **Document the full parameter sweep** from 1 FA/24h to 150 FA/24h with exact thresholds
+- Faithful SeizureTransformer evaluation on TUSZ v2.0.3 using official NEDC v6.0.0 scoring.
+- Stock results (paper-like defaults) and clinically tuned operating points.
+- Transparent, reproducible pipeline with checkpoints, scripts, and documentation.
+- Official NEDC binaries kept unmodified in `evaluation/nedc_eeg_eval/v6.0.0`; maintained wrappers/tools in `evaluation/nedc_scoring` for conversion and orchestration.
 
-## 📊 The Real Story: From Paper Claims to Clinical Reality
+## Why TUSZ Isn’t Shown on EpilepsyBench (and Why It Should Be)
 
-### What the Paper Claims vs What We Found
+- SzCORE marks datasets used for training with a locomotive icon and often omits same-dataset results.
+- TUSZ provides strict patient-disjoint train/dev/eval splits; evaluating on eval after tuning on dev is standard ML practice with no leakage.
+- The community needs these numbers: performance differs markedly between Dianalund (challenge) and TUSZ (clinical standard). Showing TUSZ results is informative and valid.
 
-| Metric | Paper Claim | Reality Check | The Truth |
-|--------|------------|---------------|-----------|
-| **Dataset** | "Low FA on Dianalund" | TUSZ v2.0.3 (Standard) | Different dataset entirely |
-| **False Alarms** | "1 per day" | **137.5 per day** | 137x higher on TUSZ |
-| **Training** | "TUH train + Siena" | Eval on TUSZ eval | Zero-shot generalization |
-| **Scoring** | Event-based | NEDC v6.0.0 TAES | Stricter clinical standard |
-| **Parameters** | Not disclosed | We swept all | First systematic tuning |
+## TUSZ v2.0.3 Splits
 
-### Why This Matters
+<details>
+<summary>Split sizes and usage</summary>
 
-The original SeizureTransformer paper:
-- ✅ Achieved **#1 ranking on EpilepsyBench** for low false alarms
-- ✅ Showed impressive AUROC (0.876 paper, **0.9021 our eval**)
-- ❌ BUT never evaluated with NEDC v6.0.0
-- ❌ Never published operating points for different FA targets
-- ❌ Never tuned on TUSZ dev set
+- Train: ~1,557 files (model trained per paper on TUH train + Siena)
+- Dev:   ~1,013 files (we tune post-processing here)
+- Eval:    865 files (we report held-out results here; 864 processed)
+- No patient overlap between splits by design (avoids leakage)
 
-**We filled these critical gaps.**
+</details>
 
-## 🚀 What We Actually Built (Industry First!)
+## Results at a Glance
 
-### 1. Complete NEDC v6.0.0 Integration
-- **First ever** implementation using Temple's just-released v6.0.0 binaries
-- Full OVERLAP and DP ALIGNMENT scoring
-- Exact Temple-compliant CSV_bi format generation
-- 100% reproducible TAES metrics
+- AUROC: 0.9021 (sample-level discrimination on TUSZ eval)
+- NEDC TAES (official):
+  - Sensitivity: 24.15% (113/469)
+  - Precision: 43.98%
+  - F1: 31.19%
+  - False alarms: 137.5 per 24h
 
-### 2. Systematic Parameter Tuning Framework
-```python
-# Never done before for SeizureTransformer!
-Operating Points Discovered:
-- 1 FA/24h:   threshold=0.999, sensitivity=0.43%
-- 5 FA/24h:   threshold=0.982, sensitivity=5.13%
-- 10 FA/24h:  threshold=0.965, sensitivity=9.87%
-- 30 FA/24h:  threshold=0.925, sensitivity=18.65%
-- 50 FA/24h:  threshold=0.895, sensitivity=22.34%
-- 100 FA/24h: threshold=0.835, sensitivity=24.02%
-- 137.5 FA/24h: threshold=0.800, sensitivity=24.15% (paper default)
-```
+### Operating Points (tuned on TUSZ dev, validated on eval)
 
-### 3. Complete Evaluation Pipeline
-- **865 TUSZ files** processed (127.6 hours)
-- **469 seizure events** evaluated
-- **GPU-accelerated** inference pipeline
-- **Full parameter sweep** on dev set
-- **Comprehensive metrics** at every operating point
+- 1 FA/24h → threshold ≈ 0.999 → sens ≈ 0.43%
+- 5 FA/24h → threshold ≈ 0.982 → sens ≈ 5.13%
+- 10 FA/24h → threshold ≈ 0.965 → sens ≈ 9.87% (typical clinical target)
+- 30 FA/24h → threshold ≈ 0.925 → sens ≈ 18.65%
+- 50 FA/24h → threshold ≈ 0.895 → sens ≈ 22.34%
+- 100 FA/24h → threshold ≈ 0.835 → sens ≈ 24.02%
+- 137.5 FA/24h → threshold = 0.800 → sens = 24.15% (paper-like default)
 
-## 📁 Repository Structure
+These illustrate the sensitivity/false-alarm trade-off using official TAES scoring.
 
-```
-.
-├── wu_2025/                    # Original SeizureTransformer code (untouched)
-│   └── src/wu_2025/model.pth   # Pretrained weights (168MB)
-├── evaluation/                  # Our evaluation framework
-│   ├── tusz/                   # TUSZ dataset evaluation
-│   ├── nedc_scoring/           # NEDC format conversion & scoring
-│   └── nedc_eeg_eval/v6.0.0/   # Official NEDC binaries
-├── scripts/                     # Utility scripts
-├── tests/                      # Test suite
-├── docs/                       # Technical documentation
-└── literature/                 # Papers (gitignored)
-```
+## Reproducing the Evaluation
 
-## 🚀 Quick Start
+Prerequisites
+- Python 3.10+, CUDA GPU recommended, TUSZ v2.0.3.
 
-### Prerequisites
-
-- Python 3.10+
-- CUDA-capable GPU (recommended)
-- 32GB RAM
-- TUSZ v2.0.3 dataset (127.6 hours)
-
-### Installation
-
+Setup
 ```bash
-# Clone repository
-git clone https://github.com/Clarity-Digital-Twin/SeizureTransformer
-cd SeizureTransformer
-
-  # Setup environment
-  python -m venv .venv
-  source .venv/bin/activate
-  
-  # Install the original model package (includes core deps)
-  pip install ./wu_2025
-  
-  # Install additional runtime tools used by the evaluation
-  pip install tqdm scikit-learn
-
-  # Install PyTorch matching your CUDA/CPU environment
-  # See: https://pytorch.org/get-started/locally/
-  # Example (CPU): pip install torch --index-url https://download.pytorch.org/whl/cpu
+make install && source .venv/bin/activate
 ```
 
-### Run Complete Evaluation
-
+Run TUSZ eval (held-out)
 ```bash
-# 1. Run TUSZ evaluation (GPU recommended)
 python evaluation/tusz/run_tusz_eval.py \
-    --data_dir /path/to/TUSZ/v2.0.3/eval \
-    --out_dir experiments/eval/baseline \
-    --device auto
+  --data_dir /path/to/TUSZ/v2.0.3/eval \
+  --out_dir experiments/eval/baseline \
+  --device auto
+```
 
-# 2. Convert predictions to NEDC format and score
-cd evaluation/nedc_scoring
-make all CHECKPOINT=../../experiments/eval/baseline/checkpoint.pkl OUTDIR=../../experiments/eval/baseline/nedc_results
+Score with official NEDC v6.0.0
+```bash
+make -C evaluation/nedc_scoring all \
+  CHECKPOINT=../../experiments/eval/baseline/checkpoint.pkl \
+  OUTDIR=../../experiments/eval/baseline/nedc_results
+```
 
-# 3. Optional: Tune operating point (requires dev split)
+Sweep/tune operating point (requires dev split)
+```bash
 python evaluation/nedc_scoring/sweep_operating_point.py \
-    --checkpoint experiments/dev/baseline/checkpoint.pkl \
-    --outdir_base experiments/dev/sweeps/fa10 \
-    --target_fa_per_24h 10
+  --checkpoint experiments/dev/baseline/checkpoint.pkl \
+  --outdir_base experiments/dev/sweeps/fa10 \
+  --target_fa_per_24h 10
 ```
 
-## 📊 Results Summary
+## Notes on NEDC Integration
 
-### NEDC TAES Scoring (Official Temple University Metrics)
+- Official Temple binaries live under `evaluation/nedc_eeg_eval/v6.0.0/` and are not modified.
+- Our `evaluation/nedc_scoring/` tools convert predictions to Temple’s CSV_bi format and invoke the official scorer.
+- We also include parity checks and documentation to show equivalence with Temple outputs.
 
-```
-Sensitivity:     24.15% (113/469 seizures detected)
-Precision:       43.98% 
-F1 Score:        31.19%
-False Alarms:    137.5 per 24 hours
-AUROC:           0.9021
-```
+## Repository Structure (abridged)
 
-### Clinical Implications
+- `wu_2025/` — Original SeizureTransformer (untouched)
+- `evaluation/` — TUSZ evaluation and NEDC scoring tools
+- `experiments/` — Run outputs and sweeps
+- `tests/` — Fast pytest suite
+- `docs/` — Technical docs and evaluation reports
 
-- **Good discrimination** (AUROC > 0.9) at sample level
-- **Poor clinical performance** due to:
-  - Low seizure detection rate (missing 76% of seizures)
-  - Excessive false alarms (14x above clinical threshold)
-- **137x discrepancy** between paper's "1 FA/day" claim and TUSZ reality
-
-## 📚 Documentation
-
-### Core Documents
-- [README.md](README.md) - This file, project overview
-- [ACKNOWLEDGMENTS.md](ACKNOWLEDGMENTS.md) - Credits and citations
-- [CLAUDE.md](CLAUDE.md) - AI assistant guidance (for contributors)
-- [CITATION.cff](CITATION.cff) - Structured citation metadata
-
-### Evaluation Results
-- [Complete Results](docs/evaluation/EVALUATION_RESULTS.md) - Full evaluation with analysis
-- [Validation Report](docs/evaluation/TESTING_AND_VALIDATION.md) - Reproducibility & validation
-
-### Technical Documentation
-- [Operating Point Tuning](SEIZURE_TRANSFORMER_TUNING_PLAN.md) - Clinical threshold optimization
-- [Dataflow Verification](SEIZURE_TRANSFORMER_DATAFLOW_TRACE.md) - Complete pipeline trace
-- [NEDC Integration](NEDC_INTEGRATION_PLAN.md) - NEDC pipeline setup
-- [Architecture Guide](docs/technical/IDEAL_REFERENCE_SEIZURE_TRANSFORMER_DATAFLOW.md) - Model dataflow
-- [NEDC Understanding](docs/technical/NEDC_EVALUATION_UNDERSTANDING.md) - Scoring metrics explained
-- [Temple Divergence Analysis](docs/TEMPLE_DIVERGENCE_ANALYSIS.md) - Native vs Temple NEDC edge cases
-- [Repository Structure](docs/technical/REPO_STRUCTURE_PLAN.md) - Project organization
-- [Third-Party Notices](THIRD_PARTY_NOTICES.md) - Licenses and attributions
-
-### Benchmark Submissions
-- [Epilepsy Bench Submission](docs/submissions/EPILEPSY_BENCH_SUBMISSION.md) - SzCORE format
-- [Policy Clarification Request](docs/submissions/NOTE_TO_EPILEPSY_BENCH.md) - TUH reporting policy
-
-## 🔬 Technical Details
-
-### Model Architecture
-- **Type**: U-Net encoder + Transformer decoder
-- **Input**: 19-channel EEG, 60-second windows
-- **Output**: Per-sample seizure probability at 256 Hz
-
-### Preprocessing Pipeline
-1. Z-score normalization (per channel)
-2. Resample to 256 Hz
-3. Bandpass filter: 0.5-120 Hz
-4. Notch filter: 60 Hz
-
-### Post-processing (Default Parameters)
-- Probability threshold: 0.8
-- Morphological operations (kernel=5)
-- Minimum event duration: 2.0 seconds
-- *See [Operating Point Tuning](SEIZURE_TRANSFORMER_TUNING_PLAN.md) for optimization*
-
-### Evaluation Protocol
-- **Dataset**: TUSZ v2.0.3 eval split
-- **Files**: 864/865 processed
-- **Duration**: 127.6 hours
-- **Seizures**: 469 events
-- **Scorer**: NEDC v6.0.0 TAES
-
-## 🤝 Contributing
-
-We encourage contributions to improve seizure detection evaluation:
-
-1. Fork the repository
-2. Create a feature branch
-3. Run tests: `pytest tests/`
-4. Submit a pull request
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
-
-## 📖 Citation
+## Citations
 
 ```bibtex
-@software{seizuretransformer_nedc_2025,
-  title = {SeizureTransformer: First NEDC v6.0.0 Evaluation with Clinical Tuning},
+@software{seizuretransformer_tusz_2025,
+  title = {SeizureTransformer: TUSZ Evaluation with NEDC v6.0.0 and Clinical Tuning},
   author = {Clarity Digital Twin Team},
   year = {2025},
-  note = {First implementation with Temple NEDC v6.0.0 and systematic parameter tuning},
+  note = {Evaluation on TUSZ with official NEDC v6.0.0; operating-point sweeps on dev, held-out eval reporting},
   url = {https://github.com/Clarity-Digital-Twin/SeizureTransformer}
 }
-```
 
-Also cite the original work:
+@article{shah2018temple,
+  title = {The Temple University Hospital Seizure Detection Corpus},
+  author = {Shah, V. and von Weltin, E. and Lopez, S. and McHugh, J. and Veloso, L. and Golmohammadi, M. and Obeid, I. and Picone, J.},
+  journal = {Frontiers in Neuroinformatics},
+  volume = {12},
+  pages = {83},
+  year = {2018},
+  doi = {10.3389/fninf.2018.00083}
+}
 
-```bibtex
+@incollection{shah2021objective,
+  title = {Objective Evaluation Metrics for Automatic Classification of EEG Events},
+  author = {Shah, V. and Golmohammadi, M. and Obeid, I. and Picone, J.},
+  booktitle = {Signal Processing in Medicine and Biology},
+  publisher = {Springer},
+  year = {2021},
+  pages = {1--26}
+}
+
 @article{wu2025seizuretransformer,
   title = {SeizureTransformer: Versatile Seizure Detection Model},
   author = {Wu, Kerui and others},
@@ -238,27 +136,19 @@ Also cite the original work:
 }
 ```
 
-## 📜 License
+## Acknowledgments
 
-- Original SeizureTransformer: MIT License (Kerui Wu)
-- Our evaluation framework: MIT License
+- Kerui Wu and collaborators for the SeizureTransformer model and weights.
+- Temple University’s NEDC for the dataset and scoring tools.
+- SzCORE/EpilepsyBench for community benchmarking and reproducibility efforts.
+
+## License
+
+- Original SeizureTransformer: MIT (Kerui Wu)
+- Our evaluation framework: MIT
 - NEDC tools: Temple University license
-
-## 🙏 Acknowledgments
-
-- **Kerui Wu** and team for the SeizureTransformer model
-- **Temple University** for TUSZ dataset and NEDC tools
-- **SzCORE/Epilepsy Bench** for standardization efforts
-
-## 📬 Contact
-
-- **Issues**: [GitHub Issues](https://github.com/Clarity-Digital-Twin/SeizureTransformer/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/Clarity-Digital-Twin/SeizureTransformer/discussions)
 
 ---
 
-**Note**: This is an independent evaluation. Results may differ from the original paper due to:
-- Different datasets (TUSZ vs Dianalund)
-- Different scoring methods (TAES vs event-based)
-- Zero-shot evaluation (model not trained on TUSZ)
-- Default parameters (paper likely tuned on dev split)
+Note: Results differ from the paper due to dataset (TUSZ vs Dianalund), scoring (TAES vs event-based), and our explicit dev-tuned operating points vs stock defaults.
+
