@@ -98,23 +98,59 @@
 
 ### Prerequisites
 - Python 3.10+, CUDA GPU (recommended), 32GB RAM
-- TUSZ v2.0.3 dataset (~5.2GB eval split)
+- TUSZ v2.0.3 dataset (requires Temple University data use agreement, see below)
+- SeizureTransformer pretrained weights (168MB, [download here](https://drive.google.com/file/d/1EYQ44S-rO0TrVsf7aBM2-VE-EuedvS1E/view?usp=sharing))
 
 ### Installation
 ```bash
 git clone https://github.com/Clarity-Digital-Twin/SeizureTransformer
 cd SeizureTransformer
+
+# 1. Download the pretrained model weights (required):
+#    - Download model.pth from: https://drive.google.com/file/d/1EYQ44S-rO0TrVsf7aBM2-VE-EuedvS1E/view
+#    - Place it at: wu_2025/src/wu_2025/model.pth
+
+# 2. Download TUSZ v2.0.3 dataset (see "Obtaining TUSZ Dataset" section below)
+#    - Place the data at: wu_2025/data/tusz/v2.0.3/
+#    - Expected structure: wu_2025/data/tusz/v2.0.3/edf/{train,dev,eval}/
+
 make install && source .venv/bin/activate
 ```
+
+### Obtaining TUSZ Dataset
+
+The Temple University Hospital EEG Seizure Corpus (TUSZ) requires a data use agreement:
+
+1. **Request Access**: Fill out the [data use agreement form](https://isip.piconepress.com/projects/nedc/html/tuh_eeg/)
+2. **Submit Form**: Email the signed form to `help@nedcdata.org` with subject "Download The TUH EEG Corpus"
+3. **Receive Credentials**: You'll receive login credentials within 24 hours
+4. **Download Data**: Use rsync (recommended) or web browser:
+   ```bash
+   # Download only the eval split (5.2GB, sufficient for reproducing our results)
+   rsync -auxvL nedc-tuh-eeg@www.isip.piconepress.com:data/tuh_eeg/tuh_eeg_seizure/v2.0.3/edf/eval .
+
+   # Or download all splits (81GB total)
+   rsync -auxvL nedc-tuh-eeg@www.isip.piconepress.com:data/tuh_eeg/tuh_eeg_seizure/v2.0.3/ .
+   ```
+5. **Place Data**: Move downloaded data to `wu_2025/data/tusz/v2.0.3/`
+
+For more details, see the [Temple NEDC documentation](https://isip.piconepress.com/projects/nedc/html/tuh_eeg/).
 
 ### Run Complete Pipeline
 
 #### 1. Evaluate on TUSZ (Held-out Test Set)
 ```bash
+# If you placed TUSZ data as instructed above:
 python evaluation/tusz/run_tusz_eval.py \
-  --data_dir /path/to/TUSZ/v2.0.3/eval \
+  --data_dir wu_2025/data/tusz/v2.0.3/edf/eval \
   --out_dir experiments/eval/baseline \
   --device auto  # Uses GPU if available
+
+# Or specify your own path:
+python evaluation/tusz/run_tusz_eval.py \
+  --data_dir /path/to/TUSZ/v2.0.3/edf/eval \
+  --out_dir experiments/eval/baseline \
+  --device auto
 ```
 
 #### 2. Score with NEDC v6.0.0 (Temple Official)
@@ -142,8 +178,15 @@ python evaluation/nedc_scoring/sweep_operating_point.py \
 
 ```
 SeizureTransformer/
-├── wu_2025/                    # Original model (untouched)
-│   └── model.pth               # Pretrained weights (168MB)
+├── wu_2025/                    # Original model from keruiwu/SeizureTransformer
+│   ├── src/wu_2025/
+│   │   └── model.pth           # Pretrained weights (168MB, download required)
+│   └── data/
+│       └── tusz/v2.0.3/        # TUSZ dataset (place here after download)
+│           └── edf/
+│               ├── train/      # Training data (not needed for evaluation)
+│               ├── dev/        # Development set (for tuning)
+│               └── eval/       # Evaluation set (for final results)
 ├── evaluation/
 │   ├── tusz/                   # TUSZ evaluation pipeline
 │   ├── nedc_scoring/           # Format conversion & scoring
@@ -185,15 +228,12 @@ SeizureTransformer/
 <summary><b>2. Original SeizureTransformer Model</b></summary>
 
 ```bibtex
-@inproceedings{wu2025seizuretransformer,
+@article{wu2025seizuretransformer,
   title = {SeizureTransformer: Scaling U-Net with Transformer for Simultaneous Time-Step Level Seizure Detection from Long EEG Recordings},
   author = {Wu, Kerui and Zhao, Ziyue and Yener, Bülent},
-  booktitle = {International Conference on Artificial Intelligence in Epilepsy and Other Neurological Disorders},
+  journal = {arXiv preprint arXiv:2504.00336},
   year = {2025},
-  note = {Winner of 2025 Seizure Detection Challenge},
-  eprint = {2504.00336},
-  archivePrefix = {arXiv},
-  primaryClass = {eess.SP}
+  note = {Winner of 2025 Seizure Detection Challenge. Code: https://github.com/keruiwu/SeizureTransformer}
 }
 ```
 </details>
@@ -249,7 +289,7 @@ SeizureTransformer/
 
 ## Acknowledgments
 
-- Kerui Wu and collaborators for the SeizureTransformer model and weights.
+- Kerui Wu and collaborators for the [SeizureTransformer model](https://github.com/keruiwu/SeizureTransformer) and [pretrained weights](https://drive.google.com/file/d/1EYQ44S-rO0TrVsf7aBM2-VE-EuedvS1E/view?usp=sharing).
 - Temple University’s NEDC for the dataset and scoring tools.
 - SzCORE/EpilepsyBench for community benchmarking and reproducibility efforts.
 
