@@ -112,7 +112,8 @@
       "Bash(evaluation/nedc_eeg_eval/v6.0.0/bin/nedc_eeg_eval:*)",
       "Bash(PYTHONPATH=/mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/v6.0.0/lib:$PYTHONPATH evaluation/nedc_eeg_eval/v6.0.0/bin/nedc_eeg_eval -h)",
       "Bash(pip search:*)",
-      "Bash(then grep -A2 \"NEDC TAES SCORING SUMMARY\" \"$dir/results/summary.txt\")"
+      "Bash(then grep -A2 \"NEDC TAES SCORING SUMMARY\" \"$dir/results/summary.txt\")",
+      "Bash(bc)"
     ],
     "deny": [],
     "ask": []

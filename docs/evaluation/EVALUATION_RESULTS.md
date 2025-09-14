@@ -20,16 +20,16 @@ We successfully evaluated the SeizureTransformer model on 864 EEG recordings fro
 The model demonstrates excellent discrimination ability between seizure and non-seizure patterns at the sample level.
 
 #### NEDC TAES (Time-Aligned Event Scoring) - Gold Standard
-- **Sensitivity**: 24.15% (113.28/469 seizure events detected)
-- **Specificity**: 88.03%
-- **Precision**: 43.98%
-- **F1 Score**: 0.312
-- **False Alarm Rate**: 137.5 per 24 hours
+- **Sensitivity**: 24.71% (115.91/469 seizure events detected)
+- **Specificity**: 93.09%
+- **Precision**: 59.57%
+- **F1 Score**: 0.3493
+- **False Alarm Rate**: 60.83 per 24 hours
 
 #### Clinical Impact Analysis
-- **False alarms every**: 10.5 minutes
-- **Daily false alarms**: 138
-- **Weekly false alarms**: 962
+- **False alarms every**: 23.6 minutes
+- **Daily false alarms**: 61
+- **Weekly false alarms**: 426
 
 This frequency would create significant alarm fatigue in ICU settings.
 
@@ -37,10 +37,10 @@ This frequency would create significant alarm fatigue in ICU settings.
 
 | Metric | TAES | Overlap | Epoch |
 |--------|------|---------|-------|
-| Sensitivity | 24.15% | 45.63% | 26.46% |
-| Specificity | 88.03% | 90.36% | 99.71% |
-| F1 Score | 0.312 | 0.519 | 0.404 |
-| FA/24hr | 137.5 | 100.1 | 238.9 |
+| Sensitivity | 24.71% | 45.63% | 27.76% |
+| Specificity | 93.09% | 94.73% | 99.69% |
+| F1 Score | 0.3493 | 0.5654 | 0.4183 |
+| FA/24hr | 60.83 | 25.01 | 254.6 |
 
 ### 3. Dataset Statistics
 

@@ -71,7 +71,7 @@ TUSZ annotations were created by Temple University following specific clinical g
 - **Default**: We report TAES by default (strictest clinical standard)
 - **Why NEDC**: Temple created both TUSZ dataset and NEDC scorer as a matched pair
 - **AUROC**: 0.9021 (excellent discrimination capacity)
-- **Detected**: 116/469 seizures at default threshold
+- **Detected**: 115.91/469 seizures at default threshold (TAES fractional scoring)
 - **Precision**: 59.57% at default threshold
 - **Files processed**: 864/865 (1 format error)
 

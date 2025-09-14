@@ -1,17 +1,17 @@
 {
   "timestamp": "2025-01-13T00:00:00",
   "metrics": {
-    "taes_sensitivity_percent": 24.15,
-    "taes_fa_per_24h": 137.5,
-    "taes_f1_score": 31.19,
+    "taes_sensitivity_percent": 24.71,
+    "taes_fa_per_24h": 60.83,
+    "taes_f1_score": 34.93,
     "auroc": 0.9021,
     "total_seizures": 469,
-    "detected_seizures": 113
+    "detected_seizures": 115.91
   },
   "clinical_assessment": {
     "clinically_viable": false,
     "sensitivity_acceptable": false,
     "deployment_ready": false
   },
-  "notes": "Baseline evaluation with default parameters. Good discrimination (AUROC>0.9) but poor clinical performance due to excessive false alarms (137x above clinical threshold)."
+  "notes": "Baseline evaluation with default parameters. Good discrimination (AUROC>0.9) but poor clinical performance due to excessive false alarms (60.83 FA/24h, ~6x above clinical threshold)."
 }
