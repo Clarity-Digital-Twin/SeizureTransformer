@@ -42,36 +42,67 @@ The 137x difference in false alarms (1 FA/24h vs 137.5 FA/24h) is due to:
 3. **Event Merging:** Merges events < 90s apart (reduces false alarms)
 4. **Clinical vs Competition:** NEDC designed for clinical use, SzCORE for ML competitions
 
+## How Everything Interacts - The Full Pipeline
+
+```mermaid
+graph LR
+    A[TUSZ EDF Files] --> B[run_tusz_eval.py]
+    B --> C[checkpoint.pkl<br/>predictions + ground truth]
+
+    C --> D[NEDC Pipeline]
+    C --> E[SzCORE Pipeline]
+
+    D --> D1[convert_predictions.py<br/>→ CSV_bi format]
+    D1 --> D2[run_nedc.py<br/>calls NEDC binary]
+    D2 --> D3[NEDC Results<br/>TAES: 137.5 FA/24h]
+
+    E --> E1[convert_to_hedscore.py<br/>→ HED-SCORE TSV]
+    E1 --> E2[run_szcore.py<br/>calls timescoring]
+    E2 --> E3[SzCORE Results<br/>~2-5 FA/24h expected]
+
+    D3 --> F[Comparison Table]
+    E3 --> F
+    F --> G[README:<br/>137x scoring gap exposed]
+```
+
+### Where Code Lives:
+1. **Model inference**: `wu_2025/` (untouched upstream)
+2. **TUSZ evaluation**: `evaluation/tusz/run_tusz_eval.py`
+3. **Checkpoint storage**: `experiments/eval/baseline/checkpoint.pkl`
+4. **NEDC wrapper**: `evaluation/nedc_scoring/` (calls copied binary)
+5. **SzCORE wrapper**: `evaluation/szcore_scoring/` (calls pip package)
+6. **Results**: `experiments/` directory structure
+
 ## Integration Strategy
 
-### Option 1: Copy Library for Perfect Parallelism (Recommended)
-We will copy the `epilepsy_performance_metrics` library to maintain **exact parallelism** with our NEDC approach:
+### USE PIP INSTALL - It's an Official Package! (Recommended)
+Since `timescoring` is maintained as an official PyPI package, we'll use pip install:
 
 ```
 evaluation/
-├── nedc_eeg_eval/v6.0.0/   # Official NEDC binary (copied, untouched)
-├── timescoring/v1.0.0/      # Official timescoring library (copied, untouched)
-│   ├── src/timescoring/     # Copy from reference_repos/epilepsy_performance_metrics/src/
-│   ├── LICENSE              # Their original license
-│   └── README.md            # Note that this is unmodified upstream code
-├── nedc_scoring/            # Our NEDC wrapper (done)
-│   └── run_nedc.py         # Calls ../nedc_eeg_eval/v6.0.0/
-└── szcore_scoring/          # Our SzCORE wrapper (to do)
+├── nedc_eeg_eval/v6.0.0/   # NEDC binary (HAD to copy - not on PyPI)
+├── nedc_scoring/            # Our NEDC wrapper (✅ done)
+│   ├── convert_predictions.py    # checkpoint.pkl → CSV_bi format
+│   ├── run_nedc.py              # Calls NEDC binary
+│   └── post_processing.py       # Parameter tuning
+└── szcore_scoring/          # Our SzCORE wrapper (📝 to create)
     ├── __init__.py
-    ├── run_szcore.py       # Imports from ../timescoring/v1.0.0/
+    ├── run_szcore.py            # Uses `pip install timescoring`
     ├── convert_to_hedscore.py  # checkpoint.pkl → HED-SCORE TSV
-    └── README.md
+    └── README.md                # Usage documentation
+
+# Note: reference_repos/ stays untouched for reference only
 ```
 
-**Why Copy Instead of Pip:**
-- **Perfect parallelism**: Both NEDC and SzCORE have their official code in `evaluation/`
-- **Version locked**: Exact version v1.0.0, won't break with updates
-- **Self-contained**: No external dependencies
-- **Clear provenance**: Obviously using unmodified official implementation
+**Why Pip Install (not copy):**
+- **It's on PyPI!** Official maintained package
+- **Auto-updates**: Get bug fixes and improvements
+- **Cleaner**: No need to bloat our repo
+- **Standard Python**: This is how Python packages work!
 
 **Critical Design Decision:** We will NOT implement native SzCORE. We only need:
 1. NEDC official wrapper (done) - provides TAES, OVERLAP, and 3 other metrics
-2. SzCORE via copied `timescoring` library - for competition metric comparison
+2. SzCORE via `pip install timescoring` - for competition metric comparison
 3. Native implementations only for NEDC methods (already have native-overlap)
 
 **Concrete Implementation Plan:**
@@ -81,12 +112,10 @@ evaluation/
 Wrapper for SzCORE's Any-Overlap scoring using timescoring library.
 This reproduces EpilepsyBench 2025's evaluation methodology.
 """
-import sys
 import pickle
 from pathlib import Path
 
-# Import from our copied library
-sys.path.insert(0, str(Path(__file__).parent.parent / 'timescoring' / 'v1.0.0' / 'src'))
+# Import from pip-installed package
 from timescoring.annotations import Annotation
 from timescoring.scoring import EventScoring
 
@@ -139,41 +168,45 @@ Simply `pip install timescoring` and use it directly in our evaluation scripts. 
 ### Option 3: Full Platform Integration (Not Recommended)
 Copy entire SzCORE platform. Overkill for our needs - we just need the scoring, not the containerization/CI infrastructure.
 
-## Implementation Approach Clarification
+## Implementation Approach - SIMPLIFIED!
 
 ### What We're NOT Doing:
 - ❌ Not implementing our own version of SzCORE scoring
-- ❌ Not modifying the timescoring library code
-- ❌ Not using pip install (to maintain parallelism with NEDC)
+- ❌ Not copying the library (it's on PyPI!)
+- ❌ Not modifying any official code
 
 ### What We ARE Doing:
-- ✅ Copying `epilepsy_performance_metrics` to `evaluation/timescoring/v1.0.0/` (untouched)
-- ✅ Creating a thin wrapper that imports from the copied library
-- ✅ Converting our checkpoint.pkl format to what timescoring expects
-- ✅ Perfect parallelism with our NEDC wrapper architecture
+- ✅ Using `pip install timescoring` - it's an official package!
+- ✅ Creating a thin wrapper that calls the library
+- ✅ Converting our checkpoint.pkl format to HED-SCORE TSV
+- ✅ Parallel architecture to NEDC (both are wrappers)
 
-### Copy Instructions:
+### Installation Instructions:
 ```bash
-# Step 1: Copy the library preserving structure
-cp -r reference_repos/epilepsy_performance_metrics/src evaluation/timescoring/v1.0.0/
-cp reference_repos/epilepsy_performance_metrics/LICENSE evaluation/timescoring/v1.0.0/
-cp reference_repos/epilepsy_performance_metrics/README.md evaluation/timescoring/v1.0.0/
+# Step 1: Install the official package
+pip install timescoring
 
-# Step 2: Add a note that this is unmodified upstream code
-echo "# Note: This is unmodified code from https://github.com/esl-epfl/epilepsy_performance_metrics" > evaluation/timescoring/v1.0.0/DO_NOT_MODIFY.md
+# Or with uv for speed
+uv pip install timescoring
+
+# Or with visualization support
+pip install "timescoring[plotting]"
+
+# Step 2: Create our wrapper directory
+mkdir -p evaluation/szcore_scoring
 ```
 
-### Why Copy Instead of Pip:
-1. **Perfect parallelism**: Matches NEDC approach exactly
-2. **Version control**: We know exactly what version we're using
-3. **Reproducibility**: No external dependencies
-4. **Clear structure**: Both official implementations live in `evaluation/`
+### Why This Approach is Perfect:
+1. **Simplicity**: Standard Python package management
+2. **Maintainability**: Auto-updates with pip
+3. **Fidelity**: Using exact official implementation
+4. **Clean**: No unnecessary repo bloat
 
 ## Recommended Actions
 
 ### Phase 1: Immediate (This Week)
 1. ✅ Create `SZCORE_INTEGRATION_PLAN.md` (this document)
-2. Copy `epilepsy_performance_metrics` to `evaluation/timescoring/v1.0.0/`
+2. Install package: `uv pip install timescoring`
 3. Create minimal wrapper at `evaluation/szcore_scoring/run_szcore.py`
 4. Run on TUSZ eval to get SzCORE metrics (expect ~2-5 FA/24h, not the 137.5 from NEDC)
 
