@@ -57,14 +57,14 @@ TUSZ annotations were created by Temple University following specific clinical g
 
 ### Clinical Operating Points
 
-| Target FA/24h | Threshold | Kernel | MinDur | Sensitivity (TAES) | Clinical Use |
-|---------------|-----------|--------|--------|-------------------|-------------|
-| 60.83 | 0.800 | 5 | 2.0s | 24.71% | Paper default |
-| **10** | **0.880** | **7** | **2.5s** | **TBD%†** | **Clinical target** |
-| 2.5 | 0.930 | 11 | 5.0s | 4.13% | Conservative |
-| 1 | 0.950 | 15 | 7.0s | 0.41% | Minimal FAs |
+| Target FA/24h | Threshold | Kernel | MinDur | Sensitivity (TAES) | Actual FA/24h | Status |
+|---------------|-----------|--------|--------|-------------------|---------------|--------|
+| Default | 0.800 | 5 | 2.0s | 24.71% | 60.83 | ✅ Verified |
+| **10** | TBD† | TBD† | TBD† | TBD† | TBD† | ⚠️ Retuning |
+| **2.5** | TBD† | TBD† | TBD† | TBD† | TBD† | ⚠️ Retuning |
+| **1** | TBD† | TBD† | TBD† | TBD† | TBD† | ⚠️ Retuning |
 
-**†Note**: 10 FA/24h results pending rerun with correct parameters (0.880/7/2.5s)
+**†Important Note**: Clinical operating points (10/2.5/1 FA targets) require retuning. Initial parameter selection led to incorrect FA rates due to morphological kernel behavior. See `PARAMETER_TUNING_ANALYSIS.md` for details. Default parameters from the paper are verified correct.
 
 ### Key Metrics (NEDC v6.0.0)
 - **Scoring**: NEDC v6.0.0 TAES/OVERLAP (Temple's official metrics for TUSZ)
