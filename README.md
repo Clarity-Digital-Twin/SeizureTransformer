@@ -26,26 +26,33 @@
 - TUSZ provides strict patient-disjoint train/dev/eval splits; evaluating on eval after tuning on dev is standard ML practice with no leakage.
 - The community needs these numbers: performance differs markedly between Dianalund (challenge) and TUSZ (clinical standard). Showing TUSZ results is informative and valid.
 
-## TUSZ v2.0.3 Splits
+## TUSZ v2.0.3 Dataset Structure
 
 <details>
-<summary>Split sizes and usage</summary>
+<summary>📊 Split sizes and usage (click to expand)</summary>
 
-- Train: ~1,557 files (model trained per paper on TUH train + Siena)
-- Dev:   ~1,013 files (we tune post-processing here)
-- Eval:    865 files (we report held-out results here; 864 processed)
-- No patient overlap between splits by design (avoids leakage)
+| Split | Files | Hours | Seizures | Usage |
+|-------|-------|-------|----------|--------|
+| Train | 1,557 | 3,050 | ~2,900 | Model training (per paper) |
+| Dev | 1,013 | 1,015 | ~920 | **We tune thresholds here** |
+| Eval | 865 | 127.6 | 469 | **We report results here** |
+
+- ✅ **No patient overlap** between splits (prevents leakage)
+- ✅ **Standard ML practice**: train → dev → eval
+- ✅ **864/865 files processed** (1 format error)
 
 </details>
 
-## Key Finding: 137x False Alarm Gap
+---
 
-| Dataset | F1 Score | Sensitivity | False Alarms/24h |
-|---------|----------|-------------|------------------|
-| Dianalund (EpilepsyBench #1) | 43% | 37% | **1** |
-| TUSZ eval (Our results) | 31.19% | 24.15% | **137.5** |
+## 🚨 Key Finding: 137x False Alarm Gap
 
-**The celebrated "1 FA/day" becomes 137.5 FA/day on TUSZ.**
+| Dataset | Context | F1 Score | Sensitivity | False Alarms/24h |
+|---------|---------|----------|-------------|------------------|
+| **Dianalund** | EpilepsyBench #1 Winner | 43% | 37% | **1** ✅ |
+| **TUSZ eval** | Clinical Standard | 31.19% | 24.15% | **137.5** ❌ |
+
+> **Critical Insight**: The celebrated "1 FA/day" on Dianalund becomes **137.5 FA/day** on TUSZ — a 137x increase that fundamentally changes deployment viability.
 
 ## Results at a Glance
 
