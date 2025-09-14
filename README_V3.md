@@ -18,6 +18,12 @@ Wu et al.'s transformer-based seizure detector won the 2025 EpilepsyBench Challe
 ### The Gap in Current Evaluations
 EpilepsyBench doesn't show TUSZ results for models trained on it (marked with 🚂). Yet TUSZ is the clinical standard with patient-disjoint eval splits. No one had evaluated SeizureTransformer on TUSZ with proper clinical scoring.
 
+<p align="center">
+<img src="docs/images/wu_ebench.png" alt="EpilepsyBench showing SeizureTransformer #1 but no TUSZ results" width="700">
+<br>
+<em>SeizureTransformer ranks #1 on EpilepsyBench but TUSZ evaluation is marked with 🚂</em>
+</p>
+
 ### Our Contribution
 - First TUSZ v2.0.3 evaluation using NEDC v6.0.0 (August 2025 release)
 - Systematic threshold tuning on dev set, validation on eval set
@@ -142,8 +148,8 @@ SeizureTransformer/
 <summary>For Deep Dives</summary>
 
 - [Complete Results](docs/evaluation/EVALUATION_RESULTS.md) - All metrics & analysis
-- [Operating Points](SEIZURE_TRANSFORMER_TUNING_PLAN.md) - Threshold tuning methodology
-- [NEDC Integration](NEDC_INTEGRATION_PLAN.md) - Temple scorer details
+- [Operating Points](docs/planning/SEIZURE_TRANSFORMER_TUNING_PLAN.md) - Threshold tuning methodology
+- [NEDC Integration](docs/planning/NEDC_INTEGRATION_PLAN.md) - Temple scorer details
 - [Model Architecture](docs/technical/IDEAL_REFERENCE_SEIZURE_TRANSFORMER_DATAFLOW.md) - Internals
 
 </details>
