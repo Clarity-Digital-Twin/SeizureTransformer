@@ -5,7 +5,9 @@ __pycache__/
 *.so
 
 # Data and models - NEVER commit these
-wu_2025/data/
+wu_2025/data/*
+!wu_2025/data/.gitkeep
+!wu_2025/data/README.md
 wu_2025/src/wu_2025/model.pth
 wu_2025/src/wu_2025/model*.pth
 *.pth
