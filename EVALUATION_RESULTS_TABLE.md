@@ -4,7 +4,7 @@
 
 ## All Scoring Methods Comparison
 
-| Operating Point | Threshold | Kernel | MinDur | NEDC TAES (Temple) | NEDC OVERLAP (Temple) | NEDC OVERLAP (Native) | SzCORE Any-Overlap |
+| Operating Point | Threshold | Kernel | MinDur | NEDC TAES (Temple) | NEDC OVERLAP (Temple) | NEDC OVERLAP (Native)* | SzCORE Any-Overlap |
 |-----------------|-----------|--------|--------|--------------------|-----------------------|-----------------------|-------------------|
 | **Default (paper)** | 0.800 | 5 | 2.0s | 24.71% / 60.83 FA | **45.63% / 25.01 FA** | 45.63% / 25.01 FA | **52.35% / 8.46 FA** |
 | **10 FA target** | 0.880 | 7 | 2.5s | 24.71% / 60.83 FA† | 45.63% / 25.01 FA† | 45.63% / 25.01 FA† | 41.76% / 3.57 FA |
@@ -21,7 +21,7 @@ Format: Sensitivity% / FA per 24h
 |--------|-------------|---------------|
 | **NEDC TAES** | Temple's strictest clinical standard with fractional time-alignment scoring | Exact temporal alignment required (v6.0.0) |
 | **NEDC OVERLAP** | Temple's overlap-based scoring (any overlap within bounds) | Total FA/24h includes SEIZ + BCKG |
-| **NEDC Native (OVERLAP)** | Our Python implementation of OVERLAP (parity with Temple) | Matches Temple OVERLAP aggregate |
+| **NEDC OVERLAP (Native)*** | Our Python implementation of OVERLAP scoring | Achieves parity with Temple OVERLAP (±0.01%) |
 | **SzCORE Any-Overlap** | EpilepsyBench competition scoring | 30s pre, 60s post tolerance; merge <90s; any overlap counts |
 
 ## Key Findings
@@ -64,6 +64,7 @@ Format: Sensitivity% / FA per 24h
 - Native OVERLAP implementation parity-checked with Temple binaries
 - SzCORE results use official `timescoring` package
 - Thresholds tuned on dev set, validated on eval set
+- *Native column shows our Python OVERLAP implementation (NOT TAES) - see TECHNICAL_DEBT_NATIVE_SCORER.md
 
 ## Data Sources & Extraction
 
@@ -92,11 +93,12 @@ cat szcore_summary.json | jq '.corpus_micro_avg'
 # Outputs: sensitivity: 0.1765, fpRate: 0.6
 ```
 
-#### Native TAES Results
+#### Native OVERLAP Results
 ```bash
-# Files: experiments/eval/baseline/results_*_native_taes/metrics.json
-# Extract TAES metrics:
+# Files: experiments/eval/baseline/results_*_nedc_native/metrics.json
+# Extract OVERLAP metrics (stored under 'taes' key for backward compatibility):
 cat metrics.json | jq '.taes | {sensitivity, fp_per_24h}'
+# Note: Despite the 'taes' key name, these are OVERLAP metrics
 ```
 
 ### Raw Checkpoint Data
