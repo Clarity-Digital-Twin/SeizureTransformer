@@ -1,5 +1,5 @@
 # SeizureTransformer TUSZ Evaluation
-## First NEDC v6.0.0 Evaluation Reveals 137x False Alarm Gap
+## First NEDC v6.0.0 Evaluation Reveals 60x False Alarm Gap
 
 [![EpilepsyBench #1](https://img.shields.io/badge/EpilepsyBench%202025-%231%20Winner-gold.svg)](https://epilepsybenchmarks.com/challenge/)
 [![NEDC v6.0.0](https://img.shields.io/badge/NEDC-v6.0.0%20Pioneer-brightgreen.svg)](https://www.isip.piconepress.com/projects/nedc/)
@@ -11,7 +11,7 @@
 - SeizureTransformer won EpilepsyBench 2025 with 1 FA/24h on Dianalund (using SzCORE's "Any-Overlap" scoring)
 - Despite TUSZ having train/dev/eval splits, EpilepsyBench doesn't report eval results for models trained on it
 - We evaluated it on TUSZ v2.0.3 using Temple's NEDC v6.0.0 - the clinical standard scorer for this dataset
-- Result: 137.5 FA/24h at paper defaults, revealing a critical gap between competition metrics and clinical deployment requirements
+- Result: 60.83 FA/24h at paper defaults, revealing a critical gap between competition metrics and clinical deployment requirements
 
 ## 🎯 Background
 
@@ -44,7 +44,7 @@ Wu et al.'s transformer-based seizure detector won the 2025 EpilepsyBench Challe
 | Dataset | Scoring Method | Sensitivity | False Alarms/24h | F1 Score |
 |---------|---------------|-------------|------------------|-----------|
 | **Dianalund** | SzCORE Any-Overlap¹ | 37% | **1 FA/24h** ✅ | 43% |
-| **TUSZ eval (held-out)** | NEDC v6.0.0 TAES² | 24.15% | **137.5 FA/24h** ❌ | 31.19% |
+| **TUSZ eval (held-out)** | NEDC v6.0.0 TAES² | 24.71% | **60.83 FA/24h** ❌ | 34.93% |
 
 ¹ SzCORE: Lenient event-based scoring where any overlap counts as detection (on Dianalund dataset)
 ² NEDC TAES: Clinical standard with strict time-alignment penalties (on TUSZ dataset)
@@ -57,20 +57,22 @@ TUSZ annotations were created by Temple University following specific clinical g
 
 ### Clinical Operating Points
 
-| Target FA/24h | Threshold | Sensitivity | Clinical Use |
-|---------------|-----------|-------------|-------------|
-| 137.5 | 0.800 | 24.15% | Paper default |
-| **10** | **0.965** | **9.87%** | **Clinical target** |
-| 5 | 0.982 | 5.13% | Conservative |
-| 1 | 0.999 | 0.43% | Minimal FAs |
+| Target FA/24h | Threshold | Kernel | MinDur | Sensitivity (TAES) | Clinical Use |
+|---------------|-----------|--------|--------|-------------------|-------------|
+| 60.83 | 0.800 | 5 | 2.0s | 24.71% | Paper default |
+| **10** | **0.880** | **7** | **2.5s** | **TBD%†** | **Clinical target** |
+| 2.5 | 0.930 | 11 | 5.0s | 4.13% | Conservative |
+| 1 | 0.950 | 15 | 7.0s | 0.41% | Minimal FAs |
+
+**†Note**: 10 FA/24h results pending rerun with correct parameters (0.880/7/2.5s)
 
 ### Key Metrics (NEDC v6.0.0)
 - **Scoring**: NEDC v6.0.0 TAES/OVERLAP (Temple's official metrics for TUSZ)
 - **Default**: We report TAES by default (strictest clinical standard)
 - **Why NEDC**: Temple created both TUSZ dataset and NEDC scorer as a matched pair
 - **AUROC**: 0.9021 (excellent discrimination capacity)
-- **Detected**: 113/469 seizures at default threshold
-- **Precision**: 43.98% at default threshold
+- **Detected**: 116/469 seizures at default threshold
+- **Precision**: 59.57% at default threshold
 - **Files processed**: 864/865 (1 format error)
 
 ## 🔧 Evaluation Framework
