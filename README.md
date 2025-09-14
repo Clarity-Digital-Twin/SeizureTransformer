@@ -12,8 +12,8 @@
 
 **SeizureTransformer** won the 2025 EpilepsyBench Challenge with impressive metrics on Dianalund. But **nobody evaluated it on TUSZ** — the clinical standard dataset. We fill this critical gap.
 
-### ✅ What We're the FIRST to Do:
-- Evaluate on TUSZ v2.0.3 eval split with NEDC v6.0.0 (Aug 2024 release)
+### 🔴 What We're the FIRST to Do:
+- Evaluate on TUSZ v2.0.3 eval split with NEDC v6.0.0 (Aug 2025 release)
 - Systematically tune on dev set, validate on eval (proper ML practice)
 - Reveal the **137x FA gap** between competition and clinical datasets
 - Publish complete operating points (thresholds for any FA target)
