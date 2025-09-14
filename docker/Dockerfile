@@ -25,13 +25,9 @@ RUN adduser \
     --uid "${UID}" \
     appuser
 
-# Download dependencies as a separate step to take advantage of Docker's caching.
-# Leverage a cache mount to /root/.cache/pip to speed up subsequent builds.
-# Leverage a bind mount to requirements.txt to avoid having to copy them into
-# into this layer.
-RUN --mount=type=cache,target=/root/.cache/pip \
-    --mount=type=bind,source=wu_2025/,target=wu_2025/ \
-    python3 -m pip install ./wu_2025
+# Copy and install dependencies
+COPY wu_2025/ /tmp/wu_2025/
+RUN python3 -m pip install /tmp/wu_2025 && rm -rf /tmp/wu_2025
 
 # Switch to the non-privileged user to run the application.
 USER appuser

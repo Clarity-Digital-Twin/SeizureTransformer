@@ -102,7 +102,13 @@
       "Bash(PYTHONPATH=/mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/v6.0.0/lib:$PYTHONPATH python3 /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/v6.0.0/bin/nedc_eeg_eval ref/test_001.csv_bi hyp/test_001.csv_bi -o temple_test)",
       "Bash(PYTHONPATH=/mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/v6.0.0/lib:$PYTHONPATH python3 /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/v6.0.0/bin/nedc_eeg_eval ref hyp -o temple_test)",
       "Bash(tmux:*)",
-      "Bash(git merge:*)"
+      "Bash(git merge:*)",
+      "Bash(git branch:*)",
+      "Bash(__NEW_LINE__ for branch in main development)",
+      "Bash(git cherry-pick:*)",
+      "Bash(docker:*)",
+      "Bash(docker compose:*)",
+      "Bash(git clone:*)"
     ],
     "deny": [],
     "ask": []

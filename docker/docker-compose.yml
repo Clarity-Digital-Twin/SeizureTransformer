@@ -1,0 +1,145 @@
+version: '3.8'
+
+services:
+  # GPU-accelerated SeizureTransformer inference
+  seizure-transformer:
+    build:
+      context: .
+      dockerfile: Dockerfile.inference
+      cache_from:
+        - seizuretransformer:builder
+        - seizuretransformer:latest
+    image: seizuretransformer:latest
+    container_name: seizure-inference
+
+    # GPU configuration
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+        limits:
+          memory: 16G
+          cpus: '4'
+
+    volumes:
+      # Read-only data mount
+      - ./wu_2025/data/tusz:/data/tusz:ro
+      # Shared experiments directory
+      - ./experiments:/experiments
+      # Optional: mount weights if not baked in
+      # - ./wu_2025/src/wu_2025/model.pth:/opt/model/model.pth:ro
+
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+      - BATCH_SIZE=32
+      - LOG_LEVEL=INFO
+      - TZ=America/New_York
+
+    # Run TUSZ evaluation by default
+    command: [
+      "-m", "evaluation.tusz.run_tusz_eval",
+      "--data_dir", "/data/tusz/v2.0.3/edf/eval",
+      "--out_dir", "/experiments/eval/baseline",
+      "--batch_size", "32"
+    ]
+
+    restart: on-failure:3
+
+    networks:
+      - seizure-net
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # NEDC scoring service (CPU only)
+  nedc-scorer:
+    build:
+      context: .
+      dockerfile: Dockerfile.nedc
+    image: nedc-scorer:latest
+    container_name: nedc-scoring
+
+    volumes:
+      # Shared experiments directory
+      - ./experiments:/experiments
+
+    environment:
+      - LOG_LEVEL=INFO
+      - SCORING_BACKEND=native-taes
+      - TZ=America/New_York
+
+    depends_on:
+      seizure-transformer:
+        condition: service_healthy
+
+    # Wait for inference to complete, then score
+    command: [
+      "-m", "evaluation.nedc_scoring.run_nedc",
+      "--checkpoint", "/experiments/eval/baseline/checkpoint.pkl",
+      "--outdir", "/experiments/eval/baseline/nedc_results",
+      "--backend", "native-taes",
+      "--threshold", "0.8",
+      "--kernel", "5",
+      "--min_duration_sec", "2.0"
+    ]
+
+    restart: on-failure:3
+
+    networks:
+      - seizure-net
+
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2'
+
+  # Optional: Jupyter notebook for analysis
+  notebook:
+    image: jupyter/scipy-notebook:latest
+    container_name: seizure-notebook
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./experiments:/home/jovyan/experiments
+      - ./docs:/home/jovyan/docs:ro
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    networks:
+      - seizure-net
+    profiles:
+      - debug
+
+  # Future: API service (not yet implemented)
+  # api-gateway:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.api
+  #   image: seizure-api:latest
+  #   container_name: seizure-api
+  #   ports:
+  #     - "8000:8000"
+  #   environment:
+  #     - MODEL_PATH=/opt/model/model.pth
+  #     - WORKERS=4
+  #   depends_on:
+  #     - seizure-transformer
+  #   networks:
+  #     - seizure-net
+  #   profiles:
+  #     - api
+
+networks:
+  seizure-net:
+    driver: bridge
+
+# Named volumes for persistent data
+volumes:
+  experiments:
+    driver: local

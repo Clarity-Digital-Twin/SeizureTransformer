@@ -1,0 +1,148 @@
+# Docker operations for SeizureTransformer
+.PHONY: help build run test clean push pull logs
+
+# Variables
+REGISTRY ?= ghcr.io/clarity-digital-twin
+VERSION ?= $(shell git describe --tags --always --dirty)
+INFERENCE_IMAGE = $(REGISTRY)/seizuretransformer:$(VERSION)
+NEDC_IMAGE = $(REGISTRY)/nedc-scorer:$(VERSION)
+
+help: ## Show this help message
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+
+# Building
+build: ## Build all Docker images
+	@echo "Building SeizureTransformer inference image..."
+	docker build -f Dockerfile.inference -t seizuretransformer:latest -t $(INFERENCE_IMAGE) .
+	@echo "Building NEDC scorer image..."
+	docker build -f Dockerfile.nedc -t nedc-scorer:latest -t $(NEDC_IMAGE) .
+
+build-inference: ## Build only inference image
+	docker build -f Dockerfile.inference -t seizuretransformer:latest .
+
+build-nedc: ## Build only NEDC scorer image
+	docker build -f Dockerfile.nedc -t nedc-scorer:latest .
+
+build-nocache: ## Build without cache
+	docker build --no-cache -f Dockerfile.inference -t seizuretransformer:latest .
+	docker build --no-cache -f Dockerfile.nedc -t nedc-scorer:latest .
+
+# Running
+run: ## Run full pipeline with docker-compose
+	docker-compose up
+
+run-inference: ## Run only inference container
+	docker-compose up seizure-transformer
+
+run-scoring: ## Run only scoring container
+	docker-compose up nedc-scorer
+
+run-detached: ## Run in background
+	docker-compose up -d
+
+run-gpu-test: ## Test GPU availability
+	docker run --rm --gpus all seizuretransformer:latest \
+		python3 -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}'); print(f'Device: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"CPU\"}')"
+
+# Development
+dev-notebook: ## Start Jupyter notebook for analysis
+	docker-compose --profile debug up notebook
+
+shell-inference: ## Open shell in inference container
+	docker run --rm -it --gpus all \
+		-v $(PWD)/experiments:/experiments \
+		-v $(PWD)/wu_2025/data:/data:ro \
+		seizuretransformer:latest /bin/bash
+
+shell-nedc: ## Open shell in NEDC container
+	docker run --rm -it \
+		-v $(PWD)/experiments:/experiments \
+		nedc-scorer:latest /bin/bash
+
+# Testing
+test: ## Run tests in containers
+	@echo "Testing inference container..."
+	docker run --rm --gpus all seizuretransformer:latest \
+		python3 -m pytest tests/integration/test_docker_inference.py
+	@echo "Testing NEDC container..."
+	docker run --rm nedc-scorer:latest \
+		python3 -m pytest tests/integration/test_docker_nedc.py
+
+test-pipeline: ## Test full pipeline
+	docker-compose run --rm seizure-transformer \
+		python3 -m evaluation.tusz.run_tusz_eval \
+		--data_dir /data/tusz/test_sample \
+		--out_dir /experiments/test
+	docker-compose run --rm nedc-scorer \
+		python3 -m evaluation.nedc_scoring.run_nedc \
+		--checkpoint /experiments/test/checkpoint.pkl \
+		--outdir /experiments/test/nedc_results
+
+benchmark: ## Run performance benchmark
+	docker run --rm --gpus all \
+		-v $(PWD)/experiments:/experiments \
+		seizuretransformer:latest \
+		python3 -m evaluation.benchmark --gpu --iterations 10
+
+# Security
+scan: ## Security scan images with Trivy
+	@command -v trivy >/dev/null 2>&1 || { echo "Trivy not installed. See: https://github.com/aquasecurity/trivy"; exit 1; }
+	trivy image seizuretransformer:latest
+	trivy image nedc-scorer:latest
+
+scan-detailed: ## Detailed vulnerability scan
+	trivy image --severity HIGH,CRITICAL --format table seizuretransformer:latest
+
+# Monitoring
+logs: ## Show container logs
+	docker-compose logs -f
+
+logs-inference: ## Show inference logs
+	docker-compose logs -f seizure-transformer
+
+logs-nedc: ## Show NEDC logs
+	docker-compose logs -f nedc-scorer
+
+stats: ## Show container resource usage
+	docker stats --no-stream
+
+# Cleanup
+clean: ## Remove containers and images
+	docker-compose down
+	docker rmi seizuretransformer:latest nedc-scorer:latest || true
+
+clean-all: ## Remove everything including volumes
+	docker-compose down -v
+	docker rmi seizuretransformer:latest nedc-scorer:latest || true
+	docker volume prune -f
+
+prune: ## Prune all unused Docker resources
+	docker system prune -af --volumes
+
+# Registry operations
+push: ## Push images to registry
+	docker push $(INFERENCE_IMAGE)
+	docker push $(NEDC_IMAGE)
+
+pull: ## Pull images from registry
+	docker pull $(INFERENCE_IMAGE)
+	docker pull $(NEDC_IMAGE)
+
+tag-latest: ## Tag images as latest
+	docker tag seizuretransformer:$(VERSION) $(REGISTRY)/seizuretransformer:latest
+	docker tag nedc-scorer:$(VERSION) $(REGISTRY)/nedc-scorer:latest
+
+# Info
+info: ## Show image information
+	@echo "=== Image Sizes ==="
+	@docker images | grep -E "(seizuretransformer|nedc-scorer|REPOSITORY)"
+	@echo ""
+	@echo "=== Layer Count ==="
+	@docker history seizuretransformer:latest | wc -l
+	@docker history nedc-scorer:latest | wc -l
+
+version: ## Show version info
+	@echo "Version: $(VERSION)"
+	@echo "Registry: $(REGISTRY)"
+	@echo "Inference image: $(INFERENCE_IMAGE)"
+	@echo "NEDC image: $(NEDC_IMAGE)"
