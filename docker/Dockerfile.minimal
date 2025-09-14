@@ -1,0 +1,14 @@
+# Minimal test - just Python + PyTorch + GPU
+FROM nvidia/cuda:12.4.0-runtime-ubuntu22.04
+
+RUN apt-get update && apt-get install -y python3-pip && rm -rf /var/lib/apt/lists/*
+
+# Install minimal PyTorch
+RUN pip3 install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cu121
+
+WORKDIR /app
+
+# Test script
+RUN echo 'import torch\nprint(f"PyTorch: {torch.__version__}")\nprint(f"CUDA: {torch.cuda.is_available()}")\nif torch.cuda.is_available():\n    print(f"GPU: {torch.cuda.get_device_name(0)}")' > test.py
+
+CMD ["python3", "test.py"]
