@@ -208,10 +208,12 @@ def run_szcore_evaluation(checkpoint_pkl: str | Path, output_dir: str | Path,
 ```
 
 ### Option 2: HED-SCORE TSV (Optional Artifacts)
-You may also emit SzCORE-compatible TSVs for archival or cross-tools:
+You may also emit SzCORE-compatible TSVs for archival or cross-tools. This is optional — using `Annotation` directly is simpler and avoids TSV formatting pitfalls.
+
 - Implement `convert_to_hedscore.py` to write one TSV per file with columns:
   `onset, duration, eventType, confidence, channels, dateTime, recordingDuration`.
-- This is optional; direct Annotation use is simpler and avoids TSV formatting pitfalls.
+- Convert probabilities to events first via our post-processing; do NOT treat raw `predictions` as events.
+- Compute `recordingDuration` from the prediction length and sampling rate.
 
 ### Option 3: Full Platform Integration (Not Recommended)
 Copy entire SzCORE platform. Overkill for our needs - we just need the scoring, not the containerization/CI infrastructure.

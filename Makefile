@@ -23,6 +23,7 @@ help:
 	@echo "  run-dev-eval    - Run TUSZ dev evaluation"
 	@echo "  run-eval-sweep  - Run parameter sweep on dev"
 	@echo "  run-nedc-score  - Run NEDC scoring pipeline"
+	@echo "  run-szcore-score- Run SzCORE scoring (timescoring)"
 	@echo "  check-dev       - Check dev evaluation status"
 	@echo ""
 	@echo "Utilities:"
@@ -105,6 +106,11 @@ run-eval-sweep:
 run-nedc-score:
 	$(MAKE) -C evaluation/nedc_scoring all
 
+run-szcore-score:
+	. .venv/bin/activate && python evaluation/szcore_scoring/run_szcore.py \
+		--checkpoint experiments/eval/baseline/checkpoint.pkl \
+		--outdir experiments/eval/baseline/szcore_results
+
 # Monitoring
 check-dev:
 	@echo "Checking dev evaluation status..."
@@ -121,4 +127,4 @@ check-dev:
 test-inference:
 	. .venv/bin/activate && python tests/test_inference.py
 
-.PHONY: install install-dev test test-fast test-nedc test-conformance test-cov format lint typecheck check-all clean run-dev-eval run-eval-sweep run-nedc-score check-dev test-inference
+.PHONY: install install-dev test test-fast test-nedc test-conformance test-cov format lint typecheck check-all clean run-dev-eval run-eval-sweep run-nedc-score run-szcore-score check-dev test-inference
