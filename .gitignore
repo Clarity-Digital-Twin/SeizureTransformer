@@ -21,6 +21,7 @@ wu_2025/src/wu_2025/model*.pth
 evaluation/tusz/checkpoint*.pkl*
 evaluation/tusz/*.pkl
 evaluation/nedc_scoring/output/
+evaluation/nedc_eeg_eval/nedc_scoring/output/
 evaluation/nedc_scoring/test_output/
 experiments/*/checkpoint*.pkl*
 experiments/*/*.pkl

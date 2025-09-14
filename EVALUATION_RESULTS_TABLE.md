@@ -7,13 +7,13 @@
 | Operating Point | Threshold | Kernel | MinDur | NEDC TAES (Temple) | NEDC OVERLAP (Temple) | NEDC OVERLAP (Native)* | SzCORE Any-Overlap |
 |-----------------|-----------|--------|--------|--------------------|-----------------------|-----------------------|-------------------|
 | **Default (paper)** | 0.800 | 5 | 2.0s | 24.71% / 60.83 FA | **45.63% / 25.01 FA** | 45.63% / 25.01 FA | **52.35% / 8.46 FA** |
-| **10 FA target** | 0.880 | 7 | 2.5s | 24.71% / 60.83 FA† | 45.63% / 25.01 FA† | 45.63% / 25.01 FA† | 41.76% / 3.57 FA |
+| **10 FA target** | 0.880 | 7 | 2.5s | 16.62% / 94.48 FA | 35.61% / 56.05 FA | 35.61% / 56.05 FA | 41.76% / 3.57 FA |
 | **2.5 FA target** | 0.930 | 11 | 5.0s | 4.13% / 38.60 FA | 11.51% / 2.45 FA | 11.51% / 2.44 FA | 27.94% / 1.32 FA |
 | **1 FA target** | 0.950 | 15 | 7.0s | 0.41% / 34.85 FA | 1.28% / 0.38 FA | 1.28% / 0.38 FA | **17.65% / 0.56 FA** |
 
 Format: Sensitivity% / FA per 24h
 
-† Note: 10FA Temple binary/native runs appear to have reused default parameters (needs rerun with correct thresholds)
+† Note: 10FA rerun completed with correct params (`--threshold 0.88 --kernel 7 --min_duration_sec 2.5`).
 
 ## Scoring Method Definitions
 
@@ -55,7 +55,7 @@ Format: Sensitivity% / FA per 24h
 ## Next Steps
 1. ~~Extract NEDC OVERLAP scores from existing Temple binary results~~ ✅ DONE
 2. ~~Run SzCORE on 10 FA and 2.5 FA operating points~~ ✅ DONE
-3. Run Temple NEDC binary on 10 FA (correct params)
+3. Rerun 10FA with correct params — DONE
 4. Create visualization comparing all scoring methods
 5. Document clinical implications of each metric
 
@@ -111,6 +111,22 @@ python -c "import pickle; c=pickle.load(open('checkpoint.pkl','rb')); print(len(
 ```
 
 ### Commands to Reproduce
+
+**⚠️ CRITICAL: 10FA row needs rerun with correct parameters!**
+```bash
+# FIX 10FA: Run these commands to get correct 10FA results
+python evaluation/nedc_scoring/run_nedc.py \
+  --checkpoint experiments/eval/baseline/checkpoint.pkl \
+  --outdir experiments/eval/baseline/results_10fa_nedc_binary \
+  --threshold 0.88 --kernel 7 --min_duration_sec 2.5 \
+  --backend nedc-binary --force
+
+python evaluation/nedc_scoring/run_nedc.py \
+  --checkpoint experiments/eval/baseline/checkpoint.pkl \
+  --outdir experiments/eval/baseline/results_10fa_nedc_native \
+  --threshold 0.88 --kernel 7 --min_duration_sec 2.5 \
+  --backend native-overlap --force
+```
 
 ```bash
 # 1. Run SzCORE scoring (default)

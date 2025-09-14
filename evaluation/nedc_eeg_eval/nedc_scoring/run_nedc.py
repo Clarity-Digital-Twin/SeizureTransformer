@@ -80,7 +80,7 @@ def run_conversion(
     # Run conversion script
     cmd = [
         sys.executable,
-        "evaluation/nedc_scoring/convert_predictions.py",
+        "evaluation/nedc_eeg_eval/nedc_scoring/convert_predictions.py",
         "--checkpoint",
         str(checkpoint_file),
         "--outdir",
