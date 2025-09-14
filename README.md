@@ -6,25 +6,36 @@
 [![TUSZ v2.0.3](https://img.shields.io/badge/TUSZ-v2.0.3%20eval-blue.svg)](https://isip.piconepress.com/projects/tuh_eeg/)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
-## What This Repository Provides (Industry Firsts)
+## 💡 Why This Work Matters
 
-**We are the FIRST to:**
-- Evaluate SeizureTransformer on TUSZ v2.0.3 eval split with NEDC v6.0.0
-- Systematically tune on TUSZ dev set and publish operating points
-- Reveal the 137x FA discrepancy between Dianalund and TUSZ
-- Provide complete reproducible pipeline with official Temple scoring
+**SeizureTransformer** won the 2025 EpilepsyBench Challenge with impressive metrics on Dianalund. But **nobody evaluated it on TUSZ** — the clinical standard dataset. We fill this critical gap.
 
-**Deliverables:**
-- Stock results (paper defaults: threshold=0.8) showing 137.5 FA/24h
-- Clinically tuned operating points (1-137.5 FA/24h targets)
-- Official NEDC binaries unmodified in `evaluation/nedc_eeg_eval/v6.0.0`
-- Maintained wrappers in `evaluation/nedc_scoring` for CSV_bi conversion
+### What We're the FIRST to Do:
+✅ Evaluate on TUSZ v2.0.3 eval split with NEDC v6.0.0 (Aug 2024 release)
+✅ Systematically tune on dev set, validate on eval (proper ML practice)
+✅ Reveal the **137x FA gap** between competition and clinical datasets
+✅ Publish complete operating points (thresholds for any FA target)
 
-## Why TUSZ Isn’t Shown on EpilepsyBench (and Why It Should Be)
+### What We Deliver:
+📊 **Stock results** (paper defaults: threshold=0.8) → 137.5 FA/24h
+📊 **Tuned results** (clinical targets: 1-10 FA/24h) → sensitivity trade-offs
+📊 **Official scoring** via unmodified Temple NEDC v6.0.0 binaries
+📊 **Reproducible pipeline** with checkpoints, scripts, and documentation
 
-- SzCORE marks datasets used for training with a locomotive icon and often omits same-dataset results.
-- TUSZ provides strict patient-disjoint train/dev/eval splits; evaluating on eval after tuning on dev is standard ML practice with no leakage.
-- The community needs these numbers: performance differs markedly between Dianalund (challenge) and TUSZ (clinical standard). Showing TUSZ results is informative and valid.
+## Why TUSZ Isn't Shown on EpilepsyBench (and Why It Should Be)
+
+**The Problem:** SzCORE marks datasets used for training with 🚂 and doesn't show evaluation results:
+
+<p align="center">
+<img src="transformer_on_benchsite.png" alt="SeizureTransformer marked with train emoji on TUSZ" width="600">
+<br>
+<em>Wu Transformer (SeizureTransformer) shows 🚂 for TUSZ, implying "can't evaluate here"</em>
+</p>
+
+**Why This is Wrong:**
+- TUSZ has **strict patient-disjoint splits** (train/dev/eval) — no data leakage
+- Evaluating on eval after tuning on dev is **standard ML practice**
+- The community **needs these numbers** — performance differs dramatically between datasets
 
 ## TUSZ v2.0.3 Dataset Structure
 
@@ -54,58 +65,67 @@
 
 > **Critical Insight**: The celebrated "1 FA/day" on Dianalund becomes **137.5 FA/day** on TUSZ — a 137x increase that fundamentally changes deployment viability.
 
-## Results at a Glance
+## Complete Results
 
-- AUROC: 0.9021 (sample-level discrimination on TUSZ eval)
-- NEDC TAES (official):
-  - Sensitivity: 24.15% (113/469)
-  - Precision: 43.98%
-  - F1: 31.19%
-  - False alarms: 137.5 per 24h
+### Stock Performance (Paper Defaults: threshold=0.8)
+- **AUROC**: 0.9021 (excellent discrimination)
+- **Sensitivity**: 24.15% (113/469 seizures detected)
+- **Precision**: 43.98%
+- **F1 Score**: 31.19%
+- **False Alarms**: 137.5 per 24h (clinical threshold is <10)
 
-### Operating Points (tuned on TUSZ dev, validated on eval)
+### Our Tuned Operating Points (Dev-tuned, Eval-validated)
 
-- 1 FA/24h → threshold ≈ 0.999 → sens ≈ 0.43%
-- 5 FA/24h → threshold ≈ 0.982 → sens ≈ 5.13%
-- 10 FA/24h → threshold ≈ 0.965 → sens ≈ 9.87% (typical clinical target)
-- 30 FA/24h → threshold ≈ 0.925 → sens ≈ 18.65%
-- 50 FA/24h → threshold ≈ 0.895 → sens ≈ 22.34%
-- 100 FA/24h → threshold ≈ 0.835 → sens ≈ 24.02%
-- 137.5 FA/24h → threshold = 0.800 → sens = 24.15% (paper-like default)
+| Target FA/24h | Threshold | Sensitivity | Clinical Viability |
+|---------------|-----------|-------------|-------------------|
+| 1 | 0.999 | 0.43% | ❌ Too low |
+| 5 | 0.982 | 5.13% | ⚠️ Borderline |
+| **10** | **0.965** | **9.87%** | **✅ Clinical target** |
+| 30 | 0.925 | 18.65% | ⚠️ High FA |
+| 50 | 0.895 | 22.34% | ❌ Excessive FA |
+| 100 | 0.835 | 24.02% | ❌ Unacceptable |
+| 137.5 | 0.800 | 24.15% | ❌ Paper default |
 
-These illustrate the sensitivity/false-alarm trade-off using official TAES scoring.
+> **Key Trade-off**: To achieve clinical FA rates (<10/day), sensitivity drops from 24% to <10%.
 
-## Reproducing the Evaluation
+---
 
-Prerequisites
-- Python 3.10+, CUDA GPU recommended, TUSZ v2.0.3.
+## 🚀 Quick Start
 
-Setup
+### Prerequisites
+- Python 3.10+, CUDA GPU (recommended), 32GB RAM
+- TUSZ v2.0.3 dataset (~5.2GB eval split)
+
+### Installation
 ```bash
+git clone https://github.com/Clarity-Digital-Twin/SeizureTransformer
+cd SeizureTransformer
 make install && source .venv/bin/activate
 ```
 
-Run TUSZ eval (held-out)
+### Run Complete Pipeline
+
+#### 1. Evaluate on TUSZ (Held-out Test Set)
 ```bash
 python evaluation/tusz/run_tusz_eval.py \
   --data_dir /path/to/TUSZ/v2.0.3/eval \
   --out_dir experiments/eval/baseline \
-  --device auto
+  --device auto  # Uses GPU if available
 ```
 
-Score with official NEDC v6.0.0
+#### 2. Score with NEDC v6.0.0 (Temple Official)
 ```bash
 make -C evaluation/nedc_scoring all \
   CHECKPOINT=../../experiments/eval/baseline/checkpoint.pkl \
   OUTDIR=../../experiments/eval/baseline/nedc_results
 ```
 
-Sweep/tune operating point (requires dev split)
+#### 3. Tune for Clinical Targets (Optional)
 ```bash
 python evaluation/nedc_scoring/sweep_operating_point.py \
   --checkpoint experiments/dev/baseline/checkpoint.pkl \
-  --outdir_base experiments/dev/sweeps/fa10 \
-  --target_fa_per_24h 10
+  --outdir_base experiments/dev/sweeps \
+  --target_fa_per_24h 10  # Clinical threshold
 ```
 
 ## Notes on NEDC Integration
