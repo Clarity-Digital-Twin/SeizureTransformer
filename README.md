@@ -199,24 +199,7 @@ SeizureTransformer/
 </details>
 
 <details>
-<summary><b>3. TUSZ Dataset</b></summary>
-
-```bibtex
-@article{shah2018temple,
-  title = {The Temple University Hospital Seizure Detection Corpus},
-  author = {Shah, V. and von Weltin, E. and Lopez, S. and McHugh, J. and Veloso, L. and Golmohammadi, M. and Obeid, I. and Picone, J.},
-  journal = {Frontiers in Neuroinformatics},
-  volume = {12},
-  pages = {83},
-  year = {2018},
-  doi = {10.3389/fninf.2018.00083},
-  note = {v2.0.3 used in this evaluation}
-}
-```
-</details>
-
-<details>
-<summary><b>4. NEDC Scoring Tool</b></summary>
+<summary><b>3. NEDC Scoring Tool</b></summary>
 
 ```bibtex
 @incollection{shah2021nedc,
@@ -233,16 +216,33 @@ SeizureTransformer/
 </details>
 
 <details>
-<summary><b>5. Siena Dataset (used in model training)</b></summary>
+<summary><b>4. TUSZ Dataset</b></summary>
 
 ```bibtex
-@misc{detti2020siena,
+@article{shah2018temple,
+  title = {The Temple University Hospital Seizure Detection Corpus},
+  author = {Shah, V. and von Weltin, E. and Lopez, S. and McHugh, J. and Veloso, L. and Golmohammadi, M. and Obeid, I. and Picone, J.},
+  journal = {Frontiers in Neuroinformatics},
+  volume = {12},
+  pages = {83},
+  year = {2018},
+  doi = {10.3389/fninf.2018.00083},
+  note = {v2.0.3 used in this evaluation}
+}
+```
+</details>
+
+<details>
+<summary><b>5. Siena Scalp EEG Dataset (used in model training)</b></summary>
+
+```bibtex
+@article{detti2020siena,
   title = {Siena Scalp EEG Database},
-  author = {Detti, Paolo},
+  author = {Detti, Paolo and Vatti, Giampaolo and Zabalo Manrique de Lara, Garazi},
+  journal = {PhysioNet},
   year = {2020},
-  publisher = {PhysioNet},
   doi = {10.13026/5d4a-j060},
-  note = {Used alongside TUSZ train for model training}
+  note = {Version 1.0.0, used alongside TUSZ train for model training}
 }
 ```
 </details>
