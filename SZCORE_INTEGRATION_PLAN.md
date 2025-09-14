@@ -105,7 +105,7 @@ evaluation/
 2. SzCORE via `pip install timescoring` - for competition metric comparison
 3. Native implementations only for NEDC methods (already have native-overlap)
 
-**Concrete Implementation Plan:**
+**Concrete Implementation Plan (accurate and minimal):**
 ```python
 # evaluation/szcore_scoring/run_szcore.py
 """
@@ -119,16 +119,26 @@ from pathlib import Path
 from timescoring.annotations import Annotation
 from timescoring.scoring import EventScoring
 
-def run_szcore_evaluation(checkpoint_pkl, output_dir):
+from evaluation.nedc_scoring.post_processing import (
+    apply_seizure_transformer_postprocessing,
+)
+
+def run_szcore_evaluation(checkpoint_pkl: str | Path, output_dir: str | Path,
+                          threshold: float = 0.8,
+                          morph_kernel_size: int = 5,
+                          min_duration_sec: float = 2.0,
+                          fs: int = 256) -> dict:
     """
     Run SzCORE's Any-Overlap scoring (as used in EpilepsyBench).
 
     Args:
         checkpoint_pkl: Path to checkpoint.pkl from TUSZ evaluation
-        output_dir: Where to save SzCORE metrics
+        output_dir: Directory to save SzCORE metrics
+        threshold, morph_kernel_size, min_duration_sec: post-processing params
+        fs: Sampling frequency of predictions (SeizureTransformer uses 256 Hz)
 
     Returns:
-        Dict with sensitivity, precision, f1, fpRate matching EpilepsyBench
+        Dict with micro-averaged sensitivity, precision, f1, fpRate (FA/24h)
     """
     # Load predictions from checkpoint
     with open(checkpoint_pkl, 'rb') as f:
@@ -143,27 +153,65 @@ def run_szcore_evaluation(checkpoint_pkl, output_dir):
         minDurationBetweenEvents=90  # Merge events < 90s apart
     )
 
-    all_results = []
+    # Micro-aggregation accumulators across files
+    sum_tp = 0
+    sum_fp = 0
+    sum_ref_true = 0
+    sum_seconds = 0.0
+
     for file_id, data in checkpoint['results'].items():
-        # Convert to Annotation objects
-        ref = Annotation(data['ground_truth'], fs=256, duration=data['duration'])
-        hyp = Annotation(data['predictions'], fs=256, duration=data['duration'])
+        # Ground truth events come from NEDC .csv_bi labels (seconds)
+        ref_events = data.get('seizure_events', [])
+
+        # Convert per-sample probabilities → events (seconds).
+        # IMPORTANT: For SzCORE, do NOT merge gaps here (SzCORE merges itself).
+        preds = data['predictions']  # numpy array of probs at `fs` Hz
+        hyp_events = apply_seizure_transformer_postprocessing(
+            predictions=preds,
+            threshold=threshold,
+            morph_kernel_size=morph_kernel_size,
+            min_duration_sec=min_duration_sec,
+            fs=fs,
+            merge_gap_sec=None,  # avoid double-merging (SzCORE merges)
+        )
+
+        # Build Annotation objects from event lists (seconds)
+        num_samples = len(preds)
+        ref = Annotation(ref_events, fs=fs, numSamples=num_samples)
+        hyp = Annotation(hyp_events, fs=fs, numSamples=num_samples)
 
         # Score with SzCORE parameters
-        scores = EventScoring(ref, hyp, params)
-        all_results.append({
-            'sensitivity': scores.sensitivity,
-            'precision': scores.precision,
-            'f1': scores.f1,
-            'fpRate': scores.fpRate
-        })
+        scores = EventScoring(ref, hyp, params)  # operates internally at 10 Hz
 
-    # Average across all files (as per SzCORE methodology)
-    return aggregate_metrics(all_results)
+        # Accumulate for micro-averages
+        sum_tp += scores.tp
+        sum_fp += scores.fp
+        sum_ref_true += scores.refTrue
+        sum_seconds += (scores.numSamples / scores.fs)  # seconds
+
+    # Micro-averaged metrics across corpus
+    sensitivity = (sum_tp / sum_ref_true) if sum_ref_true > 0 else float('nan')
+    precision = (sum_tp / (sum_tp + sum_fp)) if (sum_tp + sum_fp) > 0 else float('nan')
+    f1 = (
+        0.0 if (not sensitivity or not precision or (sensitivity + precision) == 0)
+        else 2 * sensitivity * precision / (sensitivity + precision)
+    )
+    fp_per_24h = sum_fp / (sum_seconds / (3600 * 24)) if sum_seconds > 0 else float('nan')
+
+    return {
+        'sensitivity': sensitivity,
+        'precision': precision,
+        'f1': f1,
+        'fpRate': fp_per_24h,
+        'files_scored': len(checkpoint['results']),
+    }
 ```
 
-### Option 2: Direct Library Usage
-Simply `pip install timescoring` and use it directly in our evaluation scripts. Less clean but faster.
+### Option 2: HED-SCORE TSV (Optional Artifacts)
+You may also emit SzCORE-compatible TSVs for archival or cross-tools:
+- Implement `convert_to_hedscore.py` to write one TSV per file with columns:
+  `onset, duration, eventType, confidence, channels, dateTime, recordingDuration`.
+- This is optional; direct Annotation use is simpler and avoids TSV formatting pitfalls.
 
 ### Option 3: Full Platform Integration (Not Recommended)
 Copy entire SzCORE platform. Overkill for our needs - we just need the scoring, not the containerization/CI infrastructure.
@@ -178,7 +226,8 @@ Copy entire SzCORE platform. Overkill for our needs - we just need the scoring, 
 ### What We ARE Doing:
 - ✅ Using `pip install timescoring` - it's an official package!
 - ✅ Creating a thin wrapper that calls the library
-- ✅ Converting our checkpoint.pkl format to HED-SCORE TSV
+- ✅ Building timescoring.Annotation directly from events (preferred)
+- ✅ Optionally supporting HED-SCORE TSV export (for artifacts)
 - ✅ Parallel architecture to NEDC (both are wrappers)
 
 ### Installation Instructions:
@@ -249,14 +298,52 @@ evaluation/
 │   └── post_processing.py  # Thresholds and morphological ops
 ├── szcore_scoring/          # SzCORE wrapper (to create)
 │   ├── __init__.py
-│   ├── run_szcore.py       # Uses pip-installed timescoring
-│   ├── convert_to_hedscore.py  # checkpoint.pkl → HED-SCORE TSV
+│   ├── run_szcore.py            # Uses pip-installed timescoring (preferred)
+│   ├── convert_to_hedscore.py   # Optional: checkpoint.pkl → HED-SCORE TSV
 │   └── README.md           # Usage documentation
 └── comparative_analysis/    # Compare both methodologies (Phase 3)
     └── scoring_comparison.py
 
 # Note: reference_repos/epilepsy_performance_metrics/ stays as reference only
 # We use pip-installed version, not a local copy
+
+## Makefile and CLI
+
+- Add a Makefile target mirroring NEDC usage:
+
+```
+run-szcore-score:
+	. .venv/bin/activate && python evaluation/szcore_scoring/run_szcore.py \
+		--checkpoint experiments/eval/baseline/checkpoint.pkl \
+		--outdir experiments/eval/baseline/szcore_results
+```
+
+- Provide a CLI in `run_szcore.py`:
+  - `--checkpoint`, `--outdir`, optional `--threshold`, `--kernel`, `--min_duration`.
+  - Writes a JSON with the corpus-level metrics and a CSV per-file if desired.
+
+## TDD Plan (fast, deterministic)
+
+- Eventization unit tests:
+  - Synthetic 256 Hz arrays with known “hills”; verify post-processing → events.
+- Annotation round-trip tests:
+  - Build Annotation from events at fs=256 and confirm mask/events consistency.
+- Scoring invariants:
+  - Single ref event vs tiny-overlap hyp; with defaults (minOverlap=0) expect TP=1.
+  - Increase `minOverlap` to verify TP drops when overlap is tiny.
+- Aggregation test:
+  - Two files with known tp/fp/refTrue; verify micro-averaged sensitivity/precision/f1/fpRate.
+- Smoke test (subset):
+  - Score 2–3 TUSZ eval files and verify: SzCORE sensitivity > NEDC OVERLAP; SzCORE fpRate << NEDC TAES.
+
+## Important Implementation Notes
+
+- Units:
+  - Inputs to Annotation use seconds and fs; timescoring up-samples internally to 10 Hz for EventScoring.
+- No double-merge:
+  - Keep `merge_gap_sec=None` in our post-processing when scoring with SzCORE; its 90s merge is applied inside timescoring.
+- Consistent inputs:
+  - Use the same threshold and morph kernel for both NEDC and SzCORE pipelines to isolate scoring-method effects.
 ```
 
 ## HED-SCORE Conversion Details
