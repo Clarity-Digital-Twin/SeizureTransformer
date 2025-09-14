@@ -1,6 +1,8 @@
 # SeizureTransformer: The Missing TUSZ Benchmark
 ## First NEDC v6.0.0 Evaluation Reveals 137x False Alarm Gap
 
+> **TL;DR**: SeizureTransformer won EpilepsyBench 2025 with 1 FA/day on Dianalund, but shows 137.5 FA/day on TUSZ (clinical standard). We provide the first complete evaluation with Temple NEDC v6.0.0 and tuned operating points.
+
 [![EpilepsyBench #1](https://img.shields.io/badge/EpilepsyBench%202025-%231%20Winner-gold.svg)](https://www.epfl.ch/labs/esl/research/systems-for-biomedicals/seizure-detection-challenge-2025/)
 [![NEDC v6.0.0](https://img.shields.io/badge/NEDC-v6.0.0%20Pioneer-brightgreen.svg)](https://www.isip.piconepress.com/projects/nedc/)
 [![TUSZ v2.0.3](https://img.shields.io/badge/TUSZ-v2.0.3%20eval-blue.svg)](https://isip.piconepress.com/projects/tuh_eeg/)
@@ -27,9 +29,9 @@
 **The Problem:** SzCORE marks datasets used for training with 🚂 and doesn't show evaluation results:
 
 <p align="center">
-<img src="transformer_on_benchsite.png" alt="SeizureTransformer marked with train emoji on TUSZ" width="600">
+<img src="epilepsy_bench.png" alt="EpilepsyBench SzCORE showing SeizureTransformer with train emoji on TUSZ" width="700">
 <br>
-<em>Wu Transformer (SeizureTransformer) shows 🚂 for TUSZ, implying "can't evaluate here"</em>
+<em>SeizureTransformer (Wu Transformer) shows 🚂 for TUSZ, implying "can't evaluate here"</em>
 </p>
 
 **Why This is Wrong:**
@@ -134,13 +136,31 @@ python evaluation/nedc_scoring/sweep_operating_point.py \
 - Our `evaluation/nedc_scoring/` tools convert predictions to Temple’s CSV_bi format and invoke the official scorer.
 - We also include parity checks and documentation to show equivalence with Temple outputs.
 
-## Repository Structure (abridged)
+## 📂 Repository Structure
 
-- `wu_2025/` — Original SeizureTransformer (untouched)
-- `evaluation/` — TUSZ evaluation and NEDC scoring tools
-- `experiments/` — Run outputs and sweeps
-- `tests/` — Fast pytest suite
-- `docs/` — Technical docs and evaluation reports
+```
+SeizureTransformer/
+├── wu_2025/                    # Original model (untouched)
+│   └── model.pth               # Pretrained weights (168MB)
+├── evaluation/
+│   ├── tusz/                   # TUSZ evaluation pipeline
+│   ├── nedc_scoring/           # Format conversion & scoring
+│   └── nedc_eeg_eval/v6.0.0/  # Official Temple binaries
+├── experiments/                # Results & parameter sweeps
+├── tests/                      # Comprehensive test suite
+└── docs/                       # Deep-dive documentation
+```
+
+<details>
+<summary>📚 For Deep Dives (click to expand)</summary>
+
+- [Complete Evaluation Results](docs/evaluation/EVALUATION_RESULTS.md) - Full metrics & analysis
+- [Operating Point Tuning Guide](SEIZURE_TRANSFORMER_TUNING_PLAN.md) - How we tuned thresholds
+- [NEDC Integration Details](NEDC_INTEGRATION_PLAN.md) - Temple scorer integration
+- [Architecture Documentation](docs/technical/IDEAL_REFERENCE_SEIZURE_TRANSFORMER_DATAFLOW.md) - Model internals
+- [Temple Divergence Analysis](docs/TEMPLE_DIVERGENCE_ANALYSIS.md) - Edge cases we found
+
+</details>
 
 ## Citations
 
