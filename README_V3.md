@@ -1,66 +1,203 @@
 # SeizureTransformer TUSZ Evaluation
+## First NEDC v6.0.0 Evaluation Reveals 137x False Alarm Gap
 
-## Summary
-[One-paragraph factual summary of what this repository contains]
+[![EpilepsyBench #1](https://img.shields.io/badge/EpilepsyBench%202025-%231%20Winner-gold.svg)](https://www.epfl.ch/labs/esl/research/systems-for-biomedicals/seizure-detection-challenge-2025/)
+[![NEDC v6.0.0](https://img.shields.io/badge/NEDC-v6.0.0%20Pioneer-brightgreen.svg)](https://www.isip.piconepress.com/projects/nedc/)
+[![TUSZ v2.0.3](https://img.shields.io/badge/TUSZ-v2.0.3%20eval-blue.svg)](https://isip.piconepress.com/projects/tuh_eeg/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-orange.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
-## Background
+## 📋 Summary
+SeizureTransformer won EpilepsyBench 2025 with 1 FA/day on Dianalund. We evaluated it on TUSZ v2.0.3 (clinical standard) using Temple's NEDC v6.0.0 scoring. Result: 137.5 FA/day at paper defaults, requiring threshold tuning to reach clinical targets.
+
+## 🎯 Background
 
 ### SeizureTransformer Model
-[Brief description of the model and its EpilepsyBench performance]
+Wu et al.'s transformer-based seizure detector won the 2025 EpilepsyBench Challenge. The model achieved 37% sensitivity with 1 FA/day on the Dianalund dataset, ranking #1 on the [SzCORE leaderboard](https://epilepsybenchmarks.com/benchmark/).
 
 ### The Gap in Current Evaluations
-[Why TUSZ evaluation was needed - factual statement about what's missing]
+EpilepsyBench doesn't show TUSZ results for models trained on it (marked with 🚂). Yet TUSZ is the clinical standard with patient-disjoint eval splits. No one had evaluated SeizureTransformer on TUSZ with proper clinical scoring.
 
 ### Our Contribution
-[What specifically we built and evaluated]
+- First TUSZ v2.0.3 evaluation using NEDC v6.0.0 (August 2025 release)
+- Systematic threshold tuning on dev set, validation on eval set
+- Dual-track implementation: Temple binaries + production Python code
+- Complete operating points for clinical deployment decisions
 
-## Results
+## 🚨 Results
 
 ### Performance Comparison
-[Table comparing Dianalund vs TUSZ results]
+
+| Dataset | Context | Sensitivity | False Alarms/24h | F1 Score |
+|---------|---------|-------------|------------------|-----------|
+| **Dianalund** | EpilepsyBench Winner | 37% | **1** ✅ | 43% |
+| **TUSZ eval** | Clinical Standard | 24.15% | **137.5** ❌ | 31.19% |
+
+The 137x false alarm increase fundamentally changes clinical viability.
 
 ### Clinical Operating Points
-[Table of thresholds tuned for different FA targets]
 
-### Key Metrics
-[Detailed metrics from NEDC v6.0.0 evaluation]
+| Target FA/24h | Threshold | Sensitivity | Clinical Use |
+|---------------|-----------|-------------|-------------|
+| 137.5 | 0.800 | 24.15% | Paper default |
+| **10** | **0.965** | **9.87%** | **Clinical target** |
+| 5 | 0.982 | 5.13% | Conservative |
+| 1 | 0.999 | 0.43% | Minimal FAs |
 
-## Evaluation Framework
+### Key Metrics (NEDC v6.0.0)
+- **AUROC**: 0.9021 (excellent discrimination capacity)
+- **Detected**: 113/469 seizures at default threshold
+- **Precision**: 43.98% at default threshold
+- **Files processed**: 864/865 (1 format error)
+
+## 🔧 Evaluation Framework
 
 ### Components
-[Three main components: model wrapper, NEDC integration, evaluation pipeline]
+1. **Model Wrapper**: Integrated Wu's pretrained SeizureTransformer for TUSZ inference
+2. **NEDC Integration**: Temple's v6.0.0 binaries (unmodified) for official scoring
+3. **Evaluation Pipeline**: Dev-set tuning → Eval-set validation (proper ML practice)
 
 ### NEDC v6.0.0 Integration
-[Temple binaries vs native Python implementation]
+
+| Implementation | Purpose | Location |
+|----------------|---------|----------|
+| Temple Binaries | Research validity | `evaluation/nedc_eeg_eval/v6.0.0/` |
+| Native Python | Production deployment | `seizure_evaluation/` |
+
+Both produce identical metrics (±0.1%). Temple's for papers, Python for deployment.
 
 ### Dataset and Methodology
-[TUSZ dataset structure, train/dev/eval splits]
 
-## Installation and Usage
+| TUSZ Split | Files | Hours | Seizures | Our Use |
+|------------|-------|-------|----------|----------|
+| Train | 1,557 | 3,050 | ~2,900 | Model training (per paper) |
+| Dev | 1,013 | 1,015 | ~920 | Threshold tuning |
+| Eval | 865 | 127.6 | 469 | Final results |
+
+Patient-disjoint splits prevent leakage. Standard practice: tune on dev, report on eval.
+
+## 🚀 Installation and Usage
 
 ### Prerequisites
-[Requirements]
+- Python 3.10+, CUDA GPU (recommended), 32GB RAM
+- TUSZ v2.0.3 dataset (see below for access)
+- SeizureTransformer weights from [Wu's repo](https://github.com/keruiwu/SeizureTransformer)
 
 ### Quick Start
-[Installation steps]
+```bash
+git clone https://github.com/Clarity-Digital-Twin/SeizureTransformer
+cd SeizureTransformer
+
+# Get model weights from https://github.com/keruiwu/SeizureTransformer
+# Place at: wu_2025/src/wu_2025/model.pth
+
+make install && source .venv/bin/activate
+```
 
 ### Obtaining TUSZ Dataset
-[Temple data access instructions]
+1. Request access: [Temple data use agreement](https://isip.piconepress.com/projects/nedc/html/tuh_eeg/)
+2. Email signed form to `help@nedcdata.org`
+3. Download with provided credentials:
+```bash
+# Eval split only (5.2GB, sufficient for reproduction)
+rsync -auxvL nedc-tuh-eeg@www.isip.piconepress.com:data/tuh_eeg/tuh_eeg_seizure/v2.0.3/edf/eval .
+```
+4. Place at: `wu_2025/data/tusz/v2.0.3/`
 
 ### Running the Evaluation
-[Commands to reproduce results]
+```bash
+# 1. Run inference on TUSZ
+python evaluation/tusz/run_tusz_eval.py \
+  --data_dir wu_2025/data/tusz/v2.0.3/edf/eval \
+  --out_dir experiments/eval/baseline
 
-## Repository Structure
-[Directory layout and organization]
+# 2. Score with NEDC v6.0.0
+make -C evaluation/nedc_scoring all \
+  CHECKPOINT=../../experiments/eval/baseline/checkpoint.pkl
 
-## Technical Documentation
-[Links to detailed documentation]
+# 3. Tune thresholds (optional)
+python evaluation/nedc_scoring/sweep_operating_point.py \
+  --checkpoint experiments/dev/baseline/checkpoint.pkl \
+  --target_fa_per_24h 10
+```
 
-## Citations
-[Bibtex entries for all components]
+## 📂 Repository Structure
 
-## License
-[License information]
+```
+SeizureTransformer/
+├── wu_2025/                    # Original model (do not modify)
+│   ├── src/wu_2025/model.pth   # Pretrained weights (168MB)
+│   └── data/tusz/v2.0.3/       # TUSZ dataset location
+├── evaluation/                 # Evaluation pipeline
+│   ├── tusz/                   # TUSZ inference
+│   ├── nedc_scoring/           # NEDC orchestration
+│   └── nedc_eeg_eval/v6.0.0/  # Temple binaries
+├── seizure_evaluation/         # Native Python NEDC
+└── experiments/                # Results & checkpoints
+```
 
-## Acknowledgments
-[Credits]
+## 📚 Technical Documentation
+
+<details>
+<summary>For Deep Dives</summary>
+
+- [Complete Results](docs/evaluation/EVALUATION_RESULTS.md) - All metrics & analysis
+- [Operating Points](SEIZURE_TRANSFORMER_TUNING_PLAN.md) - Threshold tuning methodology
+- [NEDC Integration](NEDC_INTEGRATION_PLAN.md) - Temple scorer details
+- [Model Architecture](docs/technical/IDEAL_REFERENCE_SEIZURE_TRANSFORMER_DATAFLOW.md) - Internals
+
+</details>
+
+## 📝 Citations
+
+<details>
+<summary>BibTeX Entries</summary>
+
+```bibtex
+# Our Evaluation
+@software{seizuretransformer_tusz_2025,
+  title = {SeizureTransformer TUSZ Evaluation with NEDC v6.0.0},
+  author = {{Clarity Digital Twin Team}},
+  year = {2025},
+  url = {https://github.com/Clarity-Digital-Twin/SeizureTransformer}
+}
+
+# Original Model
+@article{wu2025seizuretransformer,
+  title = {SeizureTransformer: Scaling U-Net with Transformer},
+  author = {Wu, Kerui and Zhao, Ziyue and Yener, Bülent},
+  journal = {arXiv preprint arXiv:2504.00336},
+  year = {2025}
+}
+
+# NEDC Scoring
+@incollection{shah2021nedc,
+  title = {Objective Evaluation Metrics for EEG Events},
+  author = {Shah, V. and Golmohammadi, M. and Obeid, I. and Picone, J.},
+  booktitle = {Signal Processing in Medicine and Biology},
+  year = {2021}
+}
+
+# TUSZ Dataset
+@article{shah2018temple,
+  title = {The Temple University Hospital Seizure Detection Corpus},
+  author = {Shah, V. and others},
+  journal = {Frontiers in Neuroinformatics},
+  year = {2018}
+}
+```
+
+</details>
+
+## ⚖️ License
+
+- Our code: Apache-2.0
+- SeizureTransformer: MIT (Wu et al.)
+- NEDC tools: Temple University License
+- TUSZ data: Requires data use agreement
+
+## 🙏 Acknowledgments
+
+- Kerui Wu for SeizureTransformer model and weights
+- Temple University NEDC for dataset and scoring tools
+- SzCORE/EpilepsyBench for benchmark infrastructure
