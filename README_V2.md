@@ -70,9 +70,9 @@ TUSZ annotations were created by Temple University following specific clinical g
 ## 🔧 Evaluation Framework
 
 ### Components
-1. **Model Wrapper**: Integrated Wu's pretrained SeizureTransformer for TUSZ inference
+1. **Model Wrapper**: Integrated Wu's pretrained SeizureTransformer for TUSZ inference (no retraining - using authors' weights)
 2. **NEDC Integration**: Temple's v6.0.0 binaries (unmodified) for official scoring
-3. **Evaluation Pipeline**: Dev-set tuning → Eval-set validation (proper ML practice)
+3. **Evaluation Pipeline**: Dev-set tuning → Eval-set validation (only post-processing thresholds tuned)
 
 ### NEDC v6.0.0 Integration
 
@@ -93,11 +93,11 @@ python tests/integration/test_nedc_conformance.py  # Confirms ±0.1% match
 
 | TUSZ Split | Files | Hours | Seizures | Our Use |
 |------------|-------|-------|----------|----------|
-| Train | 1,557 | 3,050 | ~2,900 | Model training (per paper) |
+| Train | 1,557 | 3,050 | ~2,900 | Not used (pretrained model) |
 | Dev | 1,013 | 1,015 | ~920 | Threshold tuning |
 | Eval (held-out) | 865 | 127.6 | 469 | Final results |
 
-Patient-disjoint splits prevent leakage. Standard practice: tune on dev, report on eval.
+**Note**: Paper trains on TUSZ train subset (≈910h) + Siena (128h). Hours shown reflect full split sizes. We use the authors' pretrained weights; no retraining performed. Patient-disjoint splits prevent leakage. Standard practice: tune on dev, report on eval.
 
 ## 🚀 Installation and Usage
 
