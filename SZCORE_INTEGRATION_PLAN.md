@@ -44,36 +44,93 @@ The 137x difference in false alarms (1 FA/24h vs 137.5 FA/24h) is due to:
 
 ## Integration Strategy
 
-### Option 1: Light Wrapper (Recommended)
-Create `evaluation/szcore_scoring/` parallel to `evaluation/nedc_scoring/`:
+### Option 1: Copy Library for Perfect Parallelism (Recommended)
+We will copy the `epilepsy_performance_metrics` library to maintain **exact parallelism** with our NEDC approach:
 
 ```
 evaluation/
-├── nedc_scoring/        # Temple's clinical standard (already done)
-│   └── run_nedc.py      # --backend nedc-binary (TAES, OVERLAP, etc.)
-├── szcore_scoring/       # EpilepsyBench competition standard (to do)
-│   ├── __init__.py
-│   ├── run_szcore.py    # Main wrapper using timescoring library
-│   ├── convert_to_hedscore.py  # Convert checkpoint.pkl to HED-SCORE format
-│   └── README.md
+├── nedc_eeg_eval/v6.0.0/   # Official NEDC binary (copied, untouched)
+├── timescoring/v1.0.0/      # Official timescoring library (copied, untouched)
+│   ├── src/timescoring/     # Copy from reference_repos/epilepsy_performance_metrics/src/
+│   ├── LICENSE              # Their original license
+│   └── README.md            # Note that this is unmodified upstream code
+├── nedc_scoring/            # Our NEDC wrapper (done)
+│   └── run_nedc.py         # Calls ../nedc_eeg_eval/v6.0.0/
+└── szcore_scoring/          # Our SzCORE wrapper (to do)
+    ├── __init__.py
+    ├── run_szcore.py       # Imports from ../timescoring/v1.0.0/
+    ├── convert_to_hedscore.py  # checkpoint.pkl → HED-SCORE TSV
+    └── README.md
 ```
+
+**Why Copy Instead of Pip:**
+- **Perfect parallelism**: Both NEDC and SzCORE have their official code in `evaluation/`
+- **Version locked**: Exact version v1.0.0, won't break with updates
+- **Self-contained**: No external dependencies
+- **Clear provenance**: Obviously using unmodified official implementation
 
 **Critical Design Decision:** We will NOT implement native SzCORE. We only need:
 1. NEDC official wrapper (done) - provides TAES, OVERLAP, and 3 other metrics
-2. SzCORE via timescoring library - for competition metric comparison
+2. SzCORE via copied `timescoring` library - for competition metric comparison
 3. Native implementations only for NEDC methods (already have native-overlap)
 
-**Implementation:**
+**Concrete Implementation Plan:**
 ```python
 # evaluation/szcore_scoring/run_szcore.py
-import timescoring  # pip install timescoring
+"""
+Wrapper for SzCORE's Any-Overlap scoring using timescoring library.
+This reproduces EpilepsyBench 2025's evaluation methodology.
+"""
+import sys
+import pickle
+from pathlib import Path
+
+# Import from our copied library
+sys.path.insert(0, str(Path(__file__).parent.parent / 'timescoring' / 'v1.0.0' / 'src'))
+from timescoring.annotations import Annotation
+from timescoring.scoring import EventScoring
 
 def run_szcore_evaluation(checkpoint_pkl, output_dir):
-    """Run SzCORE's Any-Overlap scoring (as used in EpilepsyBench)."""
-    # Convert checkpoint.pkl to HED-SCORE format
-    # Apply SzCORE parameters (30s pre, 60s post, etc.)
-    # Run timescoring with Any-Overlap
-    # Return metrics matching EpilepsyBench reporting
+    """
+    Run SzCORE's Any-Overlap scoring (as used in EpilepsyBench).
+
+    Args:
+        checkpoint_pkl: Path to checkpoint.pkl from TUSZ evaluation
+        output_dir: Where to save SzCORE metrics
+
+    Returns:
+        Dict with sensitivity, precision, f1, fpRate matching EpilepsyBench
+    """
+    # Load predictions from checkpoint
+    with open(checkpoint_pkl, 'rb') as f:
+        checkpoint = pickle.load(f)
+
+    # Define SzCORE parameters (from challenge description)
+    params = EventScoring.Parameters(
+        toleranceStart=30,        # 30s pre-ictal tolerance
+        toleranceEnd=60,          # 60s post-ictal tolerance
+        minOverlap=0,             # ANY overlap (even 1 sample)
+        maxEventDuration=5*60,    # Split events > 5 minutes
+        minDurationBetweenEvents=90  # Merge events < 90s apart
+    )
+
+    all_results = []
+    for file_id, data in checkpoint['results'].items():
+        # Convert to Annotation objects
+        ref = Annotation(data['ground_truth'], fs=256, duration=data['duration'])
+        hyp = Annotation(data['predictions'], fs=256, duration=data['duration'])
+
+        # Score with SzCORE parameters
+        scores = EventScoring(ref, hyp, params)
+        all_results.append({
+            'sensitivity': scores.sensitivity,
+            'precision': scores.precision,
+            'f1': scores.f1,
+            'fpRate': scores.fpRate
+        })
+
+    # Average across all files (as per SzCORE methodology)
+    return aggregate_metrics(all_results)
 ```
 
 ### Option 2: Direct Library Usage
@@ -82,11 +139,41 @@ Simply `pip install timescoring` and use it directly in our evaluation scripts. 
 ### Option 3: Full Platform Integration (Not Recommended)
 Copy entire SzCORE platform. Overkill for our needs - we just need the scoring, not the containerization/CI infrastructure.
 
+## Implementation Approach Clarification
+
+### What We're NOT Doing:
+- ❌ Not implementing our own version of SzCORE scoring
+- ❌ Not modifying the timescoring library code
+- ❌ Not using pip install (to maintain parallelism with NEDC)
+
+### What We ARE Doing:
+- ✅ Copying `epilepsy_performance_metrics` to `evaluation/timescoring/v1.0.0/` (untouched)
+- ✅ Creating a thin wrapper that imports from the copied library
+- ✅ Converting our checkpoint.pkl format to what timescoring expects
+- ✅ Perfect parallelism with our NEDC wrapper architecture
+
+### Copy Instructions:
+```bash
+# Step 1: Copy the library preserving structure
+cp -r reference_repos/epilepsy_performance_metrics/src evaluation/timescoring/v1.0.0/
+cp reference_repos/epilepsy_performance_metrics/LICENSE evaluation/timescoring/v1.0.0/
+cp reference_repos/epilepsy_performance_metrics/README.md evaluation/timescoring/v1.0.0/
+
+# Step 2: Add a note that this is unmodified upstream code
+echo "# Note: This is unmodified code from https://github.com/esl-epfl/epilepsy_performance_metrics" > evaluation/timescoring/v1.0.0/DO_NOT_MODIFY.md
+```
+
+### Why Copy Instead of Pip:
+1. **Perfect parallelism**: Matches NEDC approach exactly
+2. **Version control**: We know exactly what version we're using
+3. **Reproducibility**: No external dependencies
+4. **Clear structure**: Both official implementations live in `evaluation/`
+
 ## Recommended Actions
 
 ### Phase 1: Immediate (This Week)
 1. ✅ Create `SZCORE_INTEGRATION_PLAN.md` (this document)
-2. Install `timescoring` library: `pip install timescoring`
+2. Copy `epilepsy_performance_metrics` to `evaluation/timescoring/v1.0.0/`
 3. Create minimal wrapper at `evaluation/szcore_scoring/run_szcore.py`
 4. Run on TUSZ eval to get SzCORE metrics (expect ~2-5 FA/24h, not the 137.5 from NEDC)
 
@@ -122,14 +209,59 @@ pip install "timescoring[plotting]"
 
 ```
 evaluation/
-├── nedc_eeg_eval/v6.0.0/   # Temple's NEDC binary (unmodified)
+├── nedc_eeg_eval/v6.0.0/   # Temple's NEDC binary (unmodified, copied)
 ├── nedc_scoring/            # NEDC wrapper (complete)
-│   └── run_nedc.py         # Calls NEDC binary, extracts 5 metrics
+│   ├── run_nedc.py         # Calls NEDC binary, extracts 5 metrics
+│   ├── convert_predictions.py  # checkpoint.pkl → CSV_bi format
+│   └── post_processing.py  # Thresholds and morphological ops
 ├── szcore_scoring/          # SzCORE wrapper (to create)
-│   ├── run_szcore.py       # Uses timescoring library
-│   └── hedscore_convert.py # Format conversion
-└── comparative_analysis/    # Compare both methodologies
+│   ├── __init__.py
+│   ├── run_szcore.py       # Uses pip-installed timescoring
+│   ├── convert_to_hedscore.py  # checkpoint.pkl → HED-SCORE TSV
+│   └── README.md           # Usage documentation
+└── comparative_analysis/    # Compare both methodologies (Phase 3)
     └── scoring_comparison.py
+
+# Note: reference_repos/epilepsy_performance_metrics/ stays as reference only
+# We use pip-installed version, not a local copy
+```
+
+## HED-SCORE Conversion Details
+
+```python
+# evaluation/szcore_scoring/convert_to_hedscore.py
+"""Convert checkpoint.pkl predictions to HED-SCORE TSV format."""
+
+def convert_to_hedscore(checkpoint_pkl, output_dir):
+    """
+    Convert predictions to HED-SCORE format required by timescoring.
+
+    HED-SCORE TSV format:
+    onset	duration	eventType	confidence	channels	dateTime	        recordingDuration
+    296.0	40.0    	sz      	n/a     	n/a     	2016-11-06 13:43:04	3600.00
+    """
+    with open(checkpoint_pkl, 'rb') as f:
+        checkpoint = pickle.load(f)
+
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    for file_id, data in checkpoint['results'].items():
+        events = data['predictions']  # List of (start, end) tuples
+        duration = data['duration']
+
+        # Create TSV content
+        lines = ['onset\tduration\teventType\tconfidence\tchannels\tdateTime\trecordingDuration']
+
+        for start, end in events:
+            onset = start / 256.0  # Convert samples to seconds
+            event_duration = (end - start) / 256.0
+            # Use dummy datetime (not evaluated)
+            lines.append(f'{onset:.1f}\t{event_duration:.1f}\tsz\tn/a\tn/a\t2024-01-01 00:00:00\t{duration:.2f}')
+
+        # Write TSV file
+        output_file = output_dir / f'{file_id}.tsv'
+        output_file.write_text('\n'.join(lines))
 ```
 
 ## Next Steps
