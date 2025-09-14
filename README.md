@@ -19,7 +19,10 @@
 Wu et al.'s transformer-based seizure detector won the 2025 EpilepsyBench Challenge. The model achieved 37% sensitivity with 1 FA/24h on the Dianalund dataset, ranking #1 on the [SzCORE leaderboard](https://epilepsybenchmarks.com/benchmark/).
 
 ### The Gap in Current Evaluations
-EpilepsyBench evaluates all datasets using SzCORE's simplified "Any-Overlap" scoring, not the dataset-specific clinical scorers. TUSZ results for models trained on it are marked with 🚂, though TUSZ's patient-disjoint splits should enable valid held-out evaluation. Yet TUSZ paired with NEDC scoring represents the clinical gold standard. No one had evaluated SeizureTransformer on TUSZ using Temple's official NEDC scorer.
+- EpilepsyBench uses SzCORE's simplified "Any-Overlap" scoring for all datasets, not dataset-specific clinical scorers
+- TUSZ results for models trained on it are marked with 🚂, despite patient-disjoint splits enabling valid held-out evaluation
+- TUSZ paired with NEDC scoring represents the clinical gold standard
+- No one had evaluated SeizureTransformer on TUSZ using Temple's official NEDC scorer
 
 <p align="center">
 <img src="docs/images/wu_ebench.png" alt="EpilepsyBench showing SeizureTransformer #1 but no TUSZ results" width="700">
