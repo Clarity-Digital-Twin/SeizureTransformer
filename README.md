@@ -12,32 +12,33 @@
 
 **SeizureTransformer** won the 2025 EpilepsyBench Challenge with impressive metrics on Dianalund. But **nobody evaluated it on TUSZ** — the clinical standard dataset. We fill this critical gap.
 
-### What We're the FIRST to Do:
-✅ Evaluate on TUSZ v2.0.3 eval split with NEDC v6.0.0 (Aug 2024 release)
-✅ Systematically tune on dev set, validate on eval (proper ML practice)
-✅ Reveal the **137x FA gap** between competition and clinical datasets
-✅ Publish complete operating points (thresholds for any FA target)
+### ✅ What We're the FIRST to Do:
+- Evaluate on TUSZ v2.0.3 eval split with NEDC v6.0.0 (Aug 2024 release)
+- Systematically tune on dev set, validate on eval (proper ML practice)
+- Reveal the **137x FA gap** between competition and clinical datasets
+- Publish complete operating points (thresholds for any FA target)
 
-### What We Deliver:
-📊 **Stock results** (paper defaults: threshold=0.8) → 137.5 FA/24h
-📊 **Tuned results** (clinical targets: 1-10 FA/24h) → sensitivity trade-offs
-📊 **Official scoring** via unmodified Temple NEDC v6.0.0 binaries
-📊 **Reproducible pipeline** with checkpoints, scripts, and documentation
+### 📊 What We Deliver:
+- **Stock results** (paper defaults: threshold=0.8) → 137.5 FA/24h
+- **Tuned results** (clinical targets: 1-10 FA/24h) → sensitivity trade-offs
+- **Official scoring** via unmodified Temple NEDC v6.0.0 binaries
+- **Reproducible pipeline** with checkpoints, scripts, and documentation
 
-## Why TUSZ Isn't Shown on EpilepsyBench (and Why It Should Be)
+## Why TUSZ Isn't Shown on [EpilepsyBench](https://epilepsybenchmarks.com/benchmark/)
 
-**The Problem:** SzCORE marks datasets used for training with 🚂 and doesn't show evaluation results:
+**The Current Policy:** SzCORE/EpilepsyBench marks datasets used for training with 🚂 to emphasize cross-dataset generalization:
 
 <p align="center">
-<img src="epilepsy_bench.png" alt="EpilepsyBench SzCORE showing SeizureTransformer with train emoji on TUSZ" width="700">
+<img src="wu_ebench.png" alt="EpilepsyBench SzCORE showing SeizureTransformer with train emoji on TUSZ" width="700">
 <br>
-<em>SeizureTransformer (Wu Transformer) shows 🚂 for TUSZ, implying "can't evaluate here"</em>
+<em>SeizureTransformer (Wu Transformer) shows 🚂 for TUSZ on the <a href="https://epilepsybenchmarks.com/benchmark/">SzCORE benchmark</a></em>
 </p>
 
-**Why This is Wrong:**
-- TUSZ has **strict patient-disjoint splits** (train/dev/eval) — no data leakage
-- Evaluating on eval after tuning on dev is **standard ML practice**
-- The community **needs these numbers** — performance differs dramatically between datasets
+**Why TUSZ Eval Results Still Matter:**
+- TUSZ has **strict patient-disjoint splits** (train/dev/eval) — evaluation on held-out eval set is valid
+- The [SzCORE paper](https://arxiv.org/html/2402.13005v3) itself states: "Fixed training and test sets with predetermined subjects are appropriate for large datasets (e.g. TUH EEG Sz Corpus)"
+- **Cross-dataset generalization is important**, but so is **in-domain performance** on the clinical standard
+- The 137x FA gap shows that competition performance doesn't translate to clinical deployment
 
 ## TUSZ v2.0.3 Dataset Structure
 
