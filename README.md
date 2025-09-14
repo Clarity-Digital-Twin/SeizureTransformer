@@ -43,9 +43,6 @@
 
 ## TUSZ v2.0.3 Dataset Structure
 
-<details>
-<summary>📊 Split sizes and usage (click to expand)</summary>
-
 | Split | Files | Hours | Seizures | Usage |
 |-------|-------|-------|----------|--------|
 | Train | 1,557 | 3,050 | ~2,900 | Model training (per paper) |
@@ -55,8 +52,6 @@
 - ✅ **No patient overlap** between splits (prevents leakage)
 - ✅ **Standard ML practice**: train → dev → eval
 - ✅ **864/865 files processed** (1 format error)
-
-</details>
 
 ---
 
@@ -82,13 +77,13 @@
 
 | Target FA/24h | Threshold | Sensitivity | Clinical Viability |
 |---------------|-----------|-------------|-------------------|
-| 1 | 0.999 | 0.43% | ❌ Too low |
-| 5 | 0.982 | 5.13% | ⚠️ Borderline |
-| **10** | **0.965** | **9.87%** | **✅ Clinical target** |
-| 30 | 0.925 | 18.65% | ⚠️ High FA |
-| 50 | 0.895 | 22.34% | ❌ Excessive FA |
-| 100 | 0.835 | 24.02% | ❌ Unacceptable |
 | 137.5 | 0.800 | 24.15% | ❌ Paper default |
+| 100 | 0.835 | 24.02% | ❌ Unacceptable |
+| 50 | 0.895 | 22.34% | ❌ Excessive FA |
+| 30 | 0.925 | 18.65% | ⚠️ High FA |
+| **10** | **0.965** | **9.87%** | **✅ Clinical target** |
+| 5 | 0.982 | 5.13% | ⚠️ Borderline |
+| 1 | 0.999 | 0.43% | ❌ Too low |
 
 > **Key Trade-off**: To achieve clinical FA rates (<10/day), sensitivity drops from 24% to <10%.
 
