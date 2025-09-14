@@ -124,3 +124,84 @@ for threshold in [0.80, 0.85, 0.90, 0.95]:
 ## Critical Insight
 
 **Morphological kernel size has an inverse relationship with false alarm reduction. Larger kernels dilate seizure boundaries, increasing total seizure time and false alarm rates.**
+
+## Comprehensive Fix Plan
+
+### 1. Pipeline Assessment
+**Verdict: Pipeline code is CORRECT - only parameter values need adjustment**
+
+The issue is NOT in our implementation but in parameter selection:
+- `convert_predictions.py` correctly applies morphological operations
+- NEDC scoring integration works properly
+- The bug is in the parameter combinations chosen for operating points
+
+### 2. What Numbers Are Affected
+
+#### Correct (No Action Needed):
+- **Default operating point**: 24.71% sensitivity, 60.83 FA/24h ✅
+- **AUROC**: 0.9021 ✅
+- **Dataset statistics**: 864 files, 469 seizures ✅
+
+#### Incorrect (Need Recomputation):
+- **10 FA operating point**: Currently shows 94.48 FA/24h (should be ~10)
+- **2.5 FA operating point**: Currently shows 38.60 FA/24h (should be ~2.5)
+- **1 FA operating point**: Currently shows 34.85 FA/24h (should be ~1)
+
+### 3. Recommended Parameter Tuning Strategy
+
+```python
+# Phase 1: Grid search with fixed kernel
+kernel = 5  # Keep Wu et al.'s default
+thresholds = np.linspace(0.80, 0.99, 20)
+min_durations = [2.0, 3.0, 4.0, 5.0, 6.0, 7.0]
+
+# Phase 2: Fine-tune around targets
+# Find threshold/min_duration combinations that achieve:
+# - 10 FA/24h ± 1
+# - 2.5 FA/24h ± 0.5
+# - 1 FA/24h ± 0.2
+```
+
+### 4. Implementation Steps
+
+1. **Run parameter sweep on dev set** (not eval):
+   ```bash
+   python evaluation/nedc_scoring/sweep_operating_point.py \
+     --checkpoint experiments/dev/baseline/checkpoint.pkl \
+     --kernel 5 \
+     --threshold-range 0.80 0.99 \
+     --min-duration-range 2.0 7.0
+   ```
+
+2. **Validate on eval set** with discovered parameters
+
+3. **Update documentation** with correct values
+
+### 5. Documentation Updates Required
+
+| File | Section | Status |
+|------|---------|--------|
+| `README.md` | Operating Points table | Needs update after retuning |
+| `EVALUATION_RESULTS_TABLE.md` | All operating points except default | Needs update |
+| `docs/evaluation/EVALUATION_RESULTS.md` | Operating points | Needs update |
+
+### 6. No Code Changes Required
+
+The following components work correctly and need NO modifications:
+- `evaluation/nedc_eeg_eval/nedc_scoring/convert_predictions.py`
+- `evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py`
+- `seizure_evaluation/taes/overlap_scorer.py`
+- Temple NEDC binary integration
+
+## Summary
+
+**The issue**: Parameter tuning assumed larger kernel = stricter detection, but morphological dilation works opposite to intuition.
+
+**The fix**: Retune parameters with proper understanding of morphological operations, keeping kernel fixed or decreasing it for stricter operating points.
+
+**Timeline**:
+- 2-3 hours for parameter sweep on dev set
+- 1 hour to validate on eval set
+- 30 minutes to update documentation
+
+**Risk**: None - this is purely a parameter tuning issue, not a code bug.
