@@ -8,7 +8,7 @@
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-orange.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 ## 📋 Summary
-SeizureTransformer won EpilepsyBench 2025 with 1 FA/24h on Dianalund. We evaluated it on TUSZ v2.0.3 (clinical standard) using Temple's NEDC v6.0.0 scoring. Result: 137.5 FA/24h at paper defaults, requiring threshold tuning to reach clinical targets.
+SeizureTransformer won EpilepsyBench 2025 with 1 FA/24h on Dianalund (using SzCORE's "Any-Overlap" scoring). We evaluated it on TUSZ v2.0.3 using Temple's NEDC v6.0.0 - the clinical standard scorer for this dataset. Result: 137.5 FA/24h at paper defaults, revealing a critical gap between competition metrics and clinical deployment requirements.
 
 ## 🎯 Background
 
@@ -16,7 +16,7 @@ SeizureTransformer won EpilepsyBench 2025 with 1 FA/24h on Dianalund. We evaluat
 Wu et al.'s transformer-based seizure detector won the 2025 EpilepsyBench Challenge. The model achieved 37% sensitivity with 1 FA/24h on the Dianalund dataset, ranking #1 on the [SzCORE leaderboard](https://epilepsybenchmarks.com/benchmark/).
 
 ### The Gap in Current Evaluations
-EpilepsyBench doesn't show TUSZ results for models trained on it (marked with 🚂). Yet TUSZ is the clinical standard with patient-disjoint eval splits. No one had evaluated SeizureTransformer on TUSZ with proper clinical scoring.
+EpilepsyBench evaluates all datasets using SzCORE's simplified "Any-Overlap" scoring, not the dataset-specific clinical scorers. TUSZ results for models trained on it are marked with 🚂. Yet TUSZ paired with NEDC scoring represents the clinical gold standard. No one had evaluated SeizureTransformer on TUSZ using Temple's official NEDC scorer.
 
 <p align="center">
 <img src="docs/images/wu_ebench.png" alt="EpilepsyBench showing SeizureTransformer #1 but no TUSZ results" width="700">
@@ -25,7 +25,8 @@ EpilepsyBench doesn't show TUSZ results for models trained on it (marked with �
 </p>
 
 ### Our Contribution
-- First TUSZ v2.0.3 evaluation using NEDC v6.0.0 (2025)
+- First TUSZ v2.0.3 evaluation using NEDC v6.0.0 - Temple's official clinical scorer (2025)
+- Reveals performance gap when using proper dataset-matched scoring vs generic SzCORE
 - Systematic threshold tuning on dev set, validation on eval set
 - Dual-track implementation: Temple binaries + production Python code
 - Complete operating points for clinical deployment decisions
@@ -34,12 +35,19 @@ EpilepsyBench doesn't show TUSZ results for models trained on it (marked with �
 
 ### Performance Comparison
 
-| Dataset | Context | Sensitivity | False Alarms/24h | F1 Score |
-|---------|---------|-------------|------------------|-----------|
-| **Dianalund** | EpilepsyBench Winner | 37% | **1 FA/24h** ✅ | 43% |
-| **TUSZ eval (held-out)** | Clinical Standard (TAES) | 24.15% | **137.5 FA/24h** ❌ | 31.19% |
+| Dataset | Scoring Method | Sensitivity | False Alarms/24h | F1 Score |
+|---------|---------------|-------------|------------------|-----------|
+| **Dianalund** | SzCORE Any-Overlap¹ | 37% | **1 FA/24h** ✅ | 43% |
+| **TUSZ eval (held-out)** | NEDC v6.0.0 TAES² | 24.15% | **137.5 FA/24h** ❌ | 31.19% |
 
-The 137x false alarm rate increase fundamentally changes clinical viability.
+¹ SzCORE: Lenient event-based scoring where any overlap counts as detection
+² NEDC TAES: Clinical standard with strict time-alignment penalties
+
+**Critical Note**: These metrics use different scoring algorithms. SzCORE's "Any-Overlap" is more forgiving than NEDC's TAES scoring. However, NEDC is the authoritative scorer for TUSZ as both were developed by Temple University for clinical EEG evaluation.
+
+### Why NEDC for TUSZ?
+
+TUSZ annotations were created by Temple University following specific clinical guidelines. NEDC scoring was designed by the same team to evaluate these annotations correctly. Using alternative scoring methods (like SzCORE) on TUSZ is like grading a Harvard exam with MIT's answer key - it may produce numbers, but they don't reflect the intended evaluation criteria.
 
 ### Clinical Operating Points
 
@@ -51,8 +59,9 @@ The 137x false alarm rate increase fundamentally changes clinical viability.
 | 1 | 0.999 | 0.43% | Minimal FAs |
 
 ### Key Metrics (NEDC v6.0.0)
-- **Scoring**: NEDC v6.0.0 TAES/OVERLAP (official Temple metrics)
-- **Default**: We report TAES by default; OVLP also available
+- **Scoring**: NEDC v6.0.0 TAES/OVERLAP (Temple's official metrics for TUSZ)
+- **Default**: We report TAES by default (strictest clinical standard)
+- **Why NEDC**: Temple created both TUSZ dataset and NEDC scorer as a matched pair
 - **AUROC**: 0.9021 (excellent discrimination capacity)
 - **Detected**: 113/469 seizures at default threshold
 - **Precision**: 43.98% at default threshold
