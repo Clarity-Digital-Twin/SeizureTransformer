@@ -8,12 +8,12 @@
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-orange.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 ## 📋 Summary
-SeizureTransformer won EpilepsyBench 2025 with 1 FA/day on Dianalund. We evaluated it on TUSZ v2.0.3 (clinical standard) using Temple's NEDC v6.0.0 scoring. Result: 137.5 FA/day at paper defaults, requiring threshold tuning to reach clinical targets.
+SeizureTransformer won EpilepsyBench 2025 with 1 FA/24h on Dianalund. We evaluated it on TUSZ v2.0.3 (clinical standard) using Temple's NEDC v6.0.0 scoring. Result: 137.5 FA/24h at paper defaults, requiring threshold tuning to reach clinical targets.
 
 ## 🎯 Background
 
 ### SeizureTransformer Model
-Wu et al.'s transformer-based seizure detector won the 2025 EpilepsyBench Challenge. The model achieved 37% sensitivity with 1 FA/day on the Dianalund dataset, ranking #1 on the [SzCORE leaderboard](https://epilepsybenchmarks.com/benchmark/).
+Wu et al.'s transformer-based seizure detector won the 2025 EpilepsyBench Challenge. The model achieved 37% sensitivity with 1 FA/24h on the Dianalund dataset, ranking #1 on the [SzCORE leaderboard](https://epilepsybenchmarks.com/benchmark/).
 
 ### The Gap in Current Evaluations
 EpilepsyBench doesn't show TUSZ results for models trained on it (marked with 🚂). Yet TUSZ is the clinical standard with patient-disjoint eval splits. No one had evaluated SeizureTransformer on TUSZ with proper clinical scoring.
@@ -25,7 +25,7 @@ EpilepsyBench doesn't show TUSZ results for models trained on it (marked with �
 </p>
 
 ### Our Contribution
-- First TUSZ v2.0.3 evaluation using NEDC v6.0.0 (August 2025 release)
+- First TUSZ v2.0.3 evaluation using NEDC v6.0.0 (2025)
 - Systematic threshold tuning on dev set, validation on eval set
 - Dual-track implementation: Temple binaries + production Python code
 - Complete operating points for clinical deployment decisions
@@ -36,10 +36,10 @@ EpilepsyBench doesn't show TUSZ results for models trained on it (marked with �
 
 | Dataset | Context | Sensitivity | False Alarms/24h | F1 Score |
 |---------|---------|-------------|------------------|-----------|
-| **Dianalund** | EpilepsyBench Winner | 37% | **1** ✅ | 43% |
-| **TUSZ eval** | Clinical Standard | 24.15% | **137.5** ❌ | 31.19% |
+| **Dianalund** | EpilepsyBench Winner | 37% | **1 FA/24h** ✅ | 43% |
+| **TUSZ eval** | Clinical Standard | 24.15% | **137.5 FA/24h** ❌ | 31.19% |
 
-The 137x false alarm increase fundamentally changes clinical viability.
+The 137x false alarm rate increase fundamentally changes clinical viability.
 
 ### Clinical Operating Points
 
@@ -51,6 +51,7 @@ The 137x false alarm increase fundamentally changes clinical viability.
 | 1 | 0.999 | 0.43% | Minimal FAs |
 
 ### Key Metrics (NEDC v6.0.0)
+- **Scoring**: NEDC v6.0.0 TAES/OVERLAP (official Temple metrics)
 - **AUROC**: 0.9021 (excellent discrimination capacity)
 - **Detected**: 113/469 seizures at default threshold
 - **Precision**: 43.98% at default threshold
@@ -71,6 +72,12 @@ The 137x false alarm increase fundamentally changes clinical viability.
 | Native Python | Production deployment | `seizure_evaluation/` |
 
 Both produce identical metrics (±0.1%). Temple's for papers, Python for deployment.
+
+**Verify Parity:**
+```bash
+make -C evaluation/nedc_scoring all BACKEND=temple
+python tests/integration/test_nedc_conformance.py  # Confirms ±0.1% match
+```
 
 ### Dataset and Methodology
 
@@ -120,6 +127,7 @@ python evaluation/tusz/run_tusz_eval.py \
 # 2. Score with NEDC v6.0.0
 make -C evaluation/nedc_scoring all \
   CHECKPOINT=../../experiments/eval/baseline/checkpoint.pkl
+# Output: experiments/eval/baseline/nedc_results/
 
 # 3. Tune thresholds (optional)
 python evaluation/nedc_scoring/sweep_operating_point.py \
