@@ -91,5 +91,8 @@ evaluation/nedc_scoring/test_output/
 evaluation/nedc_scoring/output/
 experiments/
 
+# Reference repositories for analysis
+reference_repos/
+
 # NOTE: literature/ is NOT ignored - we want this public for transparency!
 # NOTE: evaluation/nedc_eeg_eval/ is NOT ignored - it's open source Temple software
