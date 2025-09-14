@@ -34,7 +34,7 @@ ENV/
 .DS_Store
 
 # Data (mount as volumes instead)
-wu_2025/data/tusz/
+wu_2025/data/
 experiments/
 *.edf
 *.csv

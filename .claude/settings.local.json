@@ -105,7 +105,9 @@
       "Bash(git merge:*)",
       "Bash(git branch:*)",
       "Bash(__NEW_LINE__ for branch in main development)",
-      "Bash(git cherry-pick:*)"
+      "Bash(git cherry-pick:*)",
+      "Bash(docker:*)",
+      "Bash(docker compose:*)"
     ],
     "deny": [],
     "ask": []
