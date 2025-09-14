@@ -37,7 +37,7 @@ EpilepsyBench doesn't show TUSZ results for models trained on it (marked with �
 | Dataset | Context | Sensitivity | False Alarms/24h | F1 Score |
 |---------|---------|-------------|------------------|-----------|
 | **Dianalund** | EpilepsyBench Winner | 37% | **1 FA/24h** ✅ | 43% |
-| **TUSZ eval** | Clinical Standard | 24.15% | **137.5 FA/24h** ❌ | 31.19% |
+| **TUSZ eval (held-out)** | Clinical Standard (TAES) | 24.15% | **137.5 FA/24h** ❌ | 31.19% |
 
 The 137x false alarm rate increase fundamentally changes clinical viability.
 
@@ -52,6 +52,7 @@ The 137x false alarm rate increase fundamentally changes clinical viability.
 
 ### Key Metrics (NEDC v6.0.0)
 - **Scoring**: NEDC v6.0.0 TAES/OVERLAP (official Temple metrics)
+- **Default**: We report TAES by default; OVLP also available
 - **AUROC**: 0.9021 (excellent discrimination capacity)
 - **Detected**: 113/469 seizures at default threshold
 - **Precision**: 43.98% at default threshold
@@ -85,7 +86,7 @@ python tests/integration/test_nedc_conformance.py  # Confirms ±0.1% match
 |------------|-------|-------|----------|----------|
 | Train | 1,557 | 3,050 | ~2,900 | Model training (per paper) |
 | Dev | 1,013 | 1,015 | ~920 | Threshold tuning |
-| Eval | 865 | 127.6 | 469 | Final results |
+| Eval (held-out) | 865 | 127.6 | 469 | Final results |
 
 Patient-disjoint splits prevent leakage. Standard practice: tune on dev, report on eval.
 
@@ -215,3 +216,7 @@ SeizureTransformer/
 - Kerui Wu for SeizureTransformer model and weights
 - Temple University NEDC for dataset and scoring tools
 - SzCORE/EpilepsyBench for benchmark infrastructure
+
+## 📧 Contact
+
+For issues or questions: [GitHub Issues](https://github.com/Clarity-Digital-Twin/SeizureTransformer/issues)

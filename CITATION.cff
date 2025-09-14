@@ -1,12 +1,11 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
-title: "SeizureTransformer: Independent Evaluation Framework with NEDC Integration"
+title: "SeizureTransformer TUSZ Evaluation with NEDC v6.0.0"
 version: 1.0.0
-date-released: 2025-09-12
+date-released: 2025-09-14
 url: "https://github.com/Clarity-Digital-Twin/SeizureTransformer"
 authors:
-  - family-names: "Clarity Digital Twin Team"
-    given-names: ""
+  - name: "Clarity Digital Twin Team"
     affiliation: "Clarity Digital Twin"
 keywords:
   - seizure detection
@@ -17,40 +16,35 @@ keywords:
   - NEDC
   - epilepsy
   - benchmark
-license: MIT
+  - evaluation
+license: Apache-2.0
 repository-code: "https://github.com/Clarity-Digital-Twin/SeizureTransformer"
 references:
   - type: article
     authors:
       - family-names: "Wu"
         given-names: "Kerui"
-      - family-names: "Siouda"
-        given-names: "Wadii"
-      - family-names: "Park"
-        given-names: "Dongwook"
-      - family-names: "Martinet"
-        given-names: "Laurent"
-      - family-names: "Lagabrielle"
-        given-names: "Elise"
-      - family-names: "Kim"
-        given-names: "Joseph"
-      - family-names: "Al Khoury"
-        given-names: "Antoine"
-      - family-names: "Salazar"
-        given-names: "Diego"
-      - family-names: "Elger"
-        given-names: "Christian"
-      - family-names: "Weber"
-        given-names: "Bernd"
-      - family-names: "Qirko"
-        given-names: "Klajdi"
-      - family-names: "La Rocca"
-        given-names: "Damiano"
-      - family-names: "Pascucci"
-        given-names: "Michele"
-    title: "SeizureTransformer: Versatile Seizure Detection Model for Generalization Across Patients, Datasets, and Seizure Types"
+      - family-names: "Zhao"
+        given-names: "Ziyue"
+      - family-names: "Yener"
+        given-names: "Bülent"
+    title: "SeizureTransformer: Scaling U-Net with Transformer"
     year: 2025
-    journal: "arXiv preprint"
+    journal: "arXiv preprint arXiv:2504.00336"
+  - type: incollection
+    authors:
+      - family-names: "Shah"
+        given-names: "V."
+      - family-names: "Golmohammadi"
+        given-names: "M."
+      - family-names: "Obeid"
+        given-names: "I."
+      - family-names: "Picone"
+        given-names: "J."
+    title: "Objective Evaluation Metrics for EEG Events"
+    collection-title: "Signal Processing in Medicine and Biology"
+    year: 2021
+    publisher: "Springer"
   - type: article
     authors:
       - family-names: "Shah"
@@ -75,14 +69,3 @@ references:
     pages: 83
     year: 2018
     doi: "10.3389/fninf.2018.00083"
-  - type: software
-    authors:
-      - family-names: "Picone"
-        given-names: "Joseph"
-      - family-names: "Obeid"
-        given-names: "Iyad"
-    title: "NEDC EEG Eval: Neural Engineering Data Consortium EEG Evaluation Suite"
-    version: "6.0.0"
-    year: 2025
-    institution: "Temple University"
-    url: "https://www.isip.piconepress.com/projects/nedc/"
