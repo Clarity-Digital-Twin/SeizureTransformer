@@ -7,13 +7,14 @@
 | Operating Point | Threshold | Kernel | MinDur | NEDC TAES (Temple) | NEDC OVERLAP (Temple) | NEDC OVERLAP (Native)* | SzCORE Any-Overlap |
 |-----------------|-----------|--------|--------|--------------------|-----------------------|-----------------------|-------------------|
 | **Default (paper)** | 0.800 | 5 | 2.0s | 24.71% / 60.83 FA | **45.63% / 25.01 FA** | 45.63% / 25.01 FA | **52.35% / 8.46 FA** |
-| **10 FA target** | 0.880 | 7 | 2.5s | 24.71% / 60.83 FA† | 45.63% / 25.01 FA† | 45.63% / 25.01 FA† | 41.76% / 3.57 FA |
+| **10 FA target** | 0.880 | 7 | 2.5s | **16.62% / 94.48 FA‡** | *RERUN NEEDED†* | *RERUN NEEDED†* | 41.76% / 3.57 FA |
 | **2.5 FA target** | 0.930 | 11 | 5.0s | 4.13% / 38.60 FA | 11.51% / 2.45 FA | 11.51% / 2.44 FA | 27.94% / 1.32 FA |
 | **1 FA target** | 0.950 | 15 | 7.0s | 0.41% / 34.85 FA | 1.28% / 0.38 FA | 1.28% / 0.38 FA | **17.65% / 0.56 FA** |
 
 Format: Sensitivity% / FA per 24h
 
-† Note: 10FA Temple binary/native runs appear to have reused default parameters (needs rerun with correct thresholds)
+† OVERLAP metrics need rerun with correct 10FA parameters
+‡ **CRITICAL BUG**: 10FA TAES shows 94.48 FA/24h (WORSE than default 60.83!) - tuning parameters are backwards!
 
 ## Scoring Method Definitions
 
