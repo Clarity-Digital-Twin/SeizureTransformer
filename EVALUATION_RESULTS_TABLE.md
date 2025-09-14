@@ -6,10 +6,10 @@
 
 | Operating Point | Threshold | Kernel | MinDur | NEDC TAES (Temple) | NEDC OVERLAP (Temple) | NEDC TAES (Native) | SzCORE Any-Overlap |
 |-----------------|-----------|--------|--------|--------------------|-----------------------|--------------------|-------------------|
-| **Default (paper)** | 0.800 | 5 | 2.0s | [24.15% / 137.5 FA](#default-temple) | *pending* | 24.06% / 137.5 FA | [52.35% / 8.5 FA](#default-szcore) |
-| **10 FA target** | 0.880 | 7 | 2.5s | *pending* | *pending* | 17.27% / 10.0 FA | *pending* |
-| **2.5 FA target** | 0.930 | 11 | 5.0s | *pending* | *pending* | 10.66% / 2.5 FA | *pending* |
-| **1 FA target** | 0.950 | 15 | 7.0s | *pending* | *pending* | 7.89% / 1.0 FA | [17.65% / 0.6 FA](#1fa-szcore) |
+| **Default (paper)** | 0.800 | 5 | 2.0s | 24.15% / 137.5 FA | **45.63% / 13.9 FA** | 24.06% / 137.5 FA | **52.35% / 8.5 FA** |
+| **10 FA target** | 0.880 | 7 | 2.5s | *run pending* | *run pending* | 17.27% / 10.0 FA | *run pending* |
+| **2.5 FA target** | 0.930 | 11 | 5.0s | *run pending* | *run pending* | 10.66% / 2.5 FA | *run pending* |
+| **1 FA target** | 0.950 | 15 | 7.0s | *run pending* | *run pending* | 7.89% / 1.0 FA | **17.65% / 0.6 FA** |
 
 Format: Sensitivity% / FA per 24h
 
@@ -25,19 +25,23 @@ Format: Sensitivity% / FA per 24h
 ## Key Findings
 
 ### 1. Default Parameters (0.8/5/2.0)
-- **NEDC TAES**: 24.15% sensitivity, 137.5 FA/24h
-- **SzCORE**: 52.35% sensitivity, 8.5 FA/24h
-- **Gap**: 16x difference in false alarms, 2.2x difference in sensitivity
+- **NEDC TAES**: 24.15% sensitivity, 137.5 FA/24h (strictest clinical)
+- **NEDC OVERLAP**: 45.63% sensitivity, 13.9 FA/24h (Temple's overlap)
+- **SzCORE**: 52.35% sensitivity, 8.5 FA/24h (competition scoring)
+- **Key Gap**: 16x difference between NEDC TAES and SzCORE false alarms
+- **Critical**: Even NEDC OVERLAP (45.63%) is stricter than SzCORE (52.35%)
 
 ### 2. Aggressive Tuning (0.95/15/7.0)
 - **NEDC TAES**: 7.89% sensitivity, 1.0 FA/24h (native)
 - **SzCORE**: 17.65% sensitivity, 0.6 FA/24h
 - **Finding**: Can achieve <1 FA/24h with SzCORE, validating paper claims
 
-### 3. Scoring Method Impact
-- SzCORE's lenient parameters (30s/60s tolerance, event merging) create massive gap
-- Even Temple's OVERLAP (pending) will likely show ~45% sensitivity based on NEDC docs
-- Competition metrics (SzCORE) vs Clinical metrics (NEDC) serve different purposes
+### 3. Scoring Method Impact (Default Parameters)
+- **NEDC TAES vs SzCORE**: 137.5 vs 8.5 FA/24h = **16x gap**
+- **NEDC OVERLAP vs SzCORE**: 13.9 vs 8.5 FA/24h = **1.6x gap**
+- **Key insight**: NEDC OVERLAP (214/469 seizures) detected fewer than SzCORE (178/340)
+- **Why?** SzCORE's 30s/60s tolerance windows and 90s event merging are MORE lenient than Temple's OVERLAP
+- Competition metrics (SzCORE) vs Clinical metrics (NEDC) serve fundamentally different purposes
 
 ## Files Evaluated
 - Total: 865 files
