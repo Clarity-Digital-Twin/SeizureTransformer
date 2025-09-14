@@ -50,10 +50,11 @@ Format: Sensitivity% / FA per 24h
 - Total seizures: 469 in ground truth
 
 ## Next Steps
-1. Extract NEDC OVERLAP scores from existing Temple binary results
+1. ~~Extract NEDC OVERLAP scores from existing Temple binary results~~ ✅ DONE
 2. Run SzCORE on 10 FA and 2.5 FA operating points
-3. Create visualization comparing all scoring methods
-4. Document clinical implications of each metric
+3. Run Temple NEDC binary on 10 FA, 2.5 FA, and 1 FA operating points
+4. Create visualization comparing all scoring methods
+5. Document clinical implications of each metric
 
 ## Notes
 - All results from held-out eval set (no training data leakage)
@@ -117,6 +118,7 @@ python -m evaluation.szcore_scoring.run_szcore \
 cd evaluation/nedc_scoring
 make all CHECKPOINT=../../experiments/eval/baseline/checkpoint.pkl
 
-# 3. Extract NEDC OVERLAP scores (pending)
-awk '/NEDC OVERLAP SCORING SUMMARY/,/NEDC DPALIGN/' summary.txt
+# 3. Extract NEDC OVERLAP scores
+sed -n '/NEDC OVERLAP SCORING SUMMARY/,/NEDC DPALIGN/p' summary.txt | grep -A5 "LABEL: SEIZ"
+# Results: 214 hits / 469 targets = 45.63% sensitivity, 74 FP = 13.9 FA/24h
 ```
