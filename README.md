@@ -7,6 +7,7 @@
 [![NEDC v6.0.0](https://img.shields.io/badge/NEDC-v6.0.0%20Pioneer-brightgreen.svg)](https://www.isip.piconepress.com/projects/nedc/)
 [![TUSZ v2.0.3](https://img.shields.io/badge/TUSZ-v2.0.3%20eval-blue.svg)](https://isip.piconepress.com/projects/tuh_eeg/)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-orange.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 ## 💡 Why This Work Matters
 
@@ -163,17 +164,44 @@ SeizureTransformer/
 
 </details>
 
-## Citations
+## 📚 How to Cite This Work
+
+<details>
+<summary><b>1. This Evaluation Framework (Our Work)</b></summary>
 
 ```bibtex
-@software{seizuretransformer_tusz_2025,
-  title = {SeizureTransformer: TUSZ Evaluation with NEDC v6.0.0 and Clinical Tuning},
-  author = {Clarity Digital Twin Team},
+@software{seizuretransformer_tusz_evaluation_2025,
+  title = {SeizureTransformer TUSZ Evaluation: First NEDC v6.0.0 Assessment with Clinical Operating Points},
+  author = {{Clarity Digital Twin Team}},
   year = {2025},
-  note = {Evaluation on TUSZ with official NEDC v6.0.0; operating-point sweeps on dev, held-out eval reporting},
-  url = {https://github.com/Clarity-Digital-Twin/SeizureTransformer}
+  note = {First evaluation on TUSZ v2.0.3 eval split with Temple NEDC v6.0.0; systematic dev-set tuning; complete operating point characterization},
+  url = {https://github.com/Clarity-Digital-Twin/SeizureTransformer},
+  license = {Apache-2.0}
 }
+```
+</details>
 
+<details>
+<summary><b>2. Original SeizureTransformer Model</b></summary>
+
+```bibtex
+@inproceedings{wu2025seizuretransformer,
+  title = {SeizureTransformer: Scaling U-Net with Transformer for Simultaneous Time-Step Level Seizure Detection from Long EEG Recordings},
+  author = {Wu, Kerui and Zhao, Ziyue and Yener, Bülent},
+  booktitle = {International Conference on Artificial Intelligence in Epilepsy and Other Neurological Disorders},
+  year = {2025},
+  note = {Winner of 2025 Seizure Detection Challenge},
+  eprint = {2504.00336},
+  archivePrefix = {arXiv},
+  primaryClass = {eess.SP}
+}
+```
+</details>
+
+<details>
+<summary><b>3. TUSZ Dataset</b></summary>
+
+```bibtex
 @article{shah2018temple,
   title = {The Temple University Hospital Seizure Detection Corpus},
   author = {Shah, V. and von Weltin, E. and Lopez, S. and McHugh, J. and Veloso, L. and Golmohammadi, M. and Obeid, I. and Picone, J.},
@@ -181,25 +209,43 @@ SeizureTransformer/
   volume = {12},
   pages = {83},
   year = {2018},
-  doi = {10.3389/fninf.2018.00083}
-}
-
-@incollection{shah2021objective,
-  title = {Objective Evaluation Metrics for Automatic Classification of EEG Events},
-  author = {Shah, V. and Golmohammadi, M. and Obeid, I. and Picone, J.},
-  booktitle = {Signal Processing in Medicine and Biology},
-  publisher = {Springer},
-  year = {2021},
-  pages = {1--26}
-}
-
-@article{wu2025seizuretransformer,
-  title = {SeizureTransformer: Versatile Seizure Detection Model},
-  author = {Wu, Kerui and others},
-  year = {2025},
-  journal = {arXiv preprint}
+  doi = {10.3389/fninf.2018.00083},
+  note = {v2.0.3 used in this evaluation}
 }
 ```
+</details>
+
+<details>
+<summary><b>4. NEDC Scoring Tool</b></summary>
+
+```bibtex
+@incollection{shah2021nedc,
+  title = {Objective Evaluation Metrics for Automatic Classification of EEG Events},
+  author = {Shah, V. and Golmohammadi, M. and Obeid, I. and Picone, J.},
+  booktitle = {Signal Processing in Medicine and Biology: Emerging Trends in Research and Applications},
+  editor = {Obeid, I. and Selesnick, I. and Picone, J.},
+  publisher = {Springer},
+  year = {2021},
+  pages = {1--26},
+  note = {NEDC v6.0.0 (August 2025 release) used}
+}
+```
+</details>
+
+<details>
+<summary><b>5. Siena Dataset (used in model training)</b></summary>
+
+```bibtex
+@misc{detti2020siena,
+  title = {Siena Scalp EEG Database},
+  author = {Detti, Paolo},
+  year = {2020},
+  publisher = {PhysioNet},
+  doi = {10.13026/5d4a-j060},
+  note = {Used alongside TUSZ train for model training}
+}
+```
+</details>
 
 ## Acknowledgments
 
@@ -207,11 +253,12 @@ SeizureTransformer/
 - Temple University’s NEDC for the dataset and scoring tools.
 - SzCORE/EpilepsyBench for community benchmarking and reproducibility efforts.
 
-## License
+## ⚖️ License
 
-- Original SeizureTransformer: MIT (Kerui Wu)
-- Our evaluation framework: MIT
-- NEDC tools: Temple University license
+- **Our evaluation framework**: Apache-2.0 License
+- **Original SeizureTransformer model**: MIT License (Wu et al.)
+- **NEDC scoring tools**: Temple University License (see `evaluation/nedc_eeg_eval/v6.0.0/AAREADME.txt`)
+- **TUSZ dataset**: Temple University (requires data use agreement)
 
 ---
 
