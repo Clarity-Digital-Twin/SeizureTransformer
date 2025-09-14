@@ -8,7 +8,10 @@
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-orange.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 ## 📋 Summary
-SeizureTransformer won EpilepsyBench 2025 with 1 FA/24h on Dianalund (using SzCORE's "Any-Overlap" scoring). We evaluated it on TUSZ v2.0.3 using Temple's NEDC v6.0.0 - the clinical standard scorer for this dataset. Result: 137.5 FA/24h at paper defaults, revealing a critical gap between competition metrics and clinical deployment requirements.
+- SeizureTransformer won EpilepsyBench 2025 with 1 FA/24h on Dianalund (using SzCORE's "Any-Overlap" scoring)
+- Despite TUSZ having train/dev/eval splits, EpilepsyBench doesn't report eval results for models trained on it
+- We evaluated it on TUSZ v2.0.3 using Temple's NEDC v6.0.0 - the clinical standard scorer for this dataset
+- Result: 137.5 FA/24h at paper defaults, revealing a critical gap between competition metrics and clinical deployment requirements
 
 ## 🎯 Background
 
