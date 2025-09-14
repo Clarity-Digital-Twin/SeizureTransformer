@@ -40,10 +40,10 @@ EpilepsyBench evaluates all datasets using SzCORE's simplified "Any-Overlap" sco
 | **Dianalund** | SzCORE Any-Overlap¹ | 37% | **1 FA/24h** ✅ | 43% |
 | **TUSZ eval (held-out)** | NEDC v6.0.0 TAES² | 24.15% | **137.5 FA/24h** ❌ | 31.19% |
 
-¹ SzCORE: Lenient event-based scoring where any overlap counts as detection
-² NEDC TAES: Clinical standard with strict time-alignment penalties
+¹ SzCORE: Lenient event-based scoring where any overlap counts as detection (on Dianalund dataset)
+² NEDC TAES: Clinical standard with strict time-alignment penalties (on TUSZ dataset)
 
-**Critical Note**: These metrics use different scoring algorithms. SzCORE's "Any-Overlap" is more forgiving than NEDC's TAES scoring. However, NEDC is the authoritative scorer for TUSZ as both were developed by Temple University for clinical EEG evaluation.
+**Critical Note**: These are different datasets AND different scoring methods. The 1 FA/24h was achieved on Dianalund (small Nordic dataset), not TUSZ. Additionally, SzCORE's "Any-Overlap" is more forgiving than NEDC's TAES scoring. NEDC is the authoritative scorer for TUSZ as both were developed by Temple University for clinical EEG evaluation.
 
 ### Why NEDC for TUSZ?
 
@@ -225,6 +225,12 @@ SeizureTransformer/
 - Kerui Wu for SeizureTransformer model and weights
 - Temple University NEDC for dataset and scoring tools
 - SzCORE/EpilepsyBench for benchmark infrastructure
+
+## 🔮 Future Work
+
+- **SzCORE Integration**: Implement SzCORE's "Any-Overlap" scoring wrapper to enable direct comparisons with EpilepsyBench leaderboard results
+- **Cross-scoring Analysis**: Evaluate TUSZ predictions with both NEDC and SzCORE to quantify scoring methodology impact
+- **Threshold Optimization**: Explore patient-specific thresholds for clinical deployment
 
 ## 📧 Contact
 
