@@ -6,12 +6,14 @@
 
 | Operating Point | Threshold | Kernel | MinDur | NEDC TAES (Temple) | NEDC OVERLAP (Temple) | NEDC TAES (Native) | SzCORE Any-Overlap |
 |-----------------|-----------|--------|--------|--------------------|-----------------------|--------------------|-------------------|
-| **Default (paper)** | 0.800 | 5 | 2.0s | 24.15% / 137.5 FA | **45.63% / 13.9 FA** | 24.06% / 137.5 FA | **52.35% / 8.5 FA** |
-| **10 FA target** | 0.880 | 7 | 2.5s | *run pending* | *run pending* | 17.27% / 10.0 FA | *run pending* |
-| **2.5 FA target** | 0.930 | 11 | 5.0s | *run pending* | *run pending* | 10.66% / 2.5 FA | *run pending* |
-| **1 FA target** | 0.950 | 15 | 7.0s | *run pending* | *run pending* | 7.89% / 1.0 FA | **17.65% / 0.6 FA** |
+| **Default (paper)** | 0.800 | 5 | 2.0s | 24.71% / 14.8 FA | **45.63% / 13.9 FA** | *verify needed* | **52.35% / 8.5 FA** |
+| **10 FA target** | 0.880 | 7 | 2.5s | 24.71% / 14.8 FA† | *needs extraction* | *verify needed* | *run pending* |
+| **2.5 FA target** | 0.930 | 11 | 5.0s | 4.13% / 1.3 FA | *needs extraction* | *verify needed* | *run pending* |
+| **1 FA target** | 0.950 | 15 | 7.0s | 0.41% / 0.0 FA | *needs extraction* | *verify needed* | **17.65% / 0.6 FA** |
 
 Format: Sensitivity% / FA per 24h
+
+† Note: 10FA Temple binary appears to have used default parameters (needs rerun with correct thresholds)
 
 ## Scoring Method Definitions
 
