@@ -1,0 +1,70 @@
+# NEDC v6.0.0 Scoring Metrics Overview
+
+## What NEDC Actually Provides
+
+NEDC v6.0.0 automatically calculates **5 different scoring methods** when evaluating seizure detection:
+
+### 1. TAES (Time-Aligned Event Scoring) - **Currently Reported**
+- **Our Results**: 24.15% sensitivity, 137.5 FA/24h
+- **Description**: Strictest clinical standard with fractional scoring based on temporal alignment
+- **Why we use it**: Most realistic for clinical deployment, penalizes timing errors
+
+### 2. OVERLAP Scoring
+- **Our Results**: 45.63% sensitivity (214/469 seizures detected)
+- **Description**: Counts detection if ANY overlap exists between prediction and ground truth
+- **Important**: This is NOT the same as SzCORE's "Any-Overlap" - Temple's version is still strict about timing boundaries
+
+### 3. DPALIGN (Dynamic Programming Alignment)
+- **Our Results**: 52.88% sensitivity (248/469 seizures)
+- **Description**: Uses dynamic programming to optimally align predicted events with reference events
+- **Use case**: Understanding how well events match when optimally paired
+
+### 4. EPOCH Scoring
+- **Description**: Evaluates on fixed time windows (e.g., 1-second epochs)
+- **Use case**: Comparing performance at specific time resolutions
+
+### 5. IRA (Inter-Rater Agreement)
+- **Description**: Measures agreement between reference and hypothesis like human annotators would
+- **Use case**: Statistical agreement metrics similar to Cohen's kappa
+
+## Key Insights from Our Evaluation
+
+When we run NEDC on SeizureTransformer's TUSZ predictions:
+
+```
+Metric          | Sensitivity | False Alarms | Notes
+----------------|-------------|--------------|-------
+TAES            | 24.15%      | 137.5 FA/24h | Strictest (what we report)
+OVERLAP         | 45.63%      | ~142 total   | Temple's overlap (still strict)
+DPALIGN         | 52.88%      | ~496 total   | Optimal event matching
+```
+
+## Critical Observation
+
+The gap between NEDC's OVERLAP (45.63%) and TAES (24.15%) shows that even Temple's "overlap" scoring is much stricter than SzCORE's lenient "Any-Overlap" (which accepts ANY overlap with 30s pre/60s post tolerance). This reinforces our finding about the scoring methodology gap.
+
+## Future Integration Opportunities
+
+Currently we only report TAES metrics in our README, but we could:
+1. Add a comprehensive metrics table showing all 5 NEDC scores
+2. Compare NEDC OVERLAP vs SzCORE Any-Overlap directly
+3. Use EPOCH scoring for fixed-window analysis
+4. Report IRA for statistical agreement metrics
+
+## Implementation Status
+
+- ✅ All 5 metrics are computed automatically by `evaluation/nedc_eeg_eval/v6.0.0/bin/nedc_eeg_eval`
+- ✅ Results stored in `evaluation/nedc_scoring/output/results/summary.txt`
+- ✅ Our pipeline (`evaluation/nedc_scoring/run_nedc.py`) runs the full suite
+- 🔄 Currently only TAES is extracted and reported in our analysis
+
+## Citation
+
+```bibtex
+@incollection{shah2021nedc,
+  title = {Objective Evaluation Metrics for Automatic Classification of EEG Events},
+  author = {Shah, V. and Golmohammadi, M. and Obeid, I. and Picone, J.},
+  booktitle = {Signal Processing in Medicine and Biology},
+  year = {2021}
+}
+```
