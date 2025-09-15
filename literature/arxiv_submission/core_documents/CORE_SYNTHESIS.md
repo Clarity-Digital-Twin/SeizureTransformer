@@ -37,7 +37,7 @@ Temple creates both dataset and scorer as matched pair:
 EpilepsyBench chooses different path:
 - SzCORE: Clinical tolerances (30s/60s)
 - Uniform scoring across all datasets
-- **Key Point**: 12× more permissive than NEDC
+- **Key Point**: 3.1× more permissive than NEDC OVERLAP
 
 ### Act 3: The Revelation
 **CORE 2 (SeizureTransformer) + Our Evaluation**
@@ -91,7 +91,7 @@ Synthesis: Different philosophies, massive impact
 ❌ NEDC is the only way (context-dependent)
 
 ### What We ARE Saying
-✅ Scoring methodology creates 12× difference
+✅ Scoring methodology creates 3.1× difference
 ✅ Dataset-matched evaluation essential
 ✅ Benchmarks need transparency
 ✅ Clinical claims require proper validation
@@ -103,14 +103,14 @@ Synthesis: Different philosophies, massive impact
 ### The Performance Cascade
 ```
 Claimed (Dianalund + SzCORE):        1 FA/24h
-Our Finding (TUSZ + SzCORE):         8.46 FA/24h
-Our Finding (TUSZ + NEDC):           100.06 FA/24h
+Our Finding (TUSZ + SzCORE):         8.59 FA/24h
+Our Finding (TUSZ + NEDC OVERLAP):   26.89 FA/24h (SEIZ)
 Our Finding (TUSZ + NEDC TAES):      137.53 FA/24h (Total False Alarm Rate)
 ```
 
 ### The Gaps
 - **100×**: Dianalund claim vs TUSZ reality
-- **12×**: SzCORE vs NEDC on same data
+- **3.1×**: SzCORE vs NEDC OVERLAP on same data
 - **≈16×**: Most permissive vs most strict
 
 ---
@@ -143,13 +143,13 @@ Our Finding (TUSZ + NEDC TAES):      137.53 FA/24h (Total False Alarm Rate)
 
 ### From Core Documents
 1. "Despite patient-disjoint eval set, never properly evaluated" (CORE 5)
-2. "The 12× difference stems entirely from scoring methodology" (CORE 1)
+2. "The 3.1× difference stems entirely from scoring methodology" (CORE 1)
 3. "Marking TUSZ with 🚂 prevents valid held-out evaluation" (CORE 3)
 4. "NEDC reveals the true clinical performance" (CORE 4)
 5. "The 1 FA/24h achievement was on Dianalund, not training dataset" (CORE 2)
 
 ### Synthesized Message
-"State-of-the-art model trained on TUSZ wins competitions elsewhere but was never evaluated on TUSZ's held-out set with clinical scoring. When we perform this missing evaluation, we discover a 100-fold gap between benchmark claims and clinical reality, with scoring methodology alone accounting for a 12-fold difference."
+"State-of-the-art model trained on TUSZ wins competitions elsewhere but was never evaluated on TUSZ's held-out set with clinical scoring. When we perform this missing evaluation, we discover a 27-fold gap between benchmark claims and clinical reality, with scoring methodology alone accounting for a 3.1-fold difference."
 
 ---
 
@@ -164,22 +164,22 @@ Our Finding (TUSZ + NEDC TAES):      137.53 FA/24h (Total False Alarm Rate)
 ### Evidence to Emphasize
 - First NEDC v6.0.0 evaluation (CORE 4)
 - Patient-disjoint validation (CORE 5)
-- 12× scoring impact (CORE 1)
+- 3.1× scoring impact (CORE 1)
 - Clinical deployment gaps (CORE 3)
 
 ---
 
 ## The One-Paragraph Summary
 
-Drawing from all 5 cores: "SeizureTransformer, winner of the 2025 EpilepsyBench Challenge with 1 FA/24h on Dianalund, was trained on TUSZ but never evaluated on its held-out test set with Temple's NEDC clinical scorer. We perform this missing evaluation, revealing 100.06 FA/24h with NEDC versus 8.46 FA/24h with EpilepsyBench's SzCORE—a 12-fold difference from scoring alone. This gap stems from fundamental differences in evaluation philosophy: NEDC, designed specifically for TUSZ by the same team that created the dataset, enforces strict temporal precision, while SzCORE adds 30-second pre-ictal and 60-second post-ictal tolerances plus event merging for clinical deployment scenarios. Our work demonstrates that meaningful clinical AI evaluation requires dataset-matched scoring standards, transparent methodology reporting, and honest assessment using held-out test sets."
+Drawing from all 5 cores: "SeizureTransformer, winner of the 2025 EpilepsyBench Challenge with 1 FA/24h on Dianalund, was trained on TUSZ but never evaluated on its held-out test set with Temple's NEDC clinical scorer. We perform this missing evaluation, revealing 26.89 FA/24h with NEDC OVERLAP versus 8.59 FA/24h with EpilepsyBench's SzCORE—a 3.1-fold difference from scoring alone. This gap stems from fundamental differences in evaluation philosophy: NEDC, designed specifically for TUSZ by the same team that created the dataset, enforces strict temporal precision, while SzCORE adds 30-second pre-ictal and 60-second post-ictal tolerances for clinical deployment scenarios. Our work demonstrates that meaningful clinical AI evaluation requires dataset-matched scoring standards, transparent methodology reporting, and honest assessment using held-out test sets."
 
 ---
 
 ## Quality Checklist
 
 ### Facts Verified Across Cores
-✅ 100.06 FA/24h with NEDC (CORES 1, 4)
-✅ 8.46 FA/24h with SzCORE (CORES 1, 3)
+✅ 26.89 FA/24h with NEDC OVERLAP (CORES 1, 4)
+✅ 8.59 FA/24h with SzCORE (CORES 1, 3)
 ✅ 865 files in eval set (CORE 5)
 ✅ NEDC v6.0.0 released Aug 2025 (CORE 4)
 ✅ 30s/60s tolerances in SzCORE (CORES 1, 3)

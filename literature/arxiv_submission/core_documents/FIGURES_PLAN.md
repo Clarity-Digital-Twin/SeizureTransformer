@@ -10,9 +10,9 @@
 False Alarms per 24 Hours (log scale)
 |
 |  137.53 ████████████████████████████████ NEDC TAES
-|  100.06 ███████████████████████ NEDC OVERLAP
-|  100.06 ███████████████████████ Python OVERLAP
-|    8.46 ██ SzCORE
+|   26.89 ███████████████████████ NEDC OVERLAP (SEIZ)
+|   26.89 ███████████████████████ Python OVERLAP
+|    8.59 ███████ SzCORE
 |    1.00 | Dianalund Claim (different dataset)
 +--------------------------------------------------------
          0.1    1     10    100   1000
@@ -97,9 +97,9 @@ NEDC v6.0.0  SzCORE
 |--------------|----------------|-------------|---------|--------------|---------------|
 | **DEFAULT** (θ=0.8, k=5, d=2.0) | | | | | |
 | | NEDC TAES | 24.15% | 137.53 | ❌ | ❌ |
-| | NEDC OVERLAP | 45.63% | 100.06 | ❌ | ❌ |
-| | Python OVERLAP | 45.63% | 100.06 | ❌ | ❌ |
-| | SzCORE | 52.35% | 8.46 | ✅ | ❌ |
+| | NEDC OVERLAP | 45.63% | 26.89 | ❌ | ❌ |
+| | Python OVERLAP | 45.63% | 26.89 | ❌ | ❌ |
+| | SzCORE | 52.35% | 8.59 | ✅ | ❌ |
 | **10 FA TARGET** (θ=0.95, k=5, d=2.0) | | | | | |
 | | NEDC TAES | 8.64% | 34.04 | ❌ | ❌ |
 | | NEDC OVERLAP | 23.45% | 39.50 | ❌ | ❌ |
@@ -117,8 +117,8 @@ NEDC v6.0.0  SzCORE
 | Dataset | Model | Scoring | Sensitivity | FA/24h | Note |
 |---------|-------|---------|-------------|---------|------|
 | Dianalund | SeizureTransformer | SzCORE | 37% | 1.0 | EpilepsyBench Winner |
-| TUSZ eval | SeizureTransformer | NEDC OVERLAP | 45.63% | 100.06 | Our evaluation |
-| TUSZ eval | SeizureTransformer | SzCORE | 52.35% | 8.46 | Same data as above |
+| TUSZ eval | SeizureTransformer | NEDC OVERLAP | 45.63% | 26.89 | Our evaluation |
+| TUSZ eval | SeizureTransformer | SzCORE | 52.35% | 8.59 | Same data as above |
 | | | | | **100×** | Gap to Dianalund |
 
 ---
@@ -152,9 +152,9 @@ Onset/offset alignment errors by scoring method
 
 ### Key Numbers to Emphasize
 - **100×**: Gap between Dianalund and TUSZ
-- **12×**: Impact of scoring method alone
+- **3.1×**: Impact of scoring method alone (OVERLAP vs SzCORE)
 - **45.63%**: Best sensitivity at paper defaults
-- **100.06**: FA/24h with clinical scoring
+- **26.89**: FA/24h with NEDC OVERLAP (SEIZ-only)
 - **865**: Files evaluated (clinical scale)
 
 ---
@@ -167,7 +167,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 methods = ['NEDC TAES', 'NEDC OVERLAP', 'Python OVERLAP', 'SzCORE']
-fa_rates = [137.53, 100.06, 100.06, 8.46]
+fa_rates = [136.73, 26.89, 26.89, 8.59]
 colors = ['#d62728', '#ff7f0e', '#ff7f0e', '#2ca02c']
 
 fig, ax = plt.subplots(figsize=(10, 6))
@@ -184,7 +184,7 @@ plt.tight_layout()
 # Figure 3: Clinical Reality
 thresholds = [(0.8, 5, 2.0), (0.95, 5, 2.0), (0.95, 11, 8.0)]
 sensitivities = [45.63, 23.45, 11.51]
-fa_rates = [100.06, 39.50, 8.09]
+fa_rates = [26.89, 10.27, 2.05]
 
 plt.figure(figsize=(10, 8))
 plt.scatter(fa_rates, sensitivities, s=100, c=['red', 'orange', 'yellow'])
