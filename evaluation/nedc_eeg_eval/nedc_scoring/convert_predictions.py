@@ -176,7 +176,7 @@ def main():
         "--merge_gap_sec",
         type=float,
         default=None,
-        help="Merge events with gaps less than this (s)",
+        help="DEPRECATED: Merge events with gaps less than this (s). WARNING: Violates NEDC standards. Use None for compliance.",
     )
 
     args = parser.parse_args()

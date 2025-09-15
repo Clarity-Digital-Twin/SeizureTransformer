@@ -96,6 +96,8 @@ def run_conversion(
     if min_duration_sec is not None:
         cmd += ["--min_duration_sec", str(min_duration_sec)]
     if merge_gap_sec is not None:
+        print(f"⚠️ WARNING: Using merge_gap_sec={merge_gap_sec} violates NEDC standards and reduces FA by ~4X!")
+        print("         For academic compliance, use merge_gap_sec=None")
         cmd += ["--merge_gap_sec", str(merge_gap_sec)]
 
     print(f"Running: {' '.join(cmd)}")
@@ -530,7 +532,7 @@ Examples:
         "--merge_gap_sec",
         type=float,
         default=None,
-        help="Merge events with gaps less than this (s)",
+        help="DEPRECATED: Merge events with gaps less than this (s). WARNING: This violates NEDC/Temple evaluation standards and artificially reduces FA by 4X. Use None for academic compliance.",
     )
     parser.add_argument(
         "--convert-only", action="store_true", help="Only run conversion, skip NEDC scoring"
