@@ -34,8 +34,8 @@ This index lists the canonical, up‑to‑date docs for the codebase. All supers
 
 ## Submissions & Deployment
 - `submissions/NOTE_TO_EPILEPSY_BENCH.md` — Template note to benchmark maintainers
-- `deployment/DOCKER_DEPLOYMENT_PLAN.md` — Containerization plan (if needed)
+- `deployment/DOCKER_DEPLOYMENT_PLAN.md` — Canonical Docker quickstart and plan
+- `deployment/DOCKER_FIX_PLAN.md` — Troubleshooting and environment checks
 
 ## Archive
 - `archive/` — Historical drafts and deep dives retained for provenance
-
