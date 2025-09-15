@@ -3,6 +3,11 @@
 
 .PHONY: all test convert score clean help
 
+# Tools
+PYTHON ?= python
+# Compute repo root three levels up from this dir
+REPO_ROOT := $(abspath $(CURDIR)/../../..)
+
 # Default checkpoint path
 CHECKPOINT ?= experiments/eval/baseline/checkpoint.pkl
 OUTDIR ?= evaluation/nedc_eeg_eval/nedc_scoring/output
@@ -16,13 +21,15 @@ test:
 
 convert:
 	@echo "Converting predictions to NEDC format..."
-	python convert_predictions.py \
+	PYTHONPATH=$(REPO_ROOT):$$PYTHONPATH \
+	$(PYTHON) evaluation/nedc_eeg_eval/nedc_scoring/convert_predictions.py \
 		--checkpoint $(CHECKPOINT) \
 		--outdir $(OUTDIR)
 
 score:
 	@echo "Running NEDC scorer..."
-	python run_nedc.py \
+	PYTHONPATH=$(REPO_ROOT):$$PYTHONPATH \
+	$(PYTHON) evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
 		--outdir $(OUTDIR) \
 		--score-only
 
