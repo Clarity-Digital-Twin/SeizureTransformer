@@ -26,6 +26,7 @@ from tqdm import tqdm
 sys.path.append(str(Path(__file__).parent.parent.parent / "wu_2025/src"))
 
 from epilepsy2bids.eeg import Eeg  # noqa: E402
+
 from wu_2025.utils import get_dataloader, load_models  # noqa: E402
 
 

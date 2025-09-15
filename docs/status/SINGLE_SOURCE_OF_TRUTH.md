@@ -79,8 +79,7 @@ make check-all  # All pass
 ## 📈 NEXT STEPS
 
 1. Complete parameter sweep for clinical targets
-2. Update BENCHMARK_RESULTS.md with tuned parameters
+2. Update docs/results/BENCHMARK_RESULTS.md with tuned parameters
 3. Document final operating points for deployment
 
 **TRUST ONLY ACTUAL TEST OUTPUTS WITH merge_gap=None**
-
