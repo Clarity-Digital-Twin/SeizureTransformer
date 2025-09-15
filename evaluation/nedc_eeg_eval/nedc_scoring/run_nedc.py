@@ -289,7 +289,7 @@ def run_nedc_scorer(
     return 0
 
 
-def extract_and_save_metrics(results_dir, metrics_file, backend="nedc-binary"):
+def extract_and_save_metrics(results_dir, metrics_file, backend="nedc-binary", fa_reporting: str = "seiz"):
     """Extract machine-readable metrics from NEDC output and save to JSON.
 
     Guarantees a stable schema with keys: "overlap" and "taes" (duplicate of overlap
@@ -319,7 +319,7 @@ def extract_and_save_metrics(results_dir, metrics_file, backend="nedc-binary"):
             "backend": backend,
             "nedc_version": "v6.0.0",
         },
-        "taes": {},
+        "taes": {},  # kept for backward-compat; will mirror selected reporting
         "overlap": {},
     }
 
@@ -334,6 +334,8 @@ def extract_and_save_metrics(results_dir, metrics_file, backend="nedc-binary"):
         if backend in ("native-overlap", "native-taes"):
             # Native outputs simpler format
             sens_match = re.search(r"Sensitivity \(TPR, Recall\):\s+([\d.]+)%", content)
+            # Native summary prints Total FA; we will store it as total and also
+            # prefer SEIZ-only if we compute it from lists below
             fa_match = re.search(r"Total False Alarm Rate:\s+([\d.]+)\s+per 24 hours", content)
             f1_match = re.search(r"F1 Score:\s+([\d.]+)", content)
 
@@ -341,7 +343,7 @@ def extract_and_save_metrics(results_dir, metrics_file, backend="nedc-binary"):
             if sens_match:
                 metrics["overlap"]["sensitivity_percent"] = float(sens_match.group(1))
             if fa_match:
-                metrics["overlap"]["fa_per_24h"] = float(fa_match.group(1))
+                metrics["overlap"]["fa_per_24h_total"] = float(fa_match.group(1))
             if f1_match:
                 metrics["overlap"]["f1_score"] = float(f1_match.group(1))
         else:
@@ -355,7 +357,7 @@ def extract_and_save_metrics(results_dir, metrics_file, backend="nedc-binary"):
 
                 # Extract metrics from OVERLAP section
                 sens_match = re.search(r"Sensitivity \(TPR, Recall\):\s+([\d.]+)%", overlap_content)
-                fa_match = re.search(
+                fa_total_match = re.search(
                     r"Total False Alarm Rate:\s+([\d.]+)\s+per 24 hours", overlap_content
                 )
                 f1_match = re.search(r"F1 Score(?: \(F Ratio\))?:\s+([\d.]+)", overlap_content)
@@ -364,12 +366,52 @@ def extract_and_save_metrics(results_dir, metrics_file, backend="nedc-binary"):
                 metrics["overlap"] = {}
                 if sens_match:
                     metrics["overlap"]["sensitivity_percent"] = float(sens_match.group(1))
-                if fa_match:
-                    metrics["overlap"]["fa_per_24h"] = float(fa_match.group(1))
+                if fa_total_match:
+                    metrics["overlap"]["fa_per_24h_total"] = float(fa_total_match.group(1))
                 if f1_match:
                     metrics["overlap"]["f1_score"] = float(f1_match.group(1))
 
-        # Also keep as "taes" for backward compatibility
+        # Compute SEIZ-only OVERLAP FA/24h by scoring lists via native scorer
+        try:
+            lists_dir = results_dir.parent / "lists"
+            ref_list = lists_dir / "ref.list"
+            hyp_list = lists_dir / "hyp.list"
+            if ref_list.exists() and hyp_list.exists():
+                from seizure_evaluation.ovlp.overlap_scorer import OverlapScorer
+
+                scorer = OverlapScorer()
+                hits = misses = fa = 0
+                total_dur = 0.0
+                refs = [Path(p.strip()) for p in ref_list.read_text().splitlines() if p.strip()]
+                hyps = [Path(p.strip()) for p in hyp_list.read_text().splitlines() if p.strip()]
+                for r, h in zip(refs, hyps, strict=False):
+                    m = scorer.score_from_files(r, h)
+                    hits += m.hits
+                    misses += m.misses
+                    fa += m.false_alarms  # SEIZ-only false alarms
+                    total_dur += m.total_duration_sec
+                if total_dur > 0:
+                    fa24_seiz = fa * 86400.0 / total_dur
+                    sens_seiz = 100.0 * hits / (hits + misses) if (hits + misses) > 0 else 0.0
+                    metrics.setdefault("overlap", {})
+                    metrics["overlap"]["fa_per_24h_seiz"] = round(fa24_seiz, 4)
+                    metrics["overlap"]["sensitivity_percent_seiz"] = round(sens_seiz, 4)
+        except Exception:
+            pass
+
+        # Select primary FA to expose as fa_per_24h based on reporting policy
+        fa_primary = None
+        if fa_reporting == "seiz":
+            fa_primary = metrics.get("overlap", {}).get("fa_per_24h_seiz")
+        elif fa_reporting == "total":
+            fa_primary = metrics.get("overlap", {}).get("fa_per_24h_total")
+        elif fa_reporting == "both":
+            # prefer SEIZ for primary display, keep total as separate key
+            fa_primary = metrics.get("overlap", {}).get("fa_per_24h_seiz") or metrics.get("overlap", {}).get("fa_per_24h_total")
+        if fa_primary is not None:
+            metrics["overlap"]["fa_per_24h"] = fa_primary
+
+        # Backward-compat: mirror overlap metrics into "taes" key (historical quirk)
         if "overlap" in metrics:
             metrics["taes"] = metrics["overlap"].copy()
 
@@ -399,6 +441,7 @@ def parse_nedc_output(
     kernel=None,
     min_duration_sec=None,
     merge_gap_sec=None,
+    fa_reporting: str = "seiz",
 ):
     """
     Parse and display key metrics from NEDC output.
@@ -416,7 +459,7 @@ def parse_nedc_output(
 
     # Extract metrics first
     metrics_file = results_dir / "metrics.json"
-    metrics = extract_and_save_metrics(results_dir, metrics_file, backend)
+    metrics = extract_and_save_metrics(results_dir, metrics_file, backend, fa_reporting=fa_reporting)
 
     # Add operating point params to metrics
     if any([threshold, kernel, min_duration_sec, merge_gap_sec]):
@@ -442,9 +485,17 @@ def parse_nedc_output(
     if metrics["taes"]:
         print("\n🎯 OVERLAP Results:")
         if "sensitivity_percent" in metrics["taes"]:
-            print(f"   Sensitivity: {metrics['taes']['sensitivity_percent']:.2f}%")
+            print(f"   Sensitivity (SEIZ): {metrics['taes']['sensitivity_percent']:.2f}%")
+        # Primary FA per reporting policy
         if "fa_per_24h" in metrics["taes"]:
-            print(f"   False Alarms/24h: {metrics['taes']['fa_per_24h']:.2f}")
+            label = "False Alarms/24h (SEIZ)" if fa_reporting in ("seiz","both") else "False Alarms/24h (TOTAL)"
+            print(f"   {label}: {metrics['taes']['fa_per_24h']:.2f}")
+        # Optionally show both if available
+        if fa_reporting == "both":
+            if "fa_per_24h_total" in metrics["taes"]:
+                print(f"   False Alarms/24h (TOTAL): {metrics['taes']['fa_per_24h_total']:.2f}")
+            if "fa_per_24h_seiz" in metrics["taes"]:
+                print(f"   False Alarms/24h (SEIZ): {metrics['taes']['fa_per_24h_seiz']:.2f}")
         if "f1_score" in metrics["taes"]:
             print(f"   F1 Score: {metrics['taes']['f1_score']:.3f}")
 
@@ -581,6 +632,13 @@ Examples:
         choices=["nedc-binary", "native-overlap", "native-taes"],
         help="Scoring backend to use (default: nedc-binary). 'native-taes' is an alias of 'native-overlap' for compatibility.",
     )
+    parser.add_argument(
+        "--fa_reporting",
+        type=str,
+        default="seiz",
+        choices=["seiz", "total", "both"],
+        help="Which FA/24h to report as primary: SEIZ-only, TOTAL, or BOTH (display both; primary=SEIZ).",
+    )
 
     args = parser.parse_args()
 
@@ -602,7 +660,7 @@ Examples:
             merge_gap_sec=args.merge_gap_sec,
         )
     elif args.score_only:
-        return run_nedc_scorer(args.outdir, backend=args.backend)
+        return run_nedc_scorer(args.outdir, backend=args.backend, fa_reporting=args.fa_reporting)
     else:
         return run_full_pipeline(
             checkpoint_file,
