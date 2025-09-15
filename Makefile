@@ -19,6 +19,8 @@ help:
 	@echo "  make docker-build   - Build Docker image"
 	@echo "  make docker-run     - Run Docker container"
 	@echo "  make docker-shell   - Interactive Docker shell"
+	@echo "  make docker-build-gpu - Build GPU Docker image (CUDA)"
+	@echo "  make docker-run-gpu  - Run GPU container (requires NVIDIA runtime)"
 	@echo ""
 	@echo "Evaluation:"
 	@echo "  make benchmark      - Run all benchmarks at paper defaults"
@@ -74,6 +76,15 @@ docker-shell:
 		-v $$(pwd)/experiments:/app/experiments \
 		--entrypoint /bin/bash \
 		seizure-transformer:latest
+
+docker-build-gpu:
+	docker build -f Dockerfile.gpu -t seizure-transformer:gpu .
+
+docker-run-gpu:
+	docker run --gpus all \
+		-v $$(pwd)/data:/data \
+		-v $$(pwd)/experiments:/experiments \
+		seizure-transformer:gpu eval --data_dir /data/tusz/edf/eval --out_dir /experiments/results
 
 # Evaluation
 benchmark:
