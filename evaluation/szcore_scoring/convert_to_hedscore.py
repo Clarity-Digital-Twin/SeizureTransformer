@@ -14,7 +14,9 @@ from typing import Any
 
 import numpy as np
 
-from evaluation.nedc_eeg_eval.nedc_scoring.post_processing import apply_seizure_transformer_postprocessing
+from evaluation.nedc_eeg_eval.nedc_scoring.post_processing import (
+    apply_seizure_transformer_postprocessing,
+)
 
 
 def convert_to_hedscore(
