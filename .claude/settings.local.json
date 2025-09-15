@@ -134,7 +134,8 @@
       "Bash(do echo \"=== $target sweep ===\")",
       "Bash(if [ -f \"results_default_nedc_binary/summary.txt\" ])",
       "Bash(then echo \"  TAES:\")",
-      "Bash(if [ -f \"results_default_native_taes/metrics.json\" ])"
+      "Bash(if [ -f \"results_default_native_taes/metrics.json\" ])",
+      "Bash(zip:*)"
     ],
     "deny": [],
     "ask": []

@@ -44,9 +44,9 @@ Wu et al.'s transformer-based seizure detector won the 2025 EpilepsyBench Challe
 | Dataset | Scoring Method | Sensitivity | False Alarms/24h | F1 Score |
 |---------|---------------|-------------|------------------|-----------|
 | **Dianalund** | SzCORE Any-Overlap¹ | 37% | **1 FA/24h** ✅ | 43% |
-| **TUSZ eval (Paper defaults)** | NEDC v6.0.0 TAES² | 24.71% | **134.01 FA/24h** ❌ | 0.33 |
-| **TUSZ eval (Paper defaults)** | NEDC v6.0.0 OVERLAP² | 45.63% | **100.06 FA/24h** ❌ | 0.519 |
-| **TUSZ eval (Tuned for 10 FA)** | NEDC v6.0.0 TAES² | 13.67% | **9.97 FA/24h** ✅ | TBD |
+| **TUSZ dev (Paper defaults)** | NEDC v6.0.0 TAES² | 24.15% | **144.28 FA/24h** ❌ | 0.30 |
+| **TUSZ dev (Paper defaults)** | NEDC v6.0.0 OVERLAP² | 45.63% | **100.06 FA/24h** ❌ | 0.519 |
+| **TUSZ dev (Tuned for 10 FA)** | NEDC v6.0.0 OVERLAP² | 23.45% | **39.50 FA/24h** ❌ | 0.331 |
 
 ¹ SzCORE: Lenient event-based scoring where any overlap counts as detection (on Dianalund dataset)
 ² NEDC: Clinical standard scorer for TUSZ. TAES = strict time-alignment, OVERLAP = any-overlap within NEDC framework
