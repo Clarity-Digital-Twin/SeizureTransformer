@@ -123,7 +123,11 @@
       "Bash(kill:*)",
       "Bash(rm:*)",
       "Bash(do du -sh \"$dir\")",
-      "Bash(./scripts/migrate_data.sh:*)"
+      "Bash(./scripts/migrate_data.sh:*)",
+      "Bash(sudo mkdir:*)",
+      "Bash(sudo mv:*)",
+      "Bash(DOCKER_BUILDKIT=0 docker build -t st:smoke -f /tmp/Dockerfile.test /tmp/)",
+      "Bash(DOCKER_BUILDKIT=0 docker build -t st:smoke -)"
     ],
     "deny": [],
     "ask": []
