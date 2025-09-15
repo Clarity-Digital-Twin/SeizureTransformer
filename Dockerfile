@@ -24,9 +24,7 @@ COPY wu_2025/README.md wu_2025/
 COPY wu_2025/src wu_2025/src
 RUN pip install --no-cache-dir ./wu_2025
 
-# Copy evaluation code
-COPY evaluation/ evaluation/
-COPY scripts/ scripts/
+## evaluation/ and scripts/ already included above for installation; avoid duplicate copies
 
 # Set environment
 ENV PYTHONUNBUFFERED=1

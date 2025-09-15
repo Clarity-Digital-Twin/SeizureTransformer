@@ -8,10 +8,10 @@ import argparse
 import pickle
 from pathlib import Path
 
-try:
-    from .post_processing import apply_seizure_transformer_postprocessing
-except ImportError:
-    from post_processing import apply_seizure_transformer_postprocessing  # type: ignore
+# Use a single, stable import path to avoid mypy/no-redef issues and runtime fallbacks.
+from evaluation.nedc_eeg_eval.nedc_scoring.post_processing import (
+    apply_seizure_transformer_postprocessing,
+)
 
 
 def write_nedc_csv(events, file_path, file_id, duration_sec):

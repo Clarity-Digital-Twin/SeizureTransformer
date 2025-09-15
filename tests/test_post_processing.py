@@ -244,9 +244,13 @@ class TestApplySeizureTransformerPostprocessing:
             fs=256,
         )
         assert len(events) == 1
-        # Check duration is approximately 10 seconds (may be slightly less due to morphology)
+        # Check duration is approximately 10 seconds.
+        # Morphological opening/closing with kernel k can shave up to ~k/fs at each edge.
         start, end = events[0]
-        assert end - start >= 9.9  # Allow small edge effects from morphological operations
+        k = 5
+        fs = 256
+        min_duration = 10.0 - 2 * (k / fs)
+        assert (end - start) >= (min_duration - 0.05)
 
     def test_realistic_scenario(self):
         """Test with realistic noisy predictions."""

@@ -60,3 +60,11 @@ docker run --rm \
 - BuildKit plugin error (`docker-buildx: no such file`) → enable Desktop or set `DOCKER_BUILDKIT=0`.
 - Very slow first pull of base image → pre-pull: `docker pull pytorch/pytorch:2.2.0-cuda12.1-cudnn8-runtime`.
 
+## WSL2: Slow or Stuck "Sending build context"
+- Keep your repo on the Linux filesystem (e.g., `~/src/SeizureTransformer`), not under `/mnt/c/...`.
+- Ensure BuildKit is available: `sudo apt-get install -y docker-buildx-plugin` (or Docker 24+).
+- Enable BuildKit globally (optional):
+  - `echo '{ "features": { "buildkit": true } }' | sudo tee /etc/docker/daemon.json`
+  - `sudo systemctl restart docker`
+- Retry the build from the repo root on ext4:
+  - `docker buildx build --progress=plain -t seizure-transformer:latest -f Dockerfile .`

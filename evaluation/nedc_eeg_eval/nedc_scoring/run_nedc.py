@@ -81,9 +81,11 @@ def run_conversion(
             return 0
 
     # Run conversion script
+    # Prefer module execution for predictable imports
     cmd = [
         sys.executable,
-        "evaluation/nedc_eeg_eval/nedc_scoring/convert_predictions.py",
+        "-m",
+        "evaluation.nedc_eeg_eval.nedc_scoring.convert_predictions",
         "--checkpoint",
         str(checkpoint_file),
         "--outdir",
@@ -288,7 +290,11 @@ def run_nedc_scorer(
 
 
 def extract_and_save_metrics(results_dir, metrics_file, backend="nedc-binary"):
-    """Extract machine-readable metrics from NEDC output and save to JSON."""
+    """Extract machine-readable metrics from NEDC output and save to JSON.
+
+    Guarantees a stable schema with keys: "overlap" and "taes" (duplicate of overlap
+    for backward-compat), and always writes metrics_file creating its parent dir.
+    """
     import platform
     from typing import Any
 
@@ -314,11 +320,11 @@ def extract_and_save_metrics(results_dir, metrics_file, backend="nedc-binary"):
             "nedc_version": "v6.0.0",
         },
         "taes": {},
-        "ovlp": {},
-        "epoch": {},
+        "overlap": {},
     }
 
     # Parse metrics from correct section
+    results_dir = Path(results_dir)
     summary_file = results_dir / "summary.txt"
     if summary_file.exists():
         with open(summary_file) as f:
@@ -378,6 +384,8 @@ def extract_and_save_metrics(results_dir, metrics_file, backend="nedc-binary"):
     }
 
     # Save metrics
+    metrics_file = Path(metrics_file)
+    metrics_file.parent.mkdir(parents=True, exist_ok=True)
     with open(metrics_file, "w") as f:
         json.dump(metrics, f, indent=2)
 
