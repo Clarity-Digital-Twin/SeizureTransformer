@@ -12,9 +12,11 @@
 | SzCORE | 52.35 | 99.97 | 67.07 | 0.5880 | 8.59 | - |
 | **10 FA/24h Target (θ=0.88, k=5, d=3.0)** |
 | NEDC OVERLAP | 33.90 | 99.96 | 55.98 | 0.4223 | 10.27 | - |
+| NEDC TAES | 60.45 | 99.85 | 12.03 | 0.2025 | 83.88 | - |
 | SzCORE | 40.59 | 99.99 | 83.77 | 0.5470 | 3.36 | - |
 | **2.5 FA/24h Target (θ=0.95, k=5, d=5.0)** |
 | NEDC OVERLAP | 14.50 | 99.99 | 74.44 | 0.2426 | 2.05 | - |
+| NEDC TAES | 18.12 | 99.97 | 40.41 | 0.2513 | 10.64 | - |
 | SzCORE | 19.71 | 100.00 | 91.07 | 0.3242 | 0.75 | - |
 
 ### Table A2: Sensitivity at Fixed False Alarm Rates
@@ -88,6 +90,8 @@ Our Python implementation achieved perfect parity with NEDC binary:
 | Focal | 215 | 45.8% |
 | Unknown/Other | 67 | 14.3% |
 
+Note: Derived from TUSZ v2.0.3 eval CSV_bi annotations; reproducible via `scripts/compile_tables.py`.
+
 ## E. Computational Performance
 
 ### Table E1: Processing Time Breakdown
@@ -123,7 +127,7 @@ https://github.com/[REDACTED]/seizure-transformer-eval
 
 Key scripts:
 - `evaluation/tusz/run_tusz_eval.py`: Generate predictions
-- `evaluation/nedc_scoring/run_nedc.py`: NEDC evaluation
+- `evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py`: NEDC evaluation
 - `evaluation/szcore_scoring/run_szcore.py`: SzCORE evaluation
-- `scripts/generate_figures.py`: Reproduce all figures
-- `scripts/parameter_sweep.py`: Grid search optimization
+- `scripts/visualize_results.py`: Recreate figures from results
+- `evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py`: Grid search optimization

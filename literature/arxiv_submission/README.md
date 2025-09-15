@@ -74,16 +74,10 @@ All other docs and outlines must align to the facts and numbers in these five co
 
 ## Figures to Generate
 
-Run these scripts to create publication-ready figures:
+Use the visualization helper to recreate plots from results:
 
-```python
-# Generate all figures
-python literature/arxiv_submission/generate_figures.py
-
-# Individual figures
-python literature/arxiv_submission/fig1_performance_spectrum.py
-python literature/arxiv_submission/fig2_scoring_comparison.py
-python literature/arxiv_submission/fig3_clinical_reality.py
+```bash
+python scripts/visualize_results.py --results_dir results/
 ```
 
 ## Next Steps

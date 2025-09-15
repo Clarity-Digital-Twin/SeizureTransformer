@@ -36,14 +36,14 @@ python evaluation/tusz/run_tusz_eval.py \
 ### 3. Apply NEDC Clinical Scoring
 ```bash
 # Paper default (threshold=0.8, kernel=5, duration=2.0s)
-python evaluation/nedc_scoring/run_nedc.py \
+python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
   --checkpoint experiments/eval/reproduction/checkpoint.pkl \
   --outdir results/nedc_default \
   --backend nedc-binary \
   --threshold 0.80 --kernel 5 --min_duration_sec 2.0
 
 # Clinical operating point (10 FA/24h target)
-python evaluation/nedc_scoring/run_nedc.py \
+python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
   --checkpoint experiments/eval/reproduction/checkpoint.pkl \
   --outdir results/nedc_10fa \
   --backend nedc-binary \
@@ -60,8 +60,8 @@ python evaluation/szcore_scoring/run_szcore.py \
 
 ### 5. Generate Figures and Tables
 ```bash
-python scripts/generate_figures.py --results_dir results/
-python scripts/compile_tables.py --results_dir results/
+python scripts/visualize_results.py --results_dir results/
+# Table compilation is integrated in evaluation scripts; see docs/results/* for generated summaries.
 ```
 
 ## Key Implementation Details
