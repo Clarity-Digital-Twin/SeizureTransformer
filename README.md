@@ -137,7 +137,7 @@ rsync -auxvL nedc-tuh-eeg@www.isip.piconepress.com:data/tuh_eeg/tuh_eeg_seizure/
 ```
 4. Place at: `wu_2025/data/tusz/v2.0.3/`
 
-### Running the Evaluation
+### Running the Evaluation (Local)
 ```bash
 # 1. Run inference on TUSZ
 python evaluation/tusz/run_tusz_eval.py \
@@ -153,6 +153,34 @@ make -C evaluation/nedc_eeg_eval/nedc_scoring all \
 python evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py \
   --checkpoint experiments/dev/baseline/checkpoint.pkl \
   --target_fa_per_24h 10
+
+### Docker Quick Start
+
+CPU image:
+
+```
+make docker-build
+make docker-run
+# Equivalent:
+# docker run -v $(pwd)/data:/data -v $(pwd)/experiments:/experiments \
+#   seizure-transformer:latest eval --data_dir /data/tusz/edf/eval --out_dir /experiments/results
+```
+
+GPU image (requires NVIDIA Container Toolkit):
+
+```
+make docker-build-gpu
+make docker-run-gpu
+```
+
+NEDC scoring on saved predictions:
+
+```
+docker run -v $(pwd)/experiments:/experiments \
+  seizure-transformer:latest nedc \
+  --checkpoint /experiments/results/checkpoint.pkl \
+  --outdir /experiments/nedc_results
+```
 ```
 
 ## 📂 Repository Structure

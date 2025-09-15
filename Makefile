@@ -65,15 +65,15 @@ docker-build:
 	docker build -t seizure-transformer:latest .
 
 docker-run:
-	docker run --gpus all \
-		-v $$(pwd)/data:/app/data \
-		-v $$(pwd)/experiments:/app/experiments \
-		seizure-transformer:latest
+	docker run \
+		-v $$(pwd)/data:/data \
+		-v $$(pwd)/experiments:/experiments \
+		seizure-transformer:latest eval --data_dir /data/tusz/edf/eval --out_dir /experiments/results
 
 docker-shell:
 	docker run --gpus all -it \
-		-v $$(pwd)/data:/app/data \
-		-v $$(pwd)/experiments:/app/experiments \
+		-v $$(pwd)/data:/data \
+		-v $$(pwd)/experiments:/experiments \
 		--entrypoint /bin/bash \
 		seizure-transformer:latest
 
@@ -85,6 +85,19 @@ docker-run-gpu:
 		-v $$(pwd)/data:/data \
 		-v $$(pwd)/experiments:/experiments \
 		seizure-transformer:gpu eval --data_dir /data/tusz/edf/eval --out_dir /experiments/results
+
+docker-smoke:
+	@echo "Running container smoke checks (CPU image)..."
+	docker run --rm seizure-transformer:latest || true
+	docker run --rm seizure-transformer:latest eval --help >/dev/null
+	docker run --rm seizure-transformer:latest nedc --help >/dev/null
+	@echo "✅ CPU image smoke OK"
+
+docker-smoke-gpu:
+	@echo "Running container smoke checks (GPU image)..."
+	docker run --rm --gpus all seizure-transformer:gpu python -c "import torch; assert torch.cuda.is_available()"
+	docker run --rm --gpus all seizure-transformer:gpu eval --help >/dev/null
+	@echo "✅ GPU image smoke OK"
 
 # Evaluation
 benchmark:
