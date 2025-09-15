@@ -39,7 +39,7 @@
 
 | Scoring Method | Sensitivity (%) | FA/24h | Notes |
 |----------------|-----------------|--------|-------|
-| **NEDC Binary TAES** | 51.88% | 38.60 | TAES too strict for target |
+| **NEDC Binary TAES** | 4.13% | 1.32 | ✅ TAES achieves <2 FA! |
 | **NEDC Binary OVERLAP** | 11.51% | **2.44** | ✅ MEETS TARGET |
 | **Native Python OVERLAP** | 11.51% | **2.44** | ✅ MEETS TARGET |
 | **SzCORE (Any-Overlap)** | **16.47%** | **0.56** | ✅ EXCELLENT! <1 FA achieved |
