@@ -11,7 +11,7 @@ Problem
 - This makes OVERLAP look worse on FA while it’s just a semantic mismatch, not a scoring paradox.
 
 Current State
-- FINAL_COMPLETE_RESULTS.md includes a note explaining the mismatch and points to SCORING_FA_DEFINITIONS.md.
+- FINAL_COMPLETE_RESULTS.md includes a note explaining the mismatch and points to ../evaluation/SCORING_FA_DEFINITIONS.md.
 - Verified “no merge_gap” numbers are correct and sourced directly from NEDC outputs.
 - Native OVERLAP parity with NEDC OVERLAP is confirmed.
 
@@ -42,7 +42,7 @@ Plan (once a policy is chosen)
 
 3) Update docs + tables
 - FINAL_COMPLETE_RESULTS.md: display both columns or correct single definition per policy.
-- SCORING_FA_DEFINITIONS.md: reflect the final policy and examples.
+- ../evaluation/SCORING_FA_DEFINITIONS.md: reflect the final policy and examples.
 
 4) Tests
 - Add unit tests for parser against fixtures covering both TAES and OVERLAP.
