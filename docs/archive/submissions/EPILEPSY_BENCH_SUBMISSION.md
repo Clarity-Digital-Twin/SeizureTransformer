@@ -1,6 +1,6 @@
-# Epilepsy Bench / SzCORE Submission
+# Epilepsy Bench / SzCORE Submission (Archived Draft)
 
-Note: This draft contains legacy TAES figures (e.g., 60.83 FA/24h) that predate our merge_gap deprecation and re‑verification. Before any external submission, update all numbers and clearly specify which metric (TAES vs OVERLAP) is reported. See SINGLE_SOURCE_OF_TRUTH.md for the current default results (OVERLAP: 45.63% / 100.06 FA).
+Archived until we finalize clinical tuning points and refresh all numbers from SINGLE_SOURCE_OF_TRUTH.md (no merge). When reviving, clearly specify the metric (TAES vs OVERLAP) and ensure defaults match docs/evaluation/EVALUATION_RESULTS_TABLE.md.
 
 ## Model Information
 

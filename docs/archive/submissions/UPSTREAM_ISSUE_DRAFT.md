@@ -62,6 +62,6 @@ Best regards,
 - Offer to share the checkpoint.pkl with predictions if they want to verify
 - Be prepared to explain NEDC TAES vs event-based scoring differences
 - Emphasize this is meant to help the community, not criticize
-# GitHub Issue Draft for keruiwu/SeizureTransformer
+# GitHub Issue Draft for keruiwu/SeizureTransformer (Archived Draft)
 
-Note: This draft contains legacy numbers that were produced prior to our merge_gap deprecation. Before posting, update all figures to match SINGLE_SOURCE_OF_TRUTH.md (no merge) and specify the exact NEDC metric used (TAES vs OVERLAP). Do not cite 60.83/137.x FA values without re‑extraction.
+Note: This draft contains legacy numbers that were produced prior to our merge_gap deprecation. Before posting, update all figures to match docs/status/SINGLE_SOURCE_OF_TRUTH.md (no merge) and specify the exact NEDC metric used (TAES vs OVERLAP). Do not cite 60.83/137.x FA values without re‑extraction.
