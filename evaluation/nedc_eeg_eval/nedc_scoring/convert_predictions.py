@@ -11,7 +11,7 @@ from pathlib import Path
 try:
     from .post_processing import apply_seizure_transformer_postprocessing
 except ImportError:
-    from post_processing import apply_seizure_transformer_postprocessing
+    from post_processing import apply_seizure_transformer_postprocessing  # type: ignore
 
 
 def write_nedc_csv(events, file_path, file_id, duration_sec):

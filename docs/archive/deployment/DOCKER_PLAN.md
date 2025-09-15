@@ -1,3 +1,15 @@
+[ARCHIVED]
+
+This document has been archived. The canonical, maintained Docker docs now live at:
+
+- docs/deployment/DOCKER_DEPLOYMENT_PLAN.md (current plan and quickstart)
+- docs/deployment/DOCKER_FIX_PLAN.md (troubleshooting and environment checks)
+
+The content below is preserved for historical context and may reference older
+multi-container and multi-Dockerfile layouts (e.g., Dockerfile.inference,
+Dockerfile.nedc) that are no longer in active use. Use the canonical docs above
+for up-to-date instructions.
+
 # Docker Implementation Plan
 
 ## 🚨 CRITICAL FINDING: 80GB of Data Inside Codebase!

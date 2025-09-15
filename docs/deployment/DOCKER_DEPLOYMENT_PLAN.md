@@ -1,7 +1,41 @@
+# [Maintained]
+
+This page is the canonical Docker quickstart and deployment guide for this repo.
+Sections describing multi-container stacks and multiple Dockerfiles
+(`Dockerfile.inference`, `Dockerfile.nedc`, `Dockerfile.api`) are retained below
+for reference but are not actively maintained. The supported path uses the
+single root `Dockerfile` with BuildKit.
+
 # 🐳 DOCKER DEPLOYMENT PLAN
 ## Production-Ready Containerization for SeizureTransformer TUSZ Pipeline
 
 **Goal**: Create a bulletproof, GPU-accelerated Docker setup for both research reproducibility and production deployment of our 137x FA gap evaluation pipeline.
+
+## Canonical Quickstart
+
+- Prereqs
+  - Docker 24+ with buildx/BuildKit enabled (Docker Desktop on WSL2 works).
+  - Optional GPU: install NVIDIA Container Toolkit; run with `--gpus all`.
+- Build (root Dockerfile)
+  - `DOCKER_BUILDKIT=1 docker buildx build -t seizure-transformer:latest -f Dockerfile .`
+- Smoke run (prints CLI help)
+  - `docker run --rm seizure-transformer:latest`
+- Inference example
+  - `docker run --rm -v /abs/path/in.edf:/app/data/input.edf:ro -v /abs/out:/app/experiments seizure-transformer:latest /app/data/input.edf /app/experiments/output.tsv`
+- Data policy
+  - Do not bake datasets into the image. Keep large datasets outside the repo and mount at runtime.
+  - `.dockerignore` excludes `data/`, `experiments/`, `*.pkl`, `.git/`, `.venv/` to keep context small.
+- Troubleshooting
+  - Missing buildx plugin: enable Docker Desktop integration or set `DOCKER_BUILDKIT=0` temporarily.
+  - Context is huge: ensure you are building from the repo root and `.dockerignore` is present there.
+  - Minimal smoke build to validate environment:
+    - `DOCKER_BUILDKIT=1 docker buildx build -t st:smoke -f- . <<'EOF'
+FROM alpine:3.19
+RUN echo "Docker build works!"
+CMD ["/bin/sh", "-c", "echo SMOKE_OK"]
+EOF`
+- Compose status
+  - The provided `docker-compose.yml` references `Dockerfile.inference` and `Dockerfile.nedc`, which are not present. Treat it as experimental; prefer the single-image flow above.
 
 ## 🎯 Our Specific Requirements
 

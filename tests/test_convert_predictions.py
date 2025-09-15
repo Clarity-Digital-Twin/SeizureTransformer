@@ -8,7 +8,6 @@ import tempfile
 from pathlib import Path
 
 import numpy as np
-import pytest
 
 from evaluation.nedc_eeg_eval.nedc_scoring.convert_predictions import (
     convert_checkpoint_to_nedc,
@@ -208,7 +207,7 @@ class TestConvertCheckpointToNedc:
             checkpoint_file = self.create_test_checkpoint(tmpdir)
             output_dir = Path(tmpdir) / "output"
 
-            processed = convert_checkpoint_to_nedc(
+            convert_checkpoint_to_nedc(
                 checkpoint_file,
                 output_dir,
                 threshold=0.5,
