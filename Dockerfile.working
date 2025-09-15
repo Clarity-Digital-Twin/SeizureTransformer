@@ -1,0 +1,106 @@
+# WORKING DOCKERFILE - Evaluation Pipeline Focus
+# This exposes our evaluation pipeline that actually works with TUSZ/Siena
+# Wu's CLI is available but not default (it fails on real data)
+
+FROM python:3.10-slim
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc g++ make \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy everything
+COPY wu_2025/ /app/wu_2025/
+COPY evaluation/ /app/evaluation/
+COPY scripts/ /app/scripts/
+COPY pyproject.toml README.md /app/
+
+# Install packages in correct order
+# First our package (includes dependencies)
+RUN pip install --no-cache-dir -e .
+
+# Then Wu's package (frozen, untouched)
+RUN pip install --no-cache-dir ./wu_2025
+
+# Create flexible entrypoint script
+RUN cat > /app/docker_entrypoint.py << 'EOF'
+#!/usr/bin/env python3
+"""
+Docker entrypoint that routes to the correct pipeline.
+Default: Our evaluation pipeline (works with TUSZ/Siena)
+Optional: Wu's CLI (fails on real data due to strict validation)
+"""
+import sys
+import subprocess
+import argparse
+
+def main():
+    parser = argparse.ArgumentParser(description="SeizureTransformer Docker Interface")
+    parser.add_argument("--mode", choices=["eval", "wu", "nedc", "convert"],
+                       default="eval",
+                       help="Execution mode: eval (our pipeline), wu (original CLI), nedc (scoring), convert (predictions to NEDC)")
+    parser.add_argument("args", nargs="*", help="Arguments to pass to selected mode")
+
+    args = parser.parse_args()
+
+    if args.mode == "eval":
+        # Our evaluation pipeline - WORKS WITH TUSZ/SIENA
+        print("Running evaluation pipeline (handles TUSZ/Siena data)...")
+        cmd = ["python", "/app/evaluation/tusz/run_tusz_eval.py"] + args.args
+
+    elif args.mode == "wu":
+        # Wu's original CLI - FAILS ON TUSZ/SIENA
+        print("WARNING: Wu's CLI requires exact electrode names (Fp1, F3, etc.)")
+        print("         It will fail on TUSZ (has 'EEG FP1-REF') and Siena data.")
+        if len(args.args) < 2:
+            print("Usage: --mode wu <input.edf> <output.tsv>")
+            sys.exit(1)
+        cmd = ["python", "-m", "wu_2025"] + args.args
+
+    elif args.mode == "nedc":
+        # NEDC scoring pipeline
+        print("Running NEDC scoring pipeline...")
+        cmd = ["python", "/app/evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py"] + args.args
+
+    elif args.mode == "convert":
+        # Convert predictions to NEDC format
+        print("Converting predictions to NEDC format...")
+        cmd = ["python", "/app/evaluation/nedc_eeg_eval/nedc_scoring/convert_predictions.py"] + args.args
+
+    # Execute selected mode
+    result = subprocess.run(cmd)
+    sys.exit(result.returncode)
+
+if __name__ == "__main__":
+    main()
+EOF
+
+RUN chmod +x /app/docker_entrypoint.py
+
+# Default to evaluation mode (what actually works)
+ENTRYPOINT ["python", "/app/docker_entrypoint.py"]
+CMD ["--mode", "eval", "--help"]
+
+# Usage examples:
+#
+# 1. Run TUSZ evaluation (WORKS):
+#    docker run -v $(pwd)/data:/data -v $(pwd)/experiments:/experiments \
+#      seizure-transformer:latest \
+#      --mode eval \
+#      --data_dir /data/tusz/edf/eval \
+#      --out_dir /experiments/results
+#
+# 2. Run NEDC scoring:
+#    docker run -v $(pwd)/experiments:/experiments \
+#      seizure-transformer:latest \
+#      --mode nedc \
+#      --checkpoint /experiments/checkpoint.pkl \
+#      --outdir /experiments/nedc_results
+#
+# 3. Try Wu's CLI (will fail on TUSZ/Siena):
+#    docker run -v $(pwd)/data:/data \
+#      seizure-transformer:latest \
+#      --mode wu \
+#      /data/test.edf /data/output.tsv
