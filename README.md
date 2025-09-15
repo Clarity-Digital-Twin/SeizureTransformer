@@ -175,7 +175,7 @@ SeizureTransformer/
 <details>
 <summary>For Deep Dives</summary>
 
-- [Complete Results](docs/evaluation/EVALUATION_RESULTS.md) - All metrics & analysis
+- [Complete Results](docs/evaluation/EVALUATION_RESULTS_TABLE.md) - Canonical metrics & analysis
 - [Operating Points](docs/planning/SEIZURE_TRANSFORMER_TUNING_PLAN.md) - Threshold tuning methodology
 - [NEDC Integration](docs/planning/NEDC_INTEGRATION_PLAN.md) - Temple scorer details
 - [Model Architecture](docs/technical/IDEAL_REFERENCE_SEIZURE_TRANSFORMER_DATAFLOW.md) - Internals
