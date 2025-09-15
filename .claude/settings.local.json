@@ -131,7 +131,10 @@
       "Bash(DOCKER_BUILDKIT=0 docker build -t seizure-transformer:latest .)",
       "Bash(TESTFILE=\"/mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/data/siena/PN00/PN00-1.edf\")",
       "Bash(DOCKER_BUILDKIT=0 docker build -t seizure-transformer:test -f Dockerfile .)",
-      "Bash(do echo \"=== $target sweep ===\")"
+      "Bash(do echo \"=== $target sweep ===\")",
+      "Bash(if [ -f \"results_default_nedc_binary/summary.txt\" ])",
+      "Bash(then echo \"  TAES:\")",
+      "Bash(if [ -f \"results_default_native_taes/metrics.json\" ])"
     ],
     "deny": [],
     "ask": []
