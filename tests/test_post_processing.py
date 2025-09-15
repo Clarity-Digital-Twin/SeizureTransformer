@@ -192,52 +192,7 @@ class TestApplySeizureTransformerPostprocessing:
         assert len(events) == 1
         assert events[0][0] == pytest.approx(2.0, rel=0.1)
 
-    def test_merge_gap_blocked(self):
-        """Test that non-zero merge_gap_sec raises ValueError."""
-        predictions = np.zeros(256 * 10)
-        predictions[256 * 2 : 256 * 3] = 0.9
-
-        # Test that None and 0 are allowed
-        events_none = apply_seizure_transformer_postprocessing(
-            predictions,
-            threshold=0.8,
-            morph_kernel_size=3,
-            min_duration_sec=0.5,
-            fs=256,
-            merge_gap_sec=None,
-        )
-        assert isinstance(events_none, list)
-
-        events_zero = apply_seizure_transformer_postprocessing(
-            predictions,
-            threshold=0.8,
-            morph_kernel_size=3,
-            min_duration_sec=0.5,
-            fs=256,
-            merge_gap_sec=0.0,
-        )
-        assert isinstance(events_zero, list)
-
-        # Test that non-zero values raise ValueError
-        with pytest.raises(ValueError, match="merge_gap_sec.*not allowed"):
-            apply_seizure_transformer_postprocessing(
-                predictions,
-                threshold=0.8,
-                morph_kernel_size=3,
-                min_duration_sec=0.5,
-                fs=256,
-                merge_gap_sec=1.0,  # Non-zero should be blocked
-            )
-
-        with pytest.raises(ValueError, match="merge_gap_sec.*not allowed"):
-            apply_seizure_transformer_postprocessing(
-                predictions,
-                threshold=0.8,
-                morph_kernel_size=3,
-                min_duration_sec=0.5,
-                fs=256,
-                merge_gap_sec=0.5,  # Non-zero should be blocked
-            )
+    # merge_gap parameter removed by policy; no tests needed for it
 
     def test_edge_cases(self):
         """Test edge cases in post-processing."""

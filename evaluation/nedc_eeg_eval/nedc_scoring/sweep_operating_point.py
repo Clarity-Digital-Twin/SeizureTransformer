@@ -33,7 +33,6 @@ class Result:
     threshold: float
     kernel: int
     min_duration: float
-    merge_gap: float | None
     taes_sensitivity: float
     taes_fa_per_24h: float
     workdir: Path
@@ -45,7 +44,6 @@ def run_once(
     threshold: float,
     kernel: int,
     min_duration: float,
-    merge_gap: float | None,
 ) -> Result:
     # Convert
     cmd_conv = [
@@ -63,8 +61,7 @@ def run_once(
         "--min_duration_sec",
         str(min_duration),
     ]
-    if merge_gap is not None:
-        cmd_conv += ["--merge_gap_sec", str(merge_gap)]
+    # merge_gap removed by policy
 
     env = os.environ.copy()
     repo_root = Path(__file__).resolve().parent.parent.parent
@@ -105,7 +102,6 @@ def run_once(
         threshold=threshold,
         kernel=kernel,
         min_duration=min_duration,
-        merge_gap=merge_gap,
         taes_sensitivity=taes_sens,
         taes_fa_per_24h=taes_fa,
         workdir=outdir,
@@ -127,7 +123,6 @@ def main() -> int:
     p.add_argument("--thresholds", type=str, default="0.6,0.7,0.8,0.9")
     p.add_argument("--kernels", type=str, default="5,11")
     p.add_argument("--min_durations", type=str, default="2,4")
-    p.add_argument("--merge_gaps", type=str, default="0", help="Comma list in seconds. Only 0 allowed (treated as None). Non-zero values are disallowed; see MERGE_GAP_POLICY.md.")
     p.add_argument("--target_fa_per_24h", type=float, default=10.0)
     args = p.parse_args()
 
@@ -138,22 +133,14 @@ def main() -> int:
     thresholds = parse_floats_list(args.thresholds)
     kernels = parse_ints_list(args.kernels)
     min_durations = parse_floats_list(args.min_durations)
-    merge_gaps_raw = parse_floats_list(args.merge_gaps)
-    # Phase 1 enforcement: Block non-zero merge_gaps
-    if any(g != 0.0 for g in merge_gaps_raw):
-        print("ERROR: Non-zero merge_gaps requested.")
-        print("Event merging has been deprecated to ensure NEDC/Temple compliance.")
-        print("Use merge_gaps=0 for all evaluations.")
-        print("See docs/technical/MERGE_GAP_POLICY.md for details.")
-        return 1
-    merge_gaps: list[float | None] = [None if g == 0 else g for g in merge_gaps_raw]
+    merge_gaps: list[float | None] = [None]
 
     results: list[Result] = []
-    for thr, ker, mind, gap in itertools.product(thresholds, kernels, min_durations, merge_gaps):
-        name = f"thr{thr:.2f}_k{ker}_min{mind:.1f}_gap{(gap if gap is not None else 0):.1f}"
+    for thr, ker, mind, _ in itertools.product(thresholds, kernels, min_durations, merge_gaps):
+        name = f"thr{thr:.2f}_k{ker}_min{mind:.1f}"
         outdir = base / name
         try:
-            res = run_once(checkpoint, outdir, thr, ker, mind, gap)
+            res = run_once(checkpoint, outdir, thr, ker, mind)
             results.append(res)
             print(
                 f"OK: {name} -> sens={res.taes_sensitivity:.2f}% FA/24h={res.taes_fa_per_24h:.2f}"
@@ -167,29 +154,9 @@ def main() -> int:
     csv_path = base / "sweep_results.csv"
     with open(csv_path, "w", newline="") as f:
         w = csv.writer(f)
-        w.writerow(
-            [
-                "threshold",
-                "kernel",
-                "min_duration",
-                "merge_gap",
-                "taes_sensitivity",
-                "taes_fa_per_24h",
-                "workdir",
-            ]
-        )
+        w.writerow(["threshold", "kernel", "min_duration", "taes_sensitivity", "taes_fa_per_24h", "workdir"])
         for r in results:
-            w.writerow(
-                [
-                    r.threshold,
-                    r.kernel,
-                    r.min_duration,
-                    r.merge_gap if r.merge_gap is not None else 0,
-                    r.taes_sensitivity,
-                    r.taes_fa_per_24h,
-                    str(r.workdir),
-                ]
-            )
+            w.writerow([r.threshold, r.kernel, r.min_duration, r.taes_sensitivity, r.taes_fa_per_24h, str(r.workdir)])
 
     # Recommend best: minimize FA/24h subject to FA<=target, maximize sensitivity
     target = args.target_fa_per_24h
@@ -197,10 +164,7 @@ def main() -> int:
     if feasible:
         best = max(feasible, key=lambda r: (r.taes_sensitivity, -r.taes_fa_per_24h))
         print("\nRecommended (subject to FA<=target):")
-        print(
-            f"  threshold={best.threshold} kernel={best.kernel} "
-            f"min_dur={best.min_duration} merge_gap={best.merge_gap}"
-        )
+        print(f"  threshold={best.threshold} kernel={best.kernel} min_dur={best.min_duration}")
         print(f"  TAES sensitivity={best.taes_sensitivity:.2f}% FA/24h={best.taes_fa_per_24h:.2f}")
         rec_path = base / "recommended_params.json"
         with open(rec_path, "w") as f:
@@ -208,8 +172,7 @@ def main() -> int:
                 "{\n"
                 f'  "threshold": {best.threshold},\n'
                 f'  "kernel": {best.kernel},\n'
-                f'  "min_duration_sec": {best.min_duration},\n'
-                f'  "merge_gap_sec": {0 if best.merge_gap is None else best.merge_gap}\n'
+                f'  "min_duration_sec": {best.min_duration}\n'
                 "}\n"
             )
     else:

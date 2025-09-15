@@ -14,7 +14,6 @@ def apply_seizure_transformer_postprocessing(
     morph_kernel_size: int = 5,
     min_duration_sec: float = 2.0,
     fs: int = 256,
-    merge_gap_sec: float | None = None,
 ) -> list:
     """
     Apply paper's post-processing pipeline.
@@ -25,19 +24,11 @@ def apply_seizure_transformer_postprocessing(
         morph_kernel_size: Kernel size for morphological ops (paper uses 5)
         min_duration_sec: Minimum event duration in seconds (paper uses 2.0)
         fs: Sampling frequency in Hz
-        merge_gap_sec: DEPRECATED - must be None or 0. Non-zero values are blocked.
 
     Returns:
         List of (start_sec, end_sec) tuples for seizure events
     """
-    # Phase 1 enforcement: Block non-zero merge_gap
-    if merge_gap_sec not in (None, 0, 0.0):
-        raise ValueError(
-            f"merge_gap_sec={merge_gap_sec} is not allowed. "
-            "Event merging has been deprecated to ensure NEDC/Temple compliance. "
-            "Use merge_gap_sec=None or 0 for all evaluations. "
-            "See docs/technical/MERGE_GAP_POLICY.md for details."
-        )
+    # Note: merge_gap has been fully removed from evaluation paths by policy.
 
     # Step 1: Apply threshold
     binary = predictions > threshold
@@ -62,7 +53,7 @@ def apply_seizure_transformer_postprocessing(
             end_sec = end_idx / fs
             filtered_events.append((start_sec, end_sec))
 
-    # merge_gap_sec is deprecated and blocked above, so no merging step
+    # No merging step; evaluation never merges events
 
     return filtered_events
 

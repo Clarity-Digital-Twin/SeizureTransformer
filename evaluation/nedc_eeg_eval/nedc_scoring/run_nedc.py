@@ -50,13 +50,9 @@ def run_conversion(
     threshold: float | None = None,
     kernel: int | None = None,
     min_duration_sec: float | None = None,
-    merge_gap_sec: float | None = None,
 ):
     """
     Convert checkpoint.pkl to NEDC CSV_bi format.
-
-    Args:
-        merge_gap_sec: DEPRECATED - must be None or 0. Non-zero values are blocked.
 
     Args:
         checkpoint_file: Path to checkpoint.pkl
@@ -66,14 +62,6 @@ def run_conversion(
     Returns:
         int: Return code (0 for success)
     """
-    # Phase 1 enforcement: Block non-zero merge_gap
-    if merge_gap_sec not in (None, 0, 0.0):
-        print(f"ERROR: merge_gap_sec={merge_gap_sec} is not allowed.")
-        print("Event merging has been deprecated to ensure NEDC/Temple compliance.")
-        print("Use merge_gap_sec=None or 0 for all evaluations.")
-        print("See docs/technical/MERGE_GAP_POLICY.md for details.")
-        return 1
-
     print("=" * 70)
     print("STEP 1: Converting SeizureTransformer predictions to NEDC format")
     print("=" * 70)
@@ -108,7 +96,6 @@ def run_conversion(
         cmd += ["--kernel", str(kernel)]
     if min_duration_sec is not None:
         cmd += ["--min_duration_sec", str(min_duration_sec)]
-    # merge_gap_sec is deprecated and blocked above
 
     print(f"Running: {' '.join(cmd)}")
     result = subprocess.run(cmd, capture_output=True, text=True)
@@ -128,7 +115,6 @@ def run_nedc_scorer(
     threshold=None,
     kernel=None,
     min_duration_sec=None,
-    merge_gap_sec=None,
 ):
     """
     Run NEDC official scorer on converted files.
@@ -139,7 +125,6 @@ def run_nedc_scorer(
         threshold: Probability threshold used (for metadata)
         kernel: Morphological kernel size used (for metadata)
         min_duration_sec: Minimum duration used (for metadata)
-        merge_gap_sec: Merge gap used (for metadata)
 
     Returns:
         int: Return code (0 for success)
@@ -271,7 +256,7 @@ def run_nedc_scorer(
         print("Valid backends: nedc-binary, native-overlap, native-taes (alias)")
         return 1
 
-    # merge_gap_sec is deprecated and blocked, so no disclaimer needed
+    # merge_gap removed; no disclaimer needed
 
     # Parse and display key metrics with operating point params
     parse_nedc_output(
@@ -280,7 +265,6 @@ def run_nedc_scorer(
         threshold=threshold,
         kernel=kernel,
         min_duration_sec=min_duration_sec,
-        merge_gap_sec=merge_gap_sec,
     )
 
     return 0
@@ -437,7 +421,6 @@ def parse_nedc_output(
     threshold=None,
     kernel=None,
     min_duration_sec=None,
-    merge_gap_sec=None,
     fa_reporting: str = "seiz",
 ):
     """
@@ -448,7 +431,6 @@ def parse_nedc_output(
         threshold: Probability threshold used
         kernel: Morphological kernel size used
         min_duration_sec: Minimum duration used
-        merge_gap_sec: Merge gap used
     """
     print("\n" + "=" * 70)
     print("KEY METRICS")
@@ -459,12 +441,11 @@ def parse_nedc_output(
     metrics = extract_and_save_metrics(results_dir, metrics_file, backend, fa_reporting=fa_reporting)
 
     # Add operating point params to metrics
-    if any([threshold, kernel, min_duration_sec, merge_gap_sec]):
+    if any([threshold, kernel, min_duration_sec]):
         metrics["operating_point"] = {
             "threshold": threshold or 0.8,
             "kernel": kernel or 5,
             "min_duration_sec": min_duration_sec or 2.0,
-            "merge_gap_sec": 0.0,  # Always 0 now that non-zero is blocked
         }
         # Re-save with operating point
         with open(metrics_file, "w") as f:
@@ -515,7 +496,6 @@ def run_full_pipeline(
     threshold: float | None = None,
     kernel: int | None = None,
     min_duration_sec: float | None = None,
-    merge_gap_sec: float | None = None,
     backend="nedc-binary",
 ):
     """
@@ -546,7 +526,6 @@ def run_full_pipeline(
         threshold=threshold,
         kernel=kernel,
         min_duration_sec=min_duration_sec,
-        merge_gap_sec=merge_gap_sec,
     )
     if ret != 0:
         print("Conversion failed")
@@ -559,7 +538,6 @@ def run_full_pipeline(
         threshold=threshold,
         kernel=kernel,
         min_duration_sec=min_duration_sec,
-        merge_gap_sec=merge_gap_sec,
     )
     if ret != 0:
         print("NEDC scoring failed")
@@ -610,12 +588,7 @@ Examples:
     parser.add_argument(
         "--min_duration_sec", type=float, default=None, help="Minimum event duration (s)"
     )
-    parser.add_argument(
-        "--merge_gap_sec",
-        type=float,
-        default=None,
-        help="DEPRECATED: Merge events with gaps less than this (s). WARNING: This violates NEDC/Temple evaluation standards and artificially reduces FA by 4X. Use None for academic compliance.",
-    )
+    # merge_gap flag removed by policy (Phase 2)
     parser.add_argument(
         "--convert-only", action="store_true", help="Only run conversion, skip NEDC scoring"
     )
@@ -654,7 +627,6 @@ Examples:
             threshold=args.threshold,
             kernel=args.kernel,
             min_duration_sec=args.min_duration_sec,
-            merge_gap_sec=args.merge_gap_sec,
         )
     elif args.score_only:
         return run_nedc_scorer(args.outdir, backend=args.backend, fa_reporting=args.fa_reporting)
@@ -666,7 +638,6 @@ Examples:
             threshold=args.threshold,
             kernel=args.kernel,
             min_duration_sec=args.min_duration_sec,
-            merge_gap_sec=args.merge_gap_sec,
             backend=args.backend,
         )
 

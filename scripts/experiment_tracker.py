@@ -15,18 +15,10 @@ def create_experiment_config(
     threshold: float = 0.8,
     kernel: int = 5,
     min_duration_sec: float = 2.0,
-    merge_gap_sec: float | None = None,
     target_fa_per_24h: float | None = None,
     notes: str = "",
 ) -> dict:
     """Create standardized experiment configuration."""
-    # Phase 1: accept but ignore merge_gap_sec (force None), warn once
-    effective_merge_gap = None
-    if merge_gap_sec not in (None, 0, 0.0):
-        print(
-            "WARNING: merge_gap_sec provided in experiment config is ignored. "
-            "Event merging is deprecated and disallowed (see docs/technical/MERGE_GAP_POLICY.md)."
-        )
     return {
         "experiment_info": {
             "split": split,
@@ -39,7 +31,6 @@ def create_experiment_config(
             "threshold": threshold,
             "kernel": kernel,
             "min_duration_sec": min_duration_sec,
-            "merge_gap_sec": effective_merge_gap,
         },
         "paths": {
             "data_dir": f"/path/to/TUSZ/v2.0.3/{split}",
@@ -125,7 +116,7 @@ def main():
     create_parser.add_argument("--threshold", type=float, default=0.8)
     create_parser.add_argument("--kernel", type=int, default=5)
     create_parser.add_argument("--min_duration_sec", type=float, default=2.0)
-    create_parser.add_argument("--merge_gap_sec", type=float, default=None)
+    # merge_gap removed by policy
     create_parser.add_argument("--target_fa_per_24h", type=float, default=None)
     create_parser.add_argument("--notes", default="")
 
@@ -142,7 +133,6 @@ def main():
             threshold=args.threshold,
             kernel=args.kernel,
             min_duration_sec=args.min_duration_sec,
-            merge_gap_sec=args.merge_gap_sec,
             target_fa_per_24h=args.target_fa_per_24h,
             notes=args.notes,
         )

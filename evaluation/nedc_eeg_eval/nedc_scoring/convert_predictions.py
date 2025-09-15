@@ -45,7 +45,6 @@ def convert_checkpoint_to_nedc(
     threshold: float = 0.8,
     morph_kernel_size: int = 5,
     min_duration_sec: float = 2.0,
-    merge_gap_sec: float | None = None,
 ):
     """
     Convert checkpoint.pkl to NEDC CSV_bi format.
@@ -53,17 +52,7 @@ def convert_checkpoint_to_nedc(
     Args:
         checkpoint_file: Path to checkpoint.pkl
         output_dir: Base output directory
-        merge_gap_sec: DEPRECATED - must be None or 0. Non-zero values are blocked.
     """
-    # Phase 1 enforcement: Block non-zero merge_gap
-    if merge_gap_sec not in (None, 0, 0.0):
-        raise ValueError(
-            f"merge_gap_sec={merge_gap_sec} is not allowed. "
-            "Event merging violates NEDC/Temple evaluation standards. "
-            "Use merge_gap_sec=None or 0 for all evaluations. "
-            "See docs/technical/MERGE_GAP_POLICY.md for details."
-        )
-
     print(f"Loading checkpoint from {checkpoint_file}...")
     with open(checkpoint_file, "rb") as f:
         checkpoint = pickle.load(f)
@@ -104,7 +93,6 @@ def convert_checkpoint_to_nedc(
             morph_kernel_size=morph_kernel_size,
             min_duration_sec=min_duration_sec,
             fs=256,
-            merge_gap_sec=merge_gap_sec,
         )
 
         # Write hypothesis file
@@ -135,7 +123,6 @@ def convert_checkpoint_to_nedc(
             "threshold": threshold,
             "kernel": morph_kernel_size,
             "min_duration_sec": min_duration_sec,
-            "merge_gap_sec": 0.0,  # Always 0 now that non-zero is blocked
         }
         with open(Path(output_dir) / "params.json", "w") as f:
             json.dump(params, f, indent=2)
@@ -199,12 +186,7 @@ def main():
     parser.add_argument(
         "--min_duration_sec", type=float, default=2.0, help="Minimum event duration (s)"
     )
-    parser.add_argument(
-        "--merge_gap_sec",
-        type=float,
-        default=None,
-        help="DEPRECATED: Merge events with gaps less than this (s). WARNING: Violates NEDC standards. Use None for compliance.",
-    )
+    # merge_gap flag removed by policy (Phase 2)
 
     args = parser.parse_args()
 
@@ -219,7 +201,6 @@ def main():
         threshold=args.threshold,
         morph_kernel_size=args.kernel,
         min_duration_sec=args.min_duration_sec,
-        merge_gap_sec=args.merge_gap_sec,
     )
     return 0
 
