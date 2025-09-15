@@ -65,6 +65,7 @@ temp/
 reference_repos/
 evaluation/nedc_eeg_eval/v6.0.0/test/
 docker.old/
+docker-buildx*
 SWEEP_*
 *.bak
 *.old

@@ -1,3 +1,6 @@
+# NOTE: This compose file references Dockerfile.inference and Dockerfile.nedc,
+# which are not present. Treat as experimental. Prefer the single root Dockerfile
+# and commands in docs/deployment/DOCKER_DEPLOYMENT_PLAN.md.
 version: '3.8'
 
 services:
