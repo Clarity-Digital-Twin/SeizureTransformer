@@ -1,3 +1,9 @@
+# ⚠️ SUPERSEDED – See FINAL_COMPREHENSIVE_RESULTS_TABLE.md
+
+This file mixed interim figures from different runs. It is kept for traceability only. For authoritative results and explanations, see:
+- `FINAL_COMPREHENSIVE_RESULTS_TABLE.md`
+- `PARAMETER_TUNING_METHODOLOGY.md`
+
 # ✅ FINAL VERIFIED SCORES - 100% ACCURATE
 
 **Date**: September 15, 2025  

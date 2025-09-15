@@ -1,3 +1,9 @@
+# ⚠️ SUPERSEDED – See FINAL_COMPREHENSIVE_RESULTS_TABLE.md
+
+Results below were part of reconciliation notes and include inconsistent FA rates. For canonical numbers and tables, use:
+- `FINAL_COMPREHENSIVE_RESULTS_TABLE.md`
+- `PARAMETER_TUNING_METHODOLOGY.md`
+
 # FINAL SCORES COLLECTION - SYSTEMATIC RECORDING
 
 ## 1. DEFAULT CONFIGURATION (Paper: thr=0.8, kernel=5, min_dur=2.0, gap=0)
