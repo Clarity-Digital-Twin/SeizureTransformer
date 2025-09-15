@@ -1,0 +1,110 @@
+# Production Docker Compose Configuration
+# Complete pipeline orchestration for SeizureTransformer evaluation
+# Date: September 2025
+
+version: '3.8'
+
+services:
+  # ============================================================================
+  # Primary Service: Evaluation Pipeline
+  # This is what actually works with TUSZ/Siena data
+  # ============================================================================
+  evaluation:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: seizure-transformer:latest
+    container_name: st-evaluation
+    command: ["eval", "--data_dir", "/data/tusz/edf/eval", "--out_dir", "/experiments/results"]
+    volumes:
+      - ./data:/data:ro  # Read-only data mount
+      - ./experiments:/experiments:rw  # Read-write for results
+    environment:
+      - PYTHONUNBUFFERED=1
+      - CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-0}
+    deploy:
+      resources:
+        limits:
+          memory: 16G
+        reservations:
+          memory: 8G
+    networks:
+      - seizure-net
+    restart: on-failure:3
+
+  # ============================================================================
+  # Secondary Service: NEDC Scoring
+  # Runs after evaluation completes
+  # ============================================================================
+  nedc-scorer:
+    image: seizure-transformer:latest
+    container_name: st-nedc
+    command: [
+      "nedc",
+      "--checkpoint", "/experiments/results/checkpoint.pkl",
+      "--outdir", "/experiments/nedc_results",
+      "--backend", "native-overlap"
+    ]
+    volumes:
+      - ./experiments:/experiments:rw
+    depends_on:
+      evaluation:
+        condition: service_completed_successfully
+    networks:
+      - seizure-net
+
+  # ============================================================================
+  # Utility Service: Data Validator
+  # Checks EDF files for compatibility
+  # ============================================================================
+  validator:
+    image: seizure-transformer:latest
+    container_name: st-validator
+    entrypoint: ["python", "/app/scripts/validate_data.py"]
+    command: ["--data_dir", "/data", "--check_channels", "--check_format"]
+    volumes:
+      - ./data:/data:ro
+    networks:
+      - seizure-net
+    profiles:
+      - validation  # Only run when explicitly requested
+
+  # ============================================================================
+  # Development Service: Jupyter Lab
+  # For interactive analysis and debugging
+  # ============================================================================
+  jupyter:
+    image: seizure-transformer:latest
+    container_name: st-jupyter
+    entrypoint: ["jupyter", "lab"]
+    command: [
+      "--ip=0.0.0.0",
+      "--port=8888",
+      "--no-browser",
+      "--allow-root",
+      "--NotebookApp.token=''",
+      "--NotebookApp.password=''"
+    ]
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./data:/data:ro
+      - ./experiments:/experiments:rw
+      - ./notebooks:/notebooks:rw
+    networks:
+      - seizure-net
+    profiles:
+      - development  # Only run in dev mode
+
+networks:
+  seizure-net:
+    driver: bridge
+
+# ============================================================================
+# Volume definitions for persistent data
+# ============================================================================
+volumes:
+  model-cache:
+    driver: local
+  results-cache:
+    driver: local
