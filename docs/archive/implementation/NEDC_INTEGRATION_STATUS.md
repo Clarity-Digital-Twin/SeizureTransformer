@@ -1,5 +1,5 @@
-# 📊 NEDC INTEGRATION STATUS
-Status: Archived — historical notes. See NEDC_INTEGRATION_PLAN.md and OPERATIONAL_TUNING_PLAN.md for current process and commands.
+# 📊 NEDC INTEGRATION STATUS (Archived)
+Status: Archived — historical notes. See docs/planning/NEDC_INTEGRATION_PLAN.md and docs/planning/OPERATIONAL_TUNING_PLAN.md for current process and commands.
 
 Important: Legacy numbers in this file may reflect a non‑standard merge_gap post‑processing that artificially reduced FA by ~4×. For current, verified results (no merge), see SINGLE_SOURCE_OF_TRUTH.md and MERGE_GAP_POLICY.md. Do not use any “recommended” merge_gap values from this page.
 ## Quick Status Dashboard
