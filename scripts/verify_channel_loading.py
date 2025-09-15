@@ -5,10 +5,12 @@ FINAL VERIFICATION: Does loadEdf actually select the right 19 channels?
 
 import sys
 from pathlib import Path
+
 import pyedflib
 
 sys.path.append(str(Path(__file__).parent.parent / "wu_2025/src"))
 from epilepsy2bids.eeg import Eeg
+
 
 def verify_channel_selection():
     """Verify loadEdf selects the correct 19 channels from 33 available."""
@@ -26,9 +28,11 @@ def verify_channel_selection():
 
     # Load with loadEdf
     eeg = Eeg.loadEdf(test_file)
-    selected_channels = eeg.channels if hasattr(eeg, 'channels') else None
+    selected_channels = eeg.channels if hasattr(eeg, "channels") else None
 
-    print(f"\nChannels selected by loadEdf: {len(selected_channels) if selected_channels else 'Unknown'}")
+    print(
+        f"\nChannels selected by loadEdf: {len(selected_channels) if selected_channels else 'Unknown'}"
+    )
 
     if selected_channels:
         print("\nMAPPING (File Index -> Selected):")
@@ -37,7 +41,7 @@ def verify_channel_selection():
             print(f"  File[{idx:2d}]: {selected}")
 
     # The critical 19 from the file
-    critical_19_indices = [0,2,4,6,8,10,12,14,18,19,20,1,3,5,7,9,11,13,15]
+    critical_19_indices = [0, 2, 4, 6, 8, 10, 12, 14, 18, 19, 20, 1, 3, 5, 7, 9, 11, 13, 15]
     print(f"\nExpected indices for 19-channel montage: {critical_19_indices}")
 
     actual_indices = []
@@ -52,6 +56,7 @@ def verify_channel_selection():
         print("\n✅ PERFECT MATCH! loadEdf selects the right channels!")
     else:
         print("\n❌ MISMATCH! Channel selection may be wrong!")
+
 
 if __name__ == "__main__":
     verify_channel_selection()

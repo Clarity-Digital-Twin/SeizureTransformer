@@ -8,9 +8,10 @@ Date: September 2025
 import argparse
 import sys
 from pathlib import Path
-from typing import List, Tuple, Dict, Any
-import pyedflib
+from typing import Any
+
 import numpy as np
+import pyedflib
 from tqdm import tqdm
 
 
@@ -19,28 +20,60 @@ class DataValidator:
 
     # Expected channel configurations
     WU_EXPECTED_CHANNELS = [
-        "Fp1", "F3", "C3", "P3", "O1", "F7", "T3", "T5",
-        "Fz", "Cz", "Pz", "Fp2", "F4", "C4", "P4", "O2",
-        "F8", "T4", "T6"
+        "Fp1",
+        "F3",
+        "C3",
+        "P3",
+        "O1",
+        "F7",
+        "T3",
+        "T5",
+        "Fz",
+        "Cz",
+        "Pz",
+        "Fp2",
+        "F4",
+        "C4",
+        "P4",
+        "O2",
+        "F8",
+        "T4",
+        "T6",
     ]
 
     TUSZ_CHANNEL_PATTERNS = [
-        "FP1", "F3", "C3", "P3", "O1", "F7", "T3", "T5",
-        "FZ", "CZ", "PZ", "FP2", "F4", "C4", "P4", "O2",
-        "F8", "T4", "T6"
+        "FP1",
+        "F3",
+        "C3",
+        "P3",
+        "O1",
+        "F7",
+        "T3",
+        "T5",
+        "FZ",
+        "CZ",
+        "PZ",
+        "FP2",
+        "F4",
+        "C4",
+        "P4",
+        "O2",
+        "F8",
+        "T4",
+        "T6",
     ]
 
     def __init__(self, verbose: bool = False):
         self.verbose = verbose
-        self.validation_results: Dict[str, Any] = {
+        self.validation_results: dict[str, Any] = {
             "total_files": 0,
             "valid_files": 0,
             "invalid_files": 0,
             "errors": [],
-            "warnings": []
+            "warnings": [],
         }
 
-    def validate_file(self, edf_path: Path) -> Tuple[bool, str]:
+    def validate_file(self, edf_path: Path) -> tuple[bool, str]:
         """
         Validate a single EDF file.
 
@@ -92,7 +125,7 @@ class DataValidator:
         except Exception as e:
             return False, f"Error reading file: {str(e)}"
 
-    def _extract_valid_channels(self, channel_names: List[str]) -> List[str]:
+    def _extract_valid_channels(self, channel_names: list[str]) -> list[str]:
         """Extract the 19 valid EEG channels from all channels."""
         valid = []
         for ch in channel_names:
@@ -105,13 +138,13 @@ class DataValidator:
                     break
         return valid[:19]  # Take first 19 valid channels
 
-    def _check_channel_order(self, channels: List[str]) -> bool:
+    def _check_channel_order(self, channels: list[str]) -> bool:
         """Check if channel order matches expected pattern."""
         if len(channels) != 19:
             return False
 
         # Check if channels match TUSZ pattern (case-insensitive)
-        for i, (actual, expected) in enumerate(zip(channels, self.TUSZ_CHANNEL_PATTERNS)):
+        for i, (actual, expected) in enumerate(zip(channels, self.TUSZ_CHANNEL_PATTERNS, strict=False)):
             actual_clean = actual.upper().replace("EEG ", "").replace("-REF", "").replace("-LE", "")
             if actual_clean != expected:
                 if self.verbose:
@@ -119,7 +152,7 @@ class DataValidator:
                 return False
         return True
 
-    def validate_directory(self, data_dir: Path) -> Dict[str, Any]:
+    def validate_directory(self, data_dir: Path) -> dict[str, Any]:
         """Validate all EDF files in a directory."""
         edf_files = list(data_dir.glob("**/*.edf"))
 
@@ -137,26 +170,25 @@ class DataValidator:
                 self.validation_results["valid_files"] += 1
             else:
                 self.validation_results["invalid_files"] += 1
-                self.validation_results["errors"].append({
-                    "file": str(edf_path.relative_to(data_dir)),
-                    "error": message
-                })
+                self.validation_results["errors"].append(
+                    {"file": str(edf_path.relative_to(data_dir)), "error": message}
+                )
 
         return self.validation_results
 
     def print_report(self):
         """Print validation report."""
-        print("\n" + "="*60)
+        print("\n" + "=" * 60)
         print("VALIDATION REPORT")
-        print("="*60)
+        print("=" * 60)
 
         total = self.validation_results["total_files"]
         valid = self.validation_results["valid_files"]
         invalid = self.validation_results["invalid_files"]
 
         print(f"Total files:   {total}")
-        print(f"Valid files:   {valid} ({valid/total*100:.1f}%)")
-        print(f"Invalid files: {invalid} ({invalid/total*100:.1f}%)")
+        print(f"Valid files:   {valid} ({valid / total * 100:.1f}%)")
+        print(f"Invalid files: {invalid} ({invalid / total * 100:.1f}%)")
 
         if self.validation_results["errors"]:
             print("\nERRORS (first 10):")
@@ -168,7 +200,7 @@ class DataValidator:
             for warning in self.validation_results["warnings"]:
                 print(f"  {warning}")
 
-        print("\n" + "="*60)
+        print("\n" + "=" * 60)
 
         # Return exit code
         return 0 if invalid == 0 else 1
@@ -177,14 +209,16 @@ class DataValidator:
 def main():
     """Main entry point for data validation."""
     parser = argparse.ArgumentParser(description="Validate EDF data for SeizureTransformer")
-    parser.add_argument("--data_dir", type=str, required=True,
-                       help="Directory containing EDF files")
-    parser.add_argument("--check_channels", action="store_true",
-                       help="Validate channel names and order")
-    parser.add_argument("--check_format", action="store_true",
-                       help="Check EDF format compatibility")
-    parser.add_argument("--verbose", action="store_true",
-                       help="Verbose output")
+    parser.add_argument(
+        "--data_dir", type=str, required=True, help="Directory containing EDF files"
+    )
+    parser.add_argument(
+        "--check_channels", action="store_true", help="Validate channel names and order"
+    )
+    parser.add_argument(
+        "--check_format", action="store_true", help="Check EDF format compatibility"
+    )
+    parser.add_argument("--verbose", action="store_true", help="Verbose output")
 
     args = parser.parse_args()
 

@@ -6,11 +6,13 @@ This will reveal if we have a channel ordering bug.
 
 import sys
 from pathlib import Path
+
 import pyedflib
 
 # Add paths
 sys.path.append(str(Path(__file__).parent.parent / "wu_2025/src"))
 from epilepsy2bids.eeg import Eeg
+
 
 def investigate_tusz_channels():
     """Check actual channel names in TUSZ files."""
@@ -45,7 +47,7 @@ def investigate_tusz_channels():
         eeg = Eeg.loadEdf(str(test_file))
         print(f"  Data shape: {eeg.data.shape}")
         print(f"  Montage: {eeg.montage}")
-        if hasattr(eeg, 'channels'):
+        if hasattr(eeg, "channels"):
             print(f"  Channels: {eeg.channels}")
     except Exception as e:
         print(f"  ERROR: {e}")
@@ -60,15 +62,34 @@ def investigate_tusz_channels():
 
     # Expected by Wu's model
     print("\n4. WU'S EXPECTED CHANNEL ORDER:")
-    wu_channels = ["Fp1", "F3", "C3", "P3", "O1", "F7", "T3", "T5",
-                   "Fz", "Cz", "Pz", "Fp2", "F4", "C4", "P4", "O2",
-                   "F8", "T4", "T6"]
+    wu_channels = [
+        "Fp1",
+        "F3",
+        "C3",
+        "P3",
+        "O1",
+        "F7",
+        "T3",
+        "T5",
+        "Fz",
+        "Cz",
+        "Pz",
+        "Fp2",
+        "F4",
+        "C4",
+        "P4",
+        "O2",
+        "F8",
+        "T4",
+        "T6",
+    ]
     for i, name in enumerate(wu_channels):
         print(f"  [{i:2d}] {name}")
 
     print("\n" + "=" * 60)
     print("⚠️  CRITICAL QUESTION: Do the channel orders match?")
     print("If not, the model is seeing SCRAMBLED brain signals!")
+
 
 if __name__ == "__main__":
     investigate_tusz_channels()
