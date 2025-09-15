@@ -135,7 +135,8 @@
       "Bash(if [ -f \"results_default_nedc_binary/summary.txt\" ])",
       "Bash(then echo \"  TAES:\")",
       "Bash(if [ -f \"results_default_native_taes/metrics.json\" ])",
-      "Bash(zip:*)"
+      "Bash(zip:*)",
+      "Bash(timeout 120 python:*)"
     ],
     "deny": [],
     "ask": []
