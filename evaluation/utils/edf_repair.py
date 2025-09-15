@@ -86,10 +86,12 @@ def repair_edf_header_copy(edf_path: Path, output_path: Path | None = None) -> P
         date_b = f.read(FIELD_LEN)
         date_s = date_b.decode("ascii", errors="ignore")
         # Replace common separators; validate against EDF pattern before writing
-        cand_date = (
-            date_s.replace(":", ".").replace("/", ".").replace("-", ".")
-        )[:FIELD_LEN].ljust(FIELD_LEN)
-        fixed_date = cand_date if _DATE_PAT.match(cand_date) else date_s[:FIELD_LEN].ljust(FIELD_LEN)
+        cand_date = (date_s.replace(":", ".").replace("/", ".").replace("-", "."))[
+            :FIELD_LEN
+        ].ljust(FIELD_LEN)
+        fixed_date = (
+            cand_date if _DATE_PAT.match(cand_date) else date_s[:FIELD_LEN].ljust(FIELD_LEN)
+        )
         f.seek(DATE_OFFSET)
         f.write(fixed_date.encode("ascii"))
 
@@ -97,10 +99,12 @@ def repair_edf_header_copy(edf_path: Path, output_path: Path | None = None) -> P
         f.seek(TIME_OFFSET)
         time_b = f.read(FIELD_LEN)
         time_s = time_b.decode("ascii", errors="ignore")
-        cand_time = (
-            time_s.replace(":", ".").replace("/", ".").replace("-", ".")
-        )[:FIELD_LEN].ljust(FIELD_LEN)
-        fixed_time = cand_time if _TIME_PAT.match(cand_time) else time_s[:FIELD_LEN].ljust(FIELD_LEN)
+        cand_time = (time_s.replace(":", ".").replace("/", ".").replace("-", "."))[
+            :FIELD_LEN
+        ].ljust(FIELD_LEN)
+        fixed_time = (
+            cand_time if _TIME_PAT.match(cand_time) else time_s[:FIELD_LEN].ljust(FIELD_LEN)
+        )
         f.seek(TIME_OFFSET)
         f.write(fixed_time.encode("ascii"))
 
