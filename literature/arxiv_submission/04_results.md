@@ -39,7 +39,7 @@ We optimized parameters on the development set to target clinical false alarm th
 
 3. **Implementation Parity**: Our Native OVERLAP implementation achieved identical results to Temple's official NEDC binaries, validating our pipeline.
 
-4. **AUROC Performance**: We measured AUROC of 0.9021, slightly exceeding the paper's reported 0.876.
+4. **AUROC Performance**: We measured AUROC of 0.9019, slightly exceeding the paper's reported 0.876.
 
 ## Data Integrity
 
