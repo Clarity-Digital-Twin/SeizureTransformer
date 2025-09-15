@@ -2,14 +2,13 @@
 """Quick test for EDF header repair/fallback on the known problematic file.
 
 Run:
-  python scripts/test_edf_repair.py 
+  python scripts/test_edf_repair.py
 """
 
 from __future__ import annotations
 
-from pathlib import Path
-
 import sys
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -17,15 +16,13 @@ if str(ROOT) not in sys.path:
 
 from evaluation.utils.edf_repair import (  # noqa: E402
     load_with_fallback,
-    validate_edf_header,
     repair_edf_header_copy,
+    validate_edf_header,
 )
 
 
 def main():
-    problem = Path(
-        "data/tusz/edf/eval/aaaaaaaq/s007_2014/01_tcp_ar/aaaaaaaq_s007_t000.edf"
-    )
+    problem = Path("data/tusz/edf/eval/aaaaaaaq/s007_2014/01_tcp_ar/aaaaaaaq_s007_t000.edf")
     print(f"Testing: {problem}")
     if not problem.exists():
         print("File not found; nothing to test.")
@@ -54,10 +51,10 @@ def main():
         print("  date:", hv2.date_bytes, hv2.date_str, "OK=" + str(hv2.date_ok))
         print("  time:", hv2.time_bytes, hv2.time_str, "OK=" + str(hv2.time_ok))
     finally:
-        try:
+        import contextlib
+
+        with contextlib.suppress(Exception):
             Path(repaired).unlink(missing_ok=True)
-        except Exception:
-            pass
 
 
 if __name__ == "__main__":

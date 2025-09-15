@@ -17,14 +17,12 @@ Functions:
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from pathlib import Path
 import re
 import shutil
-from typing import Optional, Tuple
+from dataclasses import dataclass
+from pathlib import Path
 
 import numpy as np
-
 
 DATE_OFFSET = 168  # EDF header startdate bytes [168:176]
 TIME_OFFSET = 176  # EDF header starttime bytes [176:184]
@@ -45,7 +43,7 @@ _DATE_PAT = re.compile(r"^\d{2}\.\d{2}\.\d{2}$")  # DD.MM.YY
 _TIME_PAT = re.compile(r"^\d{2}\.\d{2}\.\d{2}$")  # HH.MM.SS
 
 
-def _read_header_fields(edf_path: Path) -> Tuple[bytes, bytes]:
+def _read_header_fields(edf_path: Path) -> tuple[bytes, bytes]:
     with open(edf_path, "rb") as f:
         f.seek(DATE_OFFSET)
         date_bytes = f.read(FIELD_LEN)
@@ -68,7 +66,7 @@ def validate_edf_header(edf_path: Path) -> HeaderValidation:
     )
 
 
-def repair_edf_header_copy(edf_path: Path, output_path: Optional[Path] = None) -> Path:
+def repair_edf_header_copy(edf_path: Path, output_path: Path | None = None) -> Path:
     """
     Create a repaired copy of EDF header where common separator mistakes are fixed.
 
@@ -87,9 +85,11 @@ def repair_edf_header_copy(edf_path: Path, output_path: Optional[Path] = None) -
         f.seek(DATE_OFFSET)
         date_b = f.read(FIELD_LEN)
         date_s = date_b.decode("ascii", errors="ignore")
-        fixed_date = (
+        # Replace common separators; validate against EDF pattern before writing
+        cand_date = (
             date_s.replace(":", ".").replace("/", ".").replace("-", ".")
         )[:FIELD_LEN].ljust(FIELD_LEN)
+        fixed_date = cand_date if _DATE_PAT.match(cand_date) else date_s[:FIELD_LEN].ljust(FIELD_LEN)
         f.seek(DATE_OFFSET)
         f.write(fixed_date.encode("ascii"))
 
@@ -97,9 +97,10 @@ def repair_edf_header_copy(edf_path: Path, output_path: Optional[Path] = None) -
         f.seek(TIME_OFFSET)
         time_b = f.read(FIELD_LEN)
         time_s = time_b.decode("ascii", errors="ignore")
-        fixed_time = (
+        cand_time = (
             time_s.replace(":", ".").replace("/", ".").replace("-", ".")
         )[:FIELD_LEN].ljust(FIELD_LEN)
+        fixed_time = cand_time if _TIME_PAT.match(cand_time) else time_s[:FIELD_LEN].ljust(FIELD_LEN)
         f.seek(TIME_OFFSET)
         f.write(fixed_time.encode("ascii"))
 
@@ -133,10 +134,10 @@ def load_with_fallback(edf_path: Path):
                     return eeg, "pyedflib+repaired"
                 finally:
                     # Best-effort cleanup; ignore errors
-                    try:
+                    import contextlib
+
+                    with contextlib.suppress(Exception):
                         Path(repaired).unlink(missing_ok=True)
-                    except Exception:
-                        pass
             except Exception as e2:  # noqa: BLE001
                 last = e2
         else:
@@ -150,6 +151,7 @@ def load_with_fallback(edf_path: Path):
             # Convert MNE Raw to a minimal Eeg-like object used by our pipeline.
             # We mimic the attributes accessed in evaluation: .data and .fs
             data = raw.get_data()  # shape: (n_channels, n_samples)
+
             class _EegAdapter:
                 def __init__(self, data: np.ndarray, sfreq: float):
                     self.data = data.astype(np.float32, copy=False)
@@ -159,5 +161,4 @@ def load_with_fallback(edf_path: Path):
         except Exception as e3:  # noqa: BLE001
             raise RuntimeError(
                 f"All strategies failed: primary={e1}; repaired={last if 'last' in locals() else None}; mne={e3}"
-            )
-
+            ) from e3

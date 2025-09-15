@@ -25,9 +25,9 @@ from tqdm import tqdm
 # Add wu_2025 to path
 sys.path.append(str(Path(__file__).parent.parent.parent / "wu_2025/src"))
 
-from epilepsy2bids.eeg import Eeg  # noqa: E402
 
 from wu_2025.utils import get_dataloader, load_models  # noqa: E402
+
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from evaluation.utils.edf_repair import load_with_fallback  # noqa: E402
@@ -238,6 +238,18 @@ def main():
                 f"\n✅ Ground truth coverage: {files_with_labels}/{processed_files} files "
                 f"({label_coverage:.1%}) with {total_label_events} seizure events"
             )
+
+    # Summarize loader methods used (transparency)
+    from collections import Counter
+
+    method_counts = Counter()
+    for _fid, res in results.items():
+        if res.get("error") is None:
+            method_counts[res.get("load_method") or "unknown"] += 1
+    if method_counts:
+        print("\n🔎 Loader methods used:")
+        for method, count in sorted(method_counts.items(), key=lambda x: (-x[1], x[0])):
+            print(f"   {method}: {count}")
 
     print("\n" + "=" * 60)
     print("COMPUTING METRICS")
