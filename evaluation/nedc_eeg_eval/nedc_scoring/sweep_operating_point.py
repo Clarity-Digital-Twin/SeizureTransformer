@@ -127,7 +127,7 @@ def main() -> int:
     p.add_argument("--thresholds", type=str, default="0.6,0.7,0.8,0.9")
     p.add_argument("--kernels", type=str, default="5,11")
     p.add_argument("--min_durations", type=str, default="2,4")
-    p.add_argument("--merge_gaps", type=str, default="0", help="Comma list in seconds. 0 means None. Non-zero values are DEPRECATED and non-standard.")
+    p.add_argument("--merge_gaps", type=str, default="0", help="Comma list in seconds. Only 0 allowed (treated as None). Non-zero values are disallowed; see MERGE_GAP_POLICY.md.")
     p.add_argument("--target_fa_per_24h", type=float, default=10.0)
     args = p.parse_args()
 

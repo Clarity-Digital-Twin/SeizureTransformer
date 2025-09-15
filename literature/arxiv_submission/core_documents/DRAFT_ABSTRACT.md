@@ -28,13 +28,13 @@ We provide an open-source evaluation framework including containerized deploymen
 
 ## Version 3: The Balanced Approach (247 words)
 
-SeizureTransformer achieved state-of-the-art performance on the 2025 EpilepsyBench Challenge with 1 false alarm per 24 hours. However, models trained on the Temple University Hospital Seizure (TUSZ) dataset have never been evaluated using TUSZ's clinical scoring standard. We present the first such evaluation, revealing a 100-fold gap between benchmark claims and clinical reality.
+SeizureTransformer achieved state-of-the-art performance on the 2025 EpilepsyBench Challenge with 1 false alarm per 24 hours. However, models trained on the Temple University Hospital Seizure (TUSZ) dataset have never been evaluated using TUSZ's clinical scoring standard. We present the first such evaluation, revealing a 27-fold gap between benchmark claims and clinical reality.
 
 We evaluated SeizureTransformer on TUSZ v2.0.3's held-out evaluation set (865 files, 469 seizures, 127.7 hours) using Temple's NEDC v6.0.0, the clinical gold standard designed specifically for TUSZ annotations. Using the authors' pretrained weights, we systematically compared four scoring methodologies on identical predictions.
 
-Our results reveal that scoring methodology alone creates dramatic performance differences. The same model outputs yield 100.06 false alarms per 24 hours with NEDC's clinical OVERLAP scoring, but only 8.46 FA/24h with SzCORE—a 12-fold difference. This gap arises from SzCORE's 30-second pre-ictal and 60-second post-ictal tolerances plus event merging, designed for clinical early warning rather than temporal precision.
+Our results reveal that scoring methodology alone creates dramatic performance differences. The same model outputs yield 26.89 false alarms per 24 hours with NEDC's clinical OVERLAP scoring (SEIZ-only), but only 8.59 FA/24h with SzCORE—a 3.1-fold difference. This gap arises from SzCORE's 30-second pre-ictal and 60-second post-ictal tolerances, designed for clinical early warning rather than temporal precision.
 
-Parameter optimization targeting clinical deployment shows SeizureTransformer cannot meet standard false alarm thresholds when evaluated properly. Targeting 10 FA/24h yields 39.50 FA/24h at 23.45% sensitivity. The model achieves clinical targets only under SzCORE's permissive scoring.
+Parameter optimization targeting clinical deployment shows SeizureTransformer cannot meet standard false alarm thresholds when evaluated properly. Targeting 10 FA/24h yields 10.27 FA/24h at 33.90% sensitivity. The model achieves clinical targets only under SzCORE's permissive scoring.
 
 We contribute: (1) reproducible NEDC evaluation infrastructure, (2) comprehensive operating points for clinical deployment, and (3) quantitative evidence of scoring's impact on reported performance. Our findings emphasize that meaningful clinical AI evaluation requires dataset-matched scoring standards, not generic benchmarks.
 

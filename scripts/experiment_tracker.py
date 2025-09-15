@@ -20,6 +20,13 @@ def create_experiment_config(
     notes: str = "",
 ) -> dict:
     """Create standardized experiment configuration."""
+    # Phase 1: accept but ignore merge_gap_sec (force None), warn once
+    effective_merge_gap = None
+    if merge_gap_sec not in (None, 0, 0.0):
+        print(
+            "WARNING: merge_gap_sec provided in experiment config is ignored. "
+            "Event merging is deprecated and disallowed (see docs/technical/MERGE_GAP_POLICY.md)."
+        )
     return {
         "experiment_info": {
             "split": split,
@@ -32,7 +39,7 @@ def create_experiment_config(
             "threshold": threshold,
             "kernel": kernel,
             "min_duration_sec": min_duration_sec,
-            "merge_gap_sec": merge_gap_sec,
+            "merge_gap_sec": effective_merge_gap,
         },
         "paths": {
             "data_dir": f"/path/to/TUSZ/v2.0.3/{split}",
