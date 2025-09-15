@@ -1,5 +1,5 @@
 # 🎯 SEIZURE TRANSFORMER TUNING PLAN
-Status: Superseded — see OPERATIONAL_TUNING_PLAN.md and PARAMETER_TUNING_ANALYSIS.md for the current, authoritative tuning approach. Kernel size is fixed at 5; do not increase to reduce false alarms.
+Status: Superseded — see docs/planning/OPERATIONAL_TUNING_PLAN.md and docs/analysis/PARAMETER_TUNING_ANALYSIS.md for the current, authoritative tuning approach. Kernel size is fixed at 5; do not increase to reduce false alarms.
 ## Finding the Optimal Post-Processing Parameters for Clinical Use
 
 **Purpose**: Tune SeizureTransformer's post-processing parameters (threshold, morphology, duration filters) to meet clinical targets (FA/24h ≤ 10) while maximizing sensitivity.

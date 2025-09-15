@@ -21,7 +21,7 @@
 4. **Import Paths** - All fixed after restructuring
 5. **Type Checking** - mypy passes with proper hints
 
-## 🚨 CRITICAL: merge_gap_sec Discovery
+## 🚨 CRITICAL: merge_gap_sec Discovery (see docs/policy/MERGE_GAP_POLICY.md)
 
 ### The Problem
 - merge_gap_sec=5 was artificially reducing FA by ~4x
@@ -29,7 +29,7 @@
 - Likely unintentional "reward hacking"
 
 ### The Fix
-- Deprecated with warnings throughout codebase
+- Deprecated with warnings throughout codebase (see `docs/policy/MERGE_GAP_POLICY.md`)
 - Default changed to None/0
 - NONSTANDARD_POSTPROCESSING.txt created when used
 

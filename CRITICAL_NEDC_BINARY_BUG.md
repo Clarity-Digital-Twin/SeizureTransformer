@@ -224,7 +224,7 @@ python3 evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
 
 1. Re-run comprehensive_sweep.py
 2. Collect all TAES/OVERLAP metrics
-3. Update TUNING_RESULTS_TRACKER.md
+3. Update docs/evaluation/TUNING_RESULTS_TRACKER.md
 
 ## VERIFICATION RESULTS ✅
 

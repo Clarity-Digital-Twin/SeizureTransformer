@@ -112,7 +112,7 @@ def test_parity_with_temple():
 - [ ] Validate <0.1% difference from Temple binary
 - [ ] Update run_nedc.py to use native TAES (not alias to OVERLAP)
 - [ ] Document algorithm and usage
-- [ ] Update EVALUATION_RESULTS_TABLE.md with native TAES column
+- [ ] Update docs/evaluation/EVALUATION_RESULTS_TABLE.md with native TAES column
 
 ## Notes
 - This is technical debt, not urgent

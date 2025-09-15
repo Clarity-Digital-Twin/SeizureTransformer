@@ -33,7 +33,7 @@ Where it appears in code
 - SzCORE wrapper: `evaluation/szcore_scoring/run_szcore.py` (keeps `None` to avoid double-merge)
 
 References
-- See `CRITICAL_MERGE_GAP_ISSUE.md` for the full incident write-up and history.
+- See `docs/policy/CRITICAL_MERGE_GAP_ISSUE.md` for the full incident write-up and history.
 
 Quick verification
 - Paper-default, no merging:
@@ -42,4 +42,3 @@ Quick verification
      --outdir experiments/eval/baseline/paper_default_nomerge \
      --threshold 0.8 --kernel 5 --min_duration_sec 2.0`
 - If you try a non-zero merge gap, expect a WARNING and the disclaimer files.
-

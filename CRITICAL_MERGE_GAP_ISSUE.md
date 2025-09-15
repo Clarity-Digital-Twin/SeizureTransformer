@@ -109,7 +109,7 @@ merge_gap_sec: float | None = None,  # DEPRECATED: Violates NEDC standards
 
 ### Documentation Updates:
 - Update EVALUATION_RESULTS.md with correct FA rates
-- Update TABLE_VALIDATION_STATUS.md
+- Update docs/evaluation/TABLE_VALIDATION_STATUS.md
 - Add warnings to all sweep scripts
 
 ## Correct Paper Parameters

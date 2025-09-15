@@ -96,7 +96,7 @@ for threshold in [0.80, 0.85, 0.90, 0.95]:
 ## Impact Assessment
 
 1. **README is partially wrong**: Operating points table shows wrong FA rates
-2. **EVALUATION_RESULTS_TABLE.md**: Has incorrect data for tuned operating points
+2. `docs/evaluation/EVALUATION_RESULTS_TABLE.md`: Has incorrect data for tuned operating points
 3. **Published results**: May need correction if anyone used these parameters
 4. **Good news**: Default parameters (0.80/5/2.0) are verified at 100.06 FA/24h (NEDC OVERLAP, no merge)
 
@@ -116,7 +116,7 @@ for threshold in [0.80, 0.85, 0.90, 0.95]:
 
 ## Related Files
 
-- `EVALUATION_RESULTS_TABLE.md` - Contains the incorrect results
+- `docs/evaluation/EVALUATION_RESULTS_TABLE.md` - Contains the incorrect results
 - `README.md` - Operating points table needs updating
 - `evaluation/nedc_eeg_eval/nedc_scoring/convert_predictions.py` - Where morphological ops happen
 - `experiments/eval/baseline/results_*/` - Contains all the evidence

@@ -58,7 +58,7 @@ Format: Sensitivity% / FA per 24h
 - Native OVERLAP implementation parity-checked with Temple binaries
 - SzCORE results use official `timescoring` package
 - Thresholds tuned on dev set, validated on eval set
-- *Native column shows our Python OVERLAP implementation (NOT TAES) - see TECHNICAL_DEBT_NATIVE_SCORER.md
+- *Native column shows our Python OVERLAP implementation (NOT TAES) - see docs/technical/TECHNICAL_DEBT_NATIVE_SCORER.md
 
 ## Data Sources & Extraction
 

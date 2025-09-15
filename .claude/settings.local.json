@@ -118,7 +118,10 @@
       "Bash(then echo \"=== $op NEDC TAES ===\")",
       "Bash(do echo \"=== $op ===\")",
       "Bash(chmod:*)",
-      "Bash(do if [ -f \"$dir/summary.txt\" ])"
+      "Bash(do if [ -f \"$dir/summary.txt\" ])",
+      "Bash(pkill:*)",
+      "Bash(kill:*)",
+      "Bash(rm:*)"
     ],
     "deny": [],
     "ask": []
