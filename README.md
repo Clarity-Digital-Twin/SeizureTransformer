@@ -11,7 +11,7 @@
 - SeizureTransformer won EpilepsyBench 2025 with 1 FA/24h on Dianalund (using SzCORE's "Any-Overlap" scoring)
 - Despite TUSZ having train/dev/eval splits, EpilepsyBench doesn't report eval results for models trained on it
 - We evaluated it on TUSZ v2.0.3 using Temple's NEDC v6.0.0 - the clinical standard scorer for this dataset
-- Result: 60.83 FA/24h at paper defaults, revealing a critical gap between competition metrics and clinical deployment requirements
+- Result: 100.06 FA/24h at paper defaults, revealing a critical gap between competition metrics and clinical deployment requirements
 
 ## 🎯 Background
 
@@ -44,7 +44,7 @@ Wu et al.'s transformer-based seizure detector won the 2025 EpilepsyBench Challe
 | Dataset | Scoring Method | Sensitivity | False Alarms/24h | F1 Score |
 |---------|---------------|-------------|------------------|-----------|
 | **Dianalund** | SzCORE Any-Overlap¹ | 37% | **1 FA/24h** ✅ | 43% |
-| **TUSZ eval (held-out)** | NEDC v6.0.0 TAES² | 24.71% | **60.83 FA/24h** ❌ | 34.93% |
+| **TUSZ eval (held-out)** | NEDC v6.0.0 OVERLAP² | 45.63% | **100.06 FA/24h** ❌ | 0.519 |
 
 ¹ SzCORE: Lenient event-based scoring where any overlap counts as detection (on Dianalund dataset)
 ² NEDC TAES: Clinical standard with strict time-alignment penalties (on TUSZ dataset)
@@ -59,7 +59,7 @@ TUSZ annotations were created by Temple University following specific clinical g
 
 | Target FA/24h | Threshold | Kernel | MinDur | Sensitivity (TAES) | Actual FA/24h | Status |
 |---------------|-----------|--------|--------|-------------------|---------------|--------|
-| Default | 0.800 | 5 | 2.0s | 24.71% | 60.83 | ✅ Verified |
+| Default | 0.800 | 5 | 2.0s | 45.63% | 100.06 | ✅ Verified |
 | **10** | TBD† | TBD† | TBD† | TBD† | TBD† | ⚠️ Retuning |
 | **2.5** | TBD† | TBD† | TBD† | TBD† | TBD† | ⚠️ Retuning |
 | **1** | TBD† | TBD† | TBD† | TBD† | TBD† | ⚠️ Retuning |
