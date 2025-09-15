@@ -175,7 +175,7 @@ Average seizure duration: ~58 seconds
 SzCORE: Generic scorer for any dataset
 - Adds 30s/60s tolerances
 - Not matched to TUSZ philosophy
-- Results in 12× FA reduction
+- Results in 3.1× FA reduction
 ```
 
 **Evidence of ≈3.1× difference at default**:
@@ -242,7 +242,7 @@ Our Evaluation:
 ### The Performance Reality
 ```
 Claimed (EpilepsyBench Dianalund): 1 FA/24h
-Reality (TUSZ with NEDC): 100.06 FA/24h
+Reality (TUSZ with NEDC): 26.89 FA/24h (OVERLAP SEIZ)
 Gap: 100× higher than expected
 ```
 

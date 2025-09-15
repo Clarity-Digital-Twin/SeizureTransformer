@@ -98,7 +98,7 @@ def szscore_evaluation(predictions, ground_truth):
 
 ## Impact on Reported Performance
 
-### The 12× Difference Explained
+### The 3.1× Difference Explained
 
 #### Same Predictions, Different Scores
 ```
@@ -107,7 +107,7 @@ Raw Detections: 100 events in 24 hours
 After SzCORE Processing:
 1. Merge nearby events: 100 → 25 events
 2. Extended GT windows: More likely to overlap
-3. Result: 8.46 FA/24h (vs 100.06 with NEDC)
+3. Result: 8.59 FA/24h (vs 26.89 with NEDC OVERLAP)
 ```
 
 ### Is This "Gaming" the System?
@@ -152,7 +152,7 @@ Both approaches have merit. The issue is comparing results across different scor
 ### Cutting but Fair Language
 - "The uniform use of SzCORE across datasets obscures dataset-specific performance"
 - "Marking TUSZ with 🚂 prevents valid held-out evaluation"
-- "The 12× FA difference stems from SzCORE's clinical tolerances"
+- "The 3.1× FA difference stems from SzCORE's clinical tolerances"
 
 ---
 
@@ -191,7 +191,7 @@ Temple OVLP + Clinical Tolerances + Event Merging
 
 ### The Scoring Impact
 ```
-Same Model + Same Data + Different Scoring = 12× FA Difference
+Same Model + Same Data + Different Scoring = 3.1× FA Difference
 ```
 
 ---
@@ -227,7 +227,7 @@ Same Model + Same Data + Different Scoring = 12× FA Difference
 > "Designed for clinical deployment"
 
 ### For Our Paper
-- "SzCORE's clinical focus explains the 12× FA reduction"
+- "SzCORE's clinical focus explains the 3.1× FA reduction"
 - "Different valid philosophies about what constitutes detection"
 - "Benchmarks require context of scoring methodology"
 

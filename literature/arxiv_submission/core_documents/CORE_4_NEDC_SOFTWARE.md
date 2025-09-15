@@ -225,9 +225,9 @@ TUSZ Dataset (Temple) ← → NEDC Scorer (Temple)
 
 ### The 100× Reality
 ```
-With NEDC (proper): 100.06 FA/24h
-With SzCORE (permissive): 8.46 FA/24h
-Difference: 12× from scoring alone
+With NEDC (proper): 26.89 FA/24h (SEIZ-only)
+With SzCORE (permissive): 8.59 FA/24h
+Difference: 3.1× from scoring alone
 ```
 
 ---
