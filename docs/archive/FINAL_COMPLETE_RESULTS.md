@@ -1,8 +1,8 @@
 # ⚠️ SUPERSEDED – See FINAL_COMPREHENSIVE_RESULTS_TABLE.md
 
 This file predates the final cleanup and includes mixed assumptions (e.g., merge_gap, split mismatches). For authoritative, up-to-date numbers, see:
-- `docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md`
-- `docs/evaluation/PARAMETER_TUNING_METHODOLOGY.md`
+- `../results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md`
+- `../evaluation/PARAMETER_TUNING_METHODOLOGY.md`
 
 # 🎯 FINAL COMPLETE RESULTS - ALL SCORING METHODS
 
@@ -10,7 +10,7 @@ This file predates the final cleanup and includes mixed assumptions (e.g., merge
 **Dataset**: TUSZ v2.0.3 EVAL split (865 files)
 **Scoring**: NEDC v6.0.0 (Temple University Standard)
 
-FA/24h reporting policy: We standardize on SEIZ‑only FA/24h for both TAES and OVERLAP. The pipeline now supports this (`--fa_reporting seiz`). Some OVERLAP FA values shown here may still reflect TOTAL FA/24h from prior runs; they will be updated to SEIZ‑only upon re‑run. See SCORING_FA_DEFINITIONS.md.
+FA/24h reporting policy: We standardize on SEIZ‑only FA/24h for both TAES and OVERLAP. The pipeline now supports this (`--fa_reporting seiz`). Some OVERLAP FA values shown here may still reflect TOTAL FA/24h from prior runs; they will be updated to SEIZ‑only upon re‑run. See ../evaluation/SCORING_FA_DEFINITIONS.md.
 
 ---
 

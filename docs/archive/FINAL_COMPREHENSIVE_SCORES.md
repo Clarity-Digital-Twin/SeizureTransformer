@@ -1,8 +1,8 @@
 # ⚠️ SUPERSEDED – See FINAL_COMPREHENSIVE_RESULTS_TABLE.md
 
 This document was a working scratchpad during reconciliation and contains conflicting numbers. The authoritative source of truth is:
-- `docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md` (results)
-- `docs/evaluation/PARAMETER_TUNING_METHODOLOGY.md` (method)
+- `../results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md` (results)
+- `../evaluation/PARAMETER_TUNING_METHODOLOGY.md` (method)
 
 # 📊 FINAL COMPREHENSIVE SCORES - COMPLETE TRUTH
 
