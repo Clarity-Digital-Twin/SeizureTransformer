@@ -1,5 +1,5 @@
 # SeizureTransformer TUSZ Evaluation
-## First NEDC v6.0.0 Evaluation Reveals 100x False Alarm Gap
+## First NEDC v6.0.0 Evaluation Reveals ≈100× False Alarm Gap
 
 [![EpilepsyBench #1](https://img.shields.io/badge/EpilepsyBench%202025-%231%20Winner-gold.svg)](https://epilepsybenchmarks.com/challenge/)
 [![NEDC v6.0.0](https://img.shields.io/badge/NEDC-v6.0.0%20Pioneer-brightgreen.svg)](https://www.isip.piconepress.com/projects/nedc/)
@@ -11,7 +11,7 @@
 - SeizureTransformer won EpilepsyBench 2025 with 1 FA/24h on Dianalund (using SzCORE's "Any-Overlap" scoring)
 - Despite TUSZ having train/dev/eval splits, EpilepsyBench doesn't report eval results for models trained on it
 - We evaluated it on TUSZ v2.0.3 using Temple's NEDC v6.0.0 - the clinical standard scorer for this dataset
-- Result: 100.06 FA/24h at paper defaults (NEDC) vs 8.46 FA/24h (SzCORE), revealing a 12x scoring impact and 100x gap from Dianalund's 1 FA/24h
+- Result: 100.06 FA/24h at paper defaults (NEDC) vs 8.46 FA/24h (SzCORE), revealing a ≈12× scoring impact and ≈100× gap from Dianalund's 1 FA/24h
 
 ## 🎯 Background
 
@@ -54,6 +54,8 @@ Wu et al.'s transformer-based seizure detector won the 2025 EpilepsyBench Challe
 | **TUSZ eval (2.5 FA target)** | NEDC v6.0.0 TAES² | 4.07% | **8.01 FA/24h** ❌ | - |
 | **TUSZ eval (2.5 FA target)** | NEDC v6.0.0 OVERLAP² | 11.51% | **8.09 FA/24h** ❌ | - |
 | **TUSZ eval (2.5 FA target)** | SzCORE³ | 16.47% | **0.56 FA/24h** ✅ | - |
+
+Note: Python OVERLAP matches NEDC OVERLAP at all operating points (omitted for brevity).
 
 ¹ SzCORE: Event-based scoring with 30s pre-ictal, 60s post-ictal tolerances, merges events <90s apart (on Dianalund dataset)
 ² NEDC: Clinical standard scorer for TUSZ. TAES = strict time-alignment, OVERLAP = any-overlap within NEDC framework
@@ -110,7 +112,7 @@ python tests/integration/test_nedc_conformance.py  # Confirms ±0.1% match
 | TUSZ Split | Files | Hours | Seizures | Our Use |
 |------------|-------|-------|----------|----------|
 | Train | 1,557 | 3,050 | ~2,900 | Not used (pretrained model) |
-| Dev | 1,832 | 1,015 | ~920 | Threshold tuning |
+| Dev | 1,013 | 1,015 | ~920 | Threshold tuning |
 | Eval (held-out) | 865 | 127.6 | 469 | Final results |
 
 **Note**: Paper trains on TUSZ train subset (≈910h) + Siena (128h). We use the authors' pretrained weights; no retraining performed. Post-processing parameters were tuned on dev set using NEDC OVERLAP as target, then evaluated across all scoring methods for transparency.
