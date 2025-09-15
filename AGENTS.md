@@ -7,7 +7,7 @@ This document is a concise contributor guide tailored to this repository.
 - `wu_2025/` — Original SeizureTransformer (third‑party; do not modify).
 - `evaluation/` — Tools/infrastructure:
   - `tusz/run_tusz_eval.py` — generates per‑sample predictions (checkpoints).
-  - `nedc_scoring/` — NEDC conversion, scoring, sweeps (tools only).
+  - `nedc_eeg_eval/nedc_scoring/` — NEDC conversion, scoring, sweeps (tools only).
   - `nedc_eeg_eval/v6.0.0/` — official NEDC software (untouched).
 - `experiments/` — Results and metadata (dev/eval runs, sweeps, logs).
 - `scripts/` — Utilities (e.g., `experiment_tracker.py`).
