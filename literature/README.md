@@ -56,11 +56,13 @@ literature/
 
 ## 📊 Our Current Results vs Paper
 
+Note: Older values below referenced TAES numbers that predate merge_gap deprecation. For verified defaults, see SINGLE_SOURCE_OF_TRUTH.md (OVERLAP: 45.63% / 100.06 FA).
+
 | Metric | Paper (TUSZ) | Our Results | Status |
 |--------|-------------|-------------|---------|
 | AUROC | 87.6% | ~90.2% | ✅ Matching |
 | Sensitivity | 71.1% | TBD | 🔄 Tuning |
-| FA/24h | ~1.0 | ~137.5 | ❌ Needs tuning |
+| FA/24h | ~1.0 | ~100.06 (OVERLAP) | ⚠️ Different metrics |
 
 **Note**: FA/24h discrepancy likely due to different evaluation datasets (Dianalund vs TUSZ) and post-processing parameters.
 

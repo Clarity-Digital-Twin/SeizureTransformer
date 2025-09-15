@@ -4,13 +4,13 @@
 
 NEDC v6.0.0 automatically calculates **5 different scoring methods** when evaluating seizure detection:
 
-### 1. TAES (Time-Aligned Event Scoring) - **Currently Reported**
-- **Our Results**: 24.71% sensitivity, 60.83 FA/24h
+### 1. TAES (Time-Aligned Event Scoring)
+- **Our Results**: Pending re‑extraction at paper defaults (do not cite legacy values)
 - **Description**: Strictest clinical standard with fractional scoring based on temporal alignment
 - **Why we use it**: Most realistic for clinical deployment, penalizes timing errors
 
 ### 2. OVERLAP Scoring
-- **Our Results**: 45.63% sensitivity, 25.01 FA/24h (Total)
+- **Our Results**: 45.63% sensitivity, 100.06 FA/24h (Total, paper defaults; merge_gap=None)
 - **Description**: Counts detection if ANY overlap exists between prediction and ground truth
 - **Important**: This is NOT the same as SzCORE's "Any-Overlap" - Temple's version is still strict about timing boundaries
 
@@ -34,14 +34,14 @@ When we run NEDC on SeizureTransformer's TUSZ predictions:
 ```
 Metric          | Sensitivity | False Alarms | Notes
 ----------------|-------------|--------------|-------
-TAES            | 24.71%      | 60.83 FA/24h | Strictest (what we report)
-OVERLAP         | 45.63%      | 25.01 FA/24h | Temple's overlap (still strict)
+TAES            | TBD         | TBD          | Strictest (pending re‑extraction)
+OVERLAP         | 45.63%      | 100.06 FA/24h| Temple's overlap (still strict)
 DPALIGN         | —           | —            | See NEDC summary for details
 ```
 
 ## Critical Observation
 
-The gap between NEDC's OVERLAP (45.63%) and TAES (24.15%) shows that even Temple's "overlap" scoring is much stricter than SzCORE's lenient "Any-Overlap" (which accepts ANY overlap with 30s pre/60s post tolerance). This reinforces our finding about the scoring methodology gap.
+The gap between NEDC OVERLAP and SzCORE Any‑Overlap (30s/60s tolerances with 90s merge) highlights the scoring methodology differences; SzCORE typically reports substantially lower FA for the same predictions.
 
 ## Future Integration Opportunities
 
@@ -56,7 +56,7 @@ Currently we only report TAES metrics in our README, but we could:
 - ✅ All 5 metrics are computed automatically by `evaluation/nedc_eeg_eval/v6.0.0/bin/nedc_eeg_eval`
 - ✅ Results stored in `evaluation/nedc_eeg_eval/nedc_scoring/output/results/summary.txt`
 - ✅ Our pipeline (`evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py`) runs the full suite
-- ✅ We extract OVERLAP metrics explicitly and duplicate to `taes` for backward-compat; TAES remains our default reported clinical metric
+- ✅ We extract OVERLAP metrics explicitly and duplicate to `taes` for backward-compat; always state which metric is used
 
 ## Citation
 

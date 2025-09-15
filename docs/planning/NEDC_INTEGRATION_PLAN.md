@@ -32,7 +32,7 @@ We need this for:
 - **STATUS**: Implemented and integrated via `--backend native-taes` (now runs OVERLAP scorer)
 - **PARITY (OVERLAP)**: Matches Temple OVERLAP for seizure sensitivity and TOTAL FA/24h (SEIZ + BCKG) on dev/eval
   - Dev/default: 23.53% @ 19.45 FA/24h (Temple = Native)
-  - Eval/default: 45.63% @ 25.01 FA/24h (Temple = Native)
+  - Eval/default (no merge): 45.63% @ 100.06 FA/24h (Temple = Native)
 - **NOTE (F1)**: Native summary prints dataset-level F1; Temple reports per-label and summary F1. Treat as informational unless exact match is required.
 
 ### What Works

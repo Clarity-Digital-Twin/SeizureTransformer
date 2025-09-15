@@ -12,7 +12,7 @@ The morphological kernel size parameter in our post-processing pipeline exhibits
 
 | Operating Point | Target FA/24h | Actual FA/24h | Deviation Factor |
 |-----------------|---------------|---------------|------------|
-| Default | N/A | 60.83 ✅ | Normal |
+| Default | N/A | 100.06 ✅ | Baseline (OVERLAP) |
 | 10 FA | 10.0 | **94.48** ❌ | 9.4x WORSE |
 | 2.5 FA | 2.5 | **38.60** ❌ | 15.4x WORSE |
 | 1 FA | 1.0 | **34.85** ❌ | 34.8x WORSE |
@@ -86,7 +86,7 @@ for threshold in [0.80, 0.85, 0.90, 0.95]:
 
 ## Investigation Timeline
 
-1. **Initial evaluation**: Got 137.5 FA/24h (was actually wrong, real was 60.83)
+1. **Initial evaluation**: Legacy figures were inconsistent; verified OVERLAP default is 100.06 FA/24h (merge_gap=None)
 2. **Tried to tune for clinical targets**: 10 FA, 2.5 FA, 1 FA
 3. **Applied "intuitive" logic**: Increase ALL parameters for stricter detection
 4. **Results came out BACKWARDS**: Higher thresholds gave MORE false alarms
@@ -98,7 +98,7 @@ for threshold in [0.80, 0.85, 0.90, 0.95]:
 1. **README is partially wrong**: Operating points table shows wrong FA rates
 2. **EVALUATION_RESULTS_TABLE.md**: Has incorrect data for tuned operating points
 3. **Published results**: May need correction if anyone used these parameters
-4. **Good news**: Default parameters (0.80/5/2.0) are CORRECT at 60.83 FA/24h
+4. **Good news**: Default parameters (0.80/5/2.0) are verified at 100.06 FA/24h (NEDC OVERLAP, no merge)
 
 ## Action Plan
 
@@ -138,8 +138,8 @@ The issue is NOT in our implementation but in parameter selection:
 ### 2. What Numbers Are Affected
 
 #### Correct (No Action Needed):
-- **Default operating point**: 24.71% sensitivity, 60.83 FA/24h ✅
-- **AUROC**: 0.9021 ✅
+- **Default operating point (OVERLAP)**: 45.63% sensitivity, 100.06 FA/24h ✅
+- **AUROC**: 0.876–0.90 (matches paper order) ✅
 - **Dataset statistics**: 864 files, 469 seizures ✅
 
 #### Incorrect (Need Recomputation):

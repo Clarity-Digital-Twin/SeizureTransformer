@@ -55,7 +55,7 @@ WITHOUT merge_gap (correct):
    - Used in parameter sweeps
 
 5. `evaluation/szcore_scoring/run_szcore.py`
-   - Also uses merge_gap (contaminated)
+   - Uses merge_gap=None intentionally (avoids double-merge; SzCORE merges internally)
 
 ## Why This Violates Standards
 
@@ -148,8 +148,8 @@ Per Wu et al. 2025 SeizureTransformer paper:
 
 This parameter has been artificially inflating our performance metrics by 4X. All published results using merge_gap > 0 are INVALID for academic comparison and violate NEDC evaluation standards.
 
-**The TRUE performance of SeizureTransformer with paper defaults is:**
-- NEDC TAES: ~137 FA/24h (NOT 60)
+**Verified with paper defaults (no merge):**
 - NEDC OVERLAP: ~100 FA/24h (NOT 25)
+- NEDC TAES: pending re‑extraction; do not cite legacy values
 
 This needs immediate correction before any results are shared or published.

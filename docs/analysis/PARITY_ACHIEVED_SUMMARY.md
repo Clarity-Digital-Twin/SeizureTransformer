@@ -31,7 +31,7 @@ We achieved **100% EXACT PARITY** between Temple NEDC OVERLAP and our Native OVE
 ### EVAL Sets
 | Operating Point | Temple NEDC | Native OVERLAP | Status |
 |-----------------|-------------|----------------|---------|
-| default/10fa | 45.63% @ 25.01 FA/24h | 45.63% @ 25.01 FA/24h | ✅ PERFECT |
+| default | 45.63% @ 100.06 FA/24h | 45.63% @ 100.06 FA/24h | ✅ PERFECT |
 | 2.5fa | 11.51% @ 2.45 FA/24h | 11.51% @ 2.45 FA/24h | ✅ PERFECT |
 | 1fa | 1.28% @ 0.38 FA/24h | 1.28% @ 0.38 FA/24h | ✅ PERFECT |
 

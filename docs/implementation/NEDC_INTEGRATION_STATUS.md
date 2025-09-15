@@ -1,5 +1,7 @@
 # 📊 NEDC INTEGRATION STATUS
 Status: Archived — historical notes. See NEDC_INTEGRATION_PLAN.md and OPERATIONAL_TUNING_PLAN.md for current process and commands.
+
+Important: Legacy numbers in this file may reflect a non‑standard merge_gap post‑processing that artificially reduced FA by ~4×. For current, verified results (no merge), see SINGLE_SOURCE_OF_TRUTH.md and MERGE_GAP_POLICY.md. Do not use any “recommended” merge_gap values from this page.
 ## Quick Status Dashboard
 
 **Last Updated**: 2025-09-13 12:40
@@ -18,11 +20,11 @@ Status: Archived — historical notes. See NEDC_INTEGRATION_PLAN.md and OPERATIO
 ### Native OVERLAP Backend (PRIMARY GOAL) 🎯
 - Python implementation at `seizure_evaluation/taes/overlap_scorer.py` (integrated)
 - Backend flag: `--backend native-taes` (kept for compatibility; now runs OVERLAP scorer)
-- Parity (OVERLAP): Native matches Temple for SEIZ sensitivity and TOTAL FA/24h (SEIZ + BCKG) on dev and eval baselines
+- Parity (OVERLAP): Native matches Temple for SEIZ sensitivity and TOTAL FA/24h (SEIZ + BCKG) on dev and eval baselines (no merge)
   - Dev/default: Sens=23.53%, Total FA=19.45/24h (Temple = Native)
   - Dev/2.5fa:  Sens=7.44%,  Total FA=2.26/24h (Temple = Native)
   - Dev/1fa:    Sens=0.65%,  Total FA=0.22/24h (Temple = Native)
-  - Eval/default+10fa: Sens=45.63%, Total FA=25.01/24h (Temple = Native)
+  - Eval/default: Sens=45.63%, Total FA≈100.06/24h (Temple = Native)
   - Eval/2.5fa: Sens=11.51%, Total FA=2.45/24h (Temple = Native)
   - Eval/1fa:   Sens=1.28%,  Total FA=0.38/24h (Temple = Native)
 - F1 note: Native prints dataset-level F1 for convenience; Temple reports per-label F1 and a summary. Treat F1 as informational unless exact match is required.
@@ -33,8 +35,8 @@ Status: Archived — historical notes. See NEDC_INTEGRATION_PLAN.md and OPERATIO
 - Parameter sweep: 108/108 combinations complete
 - Results:
   - CSV: `experiments/dev/baseline/sweeps/sweep_results.csv`
-  - Recommended: `experiments/dev/baseline/sweeps/recommended_params.json` (threshold=0.95, kernel=5, min_duration=2.0s, merge_gap=5.0s)
-  - Important: Current sweep parses the first section in Temple `summary.txt` (DP ALIGNMENT), not OVERLAP. If OVERLAP is the target for gating, update the sweep parser accordingly.
+  - Recommended: Prior recommendations that included merge_gap are deprecated; rerun with merge_gap=None.
+  - Parser: Ensure OVERLAP is parsed if targeting NEDC OVERLAP.
 
 ## How to Monitor 🏃
 
@@ -71,7 +73,7 @@ tmux attach -t sweep_dev   # Ctrl+B then D to detach
 - F1: differs from Temple OVERLAP due to aggregation method; not a gating metric for us
 
 ### Sweep Results (Dev set):
-- Recommended params (DP ALIGNMENT-optimal): threshold=0.95, kernel=5, min_duration=2.0s, merge_gap=5.0s
+- Recommended params (DP ALIGNMENT-optimal): Deprecated if they include merge_gap>0; rerun selection with merge_gap=None
 - At these params (DP ALIGNMENT section): Sens≈13.67%, FA≈9.97/24h
 - OVERLAP section at those params differs (e.g., Sens≈11.91%, FA≈6.67/24h for one example); choose target scoring method and align parser
 
@@ -125,7 +127,7 @@ echo '{
 - MUST ACHIEVE: FA/24h ≤ 10 (method must be specified: DP ALIGNMENT or OVERLAP)
 - Dev (DP ALIGNMENT at recommended params): FA≈9.97/24h @ Sens≈13.67%
 - Eval baseline (OVERLAP at thr=0.8): FA≈9.97/24h @ Sens≈23.45%
-- Baseline without tuning: FA≈137.5/24h @ Sens≈82%
+- Baseline without tuning (OVERLAP): FA≈100.06/24h @ Sens≈45.63%
 - Goal: Maximize sensitivity subject to FA ≤ 10 under the chosen scoring method
 
 ## Quick Commands

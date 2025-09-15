@@ -29,13 +29,12 @@ SzCORE is the benchmarking platform used by EpilepsyBench 2025. We currently hav
 - **Result on SeizureTransformer:** ~1 FA/24h (reported in paper)
 
 #### Temple NEDC Scoring:
-- **TAES (strictest):** 24.71% sensitivity, 60.83 FA/24h
-- **OVERLAP (Temple's):** 45.63% sensitivity (still much stricter than SzCORE)
-- **DPALIGN:** 52.88% sensitivity
+- **OVERLAP (Temple's):** 45.63% sensitivity, 100.06 FA/24h (paper defaults; merge_gap=None)
+- TAES metrics at paper defaults are pending re‑extraction; do not use legacy 60.83/137.x values.
 
 ## The Critical Gap
 
-The ~60x difference in false alarms (1 FA/24h vs 60.83 FA/24h) is due to:
+The large difference in false alarms (e.g., ~1 FA/24h on Dianalund via SzCORE vs ~100 FA/24h on TUSZ via NEDC OVERLAP) is due to:
 
 1. **Tolerance Windows:** SzCORE allows 30s before and 60s after seizures
 2. **Any-Overlap:** Even 1-sample overlap counts as correct detection
@@ -54,7 +53,7 @@ graph LR
 
     D --> D1[convert_predictions.py<br/>→ CSV_bi format]
     D1 --> D2[run_nedc.py<br/>calls NEDC binary]
-    D2 --> D3[NEDC Results<br/>TAES: 60.83 FA/24h]
+    D2 --> D3[NEDC Results<br/>OVERLAP: 100.06 FA/24h]
 
     E --> E1[convert_to_hedscore.py<br/>→ HED-SCORE TSV]
     E1 --> E2[run_szcore.py<br/>calls timescoring]
@@ -259,7 +258,7 @@ mkdir -p evaluation/szcore_scoring
 1. ✅ Create `SZCORE_INTEGRATION_PLAN.md` (this document)
 2. Install package: `uv pip install timescoring`
 3. Create minimal wrapper at `evaluation/szcore_scoring/run_szcore.py`
-4. Run on TUSZ eval to get SzCORE metrics (expect ~2-5 FA/24h, not the 137.5 from NEDC)
+4. Run on TUSZ eval to get SzCORE metrics (expect lower FA than NEDC; different scoring semantics)
 
 ### Phase 2: Integration (Next Week)
 1. Add SzCORE scoring to our sweep pipeline
@@ -397,9 +396,9 @@ def convert_to_hedscore(checkpoint_pkl, output_dir):
 ## Critical Comparisons
 
 ### What This Integration Will Prove
-1. **NEDC TAES**: 24.15% sensitivity, 137.5 FA/24h (clinical reality)
-2. **NEDC OVERLAP**: 45.63% sensitivity (Temple's overlap, still strict)
-3. **SzCORE Any-Overlap**: Expected ~90% sensitivity, ~2-5 FA/24h (competition metrics)
+1. **NEDC OVERLAP**: 45.63% sensitivity, 100.06 FA/24h at paper defaults
+2. **SzCORE Any-Overlap**: Typically higher sensitivity and lower FA due to 30s/60s tolerances and 90s merge
+3. TAES numbers require a fresh extraction; do not cite legacy 60.83/137.x values
 
 ### Why This Matters
 - **EpilepsyBench won't report TUSZ eval results** (marked with 🚂) despite patient-disjoint splits
@@ -413,5 +412,5 @@ def convert_to_hedscore(checkpoint_pkl, output_dir):
 - The `timescoring` library is well-maintained and actively used by EpilepsyBench
 - This integration will definitively answer whether SeizureTransformer achieves:
   - ~1 FA/24h on Dianalund with SzCORE (paper claim)
-  - ~2-5 FA/24h on TUSZ with SzCORE (our hypothesis)
-  - 137.5 FA/24h on TUSZ with NEDC TAES (our finding)
+  - ~2–10 FA/24h on TUSZ with SzCORE (to be measured precisely)
+  - ~100 FA/24h on TUSZ with NEDC OVERLAP at paper defaults (verified)

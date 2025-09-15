@@ -12,7 +12,7 @@ We're NOT retraining the model. We're tuning these post-processing knobs:
 - **Threshold**: Confidence level to call something a seizure (0.80–0.99)
 - **Kernel size**: Fixed at 5 samples (per updated analysis)
 - **Min duration**: Minimum seizure length to keep (2–8 seconds)
-- **Merge gap**: Gap size to merge nearby events (0–10 seconds)
+- **Merge gap**: DEPRECATED — keep None for NEDC/academic compliance
 
 ## The Three-Step Process
 
@@ -30,7 +30,7 @@ python evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py \
   --thresholds 0.70,0.80,0.90,0.95 \
   --kernels 5,11,21 \
   --min_durations 2,4,8 \
-  --merge_gaps 0,5,10 \
+  --merge_gaps 0 \
   --target_fa_per_24h 10
 ```
 
@@ -68,11 +68,10 @@ python evaluation/tusz/run_tusz_eval.py \
   --data_dir /path/to/TUSZ/eval \
   --out_dir experiments/eval/final
 
-# Apply frozen parameters
+# Apply frozen parameters (example)
 python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
   --checkpoint experiments/eval/final/checkpoint.pkl \
-  --threshold 0.8 --kernel 5 \
-  --min_duration_sec 4.0 --merge_gap_sec 5.0 \
+  --threshold 0.8 --kernel 5 --min_duration_sec 4.0 \
   --outdir experiments/eval/final/results
 ```
 
@@ -82,18 +81,17 @@ python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
 - False Alarms: ≤ 10 per 24 hours
 - Sensitivity: as high as possible subject to FA ≤ 10
 
-**Verified baseline** (no tuning, TAES):
-- FA/24h: 60.83
-- Sensitivity: 24.71%
+**Verified baseline** (no tuning, NEDC OVERLAP):
+- FA/24h: 100.06
+- Sensitivity: 45.63%
 
 **Observed after sweep (dev set, TAES):**
 - Feasible FA ≤ 10 found, but sensitivity is currently low (≈8–12%)
-- Example feasible: threshold=0.95, kernel=5, min_duration=2.0s, merge_gap=5.0s
+- Example feasible: Pending rerun with merge_gap=None (fixed kernel=5)
 
-**Recent Evaluation Results (2025-09-13):**
-- Temple binary (thr=0.8, k=5, min=2s): Sens=23.45%, FA=9.97/24h, F1=0.370 ✅
-- Native TAES (thr=0.95, k=5, min=2s): Sens=7.68%, FA=23.89/24h, F1=0.114 ❌
-- Note: Native with thr=0.95 has worse FA than Temple with thr=0.8 (bug in threshold application?)
+**Recent Evaluation Results:**
+- Default NEDC OVERLAP: 45.63% sensitivity, 100.06 FA/24h
+- SzCORE default: 52.35% sensitivity, 8.46 FA/24h
 
 ## Timeline
 

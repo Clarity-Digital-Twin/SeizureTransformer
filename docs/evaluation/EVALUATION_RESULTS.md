@@ -1,5 +1,7 @@
 # SeizureTransformer Clinical Evaluation Results
 
+Warning: This report contains legacy TAES/OVERLAP figures captured before merge_gap was deprecated. Do not treat numeric values below as current. For verified default results (no merge) see SINGLE_SOURCE_OF_TRUTH.md. Default NEDC OVERLAP is 45.63% sensitivity, 100.06 FA/24h; TAES defaults are pending re‑extraction.
+
 **Date**: September 12, 2025  
 **Dataset**: Temple University Hospital EEG Seizure Corpus (TUSZ) v2.0.3  
 **Evaluator**: NEDC EEG Eval v6.0.0 (Official Temple University Scoring)

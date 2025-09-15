@@ -1,5 +1,7 @@
 # SeizureTransformer Complete Data Flow Trace
 
+Note: Any performance figures cited in this trace prior to September 14, 2025 may reflect a non‑standard merge_gap. For verified metrics (no merge) see SINGLE_SOURCE_OF_TRUTH.md.
+
 **CRITICAL VERIFICATION**: Deep trace of our implementation to ensure no bugs in the pipeline.
 
 ---

@@ -1,4 +1,6 @@
 # SeizureTransformer: The Missing TUSZ Benchmark
+
+Archived: Contains legacy numbers (e.g., 137.5 FA/day) that predate merge_gap deprecation. For current verified results (no merge), see SINGLE_SOURCE_OF_TRUTH.md.
 ## First NEDC v6.0.0 Evaluation Reveals 137x False Alarm Gap
 
 > **TL;DR**: SeizureTransformer won EpilepsyBench 2025 with 1 FA/day on Dianalund, but shows 137.5 FA/day on TUSZ (clinical standard). We provide the first complete evaluation with Temple NEDC v6.0.0 and tuned operating points.

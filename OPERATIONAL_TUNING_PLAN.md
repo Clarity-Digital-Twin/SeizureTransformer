@@ -20,7 +20,7 @@ min_durations = [2.0, 3.0, 4.0, 5.0, 6.0, 7.0]
 ```
 
 ### Target Operating Points
-1. **Paper Default**: 0.80/5/2.0 → ~60.83 FA/24h (baseline)
+1. **Paper Default**: 0.80/5/2.0 → ~100.06 FA/24h (NEDC OVERLAP baseline)
 2. **10 FA/24h** (±1.0 tolerance) - Record EXACT value (e.g., 10.2)
 3. **2.5 FA/24h** (±0.5 tolerance) - Record EXACT value (e.g., 2.6)
 4. **1 FA/24h** (±0.2 tolerance) - Record EXACT value (e.g., 0.9)
@@ -124,7 +124,7 @@ Results will be tracked in `TUNING_RESULTS_TRACKER.md`:
 
 | Params | TAES Sen/FA | Overlap Temple Sen/FA | Overlap Native Sen/FA | SzCORE Sen/FA | Best For (Exact FA) |
 |--------|-------------|----------------------|----------------------|---------------|--------------------|
-| t0.80_k5_m2.0 | 24.71/60.83 | 45.63/25.01 | 45.63/25.01 | 52.35/8.46 | Paper Default (60.83) |
+| t0.80_k5_m2.0 | TBD/TBD | 45.63/100.06 | 45.63/100.06 | 52.35/8.46 | Paper Default (100.06) |
 | t0.85_k5_m3.0 | TBD | TBD | TBD | TBD | - |
 | t0.90_k5_m4.0 | TBD | TBD | TBD | TBD | - |
 | ... | ... | ... | ... | ... | ... |

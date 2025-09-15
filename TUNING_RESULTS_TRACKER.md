@@ -5,7 +5,7 @@
 ## ✅ Verified Baseline (Paper Default) - UPDATED Sep 14, 20:54
 | Params | NEDC TAES | NEDC OVERLAP | Native OVERLAP | SzCORE | Notes |
 |--------|-----------|--------------|----------------|---------|-------|
-| **t0.80_k5_m2.0** | TBD% / 137.53 FA | 45.63% / 100.06 FA | PENDING | NOT IMPL | **Wu et al. 2025 Default - VERIFIED** |
+| **t0.80_k5_m2.0** | TBD / TBD FA | 45.63% / 100.06 FA | 45.63% / 100.06 FA | 52.35% / 8.46 FA | **Wu et al. 2025 Default - VERIFIED (no merge)** |
 
 ## 🔄 Parameter Sweep Results
 
@@ -13,7 +13,7 @@
 
 | Threshold | Kernel | MinDur(s) | TAES Sen/FA | OVERLAP-T Sen/FA | OVERLAP-N Sen/FA | SzCORE Sen/FA | Best Match (Exact FA) |
 |-----------|--------|-----------|-------------|------------------|------------------|---------------|--------------|
-| 0.80 | 5 | 2.0 | 24.71/60.83 | 45.63/25.01 | 45.63/25.01 | 52.35/8.46 | Baseline ✅ |
+| 0.80 | 5 | 2.0 | TBD/TBD | 45.63/100.06 | 45.63/100.06 | 52.35/8.46 | Baseline ✅ |
 | 0.85 | 5 | 2.0 | - | - | - | - | - |
 | 0.85 | 5 | 3.0 | - | - | - | - | - |
 | 0.85 | 5 | 4.0 | - | - | - | - | - |

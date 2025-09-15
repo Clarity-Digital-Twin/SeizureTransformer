@@ -237,9 +237,9 @@ python3 evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
   --threshold 0.8 --kernel 5 --min_duration_sec 2.0
 ```
 
-**Results Confirmed**:
-- ✅ NEDC TAES FA: 137.53 per 24h
+**Results Confirmed** (no merge):
 - ✅ NEDC OVERLAP FA: 100.06 per 24h
+- ⏳ NEDC TAES FA: pending re‑extraction
 - ✅ Files created: summary.txt, summary_taes.txt, summary_ovlp.txt, metrics.json
 - ✅ All scoring methods executed successfully
 

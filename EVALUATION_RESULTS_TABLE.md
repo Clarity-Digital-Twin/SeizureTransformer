@@ -6,14 +6,14 @@
 
 | Operating Point | Threshold | Kernel | MinDur | NEDC TAES (Temple) | NEDC OVERLAP (Temple) | NEDC OVERLAP (Native)* | SzCORE Any-Overlap |
 |-----------------|-----------|--------|--------|--------------------|-----------------------|-----------------------|-------------------|
-| **Default (paper)** | 0.800 | 5 | 2.0s | 24.71% / 60.83 FA | **45.63% / 25.01 FA** | 45.63% / 25.01 FA | **52.35% / 8.46 FA** |
-| **10 FA target** | 0.880 | 7 | 2.5s | **INVALID‡** | *RETUNING* | *RETUNING* | 41.76% / 3.57 FA |
-| **2.5 FA target** | 0.930 | 11 | 5.0s | **INVALID‡** | *RETUNING* | *RETUNING* | 27.94% / 1.32 FA |
-| **1 FA target** | 0.950 | 15 | 7.0s | **INVALID‡** | *RETUNING* | *RETUNING* | **17.65% / 0.56 FA** |
+| **Default (paper)** | 0.800 | 5 | 2.0s | TBD | **45.63% / 100.06 FA** | 45.63% / 100.06 FA | **52.35% / 8.46 FA** |
+| **10 FA target** | TBD | 5 | TBD | TBD | *PENDING SWEEP* | *PENDING SWEEP* | TBD |
+| **2.5 FA target** | TBD | 5 | TBD | TBD | *PENDING SWEEP* | *PENDING SWEEP* | TBD |
+| **1 FA target** | TBD | 5 | TBD | TBD | *PENDING SWEEP* | *PENDING SWEEP* | TBD |
 
 Format: Sensitivity% / FA per 24h
 
-‡ **Parameter Issue Identified**: Morphological kernel size increases false alarms rather than reducing them. Operating points with kernel > 5 produce invalid results (e.g., "10 FA" target gave 94.48 FA/24h). All non-default operating points require complete retuning with fixed kernel=5. See `PARAMETER_TUNING_ANALYSIS.md` for details.
+‡ **Parameter Issue Identified**: Morphological kernel size increases false alarms rather than reducing them. Operating points with kernel > 5 produce invalid results. All non-default operating points require complete retuning with fixed kernel=5 and merge_gap=None. See `PARAMETER_TUNING_ANALYSIS.md` for details.
 
 ## Scoring Method Definitions
 
@@ -26,24 +26,19 @@ Format: Sensitivity% / FA per 24h
 
 ## Key Findings
 
-### 1. Default Parameters (0.8/5/2.0)
-- **NEDC TAES (Temple)**: 24.71% sensitivity, 60.83 FA/24h (total)
-- **NEDC OVERLAP (Temple)**: 45.63% sensitivity, 25.01 FA/24h (total)
+### 1. Default Parameters (0.8/5/2.0, no merge)
+- **NEDC OVERLAP (Temple)**: 45.63% sensitivity, 100.06 FA/24h (total)
+- **Native OVERLAP**: Matches Temple OVERLAP exactly
 - **SzCORE**: 52.35% sensitivity, 8.46 FA/24h (competition scoring)
-- **Key Gap**: ~7.2x fewer FAs for SzCORE vs TAES total (60.83 → 8.46)
-- **Note**: Temple OVERLAP total FA (25.01) > SzCORE FA (8.46)
+- **Key Gap**: SzCORE’s tolerances and 90s merge yield much lower FA than NEDC
 
-### 2. Aggressive Tuning (0.95/15/7.0)
-- **NEDC TAES (Temple)**: 0.41% sensitivity, 34.85 FA/24h (total)
-- **NEDC OVERLAP (Temple)**: 1.28% sensitivity, 0.38 FA/24h (total)
-- **SzCORE**: 17.65% sensitivity, 0.56 FA/24h
-- **Finding**: <1 FA/24h achievable with SzCORE and Temple OVERLAP; TAES remains much stricter
+### 2. Tuned Operating Points
+- Pending re‑computation with fixed kernel=5 and merge_gap=None (NEDC). Prior entries are invalid.
 
 ### 3. Scoring Method Impact (Default Parameters)
-- **TAES total FA vs SzCORE**: 60.83 vs 8.46 FA/24h = ~7.2x gap
-- **OVERLAP total FA vs SzCORE**: 25.01 vs 8.46 FA/24h = ~3.0x gap
-- **Counts vs percents**: Temple uses 469 targets; SzCORE summary used 340 targets in checkpoint annotations. Percentages are compkrable; raw counts differ.
-- **Why?** SzCORE uses 30s/60s tolerance with 90s merge (more permissive) vs Temple boundary rules
+- Overlap total FA vs SzCORE: 100.06 vs 8.46 FA/24h (different semantics)
+- Counts vs percents: Temple and SzCORE differ in target definitions; compare within each method.
+- Why: SzCORE uses 30s/60s tolerance with 90s merge (more permissive) vs Temple boundary rules
 - Clinical (NEDC) vs competition (SzCORE) target different use-cases
 
 ## Files Evaluated
@@ -53,11 +48,10 @@ Format: Sensitivity% / FA per 24h
 - Total seizures: 469 in ground truth
 
 ## Next Steps
-1. ~~Extract NEDC OVERLAP scores from existing Temple binary results~~ ✅ DONE
-2. ~~Run SzCORE on 10 FA and 2.5 FA operating points~~ ✅ DONE
-3. Run Temple NEDC binary on 10 FA (correct params)
-4. Create visualization comparing all scoring methods
-5. Document clinical implications of each metric
+1. Extract default NEDC OVERLAP (done)
+2. Recompute clinical targets (10 / 2.5 / 1 FA) with merge_gap=None
+3. Create visualization comparing all scoring methods
+4. Document clinical implications of each metric
 
 ## Notes
 - All results from held-out eval set (no training data leakage)
@@ -126,7 +120,7 @@ make all CHECKPOINT=../../experiments/eval/baseline/checkpoint.pkl
 # 3. Extract NEDC OVERLAP (Temple) totals
 sed -n '/NEDC OVERLAP SCORING SUMMARY/,/NEDC/p' experiments/eval/baseline/results_default_nedc_binary/results/summary.txt | \
   awk '/SUMMARY:/,0' | sed -n '1,40p'
-# Look for: "Total False Alarm Rate: 25.0138 per 24 hours" and Sensitivity in PER LABEL: SEIZ (45.6290%)
+# Look for: "Total False Alarm Rate: 100.06 per 24 hours" and Sensitivity in PER LABEL: SEIZ (45.63%)
 
 # 4. Run SzCORE for other operating points
 python -m evaluation.szcore_scoring.run_szcore \

@@ -1,5 +1,7 @@
 # SeizureTransformer Testing & Validation Report
 
+Note: Older drafts of this report referenced TAES/OVERLAP numbers that used a non‑standard merge_gap. Current validated metrics are tracked in SINGLE_SOURCE_OF_TRUTH.md; always use merge_gap=None for NEDC comparisons.
+
 ## Executive Summary
 
 This document provides comprehensive testing and validation results for the SeizureTransformer model evaluation pipeline, ensuring reproducibility and scientific rigor.

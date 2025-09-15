@@ -133,8 +133,8 @@ def plot_false_alarm_analysis():
     """Visualize false alarm rates across different thresholds."""
 
     # Data from paper and our evaluation
-    datasets = ["Dianalund\n(Competition)", "TUSZ\n(Our Evaluation)"]
-    fa_rates = [1, 137.5]  # False alarms per 24 hours
+    datasets = ["Dianalund\n(SzCORE)", "TUSZ\n(NEDC OVERLAP)"]
+    fa_rates = [1, 100.06]  # False alarms per 24 hours (default params)
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
 
