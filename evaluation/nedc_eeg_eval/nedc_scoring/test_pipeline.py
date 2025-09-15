@@ -87,9 +87,23 @@ def validate_conversion(test_checkpoint, output_dir):
     print("TESTING: Conversion to NEDC format")
     print("=" * 60)
 
+    # Always use path relative to script location for Makefile compatibility
+    base_dir = Path(__file__).resolve().parent
+    convert_script = base_dir / "convert_predictions.py"
+
+    # Find repo root for PYTHONPATH
+    current = base_dir
+    while current.parent != current:
+        if (current / ".git").exists() and current.name == "SeizureTransformer":
+            repo_root = current
+            break
+        current = current.parent
+    else:
+        repo_root = base_dir.parents[2]  # fallback
+
     cmd = [
         sys.executable,
-        "evaluation/nedc_eeg_eval/nedc_scoring/convert_predictions.py",
+        str(convert_script),
         "--checkpoint",
         str(test_checkpoint),
         "--outdir",
@@ -97,8 +111,6 @@ def validate_conversion(test_checkpoint, output_dir):
     ]
 
     # Ensure repo root is importable inside the subprocess
-    base_dir = Path(__file__).resolve().parent
-    repo_root = base_dir.parents[2]
     env = os.environ.copy()
     env["PYTHONPATH"] = f"{repo_root}:{env.get('PYTHONPATH', '')}"
 
@@ -246,9 +258,22 @@ def run_full_test():
     print("TESTING: Full pipeline execution")
     print("=" * 60)
 
+    # Use script-relative path for run_nedc.py too
+    run_nedc_script = base_dir / "run_nedc.py"
+
+    # Find repo root again for PYTHONPATH
+    current = base_dir
+    while current.parent != current:
+        if (current / ".git").exists() and current.name == "SeizureTransformer":
+            repo_root = current
+            break
+        current = current.parent
+    else:
+        repo_root = base_dir.parents[2]  # fallback
+
     cmd = [
         sys.executable,
-        "evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py",
+        str(run_nedc_script),
         "--checkpoint",
         str(test_checkpoint),
         "--outdir",
@@ -257,7 +282,10 @@ def run_full_test():
     ]
 
     print(f"Running: {' '.join(cmd)}")
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    # Need PYTHONPATH for subprocess
+    env = os.environ.copy()
+    env["PYTHONPATH"] = f"{repo_root}:{env.get('PYTHONPATH', '')}"
+    result = subprocess.run(cmd, capture_output=True, text=True, env=env)
 
     if result.returncode != 0:
         print("FAILED: Pipeline execution error")
