@@ -9,10 +9,8 @@ upstream Wu's code. Modes:
 - wu       Run Wu's original CLI (strict channel name validation)
 """
 
-import os
-import sys
 import subprocess
-from pathlib import Path
+import sys
 
 
 def print_help() -> None:
