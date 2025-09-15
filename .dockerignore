@@ -60,3 +60,11 @@ temp/
 # Large model files (copy only needed ones)
 *.pth
 !wu_2025/src/wu_2025/model.pth
+
+# Additional large directories
+reference_repos/
+evaluation/nedc_eeg_eval/v6.0.0/test/
+docker.old/
+SWEEP_*
+*.bak
+*.old
