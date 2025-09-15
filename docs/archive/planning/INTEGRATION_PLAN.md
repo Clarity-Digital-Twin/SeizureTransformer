@@ -1,8 +1,8 @@
-# 🔥 IRONCLAD INTEGRATION PLAN
+# 🔥 IRONCLAD INTEGRATION PLAN (Archived)
 ## SeizureTransformer: From External Dependencies to Owned Architecture
 
 **Branch**: `feature/integrate-wu-transformer`  
-**Status**: 📋 PLANNING (Requires Senior Sign-off)  
+**Status**: Archived — broader refactor plan retained for historical context. Current evaluation/integration workflows are captured in docs/planning/NEDC_INTEGRATION_PLAN.md and docs/planning/OPERATIONAL_TUNING_PLAN.md.  
 **Target**: Transform from wrapper to owned, production-grade seizure detection system
 
 Note: This plan covers model/system architecture and packaging. The NEDC evaluation backend and clinical scoring workflow are specified separately in NEDC_INTEGRATION_PLAN.md (SSOT).

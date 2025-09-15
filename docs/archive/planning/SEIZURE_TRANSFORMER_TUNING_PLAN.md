@@ -1,4 +1,4 @@
-# 🎯 SEIZURE TRANSFORMER TUNING PLAN
+# 🎯 SEIZURE TRANSFORMER TUNING PLAN (Archived)
 Status: Superseded — see docs/planning/OPERATIONAL_TUNING_PLAN.md and docs/analysis/PARAMETER_TUNING_ANALYSIS.md for the current, authoritative tuning approach. Kernel size is fixed at 5; do not increase to reduce false alarms.
 ## Finding the Optimal Post-Processing Parameters for Clinical Use
 

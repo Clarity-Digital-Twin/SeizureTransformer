@@ -1,4 +1,4 @@
-# TEMPLE NEDC OVERLAP PARITY FIX PLAN (Corrected)
+# TEMPLE NEDC OVERLAP PARITY FIX PLAN (Archived)
 
 ## The Problem (What’s actually mismatched)
 
@@ -79,4 +79,4 @@ This matches Temple’s `nedc_eeg_eval_ovlp.py` definitions and avoids 1–1 ass
 
 ---
 
-This corrected plan targets EXACT parity with the Temple OVERLAP section, which is what our pipeline currently reports. No fractional TAES required.
+This plan has been implemented. See docs/analysis/PARITY_ACHIEVED_SUMMARY.md for the final, canonical parity results.
