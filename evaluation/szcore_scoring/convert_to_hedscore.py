@@ -10,11 +10,11 @@ from __future__ import annotations
 import argparse
 import pickle
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import numpy as np
 
-from evaluation.nedc_scoring.post_processing import apply_seizure_transformer_postprocessing
+from evaluation.nedc_eeg_eval.nedc_scoring.post_processing import apply_seizure_transformer_postprocessing
 
 
 def convert_to_hedscore(
@@ -27,7 +27,7 @@ def convert_to_hedscore(
 ) -> int:
     with open(checkpoint_pkl, "rb") as f:
         ckpt = pickle.load(f)
-    results: Dict[str, Any] = ckpt.get("results", ckpt)
+    results: dict[str, Any] = ckpt.get("results", ckpt)
 
     output_dir.mkdir(parents=True, exist_ok=True)
 

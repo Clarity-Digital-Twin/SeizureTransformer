@@ -22,25 +22,22 @@ from __future__ import annotations
 import argparse
 import json
 import pickle
+import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 import numpy as np
+from timescoring.annotations import Annotation
+from timescoring.scoring import EventScoring
 
 # Ensure repo root is on sys.path for local package imports
-import sys
-from pathlib import Path
 repo_root = Path(__file__).resolve().parents[2]
 if str(repo_root) not in sys.path:
     sys.path.insert(0, str(repo_root))
 
-# Official SzCORE scoring library
-from timescoring.annotations import Annotation
-from timescoring.scoring import EventScoring
-
 # Reuse our existing post-processing to derive events from probabilities
-from evaluation.nedc_eeg_eval.nedc_scoring.post_processing import (
+from evaluation.nedc_eeg_eval.nedc_scoring.post_processing import (  # noqa: E402
     apply_seizure_transformer_postprocessing,
 )
 
@@ -58,7 +55,7 @@ class FileScore:
     fp_per_24h: float
 
 
-def load_checkpoint(checkpoint_pkl: Path) -> Dict[str, Any]:
+def load_checkpoint(checkpoint_pkl: Path) -> dict[str, Any]:
     with open(checkpoint_pkl, "rb") as f:
         ckpt = pickle.load(f)
     # Support either {"results": {...}} or flat mapping
@@ -68,7 +65,7 @@ def load_checkpoint(checkpoint_pkl: Path) -> Dict[str, Any]:
 def score_file(
     file_id: str,
     predictions: np.ndarray,
-    ref_events_sec: List[Tuple[float, float]],
+    ref_events_sec: list[tuple[float, float]],
     threshold: float,
     morph_kernel_size: int,
     min_duration_sec: float,
@@ -114,7 +111,7 @@ def run_szcore_evaluation(
     morph_kernel_size: int = 5,
     min_duration_sec: float = 2.0,
     fs: int = 256,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     results_map = load_checkpoint(checkpoint_pkl)
 
     # SzCORE default parameters per EpilepsyBench
@@ -126,7 +123,7 @@ def run_szcore_evaluation(
         minDurationBetweenEvents=90,
     )
 
-    per_file: List[FileScore] = []
+    per_file: list[FileScore] = []
 
     # Aggregation (micro-average)
     sum_tp = 0
@@ -174,7 +171,7 @@ def run_szcore_evaluation(
     )
     fp_per_24h = sum_fp / (sum_seconds / 86400.0) if sum_seconds > 0 else float("nan")
 
-    summary: Dict[str, Any] = {
+    summary: dict[str, Any] = {
         "backend": "szcore-timescoring",
         "parameters": {
             "threshold": threshold,

@@ -66,10 +66,10 @@ format:
 	. .venv/bin/activate && ruff format evaluation/ scripts/ tests/ --exclude evaluation/nedc_eeg_eval
 
 lint:
-	. .venv/bin/activate && ruff check evaluation/ scripts/ tests/ --exclude evaluation/nedc_eeg_eval
+	. .venv/bin/activate && ruff check evaluation/ scripts/ tests/ --exclude evaluation/nedc_eeg_eval/v6.0.0
 
 typecheck:
-	. .venv/bin/activate && mypy evaluation/nedc_scoring scripts tests || true
+	. .venv/bin/activate && mypy evaluation/ scripts/ tests/ --ignore-missing-imports --exclude evaluation/nedc_eeg_eval/v6.0.0 || true
 
 check-all: lint typecheck test
 	@echo "✅ All quality checks passed!"
@@ -94,17 +94,17 @@ run-dev-eval:
 
 run-eval-sweep:
 	@echo "Running parameter sweep on dev checkpoint..."
-	. .venv/bin/activate && python evaluation/nedc_scoring/sweep_operating_point.py \
+	. .venv/bin/activate && python evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py \
 		--checkpoint experiments/dev/baseline/checkpoint.pkl \
 		--outdir_base experiments/dev/sweeps \
 		--thresholds 0.3,0.4,0.5,0.6,0.7,0.8,0.9 \
 		--kernels 3,5,7,11,15 \
 		--min_durations 1,2,3,4,5 \
-		--merge_gaps 0,5,10,15 \
+		--merge_gaps 0 \
 		--target_fa_per_24h 10
 
 run-nedc-score:
-	$(MAKE) -C evaluation/nedc_scoring all
+	$(MAKE) -C evaluation/nedc_eeg_eval/nedc_scoring all
 
 run-szcore-score:
 	. .venv/bin/activate && python evaluation/szcore_scoring/run_szcore.py \

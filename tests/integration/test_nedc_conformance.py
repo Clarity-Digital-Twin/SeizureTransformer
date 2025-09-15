@@ -185,7 +185,7 @@ class TestNEDCIntegration:
         import sys
 
         repo_root = Path(__file__).resolve().parent.parent.parent
-        sys.path.insert(0, str(repo_root / "evaluation" / "nedc_scoring"))
+        sys.path.insert(0, str(repo_root / "evaluation" / "nedc_eeg_eval" / "nedc_scoring"))
 
         try:
             import convert_predictions
@@ -200,7 +200,7 @@ class TestNEDCIntegration:
         import sys
 
         repo_root = Path(__file__).resolve().parent.parent.parent
-        sys.path.insert(0, str(repo_root / "evaluation" / "nedc_scoring"))
+        sys.path.insert(0, str(repo_root / "evaluation" / "nedc_eeg_eval" / "nedc_scoring"))
 
         try:
             import run_nedc
