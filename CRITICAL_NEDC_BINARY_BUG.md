@@ -192,14 +192,36 @@ python3 evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
 
 ## Senior Spec Review Checklist
 
-✅ **Root cause identified**: NEDC "binary" is Python script
-✅ **Fix location**: Line 161 in run_nedc.py
-✅ **Fix implementation**: Add "python3" to command list
-✅ **Testing plan**: Single parameter test before full sweep
-✅ **Impact**: Unblocks all Temple NEDC scoring
+✅ **Root causes identified**:
+   1. NEDC "binary" is Python script (needs python3)
+   2. Path calculation was wrong (fixed)
+   3. PYTHONPATH correct (lib/ not lib/python/)
+✅ **Fix locations**:
+   - Line 162: Add "python3" to command
+   - Line 26-31: Fix path calculation
+   - Line 41: PYTHONPATH stays as lib/
+✅ **Testing**: Ready to test with conversion+scoring
+✅ **Impact**: Will unblock all Temple NEDC scoring
 
-## Files to Update
+## All Fixes Applied ✅
 
-1. `/evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py` - Line 161
-2. Re-run comprehensive sweep after fix
-3. Update TUNING_RESULTS_TRACKER.md with results
+1. **Line 162**: Added `"python3"` to command
+2. **Line 26-31**: Fixed path calculation (nedc_eeg_eval_dir)
+3. **Line 41**: PYTHONPATH correctly points to lib/
+
+## Final Test Command
+
+```bash
+# This will run conversion + scoring (takes ~5 min)
+python3 evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
+  --checkpoint experiments/eval/baseline/checkpoint.pkl \
+  --outdir experiments/eval/baseline/test_nedc_fixed \
+  --backend nedc-binary \
+  --threshold 0.8 --kernel 5 --min_duration_sec 2.0
+```
+
+## Next Steps After Fix Verified
+
+1. Re-run comprehensive_sweep.py
+2. Collect all TAES/OVERLAP metrics
+3. Update TUNING_RESULTS_TRACKER.md

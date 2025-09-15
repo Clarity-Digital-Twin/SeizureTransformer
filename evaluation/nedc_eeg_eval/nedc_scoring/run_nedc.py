@@ -23,10 +23,12 @@ def setup_nedc_environment():
     """
     # Get the base directory of this script
     script_dir = Path(__file__).resolve().parent
-    repo_root = script_dir.parent.parent
+    # FIX: nedc_scoring is in evaluation/nedc_eeg_eval/nedc_scoring
+    # so parent is nedc_eeg_eval
+    nedc_eeg_eval_dir = script_dir.parent
 
     # NEDC installation path
-    nedc_root = repo_root / "evaluation" / "nedc_eeg_eval" / "v6.0.0"
+    nedc_root = nedc_eeg_eval_dir / "v6.0.0"
 
     if not nedc_root.exists():
         raise FileNotFoundError(f"NEDC not found at {nedc_root}")
@@ -35,6 +37,7 @@ def setup_nedc_environment():
     env = os.environ.copy()
     env["NEDC_NFC"] = str(nedc_root)
     env["PATH"] = f"{nedc_root}/bin:{env.get('PATH', '')}"
+    # FIX: NEDC modules are directly in lib/ not lib/python/
     env["PYTHONPATH"] = f"{nedc_root}/lib:{env.get('PYTHONPATH', '')}"
 
     return env
