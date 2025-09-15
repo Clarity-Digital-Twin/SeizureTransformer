@@ -1,5 +1,5 @@
 # SeizureTransformer TUSZ Evaluation
-## First NEDC v6.0.0 Evaluation Reveals 60x False Alarm Gap
+## First NEDC v6.0.0 Evaluation Reveals 100x False Alarm Gap
 
 [![EpilepsyBench #1](https://img.shields.io/badge/EpilepsyBench%202025-%231%20Winner-gold.svg)](https://epilepsybenchmarks.com/challenge/)
 [![NEDC v6.0.0](https://img.shields.io/badge/NEDC-v6.0.0%20Pioneer-brightgreen.svg)](https://www.isip.piconepress.com/projects/nedc/)
@@ -11,7 +11,7 @@
 - SeizureTransformer won EpilepsyBench 2025 with 1 FA/24h on Dianalund (using SzCORE's "Any-Overlap" scoring)
 - Despite TUSZ having train/dev/eval splits, EpilepsyBench doesn't report eval results for models trained on it
 - We evaluated it on TUSZ v2.0.3 using Temple's NEDC v6.0.0 - the clinical standard scorer for this dataset
-- Result: 100.06 FA/24h at paper defaults, revealing a critical gap between competition metrics and clinical deployment requirements
+- Result: 100.06 FA/24h at paper defaults (NEDC) vs 8.46 FA/24h (SzCORE), revealing a 12x scoring impact and 100x gap from Dianalund's 1 FA/24h
 
 ## 🎯 Background
 
@@ -46,8 +46,14 @@ Wu et al.'s transformer-based seizure detector won the 2025 EpilepsyBench Challe
 | **Dianalund** | SzCORE Any-Overlap¹ | 37% | **1 FA/24h** ✅ | 43% |
 | **TUSZ eval (Paper defaults)** | NEDC v6.0.0 TAES² | 24.15% | **144.28 FA/24h** ❌ | 0.30 |
 | **TUSZ eval (Paper defaults)** | NEDC v6.0.0 OVERLAP² | 45.63% | **100.06 FA/24h** ❌ | 0.519 |
-| **TUSZ eval (Paper defaults)** | SzCORE³ | 52.35% | **8.46 FA/24h** ⚠️ | - |
-| **TUSZ eval (Tuned for 10 FA)** | NEDC v6.0.0 OVERLAP² | 23.45% | **39.50 FA/24h** ❌ | 0.331 |
+| **TUSZ eval (Paper defaults)** | Python OVERLAP | 45.63% | **100.06 FA/24h** ❌ | 0.519 |
+| **TUSZ eval (Paper defaults)** | SzCORE³ | 52.35% | **8.46 FA/24h** ✅ | - |
+| **TUSZ eval (10 FA target)** | NEDC v6.0.0 TAES² | 8.64% | **34.04 FA/24h** ❌ | - |
+| **TUSZ eval (10 FA target)** | NEDC v6.0.0 OVERLAP² | 23.45% | **39.50 FA/24h** ❌ | 0.331 |
+| **TUSZ eval (10 FA target)** | SzCORE³ | 29.12% | **1.32 FA/24h** ✅ | - |
+| **TUSZ eval (2.5 FA target)** | NEDC v6.0.0 TAES² | 4.07% | **8.01 FA/24h** ❌ | - |
+| **TUSZ eval (2.5 FA target)** | NEDC v6.0.0 OVERLAP² | 11.51% | **8.09 FA/24h** ❌ | - |
+| **TUSZ eval (2.5 FA target)** | SzCORE³ | 16.47% | **0.56 FA/24h** ✅ | - |
 
 ¹ SzCORE: Event-based scoring with 30s pre-ictal, 60s post-ictal tolerances, merges events <90s apart (on Dianalund dataset)
 ² NEDC: Clinical standard scorer for TUSZ. TAES = strict time-alignment, OVERLAP = any-overlap within NEDC framework
@@ -64,8 +70,8 @@ TUSZ annotations were created by Temple University following specific clinical g
 
 ### Authoritative Results
 
-- See `FINAL_COMPREHENSIVE_RESULTS_TABLE.md` for the single source of truth: 4 scoring methods × 3 operating points (Default, 10 FA, 2.5 FA), all without merge_gap.
-- See `PARAMETER_TUNING_METHODOLOGY.md` for why we tuned on NEDC OVERLAP and how to interpret differences across scoring methods.
+- See [`docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md`](docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md) for the single source of truth: 4 scoring methods × 3 operating points (Default, 10 FA, 2.5 FA), all without merge_gap.
+- See [`docs/evaluation/PARAMETER_TUNING_METHODOLOGY.md`](docs/evaluation/PARAMETER_TUNING_METHODOLOGY.md) for why we tuned on NEDC OVERLAP and how to interpret differences across scoring methods.
 
 Note: Earlier drafts included merge_gap-based operating points. Those are deprecated and archived. All current numbers are computed with merge_gap disabled.
 
