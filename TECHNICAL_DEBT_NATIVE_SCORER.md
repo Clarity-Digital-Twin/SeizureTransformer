@@ -11,7 +11,7 @@ We have implemented a **native Python OVERLAP scorer**, NOT a native TAES scorer
 - Does NOT implement TAES (Time-Aligned Event Scoring with fractional temporal matching)
 
 ### Backend Aliases
-In `evaluation/nedc_scoring/run_nedc.py`:
+In `evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py`:
 - `--backend native-overlap`: Correctly named, runs native OVERLAP scorer
 - `--backend native-taes`: **Misleading alias** - actually runs the same OVERLAP scorer
 - `--backend nedc-binary`: Runs Temple's official binary (produces TAES, OVERLAP, DPALIGN, EPOCH)

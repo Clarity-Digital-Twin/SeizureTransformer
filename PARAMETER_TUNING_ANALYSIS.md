@@ -166,7 +166,7 @@ min_durations = [2.0, 3.0, 4.0, 5.0, 6.0, 7.0]
 
 1. **Run parameter sweep on dev set** (not eval):
    ```bash
-   python evaluation/nedc_scoring/sweep_operating_point.py \
+   python evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py \
      --checkpoint experiments/dev/baseline/checkpoint.pkl \
      --kernel 5 \
      --threshold-range 0.80 0.99 \

@@ -120,7 +120,7 @@ python -m evaluation.szcore_scoring.run_szcore \
   --threshold 0.8 --kernel 5 --min_duration_sec 2.0
 
 # 2. Run NEDC Temple binary (produces TAES/OVERLAP/DPALIGN/EPOCH)
-cd evaluation/nedc_scoring
+cd evaluation/nedc_eeg_eval/nedc_scoring
 make all CHECKPOINT=../../experiments/eval/baseline/checkpoint.pkl
 
 # 3. Extract NEDC OVERLAP (Temple) totals

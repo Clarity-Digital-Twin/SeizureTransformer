@@ -7,8 +7,8 @@ This directory contains our integration scripts for using NEDC evaluation tools 
 ```
 evaluation/
 ├── nedc_eeg_eval/         # Official NEDC software from Temple (v6.0.0)
-│   └── v6.0.0/           # Unmodified NEDC tools
-├── nedc_scoring/          # Our integration scripts
+│   └── v6.0.0/            # Unmodified NEDC tools
+├── nedc_scoring/          # Our integration scripts (this folder)
 │   ├── convert_predictions.py  # Convert checkpoint to NEDC CSV_bi format
 │   │                           # (also generates ref.list / hyp.list)
 │   ├── post_processing.py      # Threshold + morph ops + eventization
@@ -26,10 +26,10 @@ evaluation/
 ## Usage
 
 ```bash
-# 1) After running TUSZ evaluation (produces evaluation/tusz/checkpoint.pkl)
-python evaluation/nedc_scoring/convert_predictions.py \
-  --checkpoint evaluation/tusz/checkpoint.pkl \
-  --outdir evaluation/nedc_scoring/output
+# 1) After running TUSZ evaluation (produces experiments/*/checkpoint.pkl)
+python evaluation/nedc_eeg_eval/nedc_scoring/convert_predictions.py \
+  --checkpoint experiments/eval/baseline/checkpoint.pkl \
+  --outdir evaluation/nedc_eeg_eval/nedc_scoring/output
 
 # 2) Environment for NEDC tools
 export NEDC_NFC=$(pwd)/evaluation/nedc_eeg_eval/v6.0.0
@@ -37,12 +37,12 @@ export PATH=$NEDC_NFC/bin:$PATH
 export PYTHONPATH=$NEDC_NFC/lib:$PYTHONPATH
 
 # 3) Run official NEDC scoring (using wrapper or directly)
-python evaluation/nedc_scoring/run_nedc.py
+python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py
 # OR directly:
 $NEDC_NFC/bin/nedc_eeg_eval \
-  evaluation/nedc_scoring/output/lists/ref.list \
-  evaluation/nedc_scoring/output/lists/hyp.list \
-  -o evaluation/nedc_scoring/output/results
+  evaluation/nedc_eeg_eval/nedc_scoring/output/lists/ref.list \
+  evaluation/nedc_eeg_eval/nedc_scoring/output/lists/hyp.list \
+  -o evaluation/nedc_eeg_eval/nedc_scoring/output/results
 
 # Results include:
 # - TAES Sensitivity / F1

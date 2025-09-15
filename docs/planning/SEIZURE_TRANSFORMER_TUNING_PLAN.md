@@ -1,4 +1,5 @@
 # 🎯 SEIZURE TRANSFORMER TUNING PLAN
+Status: Superseded — see OPERATIONAL_TUNING_PLAN.md and PARAMETER_TUNING_ANALYSIS.md for the current, authoritative tuning approach. Kernel size is fixed at 5; do not increase to reduce false alarms.
 ## Finding the Optimal Post-Processing Parameters for Clinical Use
 
 **Purpose**: Tune SeizureTransformer's post-processing parameters (threshold, morphology, duration filters) to meet clinical targets (FA/24h ≤ 10) while maximizing sensitivity.
@@ -8,10 +9,10 @@
 ## What We're Tuning (Not the Model!)
 
 We're NOT retraining the model. We're tuning these post-processing knobs:
-- **Threshold**: Confidence level to call something a seizure (0.5-0.95)
-- **Kernel size**: Smoothing window for morphological operations (5, 11, 21 samples)
-- **Min duration**: Minimum seizure length to keep (2-8 seconds)
-- **Merge gap**: Gap size to merge nearby events (0-10 seconds)
+- **Threshold**: Confidence level to call something a seizure (0.80–0.99)
+- **Kernel size**: Fixed at 5 samples (per updated analysis)
+- **Min duration**: Minimum seizure length to keep (2–8 seconds)
+- **Merge gap**: Gap size to merge nearby events (0–10 seconds)
 
 ## The Three-Step Process
 
@@ -23,7 +24,7 @@ We're NOT retraining the model. We're tuning these post-processing knobs:
 experiments/dev/baseline/checkpoint.pkl  # ~1.5GB of predictions
 
 # Run parameter sweep (complete)
-python evaluation/nedc_scoring/sweep_operating_point.py \
+python evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py \
   --checkpoint experiments/dev/baseline/checkpoint.pkl \
   --outdir_base experiments/dev/baseline/sweeps \
   --thresholds 0.70,0.80,0.90,0.95 \
@@ -68,9 +69,9 @@ python evaluation/tusz/run_tusz_eval.py \
   --out_dir experiments/eval/final
 
 # Apply frozen parameters
-python evaluation/nedc_scoring/run_nedc.py \
+python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
   --checkpoint experiments/eval/final/checkpoint.pkl \
-  --threshold 0.8 --kernel 11 \
+  --threshold 0.8 --kernel 5 \
   --min_duration_sec 4.0 --merge_gap_sec 5.0 \
   --outdir experiments/eval/final/results
 ```
@@ -81,9 +82,9 @@ python evaluation/nedc_scoring/run_nedc.py \
 - False Alarms: ≤ 10 per 24 hours
 - Sensitivity: as high as possible subject to FA ≤ 10
 
-**Observed baseline** (no tuning, TAES):
-- FA/24h: ~137.5
-- Sensitivity: ~82%
+**Verified baseline** (no tuning, TAES):
+- FA/24h: 60.83
+- Sensitivity: 24.71%
 
 **Observed after sweep (dev set, TAES):**
 - Feasible FA ≤ 10 found, but sensitivity is currently low (≈8–12%)
@@ -131,17 +132,12 @@ experiments/
 - For 1 FA/24h: Expect sensitivity to drop to ~5-10%
 - Need much higher threshold (0.98-0.99) and longer min_duration (8-16s)
 
-**ACHIEVED (2025-09-13)**:
-- **Parameters**: threshold=0.99, kernel=21, min_duration=16s, merge_gap=10s
-- **Dev performance**: 0.65% sensitivity @ 0.22 FA/24h (misses 99.35% of seizures!)
-- **Eval performance**: 1.28% sensitivity @ 0.38 FA/24h (misses 98.72% of seizures!)
-- **Result**: Successfully achieved << 1 FA/24h but at MASSIVE sensitivity cost
-- **Clinical reality**: This operating point is useless - it misses >98% of seizures!
+Note: Earlier exploratory settings that increased kernel size are deprecated and should not be used for targeting low FA rates. Keep kernel at 5 and adjust threshold + min_duration only.
 
 **Sweep strategy**:
 ```bash
 # Fine-grained sweep for 1 FA/24h target
-python evaluation/nedc_scoring/sweep_operating_point.py \
+python evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py \
   --checkpoint experiments/eval/baseline/checkpoint.pkl \
   --outdir_base experiments/eval/baseline/sweeps_1fa \
   --thresholds 0.95,0.97,0.98,0.99 \

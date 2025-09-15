@@ -1,4 +1,5 @@
 # 📊 NEDC INTEGRATION STATUS
+Status: Archived — historical notes. See NEDC_INTEGRATION_PLAN.md and OPERATIONAL_TUNING_PLAN.md for current process and commands.
 ## Quick Status Dashboard
 
 **Last Updated**: 2025-09-13 12:40
@@ -10,7 +11,7 @@
 ### NEDC Binary Backend
 - NEDC v6.0.0 binary integrated at `evaluation/nedc_eeg_eval/v6.0.0/`
 - Full pipeline working: checkpoint → CSV_bi → NEDC → metrics
-- Converters and runner tested (`evaluation/nedc_scoring/`)
+- Converters and runner tested (`evaluation/nedc_eeg_eval/nedc_scoring/`)
 - Backend toggle implemented (`--backend nedc-binary|native-taes`)
 - Note: If the binary errors on Python invocation, ensure a `python` alias is available on PATH (some environments only provide `python3`).
 
@@ -79,11 +80,11 @@ tmux attach -t sweep_dev   # Ctrl+B then D to detach
 ### 1. Choose and align the target scoring method
 ```bash
 # Run same data through both backends
-python evaluation/nedc_scoring/run_nedc.py \
+python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
   --checkpoint experiments/dev/baseline/checkpoint.pkl \
   --backend nedc-binary --outdir test_binary
 
-python evaluation/nedc_scoring/run_nedc.py \
+python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
   --checkpoint experiments/dev/baseline/checkpoint.pkl \
   --backend native-taes --outdir test_native
 
@@ -131,7 +132,7 @@ echo '{
 
 ```bash
 # Run with specific params (after sweep; replace with selected values)
-python evaluation/nedc_scoring/run_nedc.py \
+python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
   --checkpoint experiments/dev/baseline/checkpoint.pkl \
   --threshold <thr> --kernel <k> --min_duration_sec <min> --merge_gap_sec <gap>
 ```

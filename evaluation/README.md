@@ -8,12 +8,12 @@ This directory contains **tools and infrastructure** for SeizureTransformer eval
 
 ```
 evaluation/
-├── nedc_scoring/           # NEDC evaluation and parameter optimization
+├── nedc_eeg_eval/nedc_scoring/  # NEDC evaluation and parameter optimization
 │   ├── convert_predictions.py    # Convert predictions to NEDC CSV_bi format
 │   ├── post_processing.py        # Apply thresholds and morphological operations
-│   ├── run_nedc.py              # Run NEDC scorer and extract metrics
-│   ├── sweep_operating_point.py # Grid search for optimal parameters
-│   └── test_pipeline.py         # Validate pipeline with synthetic data
+│   ├── run_nedc.py               # Run NEDC scorer and extract metrics
+│   ├── sweep_operating_point.py  # Grid search for optimal parameters
+│   └── test_pipeline.py          # Validate pipeline with synthetic data
 │
 ├── tusz/                   # TUSZ dataset evaluation scripts
 │   └── run_tusz_eval.py    # Main evaluation script (generates checkpoints)
@@ -54,14 +54,14 @@ python evaluation/tusz/run_tusz_eval.py \
 ### Score with NEDC
 ```bash
 # Run NEDC pipeline
-cd evaluation/nedc_scoring
+cd evaluation/nedc_eeg_eval/nedc_scoring
 make all CHECKPOINT=../../experiments/eval/my_experiment/checkpoint.pkl
 ```
 
 ### Sweep Operating Points
 ```bash
 # Parameter optimization (dev split only)
-python evaluation/nedc_scoring/sweep_operating_point.py \
+python evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py \
   --checkpoint experiments/dev/baseline/checkpoint.pkl \
   --target_fa_per_24h 10
 ```

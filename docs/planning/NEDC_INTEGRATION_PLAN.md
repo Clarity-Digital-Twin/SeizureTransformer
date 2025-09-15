@@ -21,10 +21,10 @@ We need this for:
 
 ### Part 1: Temple Binary Integration ✅ DONE
 - NEDC v6.0.0 binary installed at `evaluation/nedc_eeg_eval/v6.0.0/`
-- CSV converter built: `evaluation/nedc_scoring/convert_predictions.py`
-- Post-processor built: `evaluation/nedc_scoring/post_processing.py`
-- Runner built: `evaluation/nedc_scoring/run_nedc.py`
-- Sweep tool built: `evaluation/nedc_scoring/sweep_operating_point.py`
+- CSV converter built: `evaluation/nedc_eeg_eval/nedc_scoring/convert_predictions.py`
+- Post-processor built: `evaluation/nedc_eeg_eval/nedc_scoring/post_processing.py`
+- Runner built: `evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py`
+- Sweep tool built: `evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py`
 - **STATUS**: Working, being used by parameter sweep RIGHT NOW
 
 ### Part 2: Native Python Implementation (OVERLAP) ✅ DONE
@@ -38,11 +38,11 @@ We need this for:
 ### What Works
 ```bash
 # Full pipeline works
-make -C evaluation/nedc_scoring all CHECKPOINT=experiments/dev/baseline/checkpoint.pkl
+make -C evaluation/nedc_eeg_eval/nedc_scoring all CHECKPOINT=experiments/dev/baseline/checkpoint.pkl
 
 # Individual components work
-python evaluation/nedc_scoring/convert_predictions.py ...
-python evaluation/nedc_scoring/run_nedc.py ...
+python evaluation/nedc_eeg_eval/nedc_scoring/convert_predictions.py ...
+python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py ...
 ```
 
 Validated commands and artifacts:
@@ -148,7 +148,7 @@ Full Python implementation at `seizure_evaluation/taes/overlap_scorer.py` to:
 
 ```bash
 # Test pipeline with synthetic data (no NEDC install required)
-cd evaluation/nedc_scoring
+cd evaluation/nedc_eeg_eval/nedc_scoring
 make test
 
 # Validate against golden NEDC outputs (requires NEDC binary)
@@ -159,32 +159,32 @@ python test_pipeline.py
 
 ```bash
 # Full pipeline (Makefile writes to evaluation/nedc_scoring/output by default)
-make -C evaluation/nedc_scoring all CHECKPOINT=path/to/checkpoint.pkl
+make -C evaluation/nedc_eeg_eval/nedc_scoring all CHECKPOINT=path/to/checkpoint.pkl
 
 # Just conversion
-make -C evaluation/nedc_scoring convert CHECKPOINT=path/to/checkpoint.pkl
+make -C evaluation/nedc_eeg_eval/nedc_scoring convert CHECKPOINT=path/to/checkpoint.pkl
 
 # Just scoring (after conversion)
-make -C evaluation/nedc_scoring score
+make -C evaluation/nedc_eeg_eval/nedc_scoring score
 
 # Clean outputs
-make -C evaluation/nedc_scoring clean
+make -C evaluation/nedc_eeg_eval/nedc_scoring clean
 
 # Preferred: write artifacts under experiments/**
-python evaluation/nedc_scoring/convert_predictions.py \
+python evaluation/nedc_eeg_eval/nedc_scoring/convert_predictions.py \
   --checkpoint experiments/dev/baseline/checkpoint.pkl \
   --outdir experiments/dev/baseline/nedc_results
 
-python evaluation/nedc_scoring/run_nedc.py \
+python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
   --outdir experiments/dev/baseline/nedc_results --score-only
 
 # Optional: use native Python backend instead of NEDC binary
-python evaluation/nedc_scoring/run_nedc.py \
+python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
   --checkpoint experiments/dev/baseline/checkpoint.pkl \
   --outdir experiments/dev/baseline/nedc_results_native \
   --backend native-taes
 
 ## Known Gaps (Tracked)
-- Sweep script currently parses the first metrics section (DP ALIGNMENT) from Temple summary. If OVERLAP is the target, update `evaluation/nedc_scoring/sweep_operating_point.py` to parse the OVERLAP block explicitly to align with `run_nedc.py`.
+- Sweep script currently parses the first metrics section (DP ALIGNMENT) from Temple summary. If OVERLAP is the target, update `evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py` to parse the OVERLAP block explicitly to align with `run_nedc.py`.
 - Native F1 differs from Temple OVERLAP F1 due to aggregation differences; align only if F1 is a gated metric.
 ```

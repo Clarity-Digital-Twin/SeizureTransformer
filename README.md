@@ -93,7 +93,7 @@ Both produce identical metrics (±0.1%). Temple's for papers, Python for deploym
 
 **Verify Parity:**
 ```bash
-make -C evaluation/nedc_scoring all BACKEND=temple
+make -C evaluation/nedc_eeg_eval/nedc_scoring all BACKEND=temple
 python tests/integration/test_nedc_conformance.py  # Confirms ±0.1% match
 ```
 
@@ -143,12 +143,12 @@ python evaluation/tusz/run_tusz_eval.py \
   --out_dir experiments/eval/baseline
 
 # 2. Score with NEDC v6.0.0
-make -C evaluation/nedc_scoring all \
+make -C evaluation/nedc_eeg_eval/nedc_scoring all \
   CHECKPOINT=../../experiments/eval/baseline/checkpoint.pkl
 # Output: experiments/eval/baseline/nedc_results/
 
 # 3. Tune thresholds (optional)
-python evaluation/nedc_scoring/sweep_operating_point.py \
+python evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py \
   --checkpoint experiments/dev/baseline/checkpoint.pkl \
   --target_fa_per_24h 10
 ```
@@ -162,8 +162,8 @@ SeizureTransformer/
 │   └── data/tusz/v2.0.3/       # TUSZ dataset location
 ├── evaluation/                 # Evaluation pipeline
 │   ├── tusz/                   # TUSZ inference
-│   ├── nedc_scoring/           # NEDC orchestration
-│   └── nedc_eeg_eval/v6.0.0/  # Temple binaries
+│   ├── nedc_eeg_eval/nedc_scoring/  # NEDC orchestration tools
+│   └── nedc_eeg_eval/v6.0.0/       # Temple binaries
 ├── seizure_evaluation/         # Native Python NEDC
 └── experiments/                # Results & checkpoints
 ```

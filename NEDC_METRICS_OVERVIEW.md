@@ -5,12 +5,12 @@
 NEDC v6.0.0 automatically calculates **5 different scoring methods** when evaluating seizure detection:
 
 ### 1. TAES (Time-Aligned Event Scoring) - **Currently Reported**
-- **Our Results**: 24.15% sensitivity, 137.5 FA/24h
+- **Our Results**: 24.71% sensitivity, 60.83 FA/24h
 - **Description**: Strictest clinical standard with fractional scoring based on temporal alignment
 - **Why we use it**: Most realistic for clinical deployment, penalizes timing errors
 
 ### 2. OVERLAP Scoring
-- **Our Results**: 45.63% sensitivity (214/469 seizures detected)
+- **Our Results**: 45.63% sensitivity, 25.01 FA/24h (Total)
 - **Description**: Counts detection if ANY overlap exists between prediction and ground truth
 - **Important**: This is NOT the same as SzCORE's "Any-Overlap" - Temple's version is still strict about timing boundaries
 
@@ -34,9 +34,9 @@ When we run NEDC on SeizureTransformer's TUSZ predictions:
 ```
 Metric          | Sensitivity | False Alarms | Notes
 ----------------|-------------|--------------|-------
-TAES            | 24.15%      | 137.5 FA/24h | Strictest (what we report)
-OVERLAP         | 45.63%      | ~142 total   | Temple's overlap (still strict)
-DPALIGN         | 52.88%      | ~496 total   | Optimal event matching
+TAES            | 24.71%      | 60.83 FA/24h | Strictest (what we report)
+OVERLAP         | 45.63%      | 25.01 FA/24h | Temple's overlap (still strict)
+DPALIGN         | —           | —            | See NEDC summary for details
 ```
 
 ## Critical Observation
@@ -54,8 +54,8 @@ Currently we only report TAES metrics in our README, but we could:
 ## Implementation Status
 
 - ✅ All 5 metrics are computed automatically by `evaluation/nedc_eeg_eval/v6.0.0/bin/nedc_eeg_eval`
-- ✅ Results stored in `evaluation/nedc_scoring/output/results/summary.txt`
-- ✅ Our pipeline (`evaluation/nedc_scoring/run_nedc.py`) runs the full suite
+- ✅ Results stored in `evaluation/nedc_eeg_eval/nedc_scoring/output/results/summary.txt`
+- ✅ Our pipeline (`evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py`) runs the full suite
 - 🔄 Currently only TAES is extracted and reported in our analysis
 
 ## Citation

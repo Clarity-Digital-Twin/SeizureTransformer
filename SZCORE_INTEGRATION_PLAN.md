@@ -13,7 +13,7 @@ SzCORE is the benchmarking platform used by EpilepsyBench 2025. We currently hav
 
 2. **Existing Integration:**
    - NEDC v6.0.0 integrated at `evaluation/nedc_eeg_eval/v6.0.0/`
-   - Clean wrapper at `evaluation/nedc_scoring/run_nedc.py`
+   - Clean wrapper at `evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py`
    - Already comparing NEDC's 5 metrics (TAES, OVERLAP, DPALIGN, EPOCH, IRA)
 
 ### Understanding the Scoring Difference
@@ -29,13 +29,13 @@ SzCORE is the benchmarking platform used by EpilepsyBench 2025. We currently hav
 - **Result on SeizureTransformer:** ~1 FA/24h (reported in paper)
 
 #### Temple NEDC Scoring:
-- **TAES (strictest):** 24.15% sensitivity, 137.5 FA/24h
+- **TAES (strictest):** 24.71% sensitivity, 60.83 FA/24h
 - **OVERLAP (Temple's):** 45.63% sensitivity (still much stricter than SzCORE)
 - **DPALIGN:** 52.88% sensitivity
 
 ## The Critical Gap
 
-The 137x difference in false alarms (1 FA/24h vs 137.5 FA/24h) is due to:
+The ~60x difference in false alarms (1 FA/24h vs 60.83 FA/24h) is due to:
 
 1. **Tolerance Windows:** SzCORE allows 30s before and 60s after seizures
 2. **Any-Overlap:** Even 1-sample overlap counts as correct detection
@@ -54,7 +54,7 @@ graph LR
 
     D --> D1[convert_predictions.py<br/>→ CSV_bi format]
     D1 --> D2[run_nedc.py<br/>calls NEDC binary]
-    D2 --> D3[NEDC Results<br/>TAES: 137.5 FA/24h]
+    D2 --> D3[NEDC Results<br/>TAES: 60.83 FA/24h]
 
     E --> E1[convert_to_hedscore.py<br/>→ HED-SCORE TSV]
     E1 --> E2[run_szcore.py<br/>calls timescoring]
@@ -69,7 +69,7 @@ graph LR
 1. **Model inference**: `wu_2025/` (untouched upstream)
 2. **TUSZ evaluation**: `evaluation/tusz/run_tusz_eval.py`
 3. **Checkpoint storage**: `experiments/eval/baseline/checkpoint.pkl`
-4. **NEDC wrapper**: `evaluation/nedc_scoring/` (calls copied binary)
+4. **NEDC wrapper**: `evaluation/nedc_eeg_eval/nedc_scoring/` (orchestrates Temple binary)
 5. **SzCORE wrapper**: `evaluation/szcore_scoring/` (calls pip package)
 6. **Results**: `experiments/` directory structure
 
@@ -119,7 +119,7 @@ from pathlib import Path
 from timescoring.annotations import Annotation
 from timescoring.scoring import EventScoring
 
-from evaluation.nedc_scoring.post_processing import (
+from evaluation.nedc_eeg_eval.nedc_scoring.post_processing import (
     apply_seizure_transformer_postprocessing,
 )
 

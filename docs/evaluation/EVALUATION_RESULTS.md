@@ -93,13 +93,13 @@ For ICU deployment, acceptable thresholds are typically:
 - Sensitivity > 90% (missing seizures is dangerous)
 - False alarms < 10 per 24 hours (prevent alarm fatigue)
 
-**Current performance gap**: 14x too many false alarms, 3.7x too low sensitivity
+**Current performance gap**: ~6.1x too many false alarms vs 10 FA/24h target, 3.7x too low sensitivity
 
 ## Reproducibility
 
 All code, configurations, and results are available in this repository:
 - Evaluation script: `evaluation/tusz/run_tusz_eval.py`
-- NEDC pipeline: `evaluation/nedc_scoring/run_nedc.py`
+- NEDC pipeline: `evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py`
 - Checkpoint file: `experiments/eval/baseline/checkpoint.pkl` (migrated)
 - NEDC results: `experiments/eval/baseline/nedc_results/`
 
@@ -111,21 +111,21 @@ python3 evaluation/tusz/run_tusz_eval.py \
   --out_dir experiments/eval/baseline
 
 # 2. Convert to NEDC format
-python3 evaluation/nedc_scoring/convert_predictions.py
+python3 evaluation/nedc_eeg_eval/nedc_scoring/convert_predictions.py
 
 # 3. Run NEDC scoring
-python3 evaluation/nedc_scoring/run_nedc.py \
+python3 evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
   --checkpoint experiments/eval/baseline/checkpoint.pkl \
   --outdir experiments/eval/baseline/nedc_results
 ```
 
 ## Critical Finding: Paper Discrepancy
 
-**The paper's claim of "1 false positive per day" is from a different dataset (Dianalund) used in competition, NOT from TUSZ testing.** Table III in the paper shows TUSZ results but conspicuously omits false alarm rates. Our evaluation reveals:
+**The paper's claim of "1 false positive per day" is from a different dataset (Dianalund) used in competition, NOT from TUSZ testing.** Table III in the paper shows TUSZ results but omits false alarm rates. Our evaluation reveals:
 
-- Paper's competition claim: 1 FA/day (Dianalund dataset, 4360 hours)
-- Our TUSZ results: 137.5 FA/day (same TUSZ dataset as paper)
-- **The paper never reported TUSZ false alarm rates** - likely because they're similarly high
+- Paper's competition claim: 1 FA/day (Dianalund dataset, SzCORE scoring)
+- Our TUSZ default results: 60.83 FA/day (TAES, clinical gold standard)
+- **The paper never reported TUSZ false alarm rates** under NEDC TAES
 
 This is a significant omission that misrepresents the model's real-world performance on the standard TUSZ benchmark.
 

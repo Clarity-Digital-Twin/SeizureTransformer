@@ -41,7 +41,7 @@ scorer = OverlapScorer()
 metrics = scorer.score_from_files(ref_csv_bi, hyp_csv_bi)
 
 # Via run_nedc.py
-python evaluation/nedc_scoring/run_nedc.py \
+python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
   --backend native-taes \
   --outdir results/
 ```
