@@ -11,14 +11,17 @@ WORKDIR /app
 # Copy model weights first (rarely changes)
 COPY wu_2025/src/wu_2025/model.pth /app/model/model.pth
 
-# Install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Install project dependencies via pyproject (modern PEP 517)
+# Copy project metadata and source first for better layer caching
+COPY pyproject.toml README.md ./
+COPY evaluation/ evaluation/
+COPY scripts/ scripts/
+RUN pip install --no-cache-dir .
 
 # Copy wu_2025 package (frozen upstream)
 COPY wu_2025/setup.py wu_2025/setup.cfg wu_2025/pyproject.toml wu_2025/
 COPY wu_2025/src wu_2025/src
-RUN pip install ./wu_2025
+RUN pip install --no-cache-dir ./wu_2025
 
 # Copy evaluation code
 COPY evaluation/ evaluation/
