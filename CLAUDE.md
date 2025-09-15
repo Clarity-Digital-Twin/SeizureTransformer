@@ -27,7 +27,7 @@ mypy evaluation/ scripts/ tests/
 # Testing
 pytest tests/                     # All tests
 python tests/test_inference.py    # Quick inference check
-python evaluation/nedc_scoring/test_pipeline.py  # NEDC pipeline validation
+python evaluation/nedc_eeg_eval/nedc_scoring/test_pipeline.py  # NEDC pipeline validation
 
 # Run model inference
 python -m wu_2025 input.edf output.tsv
@@ -55,9 +55,9 @@ Seizure Events (start_sec, end_sec)
 ```
 evaluation/tusz/run_tusz_eval.py
     ↓ Generates checkpoint.pkl with predictions
-evaluation/nedc_scoring/convert_predictions.py  
+evaluation/nedc_eeg_eval/nedc_scoring/convert_predictions.py  
     ↓ Converts to NEDC CSV_bi format (NOT .csv!)
-evaluation/nedc_scoring/run_nedc.py
+evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py
     ↓ Runs NEDC v6.0.0 binary for TAES metrics
 Results: Sensitivity, False Alarms/24h, F1 Score
 ```
@@ -111,7 +111,7 @@ The TUSZ evaluation pipeline (`evaluation/tusz/run_tusz_eval.py`) processes 865 
 ### Run Full NEDC Evaluation
 ```bash
 # After TUSZ evaluation completes
-cd evaluation/nedc_scoring
+cd evaluation/nedc_eeg_eval/nedc_scoring
 make test      # Validate pipeline with synthetic data
 make all       # Run full NEDC scoring pipeline
 ```

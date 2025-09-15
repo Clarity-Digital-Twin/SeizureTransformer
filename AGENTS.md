@@ -25,7 +25,7 @@ Keep tools in `evaluation/` and artifacts in `experiments/`.
 - Run TUSZ predictions:
   - `python evaluation/tusz/run_tusz_eval.py --data_dir /path/to/TUSZ/dev --out_dir experiments/dev/baseline --device auto`
 - NEDC pipeline:
-  - `make -C evaluation/nedc_scoring all CHECKPOINT=../../experiments/eval/baseline/checkpoint.pkl OUTDIR=../../experiments/eval/baseline/nedc_results`
+  - `make -C evaluation/nedc_eeg_eval/nedc_scoring all CHECKPOINT=../../experiments/eval/baseline/checkpoint.pkl OUTDIR=../../experiments/eval/baseline/nedc_results`
 
 ## Coding Style & Naming Conventions
 
@@ -54,4 +54,3 @@ Keep tools in `evaluation/` and artifacts in `experiments/`.
 - NEDC env is auto‑handled by tools; avoid hard‑coding absolute paths in code.
 - Keep PHI/PII out of logs and committed artifacts.
 - Windows users: prefer Python CLIs or WSL; Makefiles and `.sh` scripts assume POSIX.
-
