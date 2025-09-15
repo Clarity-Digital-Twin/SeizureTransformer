@@ -184,8 +184,6 @@ def run_nedc_scorer(
         print(result.stdout)
     elif backend in ("native-overlap", "native-taes"):
         # Native Python TAES implementation
-        import sys
-
         sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
         from seizure_evaluation.taes.overlap_scorer import OverlapScorer
 
