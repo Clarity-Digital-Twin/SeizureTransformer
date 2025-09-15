@@ -127,7 +127,8 @@
       "Bash(sudo mkdir:*)",
       "Bash(sudo mv:*)",
       "Bash(DOCKER_BUILDKIT=0 docker build -t st:smoke -f /tmp/Dockerfile.test /tmp/)",
-      "Bash(DOCKER_BUILDKIT=0 docker build -t st:smoke -)"
+      "Bash(DOCKER_BUILDKIT=0 docker build -t st:smoke -)",
+      "Bash(DOCKER_BUILDKIT=0 docker build -t seizure-transformer:latest .)"
     ],
     "deny": [],
     "ask": []
