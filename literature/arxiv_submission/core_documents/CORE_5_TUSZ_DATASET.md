@@ -116,7 +116,7 @@ Result: No one knows true TUSZ performance
 ```
 
 #### Our Contribution
-**We perform this missing evaluation, revealing 100.06 FA/24h**
+**We perform this missing evaluation, revealing 26.89 FA/24h (OVERLAP, SEIZ)**
 
 **Source**: `/docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md` line 36
 **Location**: `/experiments/eval/baseline/CLEAN_NO_MERGE/DEFAULT/`
@@ -178,10 +178,10 @@ SzCORE: Generic scorer for any dataset
 - Results in 12× FA reduction
 ```
 
-**Evidence of 12× reduction**:
-- NEDC: 100.06 FA/24h (`/docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md` line 36)
-- SzCORE: 8.46 FA/24h (line 38)
-- Ratio: 100.06 / 8.46 = 11.8×
+**Evidence of ≈3.1× difference at default**:
+- OVERLAP (Temple): 26.89 FA/24h (SEIZ)
+- SzCORE: 8.59 FA/24h
+- Ratio: 26.89 / 8.59 ≈ 3.13×
 
 ---
 

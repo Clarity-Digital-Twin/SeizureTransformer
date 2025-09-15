@@ -139,13 +139,13 @@ def main() -> int:
     kernels = parse_ints_list(args.kernels)
     min_durations = parse_floats_list(args.min_durations)
     merge_gaps_raw = parse_floats_list(args.merge_gaps)
-    # Warn if any non-zero merge gap requested
+    # Phase 1 enforcement: Block non-zero merge_gaps
     if any(g != 0.0 for g in merge_gaps_raw):
-        print(
-            "WARNING: Non-zero merge_gaps requested. This is a non-standard post-\n"
-            "processing that can artificially reduce FA rates and is not compliant\n"
-            "with NEDC/Temple evaluation. Use 0 for academic comparisons."
-        )
+        print("ERROR: Non-zero merge_gaps requested.")
+        print("Event merging has been deprecated to ensure NEDC/Temple compliance.")
+        print("Use merge_gaps=0 for all evaluations.")
+        print("See docs/technical/MERGE_GAP_POLICY.md for details.")
+        return 1
     merge_gaps: list[float | None] = [None if g == 0 else g for g in merge_gaps_raw]
 
     results: list[Result] = []

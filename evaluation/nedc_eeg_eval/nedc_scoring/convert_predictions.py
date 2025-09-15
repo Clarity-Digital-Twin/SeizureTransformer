@@ -53,7 +53,17 @@ def convert_checkpoint_to_nedc(
     Args:
         checkpoint_file: Path to checkpoint.pkl
         output_dir: Base output directory
+        merge_gap_sec: DEPRECATED - must be None or 0. Non-zero values are blocked.
     """
+    # Phase 1 enforcement: Block non-zero merge_gap
+    if merge_gap_sec not in (None, 0, 0.0):
+        raise ValueError(
+            f"merge_gap_sec={merge_gap_sec} is not allowed. "
+            "Event merging violates NEDC/Temple evaluation standards. "
+            "Use merge_gap_sec=None or 0 for all evaluations. "
+            "See docs/technical/MERGE_GAP_POLICY.md for details."
+        )
+
     print(f"Loading checkpoint from {checkpoint_file}...")
     with open(checkpoint_file, "rb") as f:
         checkpoint = pickle.load(f)
@@ -125,18 +135,10 @@ def convert_checkpoint_to_nedc(
             "threshold": threshold,
             "kernel": morph_kernel_size,
             "min_duration_sec": min_duration_sec,
-            "merge_gap_sec": merge_gap_sec or 0.0,
+            "merge_gap_sec": 0.0,  # Always 0 now that non-zero is blocked
         }
         with open(Path(output_dir) / "params.json", "w") as f:
             json.dump(params, f, indent=2)
-
-        # If a nonstandard merge_gap is used, drop a disclaimer file
-        if merge_gap_sec not in (None, 0, 0.0):
-            (Path(output_dir) / "NONSTANDARD_POSTPROCESSING.txt").write_text(
-                "merge_gap_sec is enabled for this conversion. This merges nearby events in\n"
-                "post-processing and is NOT part of the paper or NEDC/Temple evaluation.\n"
-                "Use merge_gap_sec=None for academic compliance.\n"
-            )
     except Exception:
         pass
 

@@ -35,7 +35,7 @@ In `evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py`:
 ### Verification Status
 
 Our native OVERLAP implementation achieves **parity with Temple NEDC OVERLAP** under the verified, non‑merged baseline:
-- Default params (0.8/5/2.0, merge_gap=None): Both report 45.63% sensitivity, 100.06 FA/24h, F1=0.519
+- Default params (0.8/5/2.0, merge_gap=None): Both report 45.63% sensitivity, 26.89 FA/24h (SEIZ), F1≈0.518
 
 Notes:
 - Prior numbers showing ~25.01 FA/24h were contaminated by a non‑standard merge_gap and are invalid for academic comparison.

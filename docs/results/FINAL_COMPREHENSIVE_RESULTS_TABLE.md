@@ -32,36 +32,36 @@ Each scoring method serves different purposes in seizure detection evaluation:
 
 | Scoring Method | Sensitivity (%) | False Alarms/24h |
 |---|---:|---:|
-| **NEDC Temple TAES** | 24.15 | 137.53 |
-| **NEDC Temple OVERLAP** | 45.63 | 100.06 |
-| **Python OVERLAP** | 45.63 | 100.06 |
-| **SzCORE** | 52.35 | 8.46 |
+| **NEDC Temple TAES** | 65.21 | 136.73 |
+| **NEDC Temple OVERLAP** | 45.63 | 26.89 |
+| **Python OVERLAP** | 45.63 | 26.89 |
+| **SzCORE** | 52.35 | 8.59 |
 
 ---
 
 ## 10 FA/24h TARGET
-**Settings:** threshold=0.95, kernel_size=5, min_duration=2.0
+**Settings:** threshold=0.88, kernel_size=5, min_duration=3.0
 **Target:** ≤10 FA/24h
 
 | Scoring Method | Sensitivity (%) | False Alarms/24h | Meets Target |
 |---|---:|---:|:---:|
-| **NEDC Temple TAES** | 8.64 | 34.04 | ❌ |
-| **NEDC Temple OVERLAP** | 23.45 | 39.50 | ❌ |
-| **Python OVERLAP** | 23.45 | 39.50 | ❌ |
-| **SzCORE** | 29.12 | 1.32 | ✅ |
+| **NEDC Temple TAES** | 60.45 | 83.88 | ❌ |
+| **NEDC Temple OVERLAP** | 33.90 | 10.27 | ❌ (≈10.3) |
+| **Python OVERLAP** | 33.90 | 10.27 | ❌ (≈10.3) |
+| **SzCORE** | 40.59 | 3.36 | ✅ |
 
 ---
 
 ## 2.5 FA/24h TARGET
-**Settings:** threshold=0.95, kernel_size=11, min_duration=8.0
+**Settings:** threshold=0.95, kernel_size=5, min_duration=5.0
 **Target:** ≤2.5 FA/24h
 
 | Scoring Method | Sensitivity (%) | False Alarms/24h | Meets Target |
 |---|---:|---:|:---:|
-| **NEDC Temple TAES** | 4.07 | 8.01 | ❌ |
-| **NEDC Temple OVERLAP** | 11.51 | 8.09 | ❌ |
-| **Python OVERLAP** | 11.51 | 8.09 | ❌ |
-| **SzCORE** | 16.47 | 0.56 | ✅ |
+| **NEDC Temple TAES** | 18.12 | 10.64 | ❌ |
+| **NEDC Temple OVERLAP** | 14.50 | 2.05 | ✅ |
+| **Python OVERLAP** | 14.50 | 2.05 | ✅ |
+| **SzCORE** | 19.71 | 0.75 | ✅ |
 
 ---
 
@@ -73,15 +73,17 @@ Each scoring method serves different purposes in seizure detection evaluation:
 ## KEY FINDINGS
 
 ### Performance Under Different Standards
-- **NEDC Standard (widely used):** Cannot meet clinical FA targets
-  - 10 FA/24h target: Achieves 39.50 FA @ 23.45% sensitivity
-  - 2.5 FA/24h target: Achieves 8.09 FA @ 11.51% sensitivity
-  - 1 FA/24h target: Would require <5% sensitivity (clinically unusable)
+- **NEDC OVERLAP (Temple):**
+  - Default (paper): 45.63% sens, 26.89 FA/24h (SEIZ)
+  - 10 FA target: ≈10.27 FA/24h at 33.90% sens (near target but <50% sens)
+  - 2.5 FA target: 2.05 FA/24h at 14.50% sens (meets FA target, very low sens)
 
-- **SzCORE Standard (EpilepsyBench):** Meets all targets
-  - Different evaluation philosophy with pre/post-ictal tolerances
-  - ~10x more permissive due to event merging and tolerances
-  - Designed for practical clinical applications
+- **NEDC TAES (Temple, time-aligned):**
+  - Default: 65.21% sens, 136.73 FA/24h
+  - 10 FA target setting: 60.45% sens, 83.88 FA/24h (does not meet FA target)
+  - 2.5 FA target setting: 18.12% sens, 10.64 FA/24h (does not meet FA target)
+
+- **SzCORE (EpilepsyBench):** Meets both FA targets with higher sensitivity than OVERLAP at the same settings (e.g., 3.36 FA @ 40.59% and 0.75 FA @ 19.71%).
 
 ### Important Context
 - Different scoring methods serve different clinical and research needs
@@ -89,8 +91,7 @@ Each scoring method serves different purposes in seizure detection evaluation:
 - NEDC's stricter scoring reflects research priorities (temporal precision)
 - **Neither approach is "wrong" - they measure different aspects of performance**
 
-Note on FA/24h: For NEDC and Python OVERLAP rows, FA/24h refers to Temple’s "Total False Alarm Rate"
-(SEIZ + BCKG) as reported by the NEDC v6.0.0 summaries. SzCORE FA/24h follows its event-based definition.
+Note on FA/24h: For NEDC and Python OVERLAP rows, FA/24h reported here is SEIZ-only (primary), consistent with our reporting policy; NEDC’s “Total False Alarm Rate” (SEIZ+BCKG) is also available in raw summaries. SzCORE FA/24h follows its event-based definition.
 
 ### Methodology Note
 We tuned parameters using NEDC OVERLAP (the common practice for TUSZ) and evaluated across all metrics for transparency. This reveals how scoring methodology significantly impacts reported performance.

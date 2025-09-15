@@ -140,8 +140,8 @@ metrics = scorer.evaluate(refs, hyps)
 
 ### Parity Validation
 ```
-Temple Binary: 45.63% sensitivity, 100.06 FA/24h
-Python Implementation: 45.63% sensitivity, 100.06 FA/24h
+Temple Binary: 45.63% sensitivity, 26.89 FA/24h (SEIZ)
+Python Implementation: 45.63% sensitivity, 26.89 FA/24h (SEIZ)
 Difference: <0.1% (rounding only)
 ```
 

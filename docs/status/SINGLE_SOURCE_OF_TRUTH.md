@@ -9,9 +9,9 @@
 
 | Scorer | Sensitivity | FA/24h | F1 Score | Notes |
 |--------|------------|--------|----------|-------|
-| **NEDC OVERLAP** | 45.63% | 100.06 | 0.519 | Temple's binary event scorer |
-| **Native OVERLAP** | 45.63% | 100.06 | 0.519 | Exact parity with NEDC |
-| **SzCORE** | 52.35% | 8.46 | - | 90s internal merge reduces FA |
+| **NEDC OVERLAP** | 45.63% | 26.89 | 0.518 | Temple's binary event scorer (SEIZ FA) |
+| **Native OVERLAP** | 45.63% | 26.89 | 0.518 | Exact parity with NEDC |
+| **SzCORE** | 52.35% | 8.59 | - | 90s internal merge reduces FA |
 
 ## ✅ WHAT'S WORKING NOW
 
@@ -37,12 +37,12 @@
 | Config | OVERLAP Sensitivity | OVERLAP FA/24h |
 |--------|-------------------|----------------|
 | With merge_gap=5 | 41.90% | 25.01 |
-| Without merge_gap | 45.63% | 100.06 |
+| Without merge_gap | 45.63% | 26.89 |
 
 ## 📊 CLINICAL OPERATING POINTS
 
 ### Current Status
-- Paper defaults verified: 100.06 FA/24h at threshold=0.8
+- Paper defaults verified: 26.89 FA/24h (SEIZ) at threshold=0.8
 - Parameter sweep running for clinical targets
 - 84 combinations being tested (7 thresholds × 4 kernels × 3 min_durations)
 
@@ -73,8 +73,8 @@ make check-all  # All pass
 
 1. **Always use merge_gap=None** for academic/clinical reporting
 2. **NEDC OVERLAP** is our primary metric (matches Temple standards)
-3. **SzCORE** has internal 90s merge (reduces FA by ~12x vs NEDC)
-4. **AUROC 0.876** matches paper's reported value
+3. **SzCORE** has internal 90s merge (reduces FA vs NEDC by ≈3.1× at default OVERLAP)
+4. **AUROC 0.9019** (our pipeline) vs paper's 0.876
 
 ## 📈 NEXT STEPS
 

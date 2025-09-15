@@ -56,6 +56,9 @@ def run_conversion(
     Convert checkpoint.pkl to NEDC CSV_bi format.
 
     Args:
+        merge_gap_sec: DEPRECATED - must be None or 0. Non-zero values are blocked.
+
+    Args:
         checkpoint_file: Path to checkpoint.pkl
         output_dir: Output directory for NEDC files
         force: Overwrite existing output
@@ -63,6 +66,14 @@ def run_conversion(
     Returns:
         int: Return code (0 for success)
     """
+    # Phase 1 enforcement: Block non-zero merge_gap
+    if merge_gap_sec not in (None, 0, 0.0):
+        print(f"ERROR: merge_gap_sec={merge_gap_sec} is not allowed.")
+        print("Event merging has been deprecated to ensure NEDC/Temple compliance.")
+        print("Use merge_gap_sec=None or 0 for all evaluations.")
+        print("See docs/technical/MERGE_GAP_POLICY.md for details.")
+        return 1
+
     print("=" * 70)
     print("STEP 1: Converting SeizureTransformer predictions to NEDC format")
     print("=" * 70)
@@ -97,10 +108,7 @@ def run_conversion(
         cmd += ["--kernel", str(kernel)]
     if min_duration_sec is not None:
         cmd += ["--min_duration_sec", str(min_duration_sec)]
-    if merge_gap_sec is not None:
-        print(f"⚠️ WARNING: Using merge_gap_sec={merge_gap_sec} violates NEDC standards and reduces FA by ~4X!")
-        print("         For academic compliance, use merge_gap_sec=None")
-        cmd += ["--merge_gap_sec", str(merge_gap_sec)]
+    # merge_gap_sec is deprecated and blocked above
 
     print(f"Running: {' '.join(cmd)}")
     result = subprocess.run(cmd, capture_output=True, text=True)
@@ -263,18 +271,7 @@ def run_nedc_scorer(
         print("Valid backends: nedc-binary, native-overlap, native-taes (alias)")
         return 1
 
-    # If nonstandard merge_gap was used, drop a disclaimer file in results
-    try:
-        if merge_gap_sec not in (None, 0, 0.0):
-            disclaimer = results_dir / "NONSTANDARD_POSTPROCESSING.txt"
-            disclaimer.write_text(
-                "merge_gap_sec was non-None for this run. This merges nearby events in post-\n"
-                "processing and is NOT part of NEDC/Temple evaluation. It typically reduces\n"
-                "false alarms by ~4x and invalidates academic comparisons. Use None for paper\n"
-                "compliance.\n"
-            )
-    except Exception:
-        pass
+    # merge_gap_sec is deprecated and blocked, so no disclaimer needed
 
     # Parse and display key metrics with operating point params
     parse_nedc_output(
@@ -467,7 +464,7 @@ def parse_nedc_output(
             "threshold": threshold or 0.8,
             "kernel": kernel or 5,
             "min_duration_sec": min_duration_sec or 2.0,
-            "merge_gap_sec": merge_gap_sec or 0.0,
+            "merge_gap_sec": 0.0,  # Always 0 now that non-zero is blocked
         }
         # Re-save with operating point
         with open(metrics_file, "w") as f:

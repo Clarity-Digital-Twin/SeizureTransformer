@@ -20,7 +20,7 @@ This directory contains materials for our arXiv preprint revealing the 100-fold 
 - `CORE_4_NEDC_SOFTWARE.md`
 - `CORE_5_TUSZ_DATASET.md`
 
-All other docs and outlines must align to the facts and numbers in these five core documents (e.g., 865 files, 469 seizures, 127.7 hours; NEDC OVERLAP 100.06 FA/24h; SzCORE 8.46 FA/24h; ≈12× difference OVERLAP vs SzCORE; ≈16× TAES vs SzCORE).
+All other docs and outlines must align to the facts and numbers in these five core documents (e.g., 865 files, 469 seizures, 127.7 hours; NEDC OVERLAP 26.89 FA/24h; SzCORE 8.59 FA/24h; ≈3.1× difference OVERLAP vs SzCORE at default; ≈16× TAES vs SzCORE).
 
 ### Siena dataset policy
 - Siena Scalp EEG Database is used in training by Wu et al. and has no official train/dev/eval splits in its public release.
@@ -28,17 +28,18 @@ All other docs and outlines must align to the facts and numbers in these five co
 - See `SIENA_EVALUATION_NOTES.md` for details and evaluation guidance.
 
 ### Narrative Elements
-- **The Hook**: 1 FA/24h claimed → 100 FA/24h reality (100× gap)
-- **The Discovery**: Scoring alone causes 12× difference
+- **The Hook**: 1 FA/24h claimed → 26.89–136.73 FA/24h reality (27×–137× gap across scorers)
+- **The Discovery**: Scoring and definition choice (SEIZ vs TOTAL) change FA/24h by multiples (≈3.1× default OVERLAP vs SzCORE; TAES much higher than OVERLAP)
 - **The Contribution**: First NEDC evaluation + reproducible pipeline
 
 ## Quick Facts for Paper
 
 ### Performance Numbers
-- **100.06 FA/24h** - NEDC OVERLAP (clinical standard)
-- **8.46 FA/24h** - SzCORE (EpilepsyBench standard)
-- **12×** - Impact of scoring methodology alone
-- **100×** - Gap to Dianalund benchmark claim
+- **26.89 FA/24h (SEIZ)** - NEDC OVERLAP default (Temple)
+- **136.73 FA/24h** - NEDC TAES default (Temple)
+- **8.59 FA/24h** - SzCORE default (EpilepsyBench)
+- **≈3.1×** - OVERLAP vs SzCORE FA at default (26.89 / 8.59)
+- **27×–137×** - Gap to “1 FA/24h” claim depending on scorer
 
 ### Dataset
 - **865 files** - TUSZ v2.0.3 eval set
@@ -47,11 +48,11 @@ All other docs and outlines must align to the facts and numbers in these five co
 - **100%** - Files successfully processed (865/865; one header repaired on a temporary copy)
 
 ### Operating Points
-| Target | Best Achieved | Sensitivity |
-|--------|--------------|-------------|
-| 10 FA/24h | 39.50 FA/24h | 23.45% |
-| 2.5 FA/24h | 8.09 FA/24h | 11.51% |
-| 1 FA/24h | Not viable | <5% |
+| Target | OVERLAP (FA/24h, Sens) | TAES (FA/24h, Sens) | SzCORE (FA/24h, Sens) |
+|--------|-------------------------|---------------------|------------------------|
+| Default | 26.89, 45.63% | 136.73, 65.21% | 8.59, 52.35% |
+| 10 FA | 10.27, 33.90% | 83.88, 60.45% | 3.36, 40.59% |
+| 2.5 FA | 2.05, 14.50% | 10.64, 18.12% | 0.75, 19.71% |
 
 ## Writing Strategy
 

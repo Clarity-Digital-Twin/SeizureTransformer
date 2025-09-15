@@ -172,8 +172,8 @@ Repo confirmation: `wu_2025/src/wu_2025/utils.py` (`predict`, `morphological_fil
 - **Clinical deployment gap** exists for all current models
 
 Repo context for scoring (defaults; no merge gap):
-- NEDC OVERLAP (Temple): 45.63% sensitivity, 100.06 FA/24h Total — `docs/status/SINGLE_SOURCE_OF_TRUTH.md`, `docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md`
-- SzCORE Any‑Overlap (EpilepsyBench): 52.35% sensitivity, 8.46 FA/24h — `docs/results/BENCHMARK_RESULTS.md`
+- NEDC OVERLAP (Temple): 45.63% sensitivity, 26.89 FA/24h (SEIZ) — `docs/status/SINGLE_SOURCE_OF_TRUTH.md`, `docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md`
+- SzCORE Any‑Overlap (EpilepsyBench): 52.35% sensitivity, 8.59 FA/24h — `docs/results/BENCHMARK_RESULTS.md`
   - SzCORE tolerances/merge rules documented in `literature/markdown/SzCORE/SzCORE.md`.
 
 ---

@@ -143,3 +143,32 @@ with open('test_checkpoint.pkl', 'wb') as f:
           --kernels 5 \
           --min_durations 2 \
           --merge_gaps 0 || echo "Sweep test completed (may fail without full data)"
+
+    - name: Verify merge_gap compliance
+      run: |
+        # Check that no artifacts contain non-zero merge_gap_sec
+        echo "Checking for non-compliant merge_gap usage..."
+
+        # Check params.json files for non-zero merge_gap_sec
+        find . -name "params.json" -type f | while read f; do
+          if grep -q '"merge_gap_sec":[[:space:]]*[^0]' "$f" 2>/dev/null; then
+            echo "ERROR: Non-zero merge_gap_sec found in $f"
+            exit 1
+          fi
+        done
+
+        # Check metrics.json files for non-zero merge_gap_sec in operating_point
+        find . -name "metrics.json" -type f | while read f; do
+          if grep -q '"merge_gap_sec":[[:space:]]*[^0]' "$f" 2>/dev/null; then
+            echo "ERROR: Non-zero merge_gap_sec found in $f"
+            exit 1
+          fi
+        done
+
+        # Check for NONSTANDARD_POSTPROCESSING.txt files (should not exist)
+        if find . -name "NONSTANDARD_POSTPROCESSING.txt" -type f | grep -q .; then
+          echo "ERROR: NONSTANDARD_POSTPROCESSING.txt files found - merge_gap must be disabled"
+          exit 1
+        fi
+
+        echo "✓ All merge_gap checks passed - no non-zero values found"

@@ -1,10 +1,10 @@
-# SeizureTransformer on TUSZ: A 100× False Alarm Reality Check
+# SeizureTransformer on TUSZ: A Multi‑Fold False Alarm Reality Check
 ## Revealing the Impact of Dataset-Matched Clinical Scoring Standards
 
 ### Core Narrative Arc
-**The Hook**: State-of-the-art model claims 1 FA/24h, but first clinical evaluation reveals 100× higher false alarms
+**The Hook**: State-of-the-art model claims 1 FA/24h, but first clinical evaluation reveals 26.89–136.73 FA/24h (depending on scorer)
 **The Investigation**: Systematic evaluation using Temple's NEDC v6.0.0 clinical standard
-**The Discovery**: Scoring methodology alone accounts for 12× difference in reported performance
+**The Discovery**: Scoring methodology and FA definition alone account for multi‑fold differences (≈3.1× at default OVERLAP vs SzCORE)
 **The Contribution**: First reproducible NEDC evaluation pipeline + comprehensive operating points for clinical deployment
 
 ---
@@ -19,8 +19,8 @@
 ### Abstract (250 words)
 - **Problem**: SeizureTransformer won EpilepsyBench 2025 with 1 FA/24h, but no clinical evaluation exists
 - **Method**: First evaluation using Temple's NEDC v6.0.0 on TUSZ v2.0.3 (865 files, 469 seizures)
-- **Finding**: 100.06 FA/24h with NEDC vs 8.46 FA/24h with SzCORE (same predictions!)
-- **Impact**: Scoring methodology alone creates 12× performance difference
+- **Finding**: 26.89 FA/24h (SEIZ) with NEDC OVERLAP vs 8.59 FA/24h with SzCORE (same predictions!)
+- **Impact**: Scoring methodology alone creates ≈3.1× performance difference at default
 - **Contribution**: Open-source evaluation pipeline + operating points for clinical deployment
 
 ### 1. Introduction
@@ -76,22 +76,22 @@ SzCORE ← NEDC OVERLAP ← NEDC TAES
 - Reveals scoring impact independent of model
 
 ### 4. Results
-#### 4.1 The 100× Gap
+#### 4.1 The Gap
 | Config | NEDC OVERLAP | SzCORE | Gap |
 |--------|-------------|---------|-----|
-| Paper defaults | 100.06 FA/24h | 8.46 FA/24h | 12× |
-| vs Dianalund claim | 100.06 FA/24h | 1 FA/24h | 100× |
+| Paper defaults | 26.89 FA/24h | 8.59 FA/24h | ≈3.1× |
+| vs Dianalund claim | 26.89–136.73 FA/24h | ≈1 FA/24h | 27×–137× |
 
 #### 4.2 Operating Points for Clinical Deployment
-- 10 FA/24h target: Cannot achieve with NEDC (best: 39.50 FA)
-- 2.5 FA/24h target: Cannot achieve with NEDC (best: 8.09 FA)
-- 1 FA/24h target: Would require <5% sensitivity
+- 10 FA/24h target: ≈10.27 FA with 33.90% sens (OVERLAP); TAES remains far above target
+- 2.5 FA/24h target: 2.05 FA with 14.50% sens (OVERLAP); TAES remains far above target
+- 1 FA/24h target: Not viable at ≥50% sensitivity
 
 #### 4.3 The Scoring Impact
-- NEDC TAES: 24.15% sens @ 137.53 FA/24h (Total False Alarm Rate)
-- NEDC OVERLAP: 45.63% sens @ 100.06 FA/24h
-- SzCORE: 52.35% sens @ 8.46 FA/24h
-- **Same predictions, ≈16× FA difference!**
+- NEDC TAES: 65.21% sens @ 136.73 FA/24h
+- NEDC OVERLAP: 45.63% sens @ 26.89 FA/24h (SEIZ)
+- SzCORE: 52.35% sens @ 8.59 FA/24h
+- **Same predictions; FA differs by ≈3.1× (OVERLAP vs SzCORE) and ≫ vs TAES**
 
 ### 5. Discussion
 #### 5.1 Why This Matters
@@ -116,8 +116,8 @@ SzCORE ← NEDC OVERLAP ← NEDC TAES
 
 ### 7. Conclusions
 #### Key Takeaways
-1. **100× gap** between claimed and clinical performance
-2. **Scoring alone** creates 12× performance difference
+1. **27×–137× gap** between claimed and clinical performance (depending on scorer)
+2. **Scoring alone** creates ≈3.1× FA difference at default (OVERLAP vs SzCORE)
 3. **Dataset-matched** evaluation essential for validity
 
 #### Recommendations

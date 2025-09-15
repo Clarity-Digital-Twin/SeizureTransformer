@@ -13,7 +13,7 @@
 
 3. **Use Data to Cut Deep**
    - ❌ "The model doesn't work"
-   - ✅ "100.06 FA/24h versus claimed 1 FA/24h represents a 100× gap"
+   - ✅ "26.89–136.73 FA/24h versus claimed 1 FA/24h represents a 27×–137× gap (depending on scorer)"
 
 ---
 
@@ -28,14 +28,13 @@ challenges in the field's evaluation methodology."
 
 ### The "Context Matters" Frame
 ```
-"The model achieves 1 FA/24h with SzCORE's clinical tolerances,
-which becomes 100 FA/24h with NEDC's research precision,
+"The model achieves ~1 FA/24h on Dianalund with SzCORE; on TUSZ with NEDC OVERLAP it is 26.89 FA/24h (SEIZ) and with TAES 136.73 FA/24h,
 highlighting how context determines performance claims."
 ```
 
 ### The "Broader Pattern" Frame
 ```
-"This 100× gap is not unique to SeizureTransformer but reflects
+"This order-of-magnitude gap is not unique to SeizureTransformer but reflects
 a systemic issue in how seizure detection models are evaluated."
 ```
 
@@ -64,7 +63,7 @@ a systemic issue in how seizure detection models are evaluated."
 ### The 100× Gap
 **Too Harsh**: "Claims are off by 100×"
 **Too Soft**: "Some differences in metrics"
-**Just Right**: "A 100-fold gap exists between benchmark performance and clinical evaluation"
+**Just Right**: "A ~27×–137× gap exists between benchmark claims and dataset-matched clinical evaluation (depending on scorer)"
 
 ### The 🚂 Issue
 **Too Harsh**: "EpilepsyBench hides TUSZ results"
@@ -74,7 +73,7 @@ a systemic issue in how seizure detection models are evaluated."
 ### Scoring Differences
 **Too Harsh**: "SzCORE inflates performance"
 **Too Soft**: "Different scorers exist"
-**Just Right**: "Scoring methodology alone creates 12× performance differences"
+**Just Right**: "Scoring methodology and definition choice (SEIZ vs TOTAL) alone create multi‑fold performance differences (≈3.1× at default OVERLAP vs SzCORE)"
 
 ---
 
@@ -107,10 +106,10 @@ a systemic issue in how seizure detection models are evaluated."
 ## The Results Presentation
 
 ### Lead with Impact
-"SeizureTransformer achieves 45.63% sensitivity at 100.06 false alarms per 24 hours when evaluated on TUSZ with NEDC scoring."
+"SeizureTransformer achieves 45.63% sensitivity at 26.89 false alarms per 24 hours (SEIZ) when evaluated on TUSZ with NEDC OVERLAP."
 
 ### Follow with Context
-"The same predictions yield 8.46 FA/24h with SzCORE's clinical tolerances, demonstrating a 12-fold impact from scoring methodology alone."
+"The same predictions yield 8.59 FA/24h with SzCORE's clinical tolerances, demonstrating a ≈3.1× impact from scoring methodology alone at default."
 
 ### Conclude with Implications
 "These results indicate that models cannot meet clinical deployment thresholds when evaluated with dataset-matched standards."
@@ -123,7 +122,7 @@ a systemic issue in how seizure detection models are evaluated."
 "SeizureTransformer's architectural innovations and cross-dataset performance represent meaningful advances..."
 
 ### Paragraph 2: Present Hard Truths
-"However, the 100-fold gap between benchmark and clinical performance reveals fundamental challenges..."
+"However, the multi‑fold gap (27×–137× depending on scorer) between benchmark and clinical performance reveals fundamental challenges..."
 
 ### Paragraph 3: Systemic Issues
 "This gap reflects not individual failure but systemic issues in evaluation standards..."
@@ -136,13 +135,13 @@ a systemic issue in how seizure detection models are evaluated."
 ## Specific Cutting Lines (With Context)
 
 ### On Performance Claims
-"The 1 FA/24h achievement, while impressive on Dianalund, becomes 100 FA/24h on the model's training dataset."
+"The 1 FA/24h achievement, while impressive on Dianalund, becomes 26.89–136.73 FA/24h on TUSZ (depending on scorer)."
 
 ### On Evaluation Gaps
 "Despite TUSZ's carefully designed held-out set, no prior evaluation with clinical scoring exists."
 
 ### On Scoring Impact
-"A 12-fold difference in reported performance stems entirely from the choice of scoring methodology."
+"A ≈3.1× difference in reported FA/24h at default stems from the choice of scoring methodology (OVERLAP vs SzCORE), with TAES much higher than OVERLAP."
 
 ### On Clinical Reality
 "Current benchmarks may be optimizing for metrics that diverge from clinical needs."
@@ -152,7 +151,7 @@ a systemic issue in how seizure detection models are evaluated."
 ## The Conclusion Tone
 
 ### What We Found (Direct)
-"Our evaluation reveals a 100-fold gap between benchmark claims and clinical reality."
+"Our evaluation reveals a multi‑fold gap (27×–137× depending on scorer) between benchmark claims and clinical reality."
 
 ### Why It Matters (Urgent)
 "This gap determines whether AI seizure detection can be deployed in hospitals."

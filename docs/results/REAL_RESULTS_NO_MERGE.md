@@ -13,19 +13,19 @@ For the full 4×3 results across all scoring methods and operating points, see `
 
 | Configuration | Threshold | Kernel | MinDur | Sensitivity | FA/24h | Target | Status |
 |---------------|-----------|--------|--------|-------------|--------|--------|--------|
-| **DEFAULT** | 0.8 | 5 | 2.0s | 45.63% | **100.06** | - | ❌ Too high |
-| **10 FA** | 0.95 | 5 | 2.0s | 23.45% | **39.50** | 10 | ❌ FAILED |
-| **2.5 FA** | 0.95 | 11 | 8.0s | 11.51% | **8.09** | 2.5 | ❌ FAILED |
+| **DEFAULT** | 0.8 | 5 | 2.0s | 45.63% | **26.89** | - | ❌ Too high |
+| **10 FA** | 0.88 | 5 | 3.0s | 33.90% | **10.27** | 10 | ❌ Near |
+| **2.5 FA** | 0.95 | 5 | 5.0s | 14.50% | **2.05** | 2.5 | ✅ Met |
 
 ---
 
 ## 🔴 HARSH REALITY
 
-**WE CANNOT ACHIEVE CLINICAL FA TARGETS WITHOUT CHEATING**
+**Clinical viability (≤10 FA/24h and ≥50% sensitivity) is not achieved at any setting**
 
-- Best we can do for "10 FA target": **39.50 FA/24h** (4x over target)
-- Best we can do for "2.5 FA target": **8.09 FA/24h** (3x over target)
-- To get <10 FA, we'd need even higher thresholds, killing sensitivity further
+- Best "10 FA target" under OVERLAP: **10.27 FA/24h** at **33.90% sens** (below 50% sens)
+- Best "2.5 FA target" under OVERLAP: **2.05 FA/24h** at **14.50% sens** (FA met; sens too low)
+- TAES at corresponding settings remains far above FA targets (e.g., 83.88 and 10.64 FA/24h)
 
 ---
 
@@ -38,8 +38,8 @@ We used `merge_gap_sec` which:
 - Is NOT part of NEDC standards
 - Is CHEATING
 
-With merge_gap=5.0, we got 9.97 FA (looked great!)  
-Without merge_gap, we get 39.50 FA (reality!)
+With merge_gap enabled, FA/24h can drop by ~3–4× (non‑standard).  
+Without merge_gap (policy), the honest numbers are those reported above.
 
 ---
 
