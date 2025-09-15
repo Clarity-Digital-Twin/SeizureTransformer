@@ -107,9 +107,9 @@ events = [
 ### Option 1: Direct NEDC Integration (Canonical)
 ```bash
 # Convert SeizureTransformer output to NEDC CSV
-python evaluation/nedc_scoring/convert_predictions.py \
-  --checkpoint evaluation/tusz/checkpoint.pkl \
-  --outdir evaluation/nedc_scoring/output
+python evaluation/nedc_eeg_eval/nedc_scoring/convert_predictions.py \
+  --checkpoint experiments/eval/baseline/checkpoint.pkl \
+  --outdir evaluation/nedc_eeg_eval/nedc_scoring/output
 
 # Environment for NEDC tools (in-repo)
 export NEDC_NFC=$(pwd)/evaluation/nedc_eeg_eval/v6.0.0
@@ -118,9 +118,9 @@ export PYTHONPATH=$NEDC_NFC/lib:$PYTHONPATH
 
 # Run NEDC scoring (lists contain absolute paths)
 $NEDC_NFC/bin/nedc_eeg_eval \
-  evaluation/nedc_scoring/output/lists/ref.list \
-  evaluation/nedc_scoring/output/lists/hyp.list \
-  -o evaluation/nedc_scoring/output/results
+  evaluation/nedc_eeg_eval/nedc_scoring/output/lists/ref.list \
+  evaluation/nedc_eeg_eval/nedc_scoring/output/lists/hyp.list \
+  -o evaluation/nedc_eeg_eval/nedc_scoring/output/results
 ```
 
 ### Option 2: Extract Key Metrics (Simpler)
@@ -133,7 +133,7 @@ def calculate_metrics(predictions, labels):
 
 ## Current Status
 - TUSZ evaluation produces per-sample probabilities and event labels
-- Predictions are stored in `evaluation/tusz/checkpoint.pkl`
+- Predictions are stored in `experiments/*/checkpoint.pkl`
 - Full NEDC integration is the chosen path (see NEDC_INTEGRATION_PLAN.md)
 
 ## Key Insight
