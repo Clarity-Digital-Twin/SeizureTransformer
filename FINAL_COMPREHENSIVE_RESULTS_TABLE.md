@@ -95,7 +95,7 @@ We tuned parameters using NEDC OVERLAP (the common practice for TUSZ) and evalua
 ---
 
 ## Data Sources
-- Evaluation set: TUSZ v1.5.4 dev set (1832 files)
-- Model: SeizureTransformer wu_2025/model.pth
+- Evaluation split: TUSZ v2.0.3 eval (865 files)
+- Model: SeizureTransformer (authors' pretrained weights)
 - Location: `/experiments/eval/baseline/CLEAN_NO_MERGE/`
-- Generated: September 15, 2024
+- Generated: September 15, 2025

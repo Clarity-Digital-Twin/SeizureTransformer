@@ -57,18 +57,12 @@ Wu et al.'s transformer-based seizure detector won the 2025 EpilepsyBench Challe
 
 TUSZ annotations were created by Temple University following specific clinical guidelines. NEDC scoring was designed by the same team to evaluate these annotations correctly. Using alternative scoring methods (like SzCORE) on TUSZ is like grading a Harvard exam with MIT's answer key - it may produce numbers, but they don't reflect the intended evaluation criteria.
 
-### Clinical Operating Points
+### Authoritative Results
 
-| Target FA/24h | Threshold | Kernel | MinDur | MergeGap | Sensitivity (TAES) | Actual FA/24h | Status |
-|---------------|-----------|--------|--------|----------|-------------------|---------------|--------|
-| Default (Paper) | 0.800 | 5 | 2.0s | 0s | 24.71% | 134.01 | ✅ Verified |
-| **10** | **0.950** | **5** | **2.0s** | **5.0s** | **13.67%** | **9.97** | ✅ Achieved |
-| **2.5** | **0.950** | **11** | **8.0s** | **10.0s** | **8.19%** | **2.48** | ✅ Achieved |
-| **1** | 0.950 | 11 | 8.0s | 10.0s | 8.19% | 2.48 | ❌ Cannot achieve <2.48 |
+- See `FINAL_COMPREHENSIVE_RESULTS_TABLE.md` for the single source of truth: 4 scoring methods × 3 operating points (Default, 10 FA, 2.5 FA), all without merge_gap.
+- See `PARAMETER_TUNING_METHODOLOGY.md` for why we tuned on NEDC OVERLAP and how to interpret differences across scoring methods.
 
-**Note**: TAES (Time-Aligned Event Scoring) shown above. OVERLAP scoring: Default achieves 45.63% sensitivity @ 100.06 FA/24h. Parameter sweep of 108+ configurations completed on dev set, validated on eval set. See `TUNED_PARAMETERS_FINAL.md` for complete results including all 4 scoring metrics.
-
-We record the exact FA/24h achieved for tuned points (e.g., “~10 FA (10.2)”). See `docs/evaluation/TUNING_RESULTS_TRACKER.md` and `experiments/eval/baseline/COMPREHENSIVE_SWEEP_README.md`.
+Note: Earlier drafts included merge_gap-based operating points. Those are deprecated and archived. All current numbers are computed with merge_gap disabled.
 
 ### Key Metrics (NEDC v6.0.0)
 - **Scoring**: NEDC v6.0.0 TAES/OVERLAP (Temple's official metrics for TUSZ)
