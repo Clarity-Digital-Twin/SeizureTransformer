@@ -1,11 +1,28 @@
 # FINAL COMPREHENSIVE RESULTS TABLE - NO MERGE GAP
 **All results WITHOUT merge_gap parameter (honest, real numbers)**
 
-## Scoring Methods Hierarchy
+## Understanding the Scoring Methods
+
+Each scoring method serves different purposes in seizure detection evaluation:
+
 1. **NEDC Temple TAES** - Most strict (Time-Aligned Event Scoring)
-2. **NEDC Temple OVERLAP** - Clinical standard (Any-overlap scoring)
-3. **Python OVERLAP** - Our implementation (matches NEDC OVERLAP)
-4. **SzCORE** - EpilepsyBench standard (most lenient)
+   - Proposed by Picone et al. (2021) as improved metric
+   - Weights detections by percentage of overlap
+   - Provides most rigorous temporal accuracy assessment
+
+2. **NEDC Temple OVERLAP** - Common practice (Any-overlap scoring)
+   - Widely used in TUSZ evaluations
+   - Any temporal overlap counts as detection
+   - **Our tuning target** - balanced for practical use
+
+3. **Python OVERLAP** - Our implementation
+   - Validates parity with Temple's NEDC binary
+   - Identical results to NEDC OVERLAP
+
+4. **SzCORE** - EpilepsyBench standard (most permissive)
+   - Includes 30s pre-ictal and 60s post-ictal tolerances
+   - Merges events <90s apart
+   - Designed for clinical applications where early warning is valuable
 
 ---
 
@@ -55,18 +72,25 @@
 
 ## KEY FINDINGS
 
-### Clinical Reality (NEDC Standard)
-- **Cannot meet 10 FA/24h target** - Best achievable: 39.50 FA @ 23.45% sensitivity
-- **Cannot meet 2.5 FA/24h target** - Best achievable: 8.09 FA @ 11.51% sensitivity
-- **Cannot meet 1 FA/24h target** - Would require <5% sensitivity (unusable)
+### Performance Under Different Standards
+- **NEDC Standard (widely used):** Cannot meet clinical FA targets
+  - 10 FA/24h target: Achieves 39.50 FA @ 23.45% sensitivity
+  - 2.5 FA/24h target: Achieves 8.09 FA @ 11.51% sensitivity
+  - 1 FA/24h target: Would require <5% sensitivity (clinically unusable)
 
-### SzCORE vs NEDC Discrepancy
-- SzCORE is ~10x more lenient than NEDC
-- Explains why EpilepsyBench reports good results
-- NOT comparable to clinical NEDC standards
+- **SzCORE Standard (EpilepsyBench):** Meets all targets
+  - Different evaluation philosophy with pre/post-ictal tolerances
+  - ~10x more permissive due to event merging and tolerances
+  - Designed for practical clinical applications
 
-### Bottom Line
-**SeizureTransformer cannot meet clinical false alarm targets with standard NEDC scoring.**
+### Important Context
+- Different scoring methods serve different clinical and research needs
+- SzCORE's permissiveness reflects real-world clinical priorities (early warning)
+- NEDC's stricter scoring reflects research priorities (temporal precision)
+- **Neither approach is "wrong" - they measure different aspects of performance**
+
+### Methodology Note
+We tuned parameters using NEDC OVERLAP (the common practice for TUSZ) and evaluated across all metrics for transparency. This reveals how scoring methodology significantly impacts reported performance.
 
 ---
 
