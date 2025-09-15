@@ -32,17 +32,17 @@
 ### TAES Metrics (Event-based)
 | Metric | Value |
 |--------|-------|
-| Sensitivity (Recall) | 24.15% |
-| Precision (PPV) | 43.98% |
-| F1 Score | 31.19% |
-| False Alarms per 24h | 137.5 |
+| Sensitivity (Recall) | 24.71% |
+| Precision (PPV) | 59.57% |
+| F1 Score | 0.3493 |
+| False Alarms per 24h | 60.83 |
 
 ### Sample-based Metrics
 | Metric | Value |
 |--------|-------|
 | AUROC | 0.9021 |
-| Sensitivity @ 0.8 threshold | 24.15% |
-| Specificity @ 0.8 threshold | 88.03% |
+| Sensitivity @ 0.8 threshold | 24.71% |
+| Specificity @ 0.8 threshold | 93.09% |
 
 ## Reproducibility
 
@@ -84,24 +84,17 @@ python evaluation/tusz/run_tusz_eval.py \
     --output_dir evaluation/tusz \
     --device cuda
 
-# 4. Convert to NEDC format
-python evaluation/nedc_scoring/convert_predictions.py
-
-# 5. Run NEDC scoring
-cd evaluation/nedc_scoring
-export NEDC_NFC=$(pwd)/../nedc_eeg_eval/v6.0.0
-export PYTHONPATH=$NEDC_NFC/lib:$PYTHONPATH
-python3 $NEDC_NFC/bin/nedc_eeg_eval \
-    -p $NEDC_NFC/docs/params/nedc_eeg_eval_params_v00.toml \
-    output/lists/ref.list output/lists/hyp.list \
-    -o output/results
+# 4-5. Convert + run NEDC scoring
+python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
+  --checkpoint experiments/eval/baseline/checkpoint.pkl \
+  --outdir experiments/eval/baseline/nedc_results
 ```
 
 ## Key Findings
 
 1. **High AUROC (0.9021)** indicates good discrimination ability at the sample level
 2. **Low event-based sensitivity (24.15%)** suggests difficulty with seizure boundaries
-3. **High false alarm rate (137.5/day)** far exceeds clinical acceptability (< 10/day)
+3. **High false alarm rate (60.83/day)** far exceeds clinical acceptability (< 10/day)
 4. **Threshold optimization needed**: Current 0.8 threshold may be suboptimal for TUSZ
 
 ## Notes for Benchmark

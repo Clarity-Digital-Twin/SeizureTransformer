@@ -14,7 +14,7 @@
 - Any hyp with ANY overlap = not a false alarm
 
 ### 2. Updated Pipeline
-- ✅ `evaluation/nedc_scoring/run_nedc.py` now imports `OverlapScorer` instead of `TAESScorer`
+- ✅ `evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py` now imports `OverlapScorer` instead of `TAESScorer`
 - ✅ Changed metric accumulation from TP/FP/FN to hits/misses/false_alarms
 
 ### 3. Verified with Edge Cases
@@ -26,7 +26,7 @@
 
 ### Active/Correct Files
 - `seizure_evaluation/taes/overlap_scorer.py` - CORRECT OVERLAP implementation
-- `evaluation/nedc_scoring/run_nedc.py` - FIXED to use OverlapScorer
+- `evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py` - FIXED to use OverlapScorer
 
 ### Legacy/Redundant Files (Still Exist but Not Used)
 - `seizure_evaluation/taes/scorer.py` - OLD greedy 1-to-1 matcher (NO LONGER IMPORTED)

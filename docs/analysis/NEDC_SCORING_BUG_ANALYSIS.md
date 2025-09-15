@@ -1,4 +1,5 @@
 # 🔍 NEDC SCORING BUG ANALYSIS
+Status: Archived — superseded by PARAMETER_TUNING_ANALYSIS.md and OPERATIONAL_TUNING_PLAN.md. Retained for historical context.
 
 ## Executive Summary
 
@@ -38,7 +39,7 @@ With the OverlapScorer:
 
 ### 3. The Metrics Extraction Bug
 
-The original issue was in `evaluation/nedc_scoring/run_nedc.py::extract_and_save_metrics()` (extracting the first “Sensitivity” from DP ALIGNMENT). This has been fixed to target the OVERLAP section explicitly.
+The original issue was in `evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py::extract_and_save_metrics()` (extracting the first “Sensitivity” from DP ALIGNMENT). This has been fixed to target the OVERLAP section explicitly.
 
 ## Which Scoring Method Should We Use?
 
@@ -75,7 +76,7 @@ The original issue was in `evaluation/nedc_scoring/run_nedc.py::extract_and_save
 1. **Native scorer**: `seizure_evaluation/taes/overlap_scorer.py`
    - Implements any-overlap + background complements (SEIZ + BCKG totals)
 
-2. **Metrics extraction**: `evaluation/nedc_scoring/run_nedc.py::extract_and_save_metrics()`
+2. **Metrics extraction**: `evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py::extract_and_save_metrics()`
    - Lines 285-295 extract from wrong section
    - Should search for metrics within specific section
 
