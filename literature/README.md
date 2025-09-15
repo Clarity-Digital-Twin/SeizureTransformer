@@ -44,7 +44,7 @@ literature/
 ### ✅ Completed
 - [x] Model loading (`wu_2025/` integration)
 - [x] TUSZ evaluation pipeline (`evaluation/tusz/`)
-- [x] NEDC scoring integration (`evaluation/nedc_scoring/`)
+- [x] NEDC scoring integration (`evaluation/nedc_eeg_eval/nedc_scoring/`)
 - [x] Operating point tuning framework
 - [x] Experiment tracking system
 - [x] Quality control pipeline (100% green baseline)

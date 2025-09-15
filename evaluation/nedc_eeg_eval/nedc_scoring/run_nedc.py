@@ -485,15 +485,15 @@ def main():
     parser = argparse.ArgumentParser(
         description="Run NEDC evaluation pipeline for SeizureTransformer",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
+    epilog="""
 Examples:
   # Run full pipeline with explicit paths
-  python evaluation/nedc_scoring/run_nedc.py \
+  python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
     --checkpoint experiments/eval/baseline/checkpoint.pkl \
     --outdir experiments/eval/baseline/nedc_results
 
   # Force overwrite existing output
-  python evaluation/nedc_scoring/run_nedc.py --force ...
+  python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py --force ...
         """,
     )
 

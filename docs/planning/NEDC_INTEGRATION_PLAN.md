@@ -86,12 +86,12 @@ TERM,42.2786,81.7760,seiz,1.0000
 
 ```
 evaluation/
-├── nedc_eeg_eval/v6.0.0/   # NEDC binary (DO NOT MODIFY)
+├── nedc_eeg_eval/v6.0.0/        # NEDC binary (DO NOT MODIFY)
 │   ├── bin/
-│   │   └── nedc_eeg_eval    # The scorer executable
+│   │   └── nedc_eeg_eval         # The scorer executable
 │   └── lib/
 │       └── python modules
-└── nedc_scoring/            # Our integration (we own this)
+└── nedc_eeg_eval/nedc_scoring/   # Our integration (we own this)
     ├── convert_predictions.py
     ├── post_processing.py
     ├── run_nedc.py
@@ -158,7 +158,7 @@ python test_pipeline.py
 ## Key Commands
 
 ```bash
-# Full pipeline (Makefile writes to evaluation/nedc_scoring/output by default)
+# Full pipeline (Makefile writes to evaluation/nedc_eeg_eval/nedc_scoring/output by default)
 make -C evaluation/nedc_eeg_eval/nedc_scoring all CHECKPOINT=path/to/checkpoint.pkl
 
 # Just conversion

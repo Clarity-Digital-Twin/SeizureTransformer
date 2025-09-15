@@ -204,7 +204,7 @@ binary_output = remove_short_events(binary_output, min_length=2.0, fs=256)
 
 ## 6. OUTPUT CONVERSION STAGE
 
-### Location: `evaluation/nedc_scoring/post_processing.py:11-54`
+### Location: `evaluation/nedc_eeg_eval/nedc_scoring/post_processing.py:11-54`
 
 #### NEDC Post-Processing Pipeline:
 ```python
@@ -240,7 +240,7 @@ def binary_mask_to_events(binary_mask: np.ndarray, fs: int = 256) -> list:
 
 ## 7. NEDC CSV_bi FORMAT STAGE
 
-### Location: `evaluation/nedc_scoring/convert_predictions.py:14-36`
+### Location: `evaluation/nedc_eeg_eval/nedc_scoring/convert_predictions.py:14-36`
 
 #### NEDC File Generation:
 ```python
@@ -265,14 +265,14 @@ def write_nedc_csv(events, file_path, file_id, duration_sec):
 
 ## 8. NEDC EVALUATION STAGE
 
-### Location: `evaluation/nedc_scoring/run_nedc.py`
+### Location: `evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py`
 
 #### NEDC v6.0.0 Binary Execution:
 ```bash
 PYTHONPATH=$NEDC_NFC/lib:$PYTHONPATH python3 $NEDC_NFC/bin/nedc_eeg_eval \
-    evaluation/nedc_scoring/output/lists/ref.list \
-    evaluation/nedc_scoring/output/lists/hyp.list \
-    -o evaluation/nedc_scoring/output/results
+    evaluation/nedc_eeg_eval/nedc_scoring/output/lists/ref.list \
+    evaluation/nedc_eeg_eval/nedc_scoring/output/lists/hyp.list \
+    -o evaluation/nedc_eeg_eval/nedc_scoring/output/results
 ```
 
 **VERIFICATION POINT 16**:

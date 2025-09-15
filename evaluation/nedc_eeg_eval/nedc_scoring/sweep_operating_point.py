@@ -4,9 +4,9 @@ Sweep operating point (threshold/post-processing) on a dev checkpoint,
 convert to NEDC format, run official scorer, and summarize TAES metrics.
 
 Usage:
-  python evaluation/nedc_scoring/sweep_operating_point.py \
-    --checkpoint evaluation/tusz_dev/checkpoint.pkl \
-    --outdir_base evaluation/nedc_scoring/sweeps/dev \
+  python evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py \
+    --checkpoint experiments/dev/baseline/checkpoint.pkl \
+    --outdir_base experiments/dev/baseline/sweeps \
     --thresholds 0.5,0.6,0.7,0.8,0.9 \
     --kernels 5,11 \
     --min_durations 2,4 \

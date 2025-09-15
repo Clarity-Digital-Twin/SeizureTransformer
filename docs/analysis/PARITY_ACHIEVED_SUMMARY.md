@@ -38,7 +38,7 @@ We achieved **100% EXACT PARITY** between Temple NEDC OVERLAP and our Native OVE
 ## Architecture is Clean
 
 ```
-evaluation/nedc_scoring/
+evaluation/nedc_eeg_eval/nedc_scoring/
 ├── run_nedc.py              # Orchestrator with --backend native-overlap
 ├── convert_predictions.py   # NEDC format converter
 └── ...
@@ -55,7 +55,7 @@ tests/integration/
 
 ```bash
 # Run native OVERLAP scorer (matches Temple exactly)
-python evaluation/nedc_scoring/run_nedc.py \
+python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
     --outdir results_dir \
     --backend native-overlap \
     --score-only

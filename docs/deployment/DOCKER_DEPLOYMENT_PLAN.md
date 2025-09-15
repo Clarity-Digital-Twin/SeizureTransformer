@@ -169,7 +169,7 @@ services:
     depends_on:
       seizure-transformer:
         condition: service_healthy
-    command: ["evaluation.nedc_scoring.run_nedc",
+    command: ["evaluation.nedc_eeg_eval.nedc_scoring.run_nedc",
               "--checkpoint", "/experiments/eval/baseline/checkpoint.pkl",
               "--outdir", "/experiments/eval/baseline/nedc_results",
               "--backend", "native-taes"]
