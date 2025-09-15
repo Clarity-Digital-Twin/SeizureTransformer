@@ -20,13 +20,15 @@
 | SzCORE | 19.71 | 100.00 | 91.07 | 0.3242 | 0.75 | - |
 
 ### Table A2: Sensitivity at Fixed False Alarm Rates
-| FA/24h Threshold | NEDC OVERLAP Sens. (%) | SzCORE Sens. (%) | Parameters Used |
-|---|---|---|---|
-| 30.0 | 45.63 | 54.80 | θ=0.80, k=5, d=2.0 |
-| 10.0 | 33.90 | 48.61 | θ=0.88, k=5, d=3.0 |
-| 5.0 | 24.73 | 43.28 | θ=0.92, k=5, d=4.0 |
-| 2.5 | 14.50 | 35.18 | θ=0.95, k=5, d=5.0 |
-| 1.0 | 8.10 | 24.31 | θ=0.98, k=7, d=6.0 |
+| FA/24h Threshold | NEDC OVERLAP Sens. (%) | SzCORE Sens. (%) |
+|---|---|---|
+| 30.0 | 45.63 | 54.80 |
+| 10.0 | 33.90 | 48.61 |
+| 5.0 | 24.73 | 43.28 |
+| 2.5 | 14.50 | 35.18 |
+| 1.0 | 8.10 | 24.31 |
+
+Note: Each scorer is tuned independently to meet the specified FA/24h threshold; operating parameters generally differ by scorer. See `docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md` for parameterizations.
 
 ## B. Parameter Sweep Analysis
 
