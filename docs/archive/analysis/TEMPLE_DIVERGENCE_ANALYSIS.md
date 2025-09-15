@@ -1,4 +1,7 @@
-# Temple NEDC vs Native Scorer Divergence Analysis (Corrected)
+# Temple NEDC vs Native Scorer Divergence Analysis (Archived)
+Note: Archived for historical context. Canonical summaries are:
+- docs/analysis/PARITY_ACHIEVED_SUMMARY.md (final parity results)
+- docs/technical/TECHNICAL_DEBT_NATIVE_SCORER.md (current native-overlap status)
 
 ## Executive Summary
 

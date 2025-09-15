@@ -1,7 +1,9 @@
-# NEDC Evaluation Tool Understanding
+# NEDC Evaluation Tool Understanding (Archived)
 
 ## What is NEDC?
 NEDC (Neural Engineering Data Consortium) is Temple University's standardized evaluation system for EEG event detection, particularly seizure detection. Version 6.0.0 is their latest release.
+
+Note: This overview is archived in favor of the concise canonical overview at `docs/evaluation/NEDC_METRICS_OVERVIEW.md`.
 
 ## What Does NEDC Evaluate?
 NEDC evaluates **how well a seizure detection model performs** by comparing:

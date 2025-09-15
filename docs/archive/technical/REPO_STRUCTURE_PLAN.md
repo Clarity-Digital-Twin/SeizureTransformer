@@ -1,4 +1,4 @@
-# Repository Structure & Git Flow Diagram
+# Repository Structure & Git Flow Diagram (Archived)
 
 ## Current Git Relationships:
 ```
@@ -28,6 +28,8 @@
 └─────────────────────────────────────────────────────────────────────┘
 
 ## PROPOSED STRUCTURE (Matching Upstream Expectations):
+
+Note: This repo structure and Git flow plan is archived for historical context. Current evaluation/integration work is tracked in `docs/planning/`.
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │                     ORIGINAL PUBLIC REPO                            │
