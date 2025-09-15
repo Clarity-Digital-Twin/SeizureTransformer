@@ -1,0 +1,30 @@
+    0: /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/nedc_scoring/test_output/ref/test_file_000_s001_t000.csv_bi
+       /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/nedc_scoring/test_output/hyp/test_file_000_s001_t000.csv_bi
+  Ref:  bckg  seiz  bckg  seiz  bckg 
+  Hyp:  bckg  seiz  bckg  seiz  bckg 
+        (Hit: 5  Sub: 0  Ins: 0  Del: 0  Total: 0)
+
+    1: /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/nedc_scoring/test_output/ref/test_file_001_s001_t000.csv_bi
+       /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/nedc_scoring/test_output/hyp/test_file_001_s001_t000.csv_bi
+  Ref:  bckg 
+  Hyp:  bckg 
+        (Hit: 1  Sub: 0  Ins: 0  Del: 0  Total: 0)
+
+    2: /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/nedc_scoring/test_output/ref/test_file_002_s001_t000.csv_bi
+       /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/nedc_scoring/test_output/hyp/test_file_002_s001_t000.csv_bi
+  Ref:  bckg  seiz  bckg  seiz  bckg 
+  Hyp:  bckg  seiz  bckg  seiz  bckg 
+        (Hit: 5  Sub: 0  Ins: 0  Del: 0  Total: 0)
+
+    3: /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/nedc_scoring/test_output/ref/test_file_003_s001_t000.csv_bi
+       /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/nedc_scoring/test_output/hyp/test_file_003_s001_t000.csv_bi
+  Ref:  bckg 
+  Hyp:  bckg 
+        (Hit: 1  Sub: 0  Ins: 0  Del: 0  Total: 0)
+
+    4: /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/nedc_scoring/test_output/ref/test_file_004_s001_t000.csv_bi
+       /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/nedc_scoring/test_output/hyp/test_file_004_s001_t000.csv_bi
+  Ref:  bckg  seiz  bckg  seiz  bckg 
+  Hyp:  bckg  seiz  bckg  seiz  bckg 
+        (Hit: 5  Sub: 0  Ins: 0  Del: 0  Total: 0)
+

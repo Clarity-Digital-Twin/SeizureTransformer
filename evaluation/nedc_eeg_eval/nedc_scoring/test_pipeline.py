@@ -5,6 +5,7 @@ Validates that all components work correctly before full run.
 """
 
 import pickle
+import os
 import subprocess
 import sys
 from datetime import datetime
@@ -95,8 +96,14 @@ def validate_conversion(test_checkpoint, output_dir):
         str(output_dir),
     ]
 
+    # Ensure repo root is importable inside the subprocess
+    base_dir = Path(__file__).resolve().parent
+    repo_root = base_dir.parents[2]
+    env = os.environ.copy()
+    env["PYTHONPATH"] = f"{repo_root}:{env.get('PYTHONPATH', '')}"
+
     print(f"Running: {' '.join(cmd)}")
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    result = subprocess.run(cmd, capture_output=True, text=True, env=env)
 
     if result.returncode != 0:
         print("FAILED: Conversion script error")
@@ -178,10 +185,9 @@ def validate_nedc_binary():
     print("TESTING: NEDC binary availability")
     print("=" * 60)
 
-    # Check environment setup
+    # Check environment setup (relative to this script's directory)
     script_dir = Path(__file__).resolve().parent
-    repo_root = script_dir.parent.parent
-    nedc_root = repo_root / "evaluation" / "nedc_eeg_eval" / "v6.0.0"
+    nedc_root = script_dir.parent / "v6.0.0"
     nedc_binary = nedc_root / "bin" / "nedc_eeg_eval"
 
     if not nedc_root.exists():

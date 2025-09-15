@@ -1,0 +1,6 @@
+{
+  "threshold": 0.8,
+  "kernel": 5,
+  "min_duration_sec": 2.0,
+  "merge_gap_sec": 0.0
+}

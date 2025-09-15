@@ -137,7 +137,8 @@
       "Bash(if [ -f \"results_default_native_taes/metrics.json\" ])",
       "Bash(zip:*)",
       "Bash(timeout 120 python:*)",
-      "Bash(./evaluation/nedc_eeg_eval/v6.0.0/bin/nedc_eeg_eval:*)"
+      "Bash(./evaluation/nedc_eeg_eval/v6.0.0/bin/nedc_eeg_eval:*)",
+      "Bash(PYTHONPATH=./lib:$PYTHONPATH python3 bin/nedc_eeg_eval --help)"
     ],
     "deny": [],
     "ask": []

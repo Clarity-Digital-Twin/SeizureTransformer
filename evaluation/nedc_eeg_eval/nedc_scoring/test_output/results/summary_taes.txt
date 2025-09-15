@@ -1,0 +1,30 @@
+    0: /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/nedc_scoring/test_output/ref/test_file_000_s001_t000.csv_bi
+       /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/nedc_scoring/test_output/hyp/test_file_000_s001_t000.csv_bi
+  Ref: bckg seiz bckg seiz bckg
+  Hyp: 
+       (Hit: 5.0000  Miss: 0.0000  False Alarms: 0.0001  Total: 0.0001)
+
+    1: /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/nedc_scoring/test_output/ref/test_file_001_s001_t000.csv_bi
+       /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/nedc_scoring/test_output/hyp/test_file_001_s001_t000.csv_bi
+  Ref: bckg
+  Hyp: 
+       (Hit: 1.0000  Miss: 0.0000  False Alarms: 0.0000  Total: 0.0000)
+
+    2: /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/nedc_scoring/test_output/ref/test_file_002_s001_t000.csv_bi
+       /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/nedc_scoring/test_output/hyp/test_file_002_s001_t000.csv_bi
+  Ref: bckg seiz bckg seiz bckg
+  Hyp: 
+       (Hit: 4.9999  Miss: 0.0001  False Alarms: 0.0003  Total: 0.0003)
+
+    3: /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/nedc_scoring/test_output/ref/test_file_003_s001_t000.csv_bi
+       /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/nedc_scoring/test_output/hyp/test_file_003_s001_t000.csv_bi
+  Ref: bckg
+  Hyp: 
+       (Hit: 1.0000  Miss: 0.0000  False Alarms: 0.0000  Total: 0.0000)
+
+    4: /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/nedc_scoring/test_output/ref/test_file_004_s001_t000.csv_bi
+       /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/nedc_scoring/test_output/hyp/test_file_004_s001_t000.csv_bi
+  Ref: bckg seiz bckg seiz bckg
+  Hyp: 
+       (Hit: 5.0000  Miss: 0.0000  False Alarms: 0.0000  Total: 0.0000)
+
