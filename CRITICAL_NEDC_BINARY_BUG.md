@@ -118,7 +118,7 @@ cmd = [str(nedc_binary), str(ref_list), str(hyp_list), "-o", str(results_dir)]
 
 **CHANGE TO**:
 ```python
-cmd = ["python3", str(nedc_binary), str(ref_list), str(hyp_list), "-o", str(results_dir)]
+cmd = [sys.executable, str(nedc_binary), str(ref_list), str(hyp_list), "-o", str(results_dir)]
 ```
 
 ### Fix 2: setup_nedc_environment() - Fix PYTHONPATH
@@ -149,8 +149,8 @@ if backend == "nedc-binary":
         print(f"Error: NEDC binary not found at {nedc_binary}")
         return 1
 
-    # FIX: Add python3 interpreter since nedc_eeg_eval is a Python script
-    cmd = ["python3", str(nedc_binary), str(ref_list), str(hyp_list), "-o", str(results_dir)]
+    # FIX: Use current Python interpreter since nedc_eeg_eval is a Python script
+    cmd = [sys.executable, str(nedc_binary), str(ref_list), str(hyp_list), "-o", str(results_dir)]
     #      ^^^^^^^^^ THIS IS THE FIX!
 
     print(f"Running: {' '.join(cmd)}")
@@ -197,7 +197,7 @@ python3 evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
    2. Path calculation was wrong (fixed)
    3. PYTHONPATH correct (lib/ not lib/python/)
 ✅ **Fix locations**:
-   - Line 162: Add "python3" to command
+   - Line 162: Use `sys.executable` in command
    - Line 26-31: Fix path calculation
    - Line 41: PYTHONPATH stays as lib/
 ✅ **Testing**: Ready to test with conversion+scoring
@@ -205,7 +205,7 @@ python3 evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
 
 ## All Fixes Applied ✅
 
-1. **Line 162**: Added `"python3"` to command
+1. **Line 162**: Added `sys.executable` to command
 2. **Line 26-31**: Fixed path calculation (nedc_eeg_eval_dir)
 3. **Line 41**: PYTHONPATH correctly points to lib/
 

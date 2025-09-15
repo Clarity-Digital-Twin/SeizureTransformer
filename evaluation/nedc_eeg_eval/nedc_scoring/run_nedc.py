@@ -161,8 +161,8 @@ def run_nedc_scorer(
             print(f"Error: NEDC binary not found at {nedc_binary}")
             return 1
 
-        # FIX: Add python3 interpreter since nedc_eeg_eval is a Python script not a binary
-        cmd = ["python3", str(nedc_binary), str(ref_list), str(hyp_list), "-o", str(results_dir)]
+        # Use current Python interpreter to run Temple's Python entrypoint
+        cmd = [sys.executable, str(nedc_binary), str(ref_list), str(hyp_list), "-o", str(results_dir)]
 
         print(f"Running: {' '.join(cmd)}")
         print(f"Results will be saved to: {results_dir}")
@@ -172,7 +172,13 @@ def run_nedc_scorer(
 
         if result.returncode != 0:
             print("Error running NEDC scorer:")
-            print(result.stderr)
+            # Surface both stderr and stdout for easier debugging
+            if result.stderr:
+                print("[stderr]")
+                print(result.stderr)
+            if result.stdout:
+                print("[stdout]")
+                print(result.stdout)
             return result.returncode
 
         print(result.stdout)
