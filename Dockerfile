@@ -19,7 +19,7 @@ COPY scripts/ scripts/
 RUN pip install --no-cache-dir .
 
 # Copy wu_2025 package (frozen upstream)
-COPY wu_2025/setup.py wu_2025/setup.cfg wu_2025/pyproject.toml wu_2025/
+COPY wu_2025/pyproject.toml wu_2025/
 COPY wu_2025/src wu_2025/src
 RUN pip install --no-cache-dir ./wu_2025
 
