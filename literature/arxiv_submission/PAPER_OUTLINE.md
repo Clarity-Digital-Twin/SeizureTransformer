@@ -42,7 +42,7 @@
 ### 2. Background
 #### 2.1 The TUSZ Dataset and NEDC Scoring
 - Temple University Hospital EEG Seizure Corpus
-- 3,050 hours training, 127.6 hours held-out eval
+- 3,050 hours training, 127.7 hours held-out eval
 - NEDC: Designed specifically for TUSZ annotations
 
 #### 2.2 The EpilepsyBench Challenge and SzCORE
@@ -64,7 +64,7 @@ SzCORE ← NEDC OVERLAP ← NEDC TAES
 - Scorers: NEDC v6.0.0 binaries + Python reimplementation
 
 #### 3.2 Parameter Tuning Protocol
-- Dev set: TUSZ dev (1,013 files)
+- Dev set: TUSZ dev (1,832 files)
 - Target: NEDC OVERLAP (balanced, widely used)
 - Grid search: threshold × kernel_size × min_duration
 
@@ -89,7 +89,7 @@ SzCORE ← NEDC OVERLAP ← NEDC TAES
 - NEDC TAES: 24.15% sens @ 137.53 FA/24h (Total False Alarm Rate)
 - NEDC OVERLAP: 45.63% sens @ 100.06 FA/24h
 - SzCORE: 52.35% sens @ 8.46 FA/24h
-- **Same predictions, 17× FA difference!**
+- **Same predictions, ≈16× FA difference!**
 
 ### 5. Discussion
 #### 5.1 Why This Matters

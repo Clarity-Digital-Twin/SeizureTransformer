@@ -13,6 +13,15 @@ This directory contains materials for our arXiv preprint revealing the 100-fold 
 - `FIGURES_PLAN.md` - Detailed figure specifications with code
 - `REFERENCES.md` - Complete bibliography with citation strategy
 
+### Single Source of Truth (SSOT)
+- `CORE_1_SCORING_METHODOLOGIES.md`
+- `CORE_2_SEIZURETRANSFORMER_MODEL.md`
+- `CORE_3_EPILEPSYBENCH_SZSCORE.md`
+- `CORE_4_NEDC_SOFTWARE.md`
+- `CORE_5_TUSZ_DATASET.md`
+
+All other docs and outlines must align to the facts and numbers in these five core documents (e.g., 865 files, 469 seizures, 127.7 hours; NEDC OVERLAP 100.06 FA/24h; SzCORE 8.46 FA/24h; ≈12× difference OVERLAP vs SzCORE; ≈16× TAES vs SzCORE).
+
 ### Narrative Elements
 - **The Hook**: 1 FA/24h claimed → 100 FA/24h reality (100× gap)
 - **The Discovery**: Scoring alone causes 12× difference
@@ -29,7 +38,7 @@ This directory contains materials for our arXiv preprint revealing the 100-fold 
 ### Dataset
 - **865 files** - TUSZ v2.0.3 eval set
 - **469 seizures** - Ground truth events
-- **127.6 hours** - Total recording time
+- **127.7 hours** - Total recording time
 - **100%** - Files successfully processed (865/865; one header repaired on a temporary copy)
 
 ### Operating Points

@@ -16,7 +16,7 @@ We contribute: (1) the first reproducible NEDC v6.0.0 evaluation pipeline for TU
 
 We present the first clinical evaluation of SeizureTransformer, the 2025 EpilepsyBench winner, using Temple University's NEDC v6.0.0 scoring standard on the TUSZ v2.0.3 dataset. Our evaluation reveals a 100-fold gap between reported benchmark performance (1 FA/24h on Dianalund) and clinical reality (100.06 FA/24h on TUSZ).
 
-Using the authors' pretrained model, we evaluated 865 EEG files containing 469 seizures from TUSZ's held-out test set. We implemented a dual-track evaluation pipeline using both Temple's official NEDC binaries and a Python reimplementation, achieving <0.1% metric variance. Our systematic parameter tuning on the development set (1,013 files) optimized threshold, morphological kernel size, and minimum event duration.
+Using the authors' pretrained model, we evaluated 865 EEG files containing 469 seizures from TUSZ's held-out test set. We implemented a dual-track evaluation pipeline using both Temple's official NEDC binaries and a Python reimplementation, achieving <0.1% metric variance. Our systematic parameter tuning on the development set (1,832 files) optimized threshold, morphological kernel size, and minimum event duration.
 
 The evaluation reveals that scoring methodology alone creates a 12-fold performance difference. The identical predictions yield: (1) 100.06 FA/24h with NEDC OVERLAP, the clinical standard for TUSZ, (2) 137.53 FA/24h with NEDC TAES (Total False Alarm Rate), the proposed stricter metric, and (3) 8.46 FA/24h with SzCORE, EpilepsyBench's scoring method that includes 30s pre-ictal and 60s post-ictal tolerances.
 
@@ -30,7 +30,7 @@ We provide an open-source evaluation framework including containerized deploymen
 
 SeizureTransformer achieved state-of-the-art performance on the 2025 EpilepsyBench Challenge with 1 false alarm per 24 hours. However, models trained on the Temple University Hospital Seizure (TUSZ) dataset have never been evaluated using TUSZ's clinical scoring standard. We present the first such evaluation, revealing a 100-fold gap between benchmark claims and clinical reality.
 
-We evaluated SeizureTransformer on TUSZ v2.0.3's held-out evaluation set (865 files, 469 seizures, 127.6 hours) using Temple's NEDC v6.0.0, the clinical gold standard designed specifically for TUSZ annotations. Using the authors' pretrained weights, we systematically compared four scoring methodologies on identical predictions.
+We evaluated SeizureTransformer on TUSZ v2.0.3's held-out evaluation set (865 files, 469 seizures, 127.7 hours) using Temple's NEDC v6.0.0, the clinical gold standard designed specifically for TUSZ annotations. Using the authors' pretrained weights, we systematically compared four scoring methodologies on identical predictions.
 
 Our results reveal that scoring methodology alone creates dramatic performance differences. The same model outputs yield 100.06 false alarms per 24 hours with NEDC's clinical OVERLAP scoring, but only 8.46 FA/24h with SzCORE—a 12-fold difference. This gap arises from SzCORE's 30-second pre-ictal and 60-second post-ictal tolerances plus event merging, designed for clinical early warning rather than temporal precision.
 

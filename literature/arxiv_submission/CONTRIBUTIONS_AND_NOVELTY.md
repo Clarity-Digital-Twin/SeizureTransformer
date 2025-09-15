@@ -39,7 +39,7 @@
 
 ### Evaluation Methodology
 1. **Systematic Parameter Tuning**
-   - Grid search on dev set (1,013 files)
+   - Grid search on dev set (1,832 files)
    - Target: NEDC OVERLAP (balanced)
    - 3 clinical operating points
 
@@ -82,7 +82,7 @@
 **Implication**: Must report clinical-relevant metrics
 
 ### 3. The Scoring Spectrum
-**Finding**: 17× spread from strictest to most permissive
+**Finding**: ≈16× spread from strictest to most permissive
 **Insight**: No "correct" scoring - depends on use case
 **Implication**: Must report multiple methods transparently
 

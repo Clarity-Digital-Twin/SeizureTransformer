@@ -214,7 +214,7 @@ Training:
 - Plus Siena data (128 hours)
 
 Our Evaluation:
-- TUSZ v2.0.3 eval (127.6 hours)
+- TUSZ v2.0.3 eval (127.7 hours)
 - Completely unseen during training
 - Patient-disjoint from train
 ```
@@ -327,9 +327,9 @@ Gap: 100× higher than expected
 
 ```
 TUSZ Dataset Structure
-├── Train (1,557 files)
+├── Train (4,667 files)
 │   └── SeizureTransformer trained here ✓
-├── Dev (1,013 files)
+├── Dev (1,832 files)
 │   └── Hyperparameters tuned here ✓
 └── Eval (865 files)
     └── Never tested until now ✗ → Our contribution ✓

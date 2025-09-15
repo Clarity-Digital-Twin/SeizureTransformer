@@ -74,7 +74,7 @@ Synthesis: Valid evaluation possible but never done
 
 ### Connection 4: Scoring Impact
 ```
-From CORE 1: "Same predictions → 17× FA spread"
+From CORE 1: "Same predictions → ≈16× FA spread"
 From CORE 3: "SzCORE designed for clinical utility"
 From CORE 4: "NEDC designed for research precision"
 Synthesis: Different philosophies, massive impact
@@ -111,7 +111,7 @@ Our Finding (TUSZ + NEDC TAES):      137.53 FA/24h (Total False Alarm Rate)
 ### The Gaps
 - **100×**: Dianalund claim vs TUSZ reality
 - **12×**: SzCORE vs NEDC on same data
-- **17×**: Most permissive vs most strict
+- **≈16×**: Most permissive vs most strict
 
 ---
 

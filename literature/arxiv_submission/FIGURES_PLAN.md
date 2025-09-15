@@ -18,7 +18,7 @@ False Alarms per 24 Hours (log scale)
          0.1    1     10    100   1000
 ```
 
-**Caption**: The same SeizureTransformer predictions evaluated with four scoring methods on TUSZ v2.0.3 reveal a 17× spread in false alarm rates. The model's 1 FA/24h achievement was on Dianalund dataset, not TUSZ.
+**Caption**: The same SeizureTransformer predictions evaluated with four scoring methods on TUSZ v2.0.3 reveal an ≈16× spread in false alarm rates. The model's 1 FA/24h achievement was on Dianalund dataset, not TUSZ.
 
 ### Figure 2: Scoring Method Comparison (EXPLAINER)
 **Type**: Timeline visualization showing how each method counts detections
