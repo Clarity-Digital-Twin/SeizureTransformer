@@ -105,7 +105,7 @@ Synthesis: Different philosophies, massive impact
 Claimed (Dianalund + SzCORE):        1 FA/24h
 Our Finding (TUSZ + SzCORE):         8.46 FA/24h
 Our Finding (TUSZ + NEDC):           100.06 FA/24h
-Our Finding (TUSZ + NEDC TAES):      144.28 FA/24h
+Our Finding (TUSZ + NEDC TAES):      137.53 FA/24h (Total False Alarm Rate)
 ```
 
 ### The Gaps

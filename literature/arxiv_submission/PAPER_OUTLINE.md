@@ -86,7 +86,7 @@ SzCORE ← NEDC OVERLAP ← NEDC TAES
 - 1 FA/24h target: Would require <5% sensitivity
 
 #### 4.3 The Scoring Impact
-- NEDC TAES: 24.15% sens @ 144.28 FA/24h
+- NEDC TAES: 24.15% sens @ 137.53 FA/24h (Total False Alarm Rate)
 - NEDC OVERLAP: 45.63% sens @ 100.06 FA/24h
 - SzCORE: 52.35% sens @ 8.46 FA/24h
 - **Same predictions, 17× FA difference!**

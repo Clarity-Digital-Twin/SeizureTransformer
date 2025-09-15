@@ -32,7 +32,7 @@ Each scoring method serves different purposes in seizure detection evaluation:
 
 | Scoring Method | Sensitivity (%) | False Alarms/24h |
 |---|---:|---:|
-| **NEDC Temple TAES** | 24.15 | 144.28 |
+| **NEDC Temple TAES** | 24.15 | 137.53 |
 | **NEDC Temple OVERLAP** | 45.63 | 100.06 |
 | **Python OVERLAP** | 45.63 | 100.06 |
 | **SzCORE** | 52.35 | 8.46 |
@@ -88,6 +88,9 @@ Each scoring method serves different purposes in seizure detection evaluation:
 - SzCORE's permissiveness reflects real-world clinical priorities (early warning)
 - NEDC's stricter scoring reflects research priorities (temporal precision)
 - **Neither approach is "wrong" - they measure different aspects of performance**
+
+Note on FA/24h: For NEDC and Python OVERLAP rows, FA/24h refers to Temple’s "Total False Alarm Rate"
+(SEIZ + BCKG) as reported by the NEDC v6.0.0 summaries. SzCORE FA/24h follows its event-based definition.
 
 ### Methodology Note
 We tuned parameters using NEDC OVERLAP (the common practice for TUSZ) and evaluated across all metrics for transparency. This reveals how scoring methodology significantly impacts reported performance.

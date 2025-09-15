@@ -9,7 +9,7 @@
 ```
 False Alarms per 24 Hours (log scale)
 |
-|  144.28 ████████████████████████████████ NEDC TAES
+|  137.53 ████████████████████████████████ NEDC TAES
 |  100.06 ███████████████████████ NEDC OVERLAP
 |  100.06 ███████████████████████ Python OVERLAP
 |    8.46 ██ SzCORE
@@ -96,7 +96,7 @@ NEDC v6.0.0  SzCORE
 | Parameter Set | Scoring Method | Sensitivity | FA/24h | Meets 10 FA? | Meets 2.5 FA? |
 |--------------|----------------|-------------|---------|--------------|---------------|
 | **DEFAULT** (θ=0.8, k=5, d=2.0) | | | | | |
-| | NEDC TAES | 24.15% | 144.28 | ❌ | ❌ |
+| | NEDC TAES | 24.15% | 137.53 | ❌ | ❌ |
 | | NEDC OVERLAP | 45.63% | 100.06 | ❌ | ❌ |
 | | Python OVERLAP | 45.63% | 100.06 | ❌ | ❌ |
 | | SzCORE | 52.35% | 8.46 | ✅ | ❌ |
@@ -167,7 +167,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 methods = ['NEDC TAES', 'NEDC OVERLAP', 'Python OVERLAP', 'SzCORE']
-fa_rates = [144.28, 100.06, 100.06, 8.46]
+fa_rates = [137.53, 100.06, 100.06, 8.46]
 colors = ['#d62728', '#ff7f0e', '#ff7f0e', '#2ca02c']
 
 fig, ax = plt.subplots(figsize=(10, 6))

@@ -6,7 +6,7 @@ Authoritative table: `FINAL_COMPREHENSIVE_RESULTS_TABLE.md` (4 scoring methods Ã
 
 | Scoring Method | Sensitivity | FA/24h |
 |----------------|-------------|--------|
-| NEDC Binary TAES | 24.15% | 144.28 |
+| NEDC Binary TAES | 24.15% | 137.53 |
 | NEDC Binary OVERLAP | 45.63% | 100.06 |
 | Native Python OVERLAP | 45.63% | 100.06 |
 | SzCORE | 52.35% | 8.46 |

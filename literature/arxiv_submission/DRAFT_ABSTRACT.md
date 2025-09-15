@@ -18,7 +18,7 @@ We present the first clinical evaluation of SeizureTransformer, the 2025 Epileps
 
 Using the authors' pretrained model, we evaluated 865 EEG files containing 469 seizures from TUSZ's held-out test set. We implemented a dual-track evaluation pipeline using both Temple's official NEDC binaries and a Python reimplementation, achieving <0.1% metric variance. Our systematic parameter tuning on the development set (1,013 files) optimized threshold, morphological kernel size, and minimum event duration.
 
-The evaluation reveals that scoring methodology alone creates a 12-fold performance difference. The identical predictions yield: (1) 100.06 FA/24h with NEDC OVERLAP, the clinical standard for TUSZ, (2) 144.28 FA/24h with NEDC TAES, the proposed stricter metric, and (3) 8.46 FA/24h with SzCORE, EpilepsyBench's scoring method that includes 30s pre-ictal and 60s post-ictal tolerances.
+The evaluation reveals that scoring methodology alone creates a 12-fold performance difference. The identical predictions yield: (1) 100.06 FA/24h with NEDC OVERLAP, the clinical standard for TUSZ, (2) 137.53 FA/24h with NEDC TAES (Total False Alarm Rate), the proposed stricter metric, and (3) 8.46 FA/24h with SzCORE, EpilepsyBench's scoring method that includes 30s pre-ictal and 60s post-ictal tolerances.
 
 When targeting clinical deployment thresholds, SeizureTransformer cannot achieve standard false alarm requirements using NEDC scoring. The 10 FA/24h target yields 39.50 FA/24h, while 2.5 FA/24h targeting produces 8.09 FA/24h. Only with SzCORE's permissive scoring can the model meet clinical targets.
 

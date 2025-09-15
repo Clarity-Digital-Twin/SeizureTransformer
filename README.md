@@ -44,7 +44,7 @@ Wu et al.'s transformer-based seizure detector won the 2025 EpilepsyBench Challe
 | Dataset | Scoring Method | Sensitivity | False Alarms/24h | F1 Score |
 |---------|---------------|-------------|------------------|-----------|
 | **Dianalund** | SzCORE Any-Overlap¹ | 37% | **1 FA/24h** ✅ | 43% |
-| **TUSZ eval (Paper defaults)** | NEDC v6.0.0 TAES² | 24.15% | **144.28 FA/24h** ❌ | 0.30 |
+| **TUSZ eval (Paper defaults)** | NEDC v6.0.0 TAES² | 24.15% | **137.53 FA/24h** ❌ | 0.30 |
 | **TUSZ eval (Paper defaults)** | NEDC v6.0.0 OVERLAP² | 45.63% | **100.06 FA/24h** ❌ | 0.519 |
 | **TUSZ eval (Paper defaults)** | Python OVERLAP | 45.63% | **100.06 FA/24h** ❌ | 0.519 |
 | **TUSZ eval (Paper defaults)** | SzCORE³ | 52.35% | **8.46 FA/24h** ✅ | - |

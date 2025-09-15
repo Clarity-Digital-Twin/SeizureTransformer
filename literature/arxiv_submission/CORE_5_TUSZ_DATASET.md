@@ -31,7 +31,7 @@ TUSZ v2.0.3 is the largest public seizure dataset with carefully designed patien
 
 | Split | Files | Hours | Patients | Seizures | Purpose |
 |-------|-------|-------|----------|----------|---------|
-| **Train** | 4,667 | 910.3 | 579 | 2,420 | Model training |
+| **Train** | 4,667 | 910.3 | 486 | 2,420 | Model training |
 | **Dev** | 1,832 | 435.5 | 53 | 1,075 | Hyperparameter tuning |
 | **Eval** | 865 | 127.7 | 43 | 469 | **Held-out testing** |
 
@@ -45,6 +45,12 @@ PATIENT-DISJOINT SPLITS
 - Prevents data leakage
 - Enables valid generalization testing
 ```
+
+**Verification**: Actual directory counts from `/data/tusz/edf/`:
+- Train: 486 unique patients
+- Dev: 53 unique patients
+- Eval: 43 unique patients
+- Total: 582 (no overlap between splits)
 
 ### Why This Matters
 **The eval set is truly held-out and valid for assessment**
@@ -82,6 +88,8 @@ These annotation principles directly inform NEDC's scoring design - they're matc
 
 ## The EpilepsyBench 🚂 Situation
 
+**Note**: The train emoji (🚂) indicates model was trained on this dataset
+
 ### What Happens
 ```
 SeizureTransformer Training:
@@ -94,6 +102,8 @@ SeizureTransformer Training:
 EpilepsyBench Display:
 - TUSZ: 🚂 (no metrics shown)
 - Message: "Model trained on this dataset"
+
+**Evidence**: `/literature/arxiv_submission/CORE_3_EPILEPSYBENCH_SZSCORE.md` lines 32-43
 ```
 
 ### The Missed Opportunity
@@ -168,6 +178,11 @@ SzCORE: Generic scorer for any dataset
 - Results in 12× FA reduction
 ```
 
+**Evidence of 12× reduction**:
+- NEDC: 100.06 FA/24h (`/docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md` line 36)
+- SzCORE: 8.46 FA/24h (line 38)
+- Ratio: 100.06 / 8.46 = 11.8×
+
 ---
 
 ## How to Write About TUSZ
@@ -217,10 +232,12 @@ Our Evaluation:
 ## Critical Insights for Paper
 
 ### The Evaluation Gap
-1. **Train on TUSZ**: ✅ (everyone does)
+1. **Train on TUSZ**: ✅ (SeizureTransformer used v1.5.2 train)
 2. **Tune on TUSZ dev**: ✅ (standard practice)
-3. **Test on TUSZ eval**: ❌ (no one does)
+3. **Test on TUSZ eval**: ❌ (no published results found)
 4. **Test with NEDC**: ❌ (never done before us)
+
+**Our contribution**: First to complete steps 3 and 4
 
 ### The Performance Reality
 ```
@@ -334,3 +351,6 @@ TUSZ Dataset Structure
 
 ### Our Contribution
 We simply did what should have been done: properly evaluated on the held-out test set with the clinical standard scorer.
+
+**Implementation**: See `/evaluation/` directory for complete pipeline
+**Results**: See `/experiments/eval/baseline/CLEAN_NO_MERGE/` for all outputs
