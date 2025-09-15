@@ -25,7 +25,7 @@ import pickle
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import numpy as np
 from timescoring.annotations import Annotation
@@ -59,7 +59,8 @@ def load_checkpoint(checkpoint_pkl: Path) -> dict[str, Any]:
     with open(checkpoint_pkl, "rb") as f:
         ckpt = pickle.load(f)
     # Support either {"results": {...}} or flat mapping
-    return ckpt.get("results", ckpt)
+    results = ckpt.get("results", ckpt)
+    return cast(dict[str, Any], results)
 
 
 def score_file(
@@ -224,25 +225,25 @@ def run_szcore_evaluation(
                 "fp_per_24h",
             ]
         )
-        for fs in per_file:
+        for file_score in per_file:
             w.writerow(
                 [
-                    fs.file_id,
-                    fs.tp,
-                    fs.fp,
-                    fs.ref_true,
-                    f"{fs.duration_sec:.3f}",
-                    _fmt(fs.sensitivity),
-                    _fmt(fs.precision),
-                    _fmt(fs.f1),
-                    _fmt(fs.fp_per_24h),
+                    file_score.file_id,
+                    file_score.tp,
+                    file_score.fp,
+                    file_score.ref_true,
+                    f"{file_score.duration_sec:.3f}",
+                    _fmt(file_score.sensitivity),
+                    _fmt(file_score.precision),
+                    _fmt(file_score.f1),
+                    _fmt(file_score.fp_per_24h),
                 ]
             )
 
     return summary
 
 
-def _fmt(x: float) -> str:
+def _fmt(x: float | None) -> str:
     if x is None or np.isnan(x):
         return ""
     return f"{x:.6f}"

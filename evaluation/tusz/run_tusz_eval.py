@@ -25,9 +25,8 @@ from tqdm import tqdm
 # Add wu_2025 to path
 sys.path.append(str(Path(__file__).parent.parent.parent / "wu_2025/src"))
 
-from epilepsy2bids.eeg import Eeg
-
-from wu_2025.utils import get_dataloader, load_models
+from epilepsy2bids.eeg import Eeg  # noqa: E402
+from wu_2025.utils import get_dataloader, load_models  # noqa: E402
 
 
 def process_single_file(edf_path, model, device):
