@@ -20,6 +20,7 @@ RUN pip install --no-cache-dir .
 
 # Copy wu_2025 package (frozen upstream)
 COPY wu_2025/pyproject.toml wu_2025/
+COPY wu_2025/README.md wu_2025/
 COPY wu_2025/src wu_2025/src
 RUN pip install --no-cache-dir ./wu_2025
 
