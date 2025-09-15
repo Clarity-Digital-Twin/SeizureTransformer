@@ -18,12 +18,13 @@ Status: Implement plan below; block usage now, remove next release
 - Post‑processing (implementation):
   - `evaluation/nedc_eeg_eval/nedc_scoring/post_processing.py` → `apply_seizure_transformer_postprocessing(..., merge_gap_sec=...)` and `merge_nearby_events(...)`
 - NEDC conversion/runner (CLI/API):
-  - `evaluation/nedc_eeg_eval/nedc_scoring/convert_predictions.py` `--merge_gap_sec` (passes to post‑proc)
-  - `evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py` `--merge_gap_sec` (plumbs through and writes disclaimers)
+  - `evaluation/nedc_eeg_eval/nedc_scoring/convert_predictions.py` `--merge_gap_sec` (passes to post‑proc; writes `NONSTANDARD_POSTPROCESSING.txt` when non‑zero)
+  - `evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py` `--merge_gap_sec` (plumbs through; writes `NONSTANDARD_POSTPROCESSING.txt` when non‑zero; includes `merge_gap_sec` in `operating_point.json`)
   - `evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py` `--merge_gaps` (warns, still passes non‑zero)
 - Other tools:
   - `scripts/experiment_tracker.py` accepts/records `merge_gap_sec` in configs
   - `evaluation/szcore_scoring/run_szcore.py` explicitly sets `merge_gap_sec=None` (correct)
+  - `evaluation/szcore_scoring/convert_to_hedscore.py` uses `merge_gap_sec=None` (to avoid double‑merge); no change required
   - Tests: `tests/test_convert_predictions.py` and `tests/test_post_processing.py` cover merge behavior
 - CI: `.github/workflows/nedc-conformance.yml` calls the sweep with `--merge_gaps 0` (safe, but parameter still present)
 
@@ -48,6 +49,7 @@ Phase 1 — Hard‑block usage (no behavior change when compliant)
 - Tests/CI:
   - Update tests that expect a warning file to instead expect a hard error on non‑zero `merge_gap_sec`.
   - Add a CI guard that fails if `merge_gap_sec` appears in any CLI arguments or JSON manifests with a non‑zero value.
+  - Optional: add a unit test that asserts neither conversion nor scoring produce `NONSTANDARD_POSTPROCESSING.txt` under compliant settings.
 
 Phase 2 — Remove flags and parameters (breaking surface changes)
 - Post‑processing:
@@ -97,6 +99,9 @@ Phase 3 — Cleanup and enforcement
 
 - CI (`.github/workflows/nedc-conformance.yml`)
   - Ensure sweeps pass `--merge_gaps 0` during Phase 1. In Phase 2, remove the argument entirely.
+  - Add a grep step to enforce no non‑zero `merge_gap_sec` at runtime, for example:
+    - `! rg -n "\bmerge_gap_sec\b\s*:\s*(?!0(\.0+)?)" experiments/**/params.json experiments/**/operating_point.json || exit 1`
+    - `! rg -n "NONSTANDARD_POSTPROCESSING.txt" experiments/** || exit 1`
 
 ## Verification Plan (invariants and parity)
 - NEDC parity:
