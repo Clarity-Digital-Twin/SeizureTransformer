@@ -88,7 +88,7 @@ def validate_conversion(test_checkpoint, output_dir):
 
     cmd = [
         sys.executable,
-        "evaluation/nedc_scoring/convert_predictions.py",
+        "evaluation/nedc_eeg_eval/nedc_scoring/convert_predictions.py",
         "--checkpoint",
         str(test_checkpoint),
         "--outdir",
@@ -210,7 +210,7 @@ def run_full_test():
     print("=" * 60)
 
     # Set up test paths
-    test_dir = Path("evaluation/nedc_scoring/test_output")
+    test_dir = Path("evaluation/nedc_eeg_eval/nedc_scoring/test_output")
     test_checkpoint = test_dir / "test_checkpoint.pkl"
 
     # Clean up previous test
@@ -241,7 +241,7 @@ def run_full_test():
 
     cmd = [
         sys.executable,
-        "evaluation/nedc_scoring/run_nedc.py",
+        "evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py",
         "--checkpoint",
         str(test_checkpoint),
         "--outdir",
@@ -291,7 +291,7 @@ def main():
 
     if not args.keep_output and ret == 0:
         # Clean up test output
-        test_dir = Path("evaluation/nedc_scoring/test_output")
+        test_dir = Path("evaluation/nedc_eeg_eval/nedc_scoring/test_output")
         if test_dir.exists():
             import shutil
 

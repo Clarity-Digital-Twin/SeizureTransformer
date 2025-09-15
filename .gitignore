@@ -97,3 +97,6 @@ reference_repos/
 
 # NOTE: literature/ is NOT ignored - we want this public for transparency!
 # NOTE: evaluation/nedc_eeg_eval/ is NOT ignored - it's open source Temple software
+
+# Large datasets (use volume mounts)
+data/

@@ -121,7 +121,9 @@
       "Bash(do if [ -f \"$dir/summary.txt\" ])",
       "Bash(pkill:*)",
       "Bash(kill:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(do du -sh \"$dir\")",
+      "Bash(./scripts/migrate_data.sh:*)"
     ],
     "deny": [],
     "ask": []
