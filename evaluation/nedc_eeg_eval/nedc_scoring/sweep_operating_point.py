@@ -10,7 +10,7 @@ Usage:
     --thresholds 0.5,0.6,0.7,0.8,0.9 \
     --kernels 5,11 \
     --min_durations 2,4 \
-    --merge_gaps 0,10 \
+    --merge_gaps 0 \
     --target_fa_per_24h 10
 
 Produces CSV summary and recommends the best setting meeting FA target with max sensitivity.
@@ -50,7 +50,7 @@ def run_once(
     # Convert
     cmd_conv = [
         sys.executable,
-        "evaluation/nedc_scoring/run_nedc.py",
+        "evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py",
         "--checkpoint",
         str(checkpoint),
         "--outdir",
@@ -78,7 +78,7 @@ def run_once(
     # Score
     cmd_score = [
         sys.executable,
-        "evaluation/nedc_scoring/run_nedc.py",
+        "evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py",
         "--outdir",
         str(outdir),
         "--score-only",
@@ -127,7 +127,7 @@ def main() -> int:
     p.add_argument("--thresholds", type=str, default="0.6,0.7,0.8,0.9")
     p.add_argument("--kernels", type=str, default="5,11")
     p.add_argument("--min_durations", type=str, default="2,4")
-    p.add_argument("--merge_gaps", type=str, default="0,10")
+    p.add_argument("--merge_gaps", type=str, default="0", help="Comma list in seconds. 0 means None. Non-zero values are DEPRECATED and non-standard.")
     p.add_argument("--target_fa_per_24h", type=float, default=10.0)
     args = p.parse_args()
 
@@ -139,6 +139,13 @@ def main() -> int:
     kernels = parse_ints_list(args.kernels)
     min_durations = parse_floats_list(args.min_durations)
     merge_gaps_raw = parse_floats_list(args.merge_gaps)
+    # Warn if any non-zero merge gap requested
+    if any(g != 0.0 for g in merge_gaps_raw):
+        print(
+            "WARNING: Non-zero merge_gaps requested. This is a non-standard post-\n"
+            "processing that can artificially reduce FA rates and is not compliant\n"
+            "with NEDC/Temple evaluation. Use 0 for academic comparisons."
+        )
     merge_gaps: list[float | None] = [None if g == 0 else g for g in merge_gaps_raw]
 
     results: list[Result] = []

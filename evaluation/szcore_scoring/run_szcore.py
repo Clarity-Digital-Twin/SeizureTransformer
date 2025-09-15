@@ -28,12 +28,19 @@ from typing import Any, Dict, List, Tuple
 
 import numpy as np
 
+# Ensure repo root is on sys.path for local package imports
+import sys
+from pathlib import Path
+repo_root = Path(__file__).resolve().parents[2]
+if str(repo_root) not in sys.path:
+    sys.path.insert(0, str(repo_root))
+
 # Official SzCORE scoring library
 from timescoring.annotations import Annotation
 from timescoring.scoring import EventScoring
 
 # Reuse our existing post-processing to derive events from probabilities
-from evaluation.nedc_scoring.post_processing import (
+from evaluation.nedc_eeg_eval.nedc_scoring.post_processing import (
     apply_seizure_transformer_postprocessing,
 )
 

@@ -115,6 +115,28 @@ def convert_checkpoint_to_nedc(
     # Generate list files
     create_list_files(output_dir, processed_files)
 
+    # Write a simple params manifest beside lists/hyp/ref for reproducibility
+    try:
+        import json
+        params = {
+            "threshold": threshold,
+            "kernel": morph_kernel_size,
+            "min_duration_sec": min_duration_sec,
+            "merge_gap_sec": merge_gap_sec or 0.0,
+        }
+        with open(Path(output_dir) / "params.json", "w") as f:
+            json.dump(params, f, indent=2)
+
+        # If a nonstandard merge_gap is used, drop a disclaimer file
+        if merge_gap_sec not in (None, 0, 0.0):
+            (Path(output_dir) / "NONSTANDARD_POSTPROCESSING.txt").write_text(
+                "merge_gap_sec is enabled for this conversion. This merges nearby events in\n"
+                "post-processing and is NOT part of the paper or NEDC/Temple evaluation.\n"
+                "Use merge_gap_sec=None for academic compliance.\n"
+            )
+    except Exception:
+        pass
+
     return processed_files
 
 

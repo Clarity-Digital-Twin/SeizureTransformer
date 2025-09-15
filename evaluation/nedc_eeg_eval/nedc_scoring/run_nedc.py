@@ -185,8 +185,13 @@ def run_nedc_scorer(
 
         print(result.stdout)
     elif backend in ("native-overlap", "native-taes"):
-        # Native Python TAES implementation
-        sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+        # Native Python OVERLAP implementation
+        base_path = Path(__file__).resolve()
+        repo_root = base_path.parents[3]
+        eval_dir = base_path.parents[2]
+        for p in (str(repo_root), str(eval_dir)):
+            if p not in sys.path:
+                sys.path.insert(0, p)
         from seizure_evaluation.taes.overlap_scorer import OverlapScorer
 
         print("Running native Python OVERLAP scorer...")
@@ -255,6 +260,19 @@ def run_nedc_scorer(
         print(f"Error: Unknown backend '{backend}'")
         print("Valid backends: nedc-binary, native-overlap, native-taes (alias)")
         return 1
+
+    # If nonstandard merge_gap was used, drop a disclaimer file in results
+    try:
+        if merge_gap_sec not in (None, 0, 0.0):
+            disclaimer = results_dir / "NONSTANDARD_POSTPROCESSING.txt"
+            disclaimer.write_text(
+                "merge_gap_sec was non-None for this run. This merges nearby events in post-\n"
+                "processing and is NOT part of NEDC/Temple evaluation. It typically reduces\n"
+                "false alarms by ~4x and invalidates academic comparisons. Use None for paper\n"
+                "compliance.\n"
+            )
+    except Exception:
+        pass
 
     # Parse and display key metrics with operating point params
     parse_nedc_output(
@@ -403,6 +421,14 @@ def parse_nedc_output(
         # Re-save with operating point
         with open(metrics_file, "w") as f:
             json.dump(metrics, f, indent=2)
+
+        # Also save a small manifest for quick inspection
+        try:
+            op_manifest = results_dir / "operating_point.json"
+            with open(op_manifest, "w") as f:
+                json.dump(metrics["operating_point"], f, indent=2)
+        except Exception:
+            pass
 
     # Display key OVERLAP metrics (stored under "overlap" and duplicated to "taes")
     if metrics["taes"]:
