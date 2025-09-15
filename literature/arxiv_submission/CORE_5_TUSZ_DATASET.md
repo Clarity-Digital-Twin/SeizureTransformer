@@ -57,7 +57,7 @@ PATIENT-DISJOINT SPLITS
 
 1. **Conservative Labeling**
    - Clear electrographic seizures only
-   - Minimum 10-second duration
+   - Minimum duration requirements
    - Definite evolution required
 
 2. **Temporal Precision**
@@ -66,12 +66,17 @@ PATIENT-DISJOINT SPLITS
    - No pre/post-ictal extensions
 
 3. **Multi-Reviewer Process**
-   - Initial annotation
-   - Expert review
+   - Initial annotation by trained personnel
+   - Expert review by board-certified neurologists
    - Consensus for ambiguous cases
+
+**Source**: Temple annotation philosophy documented in NEDC training materials
 
 ### Connection to NEDC
 These annotation principles directly inform NEDC's scoring design - they're matched pairs.
+
+**Evidence**: Temple University created both TUSZ and NEDC through the same research group
+**Source**: `/literature/arxiv_submission/CORE_4_NEDC_SOFTWARE.md` lines 18-24
 
 ---
 
@@ -128,19 +133,14 @@ Seizure rate: 3.68 per hour
 - Seizure count: `/data/tusz/AAREADME.txt` line 226
 - Duration: `/data/tusz/AAREADME.txt` line 235
 
-### Seizure Distribution
+### Seizure Distribution in Eval Set
 ```
-Duration Distribution:
-- <30s: 45%
-- 30-60s: 30%
-- 60-120s: 15%
-- >120s: 10%
+Total seizures: 469 (from CSV_BI annotations)
+Total seizure duration: 27,246.7 seconds
+Average seizure duration: ~58 seconds
+```
 
-Type Distribution:
-- Focal: 60%
-- Generalized: 25%
-- Unknown: 15%
-```
+**Source**: `/data/tusz/AAREADME.txt` lines 225-226, 249-251
 
 ---
 
@@ -208,6 +208,9 @@ Our Evaluation:
 - v1.5.2 → v2.0.3: Annotation refinements
 - Core data largely unchanged
 - Split structure maintained
+- v2.0.3 changes: Fixed annotation issues, corrected file boundaries
+
+**Source**: `/data/tusz/AAREADME.txt` lines 5-31 (change log)
 
 ---
 
@@ -221,10 +224,14 @@ Our Evaluation:
 
 ### The Performance Reality
 ```
-Expected (from benchmarks): ~10 FA/24h
-Reality (with NEDC): 100.06 FA/24h
-Gap: 10× higher than expected
+Claimed (EpilepsyBench Dianalund): 1 FA/24h
+Reality (TUSZ with NEDC): 100.06 FA/24h
+Gap: 100× higher than expected
 ```
+
+**Source**:
+- Claimed: EpilepsyBench leaderboard 2025
+- Reality: `/docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md` line 36
 
 ### The Broader Pattern
 - Train on dataset X
