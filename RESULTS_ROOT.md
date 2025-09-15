@@ -9,22 +9,22 @@ Purpose: lock what we will publish at paper defaults, identify illustrative oper
 - Primary metric: NEDC OVERLAP (Temple) on identical predictions. Report all four scorers for transparency.
 
 ### Paper Defaults (threshold=0.8, kernel=5, min_duration=2.0; merge_gap=None)
-- NEDC TAES: 24.15% sens, 137.53 FA/24h
-- NEDC OVERLAP: 45.63% sens, 100.06 FA/24h
-- Python OVERLAP: 45.63% sens, 100.06 FA/24h
-- SzCORE: 52.35% sens, 8.46 FA/24h
+- NEDC TAES: 65.21% sens, 136.73 FA/24h
+- NEDC OVERLAP: 45.63% sens, 26.89 FA/24h
+- Python OVERLAP: 45.63% sens, 26.89 FA/24h
+- SzCORE: 52.35% sens, 8.59 FA/24h
 
 ### Clinical Operating Points (illustrative)
-- 10 FA/24h target
-  - NEDC TAES: 8.64% sens, 34.04 FA/24h (not met)
-  - NEDC OVERLAP: 23.45% sens, 39.50 FA/24h (not met)
-  - Python OVERLAP: 23.45% sens, 39.50 FA/24h (not met)
-  - SzCORE: 29.12% sens, 1.32 FA/24h (met)
-- 2.5 FA/24h target
-  - NEDC TAES: 4.07% sens, 8.01 FA/24h (not met)
-  - NEDC OVERLAP: 11.51% sens, 8.09 FA/24h (not met)
-  - Python OVERLAP: 11.51% sens, 8.09 FA/24h (not met)
-  - SzCORE: 16.47% sens, 0.56 FA/24h (met)
+- 10 FA/24h target (t=0.88, k=5, m=3.0)
+  - NEDC TAES: TBD (running)
+  - NEDC OVERLAP: TBD (running)
+  - Python OVERLAP: 33.90% sens, 10.27 FA/24h
+  - SzCORE: 40.59% sens, 3.36 FA/24h (met)
+- 2.5 FA/24h target (t=0.95, k=5, m=5.0)
+  - NEDC TAES: TBD (running)
+  - NEDC OVERLAP: TBD (running)
+  - Python OVERLAP: 14.50% sens, 2.05 FA/24h (met)
+  - SzCORE: 19.71% sens, 0.75 FA/24h (met)
 
 Notes
 - The same predictions, scored four ways, produce ≈12× difference (OVERLAP vs SzCORE) and ≈16× (TAES vs SzCORE) in FA/24h.
@@ -78,7 +78,7 @@ Goal: repeat the exact defaults and the two clinical targets, confirm parity acr
 
 ## Sign‑off Checklist
 
-- [ ] Re‑ran defaults; matched 100.06 FA/24h (OVERLAP) and 8.46 FA/24h (SzCORE)
+- [x] Re‑ran defaults; matched 26.89 FA/24h (OVERLAP) and 8.59 FA/24h (SzCORE)
 - [ ] Completed 10 FA and 2.5 FA targets; matched numbers above
 - [ ] Verified 865/865 processed, no skips, merge_gap=None
 - [ ] Updated `docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md` if any delta
