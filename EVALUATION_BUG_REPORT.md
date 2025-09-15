@@ -1,8 +1,8 @@
 # Evaluation Bug Report: EDF File Format Error
-## Status: Known Issue - Does Not Affect Results
+## Status: Fixed in code (pending full re-eval)
 
 ### Executive Summary
-During the TUSZ v2.0.3 evaluation, 1 out of 865 files (0.12%) failed to process due to an EDF format compliance issue. This represents a negligible impact on our results and is a known issue with the specific file in the TUSZ dataset.
+During the TUSZ v2.0.3 evaluation, 1 out of 865 files (0.12%) failed to process due to an EDF format compliance issue. We implemented a safe header-repair + fallback loader (`evaluation/utils/edf_repair.py`) and updated the evaluation script to use it. Local test confirms successful loading of the problematic file. Full re-evaluation is pending to update the checkpoint and metrics.
 
 ---
 
@@ -85,10 +85,10 @@ failed = [k for k,v in results.items() if v.get('error')]
 # Returns: ['aaaaaaaq_s007_t000']
 ```
 
-### Graceful Failure
-- Model catches exception and logs error
-- Continues processing remaining files
-- Stores error message in checkpoint for transparency
+### Graceful Handling (updated)
+- Loader tries: pyedflib → header repair + reload → optional MNE fallback
+- Continues processing remaining files regardless
+- Stores error string (if any) and `load_method` in checkpoint for transparency
 
 ### Scoring Accommodation
 - NEDC scorer handles missing files gracefully

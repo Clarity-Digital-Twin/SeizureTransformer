@@ -12,7 +12,7 @@ We have a single EDF file failing due to malformed header metadata (incorrect da
 ```
 1. evaluation/tusz/run_tusz_eval.py:37
    └─> eeg = Eeg.loadEdf(str(edf_path))
-       └─> epilepsy2bids.eeg.Eeg.loadEdf() [line 159]
+       └─> epilepsy2bidsA.eeg.Eeg.loadEdf() [line 159]
            └─> pyedflib.EdfReader(edfFile) [line 147 in _pyedflib.pyx]
                └─> RAISES: "startdate is incorrect, might contain ':' instead of '.'"
 ```

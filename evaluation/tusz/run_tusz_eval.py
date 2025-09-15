@@ -28,13 +28,22 @@ sys.path.append(str(Path(__file__).parent.parent.parent / "wu_2025/src"))
 from epilepsy2bids.eeg import Eeg  # noqa: E402
 
 from wu_2025.utils import get_dataloader, load_models  # noqa: E402
+from evaluation.utils.edf_repair import load_with_fallback  # noqa: E402
 
 
 def process_single_file(edf_path, model, device, batch_size: int = 512):
-    """Process one EDF file and return (predictions, seq_len) or (None, error)."""
+    """Process one EDF file.
+
+    Returns:
+        tuple[predictions_or_none, error_or_none, load_method_or_none]
+        - predictions: np.ndarray of per-sample probabilities, or None on failure
+        - error: error string if failed, else None
+        - load_method: one of {"pyedflib", "pyedflib+repaired", "mne"} or None
+    """
     try:
-        # Load EDF - use simple loadEdf like original
-        eeg = Eeg.loadEdf(str(edf_path))
+        # Load EDF with robust fallback/repair
+        # Prefer pyedflib; if header issue encountered, repair header and retry; optional MNE fallback
+        eeg, _load_method = load_with_fallback(edf_path)
         data = eeg.data
         fs = eeg.fs
         seq_len = data.shape[1]
@@ -59,12 +68,12 @@ def process_single_file(edf_path, model, device, batch_size: int = 512):
             predictions = np.concatenate(predictions, axis=0).flatten()
             # Truncate to original sequence length (mirror OSS utils.predict)
             predictions = predictions[:seq_len]
-            return (predictions, None)
+            return (predictions, None, _load_method)
 
     except Exception as e:
-        return None, str(e)
+        return None, str(e), None
 
-    return None, "Unknown error"
+    return None, "Unknown error", None
 
 
 def load_labels_for_file(edf_path):
@@ -185,7 +194,7 @@ def main():
             continue
 
         # Process file
-        predictions, error = process_single_file(
+        predictions, error, load_method = process_single_file(
             edf_path, model, device, batch_size=args.batch_size
         )
 
@@ -200,6 +209,7 @@ def main():
             "predictions": predictions,
             "seizure_events": seizure_events,
             "error": error,
+            "load_method": load_method,
         }
 
         # Save checkpoint every 10 files
