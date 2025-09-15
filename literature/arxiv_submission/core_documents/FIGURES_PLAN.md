@@ -96,20 +96,20 @@ NEDC v6.0.0  SzCORE
 | Parameter Set | Scoring Method | Sensitivity | FA/24h | Meets 10 FA? | Meets 2.5 FA? |
 |--------------|----------------|-------------|---------|--------------|---------------|
 | **DEFAULT** (θ=0.8, k=5, d=2.0) | | | | | |
-| | NEDC TAES | 24.15% | 137.53 | ❌ | ❌ |
+| | NEDC TAES | 65.21% | 136.73 | ❌ | ❌ |
 | | NEDC OVERLAP | 45.63% | 26.89 | ❌ | ❌ |
 | | Python OVERLAP | 45.63% | 26.89 | ❌ | ❌ |
 | | SzCORE | 52.35% | 8.59 | ✅ | ❌ |
-| **10 FA TARGET** (θ=0.95, k=5, d=2.0) | | | | | |
-| | NEDC TAES | 8.64% | 34.04 | ❌ | ❌ |
-| | NEDC OVERLAP | 23.45% | 39.50 | ❌ | ❌ |
-| | Python OVERLAP | 23.45% | 39.50 | ❌ | ❌ |
-| | SzCORE | 29.12% | 1.32 | ✅ | ✅ |
-| **2.5 FA TARGET** (θ=0.95, k=11, d=8.0) | | | | | |
-| | NEDC TAES | 4.07% | 8.01 | ✅ | ❌ |
-| | NEDC OVERLAP | 11.51% | 8.09 | ✅ | ❌ |
-| | Python OVERLAP | 11.51% | 8.09 | ✅ | ❌ |
-| | SzCORE | 16.47% | 0.56 | ✅ | ✅ |
+| **10 FA TARGET** (θ=0.88, k=5, d=3.0) | | | | | |
+| | NEDC TAES | 60.45% | 83.88 | ❌ | ❌ |
+| | NEDC OVERLAP | 33.90% | 10.27 | ✅ | ❌ |
+| | Python OVERLAP | 33.90% | 10.27 | ✅ | ❌ |
+| | SzCORE | 40.59% | 3.36 | ✅ | ✅ |
+| **2.5 FA TARGET** (θ=0.95, k=5, d=5.0) | | | | | |
+| | NEDC TAES | 18.12% | 10.64 | ❌ | ❌ |
+| | NEDC OVERLAP | 14.50% | 2.05 | ❌ | ✅ |
+| | Python OVERLAP | 14.50% | 2.05 | ❌ | ✅ |
+| | SzCORE | 19.71% | 0.75 | ✅ | ✅ |
 
 ### Table 2: Dataset Comparison
 **Why the 100× gap exists**
@@ -182,8 +182,8 @@ plt.tight_layout()
 
 ```python
 # Figure 3: Clinical Reality
-thresholds = [(0.8, 5, 2.0), (0.95, 5, 2.0), (0.95, 11, 8.0)]
-sensitivities = [45.63, 23.45, 11.51]
+thresholds = [(0.8, 5, 2.0), (0.88, 5, 3.0), (0.95, 5, 5.0)]
+sensitivities = [45.63, 33.90, 14.50]
 fa_rates = [26.89, 10.27, 2.05]
 
 plt.figure(figsize=(10, 8))

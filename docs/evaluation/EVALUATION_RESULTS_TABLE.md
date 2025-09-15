@@ -6,7 +6,7 @@
 
 | Operating Point | Threshold | Kernel | MinDur | NEDC TAES (Temple) | NEDC OVERLAP (Temple) | NEDC OVERLAP (Native)* | SzCORE Any-Overlap |
 |-----------------|-----------|--------|--------|--------------------|-----------------------|-----------------------|-------------------|
-| **Default (paper)** | 0.800 | 5 | 2.0s | TBD | **45.63% / 100.06 FA** | 45.63% / 100.06 FA | **52.35% / 8.46 FA** |
+| **Default (paper)** | 0.800 | 5 | 2.0s | 65.21% / 136.73 FA | **45.63% / 26.89 FA** | 45.63% / 26.89 FA | **52.35% / 8.59 FA** |
 | **10 FA target** | TBD | 5 | TBD | TBD | *PENDING SWEEP* | *PENDING SWEEP* | TBD |
 | **2.5 FA target** | TBD | 5 | TBD | TBD | *PENDING SWEEP* | *PENDING SWEEP* | TBD |
 | **1 FA target** | TBD | 5 | TBD | TBD | *PENDING SWEEP* | *PENDING SWEEP* | TBD |
@@ -27,16 +27,16 @@ Format: Sensitivity% / FA per 24h
 ## Key Findings
 
 ### 1. Default Parameters (0.8/5/2.0, no merge)
-- **NEDC OVERLAP (Temple)**: 45.63% sensitivity, 100.06 FA/24h (total)
+- **NEDC OVERLAP (Temple)**: 45.63% sensitivity, 26.89 FA/24h (SEIZ)
 - **Native OVERLAP**: Matches Temple OVERLAP exactly
-- **SzCORE**: 52.35% sensitivity, 8.46 FA/24h (competition scoring)
-- **Key Gap**: SzCORE’s tolerances and 90s merge yield much lower FA than NEDC
+- **SzCORE**: 52.35% sensitivity, 8.59 FA/24h
+- **Key Gap**: SzCORE’s tolerances/merge yield ≈3.1× lower FA than OVERLAP at default
 
 ### 2. Tuned Operating Points
 - Pending re‑computation with fixed kernel=5 and merge_gap=None (NEDC). Prior entries are invalid.
 
 ### 3. Scoring Method Impact (Default Parameters)
-- Overlap total FA vs SzCORE: 100.06 vs 8.46 FA/24h (different semantics)
+- Overlap (SEIZ FA) vs SzCORE: 26.89 vs 8.59 FA/24h
 - Counts vs percents: Temple and SzCORE differ in target definitions; compare within each method.
 - Why: SzCORE uses 30s/60s tolerance with 90s merge (more permissive) vs Temple boundary rules
 - Clinical (NEDC) vs competition (SzCORE) target different use-cases

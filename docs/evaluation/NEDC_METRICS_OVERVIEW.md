@@ -10,7 +10,7 @@ NEDC v6.0.0 automatically calculates **5 different scoring methods** when evalua
 - **Why we use it**: Most realistic for clinical deployment, penalizes timing errors
 
 ### 2. OVERLAP Scoring
-- **Our Results**: 45.63% sensitivity, 100.06 FA/24h (Total, paper defaults; merge_gap=None)
+- **Our Results**: 45.63% sensitivity, 26.89 FA/24h (SEIZ, paper defaults; merge_gap=None)
 - **Description**: Counts detection if ANY overlap exists between prediction and ground truth
 - **Important**: This is NOT the same as SzCORE's "Any-Overlap" - Temple's version is still strict about timing boundaries
 
@@ -35,7 +35,7 @@ When we run NEDC on SeizureTransformer's TUSZ predictions:
 Metric          | Sensitivity | False Alarms | Notes
 ----------------|-------------|--------------|-------
 TAES            | TBD         | TBD          | Strictest (pending re‑extraction)
-OVERLAP         | 45.63%      | 100.06 FA/24h| Temple's overlap (still strict)
+OVERLAP         | 45.63%      | 26.89 FA/24h | Temple's overlap (SEIZ FA)
 DPALIGN         | —           | —            | See NEDC summary for details
 ```
 

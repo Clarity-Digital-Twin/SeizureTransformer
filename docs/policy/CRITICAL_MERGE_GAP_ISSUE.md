@@ -29,8 +29,8 @@ WITH merge_gap=5.0:
 - NEDC OVERLAP: 25.01 FA/24h
 
 WITHOUT merge_gap (correct):
-- NEDC TAES: 137.53 FA/24h
-- NEDC OVERLAP: 100.06 FA/24h
+- NEDC TAES: 136.73 FA/24h
+- NEDC OVERLAP: 26.89 FA/24h (SEIZ)
 ```
 
 **This is a 4X artificial improvement!**
@@ -89,8 +89,8 @@ Added on September 13, 2025 as an "enhancement" - NOT from any paper or standard
 - All results claiming ~60 FA/24h for TAES
 
 ### Clean Results (no merge_gap):
-- `experiments/eval/baseline/test_final_fix/` (Sep 14)
-- Shows TRUE performance: 100+ FA/24h
+- `experiments/eval/FINAL_CLEAN_RUN/` (Sep 15)
+- Shows TRUE performance: 26.89 FA/24h (OVERLAP, SEIZ)
 
 ## REQUIRED ACTIONS
 
@@ -149,8 +149,8 @@ Per Wu et al. 2025 SeizureTransformer paper:
 This parameter has been artificially inflating our performance metrics by 4X. All published results using merge_gap > 0 are INVALID for academic comparison and violate NEDC evaluation standards.
 
 **Verified with paper defaults (no merge):**
-- NEDC OVERLAP: ~100 FA/24h (NOT 25)
-- NEDC TAES: pending re‑extraction; do not cite legacy values
+- NEDC OVERLAP: 26.89 FA/24h (SEIZ)
+- NEDC TAES: 136.73 FA/24h
 
 This needs immediate correction before any results are shared or published.
 

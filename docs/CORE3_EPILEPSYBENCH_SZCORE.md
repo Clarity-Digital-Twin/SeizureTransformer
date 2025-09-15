@@ -4,7 +4,7 @@
 
 - EpilepsyBench provides a useful cross-dataset benchmark, standardizing on SzCORE’s Any-Overlap scoring with clinical tolerances. That choice prioritizes clinical deployment over strict temporal precision and materially changes reported FA/24h.
 - For TUSZ, the clinical standard is Temple/NEDC v6.0.0. Our repo includes the official NEDC tools and wrappers for reproducible scoring alongside a SzCORE wrapper using the official timescoring library.
-- When citing results, state the scorer explicitly. The same predictions can differ by ~10–12× FA/24h between NEDC and SzCORE (example in-repo below).
+- When citing results, state the scorer explicitly. The same predictions can differ by multiples between NEDC and SzCORE (≈3.1× at default in our CLEAN run).
 
 ---
 
@@ -59,7 +59,7 @@ Input format (from AAREADME “Input Files”):
 - NEDC TAES (Temple): Time-aligned event scoring providing stricter clinical temporal precision. Implemented in `lib/nedc_eeg_eval_taes.py` and summarized in `summary.txt`.
 
 In-repo example demonstrating the impact (same predictions, different scorers):
-- See `docs/evaluation/EVALUATION_RESULTS_TABLE.md` → Default row shows NEDC OVERLAP Total FA ≈ 100.06 FA/24h vs SzCORE ≈ 8.46 FA/24h on TUSZ eval.
+- See `docs/evaluation/EVALUATION_RESULTS_TABLE.md` → Default row shows NEDC OVERLAP (SEIZ FA) 26.89 FA/24h vs SzCORE 8.59 FA/24h on TUSZ eval.
 - Screenshot of EpilepsyBench leaderboard context: `docs/images/wu_ebench.png` (TUSZ marked with 🚂 when trained on TUSZ).
 
 ---
