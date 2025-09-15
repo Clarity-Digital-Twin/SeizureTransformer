@@ -9,3 +9,8 @@ Use SSOT: `core_documents/CORE_SYNTHESIS.md`, `core_documents/FIGURES_PLAN.md`, 
 - Scoring impact: ≈12× difference (OVERLAP vs SzCORE); ≈16× TAES vs SzCORE
 - NEDC/Python parity: identical numbers for OVERLAP
 - Figures: references to Fig. 1 (performance spectrum), Fig. 3 (clinical zones)
+
+Results provenance
+- Predictions produced by authors’ pretrained weights (trained on TUSZ train + Siena), with our inference pipeline matching OSS preprocessing.
+- Tuning performed only on TUSZ dev (1,832 files); no eval contamination.
+- Final metrics computed on TUSZ eval (865 files) using four scorers on identical predictions.

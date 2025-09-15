@@ -40,8 +40,10 @@ Notes
 - If a channel is missing, do not silently substitute; raise and handle explicitly.
 - If additional channels are present, select and reorder to the standard 19 layout.
 
-Open item (to resolve)
-- Verify the exact ordering used by `Eeg.loadEdfAutoDetectMontage` in the upstream reference and lock it here. Until confirmed, treat the above as the project-wide standard and enforce mapping at load time.
+Resolution (validated)
+- We rely on `epilepsy2bids>=0.0.6` `Eeg.loadEdfAutoDetectMontage` to normalize TUH/TUSZ unipolar recordings to a 19‑channel referential montage in a stable order.
+- Verified on representative TUSZ eval files using `scripts/verify_channel_loading.py` (perfect match to expected indices on test files).
+- Known aliases (T7/T8↔T3/T4; P7/P8↔T5/T6) are normalized by the loader; if normalization fails, the pipeline raises with a clear error.
 
 Recommended enforcement
 - Add a check in the TUSZ loader to:

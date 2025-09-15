@@ -1,10 +1,10 @@
 # 🟢 IDEAL SEIZURE TRANSFORMER DATAFLOW (What We Should Build)
 
-**Status**: VALIDATED & AUDITED ✅
+**Status**: VALIDATED & AUDITED ✅ (pipeline implemented as documented)
 **Created**: December 12, 2024  
 **Last Updated**: December 12, 2024
 **Purpose**: Document the CORRECT implementation based on OSS reference
-**Verification**: 100% verified against OSS code and paper
+**Verification**: 100% verified against OSS code and paper; channel normalization validated via `scripts/verify_channel_loading.py`.
 
 ---
 
