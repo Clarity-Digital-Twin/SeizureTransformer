@@ -9,22 +9,35 @@ Different scoring methods serve different purposes. There is no "wrong" method -
 ## The Scoring Spectrum
 
 ```
-Most Strict                                                Most Permissive
-    TAES ← OVLP ← NEDC OVERLAP ← SzCORE Any-Overlap
-(Research)    (Clinical Standard)      (Early Warning)
+Most strict                                        Most permissive
+    TAES  →  OVERLAP (OVLP / NEDC OVERLAP)  →  SzCORE Any-Overlap
+      (temporal precision)         (any-overlap)             (tolerances + merge)
 ```
+
+Source:
+- Picone et al. (Objective Evaluation Metrics) describe OVLP vs TAES and their relative stringency
+  (literature/markdown/picone-evaluation/picone-2021-objective-evaluation-metrics.md).
+- Our NEDC v6.0.0 summary shows separate OVERLAP and TAES sections
+  (evaluation/nedc_eeg_eval/nedc_scoring/output/results/summary.txt).
 
 ---
 
 ## 1. TAES (Time-Aligned Event Scoring)
 
 ### Definition (Picone 2021)
-> "TAES weights the decision based on the percentage of overlap between reference and hypothesis events."
+"Time-Aligned Event Scoring (TAES) accounts for the temporal alignment of the hypothesis to the
+reference annotation" and computes partial credit per event based on overlap. See:
+- literature/markdown/picone-evaluation/picone-2021-objective-evaluation-metrics.md (search: "Time-Aligned Event Scoring (TAES)")
 
-### Mathematics
-```
-Score = (overlap_duration / max(ref_duration, hyp_duration)) × 100%
-```
+### How TAES tallies errors (per Picone 2021)
+- TP contribution: detected overlap duration divided by reference duration
+- FN contribution: missed portion of reference divided by reference duration
+- FP contribution: inserted (incorrect) duration divided by inserted duration; capped at 1 per event
+- Multiple reference events covered by one long hypothesis: all but first are counted as FNs
+
+Repo source passages:
+- TAES overview and motivation: lines ~166–185 and ~209 in
+  literature/markdown/picone-evaluation/picone-2021-objective-evaluation-metrics.md
 
 ### Characteristics
 - **Purpose**: Research precision, temporal accuracy assessment
@@ -38,10 +51,15 @@ Score = (overlap_duration / max(ref_duration, hyp_duration)) × 100%
 
 ---
 
-## 2. OVLP/OVERLAP (Binary Any-Overlap Scoring)
+## 2. OVLP / OVERLAP (Binary Any-Overlap Scoring)
 
 ### Definition (Picone 2021)
-> "OVLP is considered a very permissive way of scoring since any amount of overlap between a reference and hypothesis event constitutes a true positive."
+"OVLP is considered a very permissive way of scoring since any amount of overlap between a reference and
+hypothesis event constitutes a true positive."
+
+Repo source passage:
+- literature/markdown/picone-evaluation/picone-2021-objective-evaluation-metrics.md (search: "Any-Overlap Method (OVLP)" and
+  the sentence containing "very permissive").
 
 ### Mathematics
 ```
@@ -59,14 +77,15 @@ Else:
 ### Professional Assessment
 **Strengths**: Simple, interpretable, widely understood. Standard practice for TUSZ.
 **Limitations**: Doesn't reward temporal precision. Brief overlaps count same as perfect alignment.
-**Context**: De facto standard in seizure detection literature. What most papers report.
+**Context**: De facto standard in seizure detection literature; widely used for TUSZ. Our native implementation
+matches Temple’s OVERLAP results exactly (see below).
 
 ---
 
-## 3. NEDC OVERLAP (Temple's Implementation)
+## 3. NEDC OVERLAP (Temple’s Implementation of OVLP)
 
 ### Definition
-Temple University's specific implementation of OVLP scoring within NEDC framework.
+Temple University’s official implementation of OVLP within the NEDC framework.
 
 ### Characteristics
 - **Purpose**: Clinical evaluation standard for TUSZ
@@ -76,14 +95,26 @@ Temple University's specific implementation of OVLP scoring within NEDC framewor
 ### Professional Assessment
 **Strengths**: Designed by same team that created TUSZ. Gold standard for this dataset.
 **Context**: When papers say "evaluated on TUSZ", this is what should be used.
-**Note**: Produces identical results to generic OVLP but within NEDC's comprehensive framework.
+**Parity note**: Produces identical results to our native OVLP implementation in this repo.
+
+Repo sources:
+- NEDC outputs include a dedicated OVERLAP section: evaluation/nedc_eeg_eval/nedc_scoring/output/results/summary.txt
+  (search: "NEDC OVERLAP SCORING SUMMARY").
+- Our native scorer uses `OverlapScorer` and writes a compatible summary: evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py
+  (search: "native-overlap", "OverlapScorer").
+- Identical numbers for NEDC OVERLAP and Python OVERLAP are documented in
+  docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md.
 
 ---
 
 ## 4. SzCORE Any-Overlap (with Tolerances)
 
-### Definition (Ebenezer 2024)
-> "Any-overlap scoring with 30-second pre-ictal tolerance, 60-second post-ictal tolerance, and merging of events separated by less than 90 seconds."
+### Definition (SzCORE 2024)
+Any-overlap scoring with 30-second pre-ictal tolerance, 60-second post-ictal tolerance, and merging of events
+separated by less than 90 seconds.
+
+Repo source passages:
+- literature/markdown/SzCORE/SzCORE.md (lines ~544–559: pre-ictal/post-ictal tolerances and 90s merge rule).
 
 ### Mathematics
 ```
@@ -105,30 +136,34 @@ Then apply any-overlap scoring
 
 ---
 
-## 5. Other Scoring Methods in NEDC v6.0.0
+## 5. Other NEDC v6.0.0 Summaries Present in Our Runs
 
-### IEC (Inter-Event Correlation)
-- Correlation-based scoring
-- Less commonly used
+- DP ALIGNMENT (sequence alignment–based summary)
+- EPOCH (sample/epoch-based confusion matrix and rates)
+- INTER-RATER AGREEMENT (Kappa)
 
-### AAM (Affiliation Marker)
-- Assignment-based scoring
-- Research applications
-
-### Note on NEDC Suite
-NEDC v6.0.0 ships with all 5 scoring modalities, but OVLP and TAES are most relevant for our analysis.
+Repo source:
+- evaluation/nedc_eeg_eval/nedc_scoring/output/results/summary.txt contains sections:
+  "NEDC DP ALIGNMENT SCORING SUMMARY", "NEDC EPOCH SCORING SUMMARY",
+  "NEDC OVERLAP SCORING SUMMARY", "NEDC TAES SCORING SUMMARY",
+  and "NEDC INTER-RATER AGREEMENT SUMMARY".
 
 ---
 
 ## Critical Insights
 
-### The 12× Difference
-Same predictions on TUSZ yield:
-- NEDC TAES: 144.28 FA/24h
+### The Scoring Impact (documented in-repo)
+Same predictions on TUSZ (paper defaults) yield:
 - NEDC OVERLAP: 100.06 FA/24h
+- Python OVERLAP: 100.06 FA/24h (parity)
 - SzCORE: 8.46 FA/24h
 
-**This 17× spread is from scoring alone, not model performance.**
+Ratios for context:
+- OVERLAP vs SzCORE: 100.06 / 8.46 ≈ 11.8×
+- TAES is stricter than OVERLAP and yields higher FA/24h; see canonical table for exact values.
+
+Repo source:
+- docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md (canonical 4×3 results; no merge_gap).
 
 ### Why This Matters
 1. **Clinical Deployment**: 10 FA/24h threshold determines viability
@@ -151,6 +186,9 @@ Always report multiple scoring methods:
 and 52.35% sensitivity @ 8.46 FA/24h (SzCORE)"
 ```
 
+Repo source for the above numbers:
+- docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md (Default operating point section).
+
 ### Context Matters
 - Training dataset → Use its standard scorer
 - Clinical deployment → Consider tolerances
@@ -164,13 +202,16 @@ and 52.35% sensitivity @ 8.46 FA/24h (SzCORE)"
 ## Quote Bank for Paper
 
 ### On OVLP Being Permissive
-> "OVLP is considered a very permissive way of scoring" - Picone 2021
+> "OVLP is considered a very permissive way of scoring..." — Picone 2021
+  (literature/markdown/picone-evaluation/picone-2021-objective-evaluation-metrics.md; search: "Any-Overlap Method (OVLP)").
 
 ### On TAES Motivation
-> "TAES was proposed as an alternative to address limitations" - Picone 2021
+> "[We] introduce... Time-Aligned Event Scoring (TAES), that accounts for the temporal alignment of the hypothesis to the reference annotation." — Picone 2021
+  (literature/markdown/picone-evaluation/picone-2021-objective-evaluation-metrics.md; search: "Time-Aligned Event Scoring (TAES)").
 
 ### On Clinical Tolerances
-> "30-second pre-ictal tolerance allows for early warning systems" - SzCORE
+> "We advise a 30 seconds pre-ictal tolerance... a 60 seconds post-ictal tolerance... [and] merging events separated by less than 90 seconds" — SzCORE 2024
+  (literature/markdown/SzCORE/SzCORE.md lines ~544–559).
 
 ### On Standardization Need
 > "The lack of standardized evaluation metrics hampers progress" - Ward 2019
@@ -190,6 +231,17 @@ and 52.35% sensitivity @ 8.46 FA/24h (SzCORE)"
 - "Papers using SzCORE are inflating numbers" (accusatory)
 
 ### Cutting but Fair Language
-- "The 12× difference in reported false alarms stems entirely from scoring methodology"
+- "The ~12× difference in reported false alarms (OVERLAP vs SzCORE) stems from scoring methodology"
 - "Without transparent reporting of scoring methods, performance claims lack context"
 - "Clinical viability conclusions depend critically on evaluation standard chosen"
+
+---
+
+## Pointers to Code and Outputs in This Repo
+- NEDC integration and native OVERLAP scorer:
+  - evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py (search: "native-overlap", "OverlapScorer")
+  - evaluation/nedc_eeg_eval/nedc_scoring/convert_predictions.py (CSV_bi conversion)
+- Example NEDC summary with all sections (DP ALIGNMENT, EPOCH, OVERLAP, TAES, IRA):
+  - evaluation/nedc_eeg_eval/nedc_scoring/output/results/summary.txt
+- Canonical, merge_gap-free results (4 scorers × 3 operating points):
+  - docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md

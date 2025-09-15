@@ -10,10 +10,12 @@ TUSZ v2.0.3 is the largest public seizure dataset with carefully designed patien
 
 ### Scale and Scope
 - **Total Size**: 3,050 hours of continuous EEG
-- **Patients**: 642 unique subjects
-- **Seizures**: ~4,000 events
-- **Files**: 3,435 EDF recordings
+- **Patients**: 642 unique subjects (675 total in v2.0.3)
+- **Seizures**: 3,964 events (from CSV_BI files)
+- **Files**: 7,364 EDF recordings total
 - **Annotations**: Board-certified neurologists
+
+**Source**: `/data/tusz/AAREADME.txt` lines 157-227
 
 ### Clinical Context
 - **Source**: Temple University Hospital
@@ -29,9 +31,12 @@ TUSZ v2.0.3 is the largest public seizure dataset with carefully designed patien
 
 | Split | Files | Hours | Patients | Seizures | Purpose |
 |-------|-------|-------|----------|----------|---------|
-| **Train** | 1,557 | 1,984 | 329 | ~2,900 | Model training |
-| **Dev** | 1,013 | 1,015 | 106 | ~920 | Hyperparameter tuning |
-| **Eval** | 865 | 127.6 | 207 | 469 | **Held-out testing** |
+| **Train** | 4,667 | 910.3 | 579 | 2,420 | Model training |
+| **Dev** | 1,832 | 435.5 | 53 | 1,075 | Hyperparameter tuning |
+| **Eval** | 865 | 127.7 | 43 | 469 | **Held-out testing** |
+
+**Source**: `/data/tusz/AAREADME.txt` lines 157-227 (file counts, seizure counts)
+**Hours calculated**: lines 230-236 (duration in seconds / 3600)
 
 ### Critical Design Feature
 ```
@@ -75,9 +80,11 @@ These annotation principles directly inform NEDC's scoring design - they're matc
 ### What Happens
 ```
 SeizureTransformer Training:
-- TUSZ train subset (~910 hours)
+- TUSZ v1.5.2 train subset (~910 hours)
 - Siena dataset (128 hours)
 - Total: ~1,038 hours
+
+**Source**: Wu et al. 2025 paper, Section 3.1
 
 EpilepsyBench Display:
 - TUSZ: 🚂 (no metrics shown)
@@ -96,6 +103,9 @@ Result: No one knows true TUSZ performance
 #### Our Contribution
 **We perform this missing evaluation, revealing 100.06 FA/24h**
 
+**Source**: `/docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md` line 36
+**Location**: `/experiments/eval/baseline/CLEAN_NO_MERGE/DEFAULT/`
+
 ### Professional Interpretation
 While EpilepsyBench's caution about training data is understandable, it overlooks the careful split design that enables valid held-out evaluation.
 
@@ -109,9 +119,14 @@ While EpilepsyBench's caution about training data is understandable, it overlook
 Files processed: 864/865 (99.88%)
 Failed files: 1 (format error)
 Total seizures: 469
-Total hours: 127.6
+Total hours: 127.7 (459,713 seconds)
 Seizure rate: 3.68 per hour
 ```
+
+**Source**:
+- File processing: `/experiments/eval/baseline/checkpoint.pkl` (865 files, 1 failed)
+- Seizure count: `/data/tusz/AAREADME.txt` line 226
+- Duration: `/data/tusz/AAREADME.txt` line 235
 
 ### Seizure Distribution
 ```
@@ -245,9 +260,13 @@ Gap: 10× higher than expected
 > "Annotations by board-certified neurologists"
 > "Largest publicly available seizure dataset"
 
+**Source**: `/literature/markdown/tusz/shah-2018-tusz-book-chapter.md`
+
 ### From TUSZ Documentation
 > "Eval set reserved for final testing only"
 > "No patient overlap between splits"
+
+**Source**: `/data/tusz/AAREADME.txt` lines 66-70
 
 ### For Our Paper
 - "First evaluation on TUSZ eval with clinical scoring"
