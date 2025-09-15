@@ -53,6 +53,12 @@ python evaluation/tusz/run_tusz_eval.py \
 # Run NEDC pipeline
 cd evaluation/nedc_eeg_eval/nedc_scoring
 make all CHECKPOINT=../../experiments/eval/my_experiment/checkpoint.pkl
+
+# Or directly, with explicit FA reporting policy
+python run_nedc.py \
+  --checkpoint ../../experiments/eval/my_experiment/checkpoint.pkl \
+  --outdir ../../experiments/eval/my_experiment/nedc_results \
+  --fa_reporting seiz  # choices: seiz | total | both (default: seiz)
 ```
 
 ### Sweep Operating Points

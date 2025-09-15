@@ -4,7 +4,7 @@
 **Dataset**: TUSZ v2.0.3 EVAL split (865 files)
 **Scoring**: NEDC v6.0.0 (Temple University Standard)
 
-Note on FA/24h definitions: TAES entries use the SEIZ label’s “False Alarm Rate”; OVERLAP entries use the OVERLAP section’s “Total False Alarm Rate” (SEIZ + BCKG). See SCORING_FA_DEFINITIONS.md for details and options to align FA semantics across scorers.
+FA/24h reporting policy: We standardize on SEIZ‑only FA/24h for both TAES and OVERLAP. The pipeline now supports this (`--fa_reporting seiz`). Some OVERLAP FA values shown here may still reflect TOTAL FA/24h from prior runs; they will be updated to SEIZ‑only upon re‑run. See SCORING_FA_DEFINITIONS.md.
 
 ---
 

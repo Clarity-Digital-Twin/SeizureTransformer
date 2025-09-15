@@ -24,16 +24,14 @@ Reporting policy (to avoid apples‑to‑oranges)
   - FA/24h (SEIZ)
   - FA/24h (TOTAL)
 
-What we use in current root tables
-- FINAL_COMPLETE_RESULTS.md now includes a note that merge_gap is disabled and numbers are verified.
-- The current FA/24h entries are taken directly from the NEDC summaries as follows:
-  - TAES: SEIZ label’s “False Alarm Rate”.
-  - OVERLAP: OVERALL “Total False Alarm Rate”.
-- This choice explains why OVERLAP FA/24h appears higher than TAES.
+Chosen reporting policy (effective now)
+- Primary: SEIZ‑only FA/24h for both TAES and OVERLAP.
+- Optional: For OVERLAP, we may also show TOTAL FA/24h (SEIZ+BCKG) as a secondary transparency field.
+- Implementation: `run_nedc.py` now supports `--fa_reporting {seiz,total,both}` and computes SEIZ‑only FA/24h for OVERLAP by scoring list files with the native OVERLAP scorer.
 
 If you need strict apples‑to‑apples
-- Use the SEIZ‑only FA/24h for both TAES and OVERLAP (ignore OVERLAP’s TOTAL line), or add both columns explicitly.
-- Our native Python OVERLAP (seizure_evaluation/ovlp) also exposes BCKG false alarms, allowing SEIZ‑only and TOTAL to be computed consistently.
+- Use SEIZ‑only FA/24h for both TAES and OVERLAP (default).
+- Optionally add TOTAL for OVERLAP when you want to reflect background as well.
 
 Quick extraction tips
 - TAES (SEIZ): grep the TAES section for “LABEL: SEIZ” and extract “False Alarm Rate: … per 24 hours”.
@@ -43,4 +41,3 @@ Quick extraction tips
 Bottom line
 - TAES is stricter and typically yields lower sensitivity compared to OVERLAP.
 - FA/24h can look inconsistent if you compare TAES (SEIZ‑only) vs OVERLAP (TOTAL). Align definitions to compare fairly.
-
