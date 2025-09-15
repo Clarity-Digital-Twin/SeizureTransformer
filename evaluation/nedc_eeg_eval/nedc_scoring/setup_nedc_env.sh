@@ -33,4 +33,4 @@ fi
 
 echo ""
 echo "Environment ready. You can now run:"
-echo "  python evaluation/nedc_scoring/run_nedc.py"
+echo "  python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py"

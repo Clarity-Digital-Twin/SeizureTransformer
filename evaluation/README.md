@@ -18,9 +18,6 @@ evaluation/
 ├── tusz/                   # TUSZ dataset evaluation scripts
 │   └── run_tusz_eval.py    # Main evaluation script (generates checkpoints)
 │
-├── siena/                  # Siena dataset tools
-│   └── download_siena.sh  # Download Siena EEG dataset
-│
 ├── utils/                  # Shared evaluation utilities
 │   ├── monitor_evaluation.sh    # Monitor running evaluations
 │   └── enhance_evaluation_robustness.py # Add robustness improvements

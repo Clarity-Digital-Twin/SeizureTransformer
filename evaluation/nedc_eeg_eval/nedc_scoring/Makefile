@@ -5,14 +5,14 @@
 
 # Default checkpoint path
 CHECKPOINT ?= experiments/eval/baseline/checkpoint.pkl
-OUTDIR ?= evaluation/nedc_scoring/output
+OUTDIR ?= evaluation/nedc_eeg_eval/nedc_scoring/output
 
 all: test convert score
 	@echo "Complete NEDC evaluation pipeline finished"
 
 test:
-	@echo "Running pipeline tests..."
-	python evaluation/nedc_scoring/test_pipeline.py
+    @echo "Running pipeline tests..."
+    python test_pipeline.py
 
 convert:
 	@echo "Converting predictions to NEDC format..."
@@ -27,10 +27,10 @@ score:
 		--score-only
 
 clean:
-	@echo "Cleaning output directories..."
-	rm -rf evaluation/nedc_scoring/output
-	rm -rf evaluation/nedc_scoring/test_output
-	rm -rf evaluation/nedc_scoring/__pycache__
+    @echo "Cleaning output directories..."
+    rm -rf evaluation/nedc_eeg_eval/nedc_scoring/output
+    rm -rf evaluation/nedc_eeg_eval/nedc_scoring/test_output
+    rm -rf evaluation/nedc_eeg_eval/nedc_scoring/__pycache__
 
 help:
 	@echo "NEDC Evaluation Pipeline Makefile"
@@ -46,7 +46,7 @@ help:
 	@echo ""
 	@echo "Variables:"
 	@echo "  CHECKPOINT - Path to checkpoint.pkl (default: experiments/eval/baseline/checkpoint.pkl)"
-	@echo "  OUTDIR     - Output directory (default: evaluation/nedc_scoring/output)"
+    @echo "  OUTDIR     - Output directory (default: evaluation/nedc_eeg_eval/nedc_scoring/output)"
 	@echo ""
 	@echo "Examples:"
 	@echo "  make all"
