@@ -144,7 +144,9 @@ class DataValidator:
             return False
 
         # Check if channels match TUSZ pattern (case-insensitive)
-        for i, (actual, expected) in enumerate(zip(channels, self.TUSZ_CHANNEL_PATTERNS, strict=False)):
+        for i, (actual, expected) in enumerate(
+            zip(channels, self.TUSZ_CHANNEL_PATTERNS, strict=False)
+        ):
             actual_clean = actual.upper().replace("EEG ", "").replace("-REF", "").replace("-LE", "")
             if actual_clean != expected:
                 if self.verbose:

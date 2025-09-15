@@ -30,7 +30,7 @@ from epilepsy2bids.eeg import Eeg  # noqa: E402
 from wu_2025.utils import get_dataloader, load_models  # noqa: E402
 
 
-def process_single_file(edf_path, model, device):
+def process_single_file(edf_path, model, device, batch_size: int = 512):
     """Process one EDF file and return (predictions, seq_len) or (None, error)."""
     try:
         # Load EDF - use simple loadEdf like original
@@ -44,7 +44,7 @@ def process_single_file(edf_path, model, device):
             return None, f"Wrong channels: {data.shape[0]}"
 
         # Get predictions
-        dataloader = get_dataloader(data, fs=fs, batch_size=1)
+        dataloader = get_dataloader(data, fs=fs, batch_size=batch_size)
         predictions = []
 
         with torch.no_grad():
@@ -125,6 +125,12 @@ def main():
         choices=["auto", "cpu", "cuda"],
         help="Device to run inference (auto selects cuda if available)",
     )
+    parser.add_argument(
+        "--batch_size",
+        type=int,
+        default=512,
+        help="Batch size for inference (use lower for memory-constrained systems)",
+    )
     args = parser.parse_args()
     print("=" * 60)
     print("SeizureTransformer TUSZ Evaluation v2 (Bulletproof)")
@@ -179,7 +185,9 @@ def main():
             continue
 
         # Process file
-        predictions, error = process_single_file(edf_path, model, device)
+        predictions, error = process_single_file(
+            edf_path, model, device, batch_size=args.batch_size
+        )
 
         # Load labels
         seizure_events = load_labels_for_file(edf_path)

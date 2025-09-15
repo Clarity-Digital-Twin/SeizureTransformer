@@ -35,7 +35,8 @@ RUN pip install --no-cache-dir \
     pandas>=2.0.0 \
     matplotlib>=3.7.0 \
     mne>=1.5.0 \
-    tqdm>=4.65.0
+    tqdm>=4.65.0 \
+    pyedflib>=0.1.30
 
 # ==============================================================================
 # Stage 2: Runtime - Minimal production image
@@ -60,6 +61,7 @@ WORKDIR /app
 COPY --chown=seizure:seizure wu_2025/ /app/wu_2025/
 COPY --chown=seizure:seizure evaluation/ /app/evaluation/
 COPY --chown=seizure:seizure scripts/ /app/scripts/
+COPY --chown=seizure:seizure docker/entrypoint.py /app/entrypoint.py
 COPY --chown=seizure:seizure pyproject.toml README.md /app/
 
 # Install packages in editable mode for proper imports
@@ -74,49 +76,8 @@ ENV MODEL_PATH="/app/wu_2025/src/wu_2025/model.pth"
 # Switch to non-root user
 USER seizure
 
-# Create entrypoint script that routes to correct pipeline
-RUN echo '#!/usr/bin/env python3' > /app/entrypoint.py && \
-    echo 'import sys' >> /app/entrypoint.py && \
-    echo 'import os' >> /app/entrypoint.py && \
-    echo 'import subprocess' >> /app/entrypoint.py && \
-    echo 'from pathlib import Path' >> /app/entrypoint.py && \
-    echo '' >> /app/entrypoint.py && \
-    echo 'def main():' >> /app/entrypoint.py && \
-    echo '    if len(sys.argv) < 2:' >> /app/entrypoint.py && \
-    echo '        print("SeizureTransformer Docker Container")' >> /app/entrypoint.py && \
-    echo '        print("="*50)' >> /app/entrypoint.py && \
-    echo '        print("Usage modes:")' >> /app/entrypoint.py && \
-    echo '        print("  eval     - Run TUSZ evaluation pipeline (recommended)")' >> /app/entrypoint.py && \
-    echo '        print("  nedc     - Run NEDC scoring on predictions")' >> /app/entrypoint.py && \
-    echo '        print("  convert  - Convert predictions to NEDC format")' >> /app/entrypoint.py && \
-    echo '        print("  wu       - Wu original CLI (fails on TUSZ/Siena)")' >> /app/entrypoint.py && \
-    echo '        print()' >> /app/entrypoint.py && \
-    echo '        print("Example: docker run -v ./data:/data st:latest eval --help")' >> /app/entrypoint.py && \
-    echo '        sys.exit(0)' >> /app/entrypoint.py && \
-    echo '' >> /app/entrypoint.py && \
-    echo '    mode = sys.argv[1]' >> /app/entrypoint.py && \
-    echo '    args = sys.argv[2:]' >> /app/entrypoint.py && \
-    echo '' >> /app/entrypoint.py && \
-    echo '    if mode == "eval":' >> /app/entrypoint.py && \
-    echo '        cmd = ["python", "/app/evaluation/tusz/run_tusz_eval.py"] + args' >> /app/entrypoint.py && \
-    echo '    elif mode == "nedc":' >> /app/entrypoint.py && \
-    echo '        cmd = ["python", "/app/evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py"] + args' >> /app/entrypoint.py && \
-    echo '    elif mode == "convert":' >> /app/entrypoint.py && \
-    echo '        cmd = ["python", "/app/evaluation/nedc_eeg_eval/nedc_scoring/convert_predictions.py"] + args' >> /app/entrypoint.py && \
-    echo '    elif mode == "wu":' >> /app/entrypoint.py && \
-    echo '        print("WARNING: Wu CLI requires exact electrode names (Fp1, F3, etc)")' >> /app/entrypoint.py && \
-    echo '        print("         Will fail on TUSZ/Siena data.")' >> /app/entrypoint.py && \
-    echo '        cmd = ["python", "-m", "wu_2025"] + args' >> /app/entrypoint.py && \
-    echo '    else:' >> /app/entrypoint.py && \
-    echo '        print(f"Unknown mode: {mode}")' >> /app/entrypoint.py && \
-    echo '        sys.exit(1)' >> /app/entrypoint.py && \
-    echo '' >> /app/entrypoint.py && \
-    echo '    result = subprocess.run(cmd)' >> /app/entrypoint.py && \
-    echo '    sys.exit(result.returncode)' >> /app/entrypoint.py && \
-    echo '' >> /app/entrypoint.py && \
-    echo 'if __name__ == "__main__":' >> /app/entrypoint.py && \
-    echo '    main()' >> /app/entrypoint.py && \
-    chmod +x /app/entrypoint.py
+# Ensure entrypoint is executable
+RUN chmod +x /app/entrypoint.py
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
