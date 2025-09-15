@@ -1,7 +1,7 @@
 # ⚠️ NOTE – Scratch log; see FINAL_COMPREHENSIVE_RESULTS_TABLE.md
 
 This file captured an intermediate run (OVERLAP only). For the complete and authoritative results across all scoring methods and operating points, see:
-- `FINAL_COMPREHENSIVE_RESULTS_TABLE.md`
+- `docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md`
 
 # SCORES I JUST GOT - NO MERGE GAP
 

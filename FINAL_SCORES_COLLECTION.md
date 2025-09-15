@@ -1,8 +1,8 @@
 # ⚠️ SUPERSEDED – See FINAL_COMPREHENSIVE_RESULTS_TABLE.md
 
 Results below were part of reconciliation notes and include inconsistent FA rates. For canonical numbers and tables, use:
-- `FINAL_COMPREHENSIVE_RESULTS_TABLE.md`
-- `PARAMETER_TUNING_METHODOLOGY.md`
+- `docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md`
+- `docs/evaluation/PARAMETER_TUNING_METHODOLOGY.md`
 
 # FINAL SCORES COLLECTION - SYSTEMATIC RECORDING
 

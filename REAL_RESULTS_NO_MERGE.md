@@ -1,6 +1,6 @@
 # 🔴 REAL RESULTS - NO MERGE_GAP (NO CHEATING)
 
-For the full 4×3 results across all scoring methods and operating points, see `FINAL_COMPREHENSIVE_RESULTS_TABLE.md`.
+For the full 4×3 results across all scoring methods and operating points, see `docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md`.
 
 **Date**: September 15, 2025, 3:30 AM  
 **Dataset**: TUSZ v2.0.3 EVAL split  

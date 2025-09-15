@@ -1,6 +1,6 @@
 # ALL REAL SCORES - NO MERGE GAP (HONEST NUMBERS)
 
-Authoritative table: `FINAL_COMPREHENSIVE_RESULTS_TABLE.md` (4 scoring methods × 3 operating points). This file mirrors those numbers in a compact view.
+Authoritative table: `docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md` (4 scoring methods × 3 operating points). This file mirrors those numbers in a compact view.
 
 ## DEFAULT (thr=0.8, kernel=5, min_dur=2.0)
 
