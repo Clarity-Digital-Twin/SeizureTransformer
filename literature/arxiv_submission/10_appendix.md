@@ -85,6 +85,8 @@ Our Python implementation achieved perfect parity with NEDC binary:
 | Files without Seizures | 584 (67.5%) |
 | Seizures per File (when present) | 1.67 ± 1.82 |
 
+Note: All statistics in Tables D1–D2 are computed from the eval split annotations and durations; see `docs/results/*` for derivations and checks.
+
 ### Table D2: Seizure Type Distribution
 | Seizure Type | Count | Percentage |
 |---|---|---|
