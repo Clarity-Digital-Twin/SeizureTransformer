@@ -61,6 +61,8 @@ SzCORE ← NEDC OVERLAP ← NEDC TAES
 #### 3.1 Evaluation Pipeline
 - Model: Wu et al.'s pretrained SeizureTransformer
 - Dataset: TUSZ v2.0.3 eval split (patient-disjoint)
+- Dataset: TUSZ v2.0.3 eval split (patient-disjoint)
+  - Note on Siena: Used as part of training in the original paper; no official splits. We therefore treat Siena results as descriptive only (not held-out) and do not use Siena to claim generalization.
 - Scorers: NEDC v6.0.0 binaries + Python reimplementation
 
 #### 3.2 Parameter Tuning Protocol

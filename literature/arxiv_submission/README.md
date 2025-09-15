@@ -22,6 +22,11 @@ This directory contains materials for our arXiv preprint revealing the 100-fold 
 
 All other docs and outlines must align to the facts and numbers in these five core documents (e.g., 865 files, 469 seizures, 127.7 hours; NEDC OVERLAP 100.06 FA/24h; SzCORE 8.46 FA/24h; ≈12× difference OVERLAP vs SzCORE; ≈16× TAES vs SzCORE).
 
+### Siena dataset policy
+- Siena Scalp EEG Database is used in training by Wu et al. and has no official train/dev/eval splits in its public release.
+- Any results we report on Siena with the authors’ pretrained weights are in‑sample diagnostics only and are not comparable to held‑out TUSZ eval results.
+- See `SIENA_EVALUATION_NOTES.md` for details and evaluation guidance.
+
 ### Narrative Elements
 - **The Hook**: 1 FA/24h claimed → 100 FA/24h reality (100× gap)
 - **The Discovery**: Scoring alone causes 12× difference

@@ -69,6 +69,12 @@ Training data:
 - Siena Scalp EEG Database (~128 hours)
 - Resampled to 256 Hz; 19‑channel 10–20 montage alignment
 
+#### Important note on Siena usage
+- The Siena Scalp EEG Database, as distributed, does not ship with official train/dev/eval splits.
+- Wu et al. concatenate 60‑second windows from TUSZ train and the full Siena dataset for training.
+- Implication: Any evaluation reported on Siena using the authors’ pretrained weights is in‑sample and not a held‑out test.
+  - If shown, Siena results must be labeled as descriptive only (not comparable to held‑out TUSZ eval metrics).
+
 Construction and sampling:
 - 60‑second windows (15360 samples); 75% overlap during dataset construction
 - Class‑balanced sampling across no‑seizure, partial‑seizure, full‑seizure windows
