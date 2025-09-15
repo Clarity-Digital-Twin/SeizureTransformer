@@ -120,7 +120,7 @@ save_results_table(results)
 
 ## 📋 Results Tracking Table
 
-Results will be tracked in `TUNING_RESULTS.md`:
+Results will be tracked in `TUNING_RESULTS_TRACKER.md`:
 
 | Params | TAES Sen/FA | Overlap Temple Sen/FA | Overlap Native Sen/FA | SzCORE Sen/FA | Best For (Exact FA) |
 |--------|-------------|----------------------|----------------------|---------------|--------------------|

@@ -66,6 +66,8 @@ TUSZ annotations were created by Temple University following specific clinical g
 
 **†Important Note**: Clinical operating points (10/2.5/1 FA targets) require retuning. Initial parameter selection led to incorrect FA rates due to morphological kernel behavior. See `PARAMETER_TUNING_ANALYSIS.md` for details. Default parameters from the paper are verified correct.
 
+We record the exact FA/24h achieved for tuned points (e.g., “~10 FA (10.2)”). See `TUNING_RESULTS_TRACKER.md` and `experiments/eval/baseline/COMPREHENSIVE_SWEEP_README.md`.
+
 ### Key Metrics (NEDC v6.0.0)
 - **Scoring**: NEDC v6.0.0 TAES/OVERLAP (Temple's official metrics for TUSZ)
 - **Default**: We report TAES by default (strictest clinical standard)

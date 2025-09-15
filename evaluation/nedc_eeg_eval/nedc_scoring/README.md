@@ -6,14 +6,13 @@ This directory contains our integration scripts for using NEDC evaluation tools 
 
 ```
 evaluation/
-├── nedc_eeg_eval/         # Official NEDC software from Temple (v6.0.0)
-│   └── v6.0.0/            # Unmodified NEDC tools
-├── nedc_scoring/          # Our integration scripts (this folder)
-│   ├── convert_predictions.py  # Convert checkpoint to NEDC CSV_bi format
-│   │                           # (also generates ref.list / hyp.list)
-│   ├── post_processing.py      # Threshold + morph ops + eventization
-│   └── run_nedc.py             # Run NEDC scorer and parse outputs
-└── tusz/                  # TUSZ-specific evaluation
+├── nedc_eeg_eval/                 # Official NEDC software from Temple (v6.0.0)
+│   └── v6.0.0/                    # Unmodified NEDC tools
+└── nedc_eeg_eval/nedc_scoring/    # Our integration scripts (this folder)
+    ├── convert_predictions.py     # Convert checkpoint to NEDC CSV_bi format
+    │                              # (also generates ref.list / hyp.list)
+    ├── post_processing.py         # Threshold + morph ops + eventization
+    └── run_nedc.py                # Run NEDC scorer and parse outputs
 ```
 
 ## Workflow

@@ -56,7 +56,7 @@ Currently we only report TAES metrics in our README, but we could:
 - ✅ All 5 metrics are computed automatically by `evaluation/nedc_eeg_eval/v6.0.0/bin/nedc_eeg_eval`
 - ✅ Results stored in `evaluation/nedc_eeg_eval/nedc_scoring/output/results/summary.txt`
 - ✅ Our pipeline (`evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py`) runs the full suite
-- 🔄 Currently only TAES is extracted and reported in our analysis
+- ✅ We extract OVERLAP metrics explicitly and duplicate to `taes` for backward-compat; TAES remains our default reported clinical metric
 
 ## Citation
 

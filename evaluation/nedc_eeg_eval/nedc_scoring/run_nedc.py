@@ -158,7 +158,8 @@ def run_nedc_scorer(
             print(f"Error: NEDC binary not found at {nedc_binary}")
             return 1
 
-        cmd = [str(nedc_binary), str(ref_list), str(hyp_list), "-o", str(results_dir)]
+        # FIX: Add python3 interpreter since nedc_eeg_eval is a Python script not a binary
+        cmd = ["python3", str(nedc_binary), str(ref_list), str(hyp_list), "-o", str(results_dir)]
 
         print(f"Running: {' '.join(cmd)}")
         print(f"Results will be saved to: {results_dir}")
