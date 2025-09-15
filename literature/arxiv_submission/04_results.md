@@ -39,14 +39,14 @@ We optimized parameters on the development set to target clinical false alarm th
 
 3. **Implementation Parity**: Our Native OVERLAP implementation achieved identical results to Temple's official NEDC binaries, validating our pipeline.
 
-4. **AUROC Performance**: We measured AUROC of 0.9019, slightly exceeding the paper's reported 0.876.
+4. **AUROC Performance**: We measured AUROC of 0.9021, slightly exceeding the paper's reported 0.876.
 
 ## Data Integrity
 
 All evaluations used:
-- 865 files from TUSZ v2.0.3 eval set (462,731 seconds)
+- 865 files from TUSZ v2.0.3 eval set (127.7 hours)
 - No data leakage (completely held-out test set)
 - Identical post-processing across all scorers
-- merge_gap=0 (no event merging) for NEDC compliance
+- merge_gap disabled (no event merging) for NEDC compliance
 
 Figure 1 illustrates the performance spectrum across scoring methods, while Figure 3 shows operating points relative to clinical deployment zones.
