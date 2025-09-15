@@ -4,6 +4,11 @@
 ### Executive Summary
 SeizureTransformer represents a significant advance in seizure detection architecture, winning the 2025 EpilepsyBench Challenge. Our evaluation uses the authors' pretrained weights without modification, ensuring fair assessment of their published claims.
 
+Sources in repo:
+- Paper (markdown extract): `literature/markdown/seizure_transformer/SeizureTransformer.md`
+- Model code: `wu_2025/src/wu_2025/`
+- Canonical results: `docs/status/SINGLE_SOURCE_OF_TRUTH.md`, `docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md`, `docs/results/BENCHMARK_RESULTS.md`
+
 ---
 
 ## Model Architecture (Wu et al. 2025)
@@ -27,51 +32,58 @@ Combines:
 - Shape: (19, 15360)  # 19 channels × 60s × 256Hz
 ```
 
+Repo confirmation: defaults in code — `SeizureTransformer(in_channels=19, in_samples=15360)` in `wu_2025/src/wu_2025/architecture.py`.
+
 #### Processing Pipeline
 ```
 Raw EDF (variable sample rate)
-    ↓ Resample to 256 Hz
-    ↓ Bandpass filter (0.5-120 Hz)
-    ↓ Notch filter (60 Hz)
-    ↓ Z-score normalization
-    ↓ 60-second windows
-SeizureTransformer
-    ↓ Per-sample probabilities [0,1]
-Output: (15360,) probability vector
+    ↓ Z-score per‑channel (mean/std)
+    ↓ Resample to 256 Hz (if needed)
+    ↓ Bandpass filter (0.5–120 Hz)
+    ↓ Notch filters (1 Hz and 60 Hz)
+    ↓ 60-second windows (no overlap)
+SeizureTransformer (U‑Net + Transformer)
+    ↓ Per‑sample probabilities [0,1]
+Post‑processing
+    ↓ Threshold 0.8 → binary
+    ↓ Morphological opening/closing (kernel=5)
+    ↓ Remove events < 2.0 s
+Output: binary seizure mask (length = n_samples)
 ```
 
+Repo confirmation: preprocessing, dataloader, and post‑processing are implemented in `wu_2025/src/wu_2025/utils.py`.
+
 ### Model Parameters
-- **Size**: 168MB (model.pth)
-- **Parameters**: ~42M trainable parameters
-- **Inference Speed**: ~0.5 seconds per 60-second window (GPU)
-- **Memory**: 4GB GPU recommended
+- Size: 169 MB (`wu_2025/src/wu_2025/model.pth`)
+- Parameters: ~41.0M (computed from `architecture.py`)
+- Inference speed and memory: environment dependent; not asserted here
 
 ---
 
 ## Training Details (From Paper)
 
-### Dataset
-```
-Training Data:
-- TUSZ v1.5.2 subset (~910 hours)
-- Siena Scalp EEG Database (128 hours)
-- Total: ~1,038 hours
+Paper (repo extract): `literature/markdown/seizure_transformer/SeizureTransformer.md`
 
-Validation:
-- TUSZ dev split (patient-disjoint)
-```
+Training data:
+- TUSZ v2.0.3 predefined train set (~910 hours)
+- Siena Scalp EEG Database (~128 hours)
+- Resampled to 256 Hz; 19‑channel 10–20 montage alignment
+
+Construction and sampling:
+- 60‑second windows (15360 samples); 75% overlap during dataset construction
+- Class‑balanced sampling across no‑seizure, partial‑seizure, full‑seizure windows
 
 ### Training Protocol
-- **Optimizer**: AdamW
-- **Learning Rate**: 1e-4 with cosine annealing
-- **Batch Size**: 32
-- **Epochs**: 100 (early stopping)
-- **Loss**: Weighted binary cross-entropy
+- Optimizer: RAdam
+- Learning rate: 1e‑3
+- Weight decay: 2e‑5
+- Batch size: 256
+- Dropout (drop_rate): 0.1
+- Loss: Binary cross‑entropy
+- Epochs: 100 with early stopping (no val‑improve over 12 epochs)
 
-### Data Augmentation
-- Time shifting
-- Amplitude scaling
-- Gaussian noise injection
+### Data Construction Notes
+- The paper emphasizes windowing strategy and class balancing; no explicit data augmentation procedures are specified in the repo extract.
 
 ---
 
@@ -84,8 +96,10 @@ Validation:
 | VHMUH | 42% | 2.3 | 48% |
 | FNUSA | 35% | 1.8 | 41% |
 
+Source: Table I in `literature/markdown/seizure_transformer/SeizureTransformer.md` (FP per day = FA/24h).
+
 ### Key Claim
-> "Achieved state-of-the-art performance with 37% sensitivity at 1 FA/24h on Dianalund dataset"
+"Achieved state‑of‑the‑art performance with 37% sensitivity at 1 FA/24h on Dianalund dataset" — supported by the above table.
 
 ---
 
@@ -99,30 +113,37 @@ Validation:
 2. **Reproducibility**: Anyone can download same weights
 3. **Focus**: Our contribution is evaluation, not model improvement
 
-### Simple Wrapper Design
+### Simple Wrapper Design (repo code)
 ```python
-class SeizureTransformerWrapper:
-    def __init__(self, model_path):
-        self.model = load_pretrained(model_path)
-        self.model.eval()  # Inference mode only
+from wu_2025.utils import load_models, get_dataloader, predict
+from epilepsy2bids.annotations import Annotations
+from epilepsy2bids.eeg import Eeg
 
-    def predict(self, edf_path):
-        # Load and preprocess
-        data = load_edf(edf_path)
-        data = preprocess(data)  # Their exact preprocessing
+def run_on_edf(edf_path, out_tsv):
+    eeg = Eeg.loadEdfAutoDetectMontage(edfFile=edf_path)
+    assert eeg.montage is Eeg.Montage.UNIPOLAR
 
-        # Run inference
-        with torch.no_grad():
-            probs = self.model(data)
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    model = load_models(device)
 
-        return probs  # Raw probabilities for scoring
+    # Preprocess (z‑score per channel; resample to 256 Hz; BP 0.5–120 Hz; notch 1 Hz & 60 Hz)
+    dl = get_dataloader(eeg.data, eeg.fs, batch_size=512, window_size=15360)
+
+    # Inference + post‑processing → binary mask
+    y_mask = predict(model, dl, device, seq_len=eeg.data.shape[1])
+
+    # Save annotations TSV
+    hyp = Annotations.loadMask(y_mask, eeg.fs)
+    hyp.saveTsv(out_tsv)
 ```
+Repo references: `wu_2025/src/wu_2025/main.py`, `wu_2025/src/wu_2025/utils.py`.
 
-### Post-Processing Parameters
-From paper defaults:
-- **Threshold**: 0.8
-- **Morphological Kernel**: 5 samples
-- **Minimum Duration**: 2.0 seconds
+### Post-Processing Parameters (paper defaults; implemented in repo)
+- Threshold: 0.8
+- Morphological opening/closing kernel: 5 samples
+- Minimum duration: 2.0 seconds
+
+Repo confirmation: `wu_2025/src/wu_2025/utils.py` (`predict`, `morphological_filter_1d`, `remove_short_events`).
 
 ---
 
@@ -143,6 +164,11 @@ From paper defaults:
 - **Never evaluated on TUSZ eval set** despite training on TUSZ
 - **FA rates depend entirely on scoring** (not model's fault)
 - **Clinical deployment gap** exists for all current models
+
+Repo context for scoring (defaults; no merge gap):
+- NEDC OVERLAP (Temple): 45.63% sensitivity, 100.06 FA/24h Total — `docs/status/SINGLE_SOURCE_OF_TRUTH.md`, `docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md`
+- SzCORE Any‑Overlap (EpilepsyBench): 52.35% sensitivity, 8.46 FA/24h — `docs/results/BENCHMARK_RESULTS.md`
+  - SzCORE tolerances/merge rules documented in `literature/markdown/SzCORE/SzCORE.md`.
 
 ---
 
@@ -167,51 +193,17 @@ From paper defaults:
 
 ## Technical Details for Methods Section
 
-### Preprocessing (Exact Replication)
+### Preprocessing and Inference (repo‑accurate)
 ```python
-def preprocess_edf(edf_path):
-    # 1. Load EDF
-    raw = mne.io.read_raw_edf(edf_path)
+def make_dataloader(eeg_data, fs):
+    # Z‑score per channel; resample to 256 Hz
+    return get_dataloader(eeg_data, fs, batch_size=512, window_size=15360)
 
-    # 2. Select 19 channels (TCP montage)
-    raw.pick_channels(TCP_CHANNELS)
-
-    # 3. Resample to 256 Hz
-    raw.resample(256)
-
-    # 4. Bandpass filter
-    raw.filter(0.5, 120, fir_design='firwin')
-
-    # 5. Notch filter
-    raw.notch_filter(60)
-
-    # 6. Z-score normalization
-    data = raw.get_data()
-    data = (data - data.mean()) / data.std()
-
-    return data
+def run_inference(model, dataloader, device, seq_len):
+    # Model outputs per‑sample probabilities; repo returns post‑processed mask
+    return predict(model, dataloader, device, seq_len)
 ```
-
-### Inference Pipeline
-```python
-def run_inference(model, edf_path):
-    # Preprocess
-    data = preprocess_edf(edf_path)
-
-    # Window extraction (60s, no overlap)
-    windows = extract_windows(data, window_sec=60)
-
-    # Run model
-    all_probs = []
-    for window in windows:
-        probs = model(window)
-        all_probs.append(probs)
-
-    # Concatenate
-    full_probs = np.concatenate(all_probs)
-
-    return full_probs
-```
+Signal conditioning per 60‑s window (inside dataset): 0.5–120 Hz bandpass, 1 Hz and 60 Hz notch — see `SeizureDataset.preprocess_clip` in `wu_2025/src/wu_2025/utils.py`.
 
 ---
 
@@ -231,6 +223,9 @@ def run_inference(model, edf_path):
 1. Training on TUSZ but not evaluating with NEDC is significant gap
 2. 100× difference between datasets highlights generalization challenge
 3. Clinical deployment requires dataset-matched evaluation
+
+FA/24h semantics note:
+- For NEDC and Python OVERLAP, FA/24h refers to Temple’s “Total False Alarm Rate” (SEIZ + BCKG) per v6.0.0 summaries; for SzCORE, FA/24h follows SzCORE’s event‑based definition. See `docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md`.
 
 ---
 
