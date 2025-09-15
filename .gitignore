@@ -90,9 +90,6 @@ docker-buildx
 *.list
 tests/fixtures/nedc/temple_results/
 tests/fixtures/nedc/nedc_output/
-evaluation/nedc_scoring/test_output/
-evaluation/nedc_eeg_eval/nedc_scoring/test_output/
-evaluation/nedc_scoring/output/
 experiments/
 
 # Reference repositories for analysis
