@@ -11,8 +11,8 @@
 ### ON EVAL SPLIT (Final Results):
 | Scoring Method | Sensitivity (%) | FA/24h | Source |
 |----------------|-----------------|--------|--------|
-| **NEDC Binary TAES** | 24.71% | 14.80 | experiments/eval/baseline/results_default_nedc_binary |
-| **NEDC Binary OVERLAP** | 45.63% | 13.92 | experiments/eval/baseline/results_default_nedc_binary |
+| **NEDC Binary TAES** | 24.15% | 27.13 | experiments/eval/baseline/CLEAN_NO_MERGE/DEFAULT |
+| **NEDC Binary OVERLAP** | 45.63% | 100.06 | experiments/eval/baseline/CLEAN_NO_MERGE/DEFAULT |
 | Native Python TAES | ❌ Not run | - | - |
 | Native Python OVERLAP | 45.63% | 100.06 | experiments/eval/baseline/paper_default_nedc |
 
@@ -25,26 +25,26 @@
 
 ---
 
-## 2️⃣ 10 FA/24h TARGET (thr=0.95, kernel=5, min_dur=2.0, gap=5.0)
+## 2️⃣ 10 FA/24h TARGET (thr=0.95, kernel=5, min_dur=2.0, gap=None)
 
 ### FROM DEV SWEEP:
 | Scoring Method | Sensitivity (%) | FA/24h | Status |
 |----------------|-----------------|--------|--------|
 | Native TAES | 13.67% | 9.97 | ✅ From sweep CSV |
-| NEDC Binary TAES | ❌ | - | Need to run |
-| NEDC Binary OVERLAP | ❌ | - | Need to run |
+| NEDC Binary TAES | 8.64% | 6.40 | CLEAN_NO_MERGE/10FA |
+| NEDC Binary OVERLAP | 23.45% | 39.50 | CLEAN_NO_MERGE/10FA |
 | Native OVERLAP | ❌ | - | Need to run |
 
 ---
 
-## 3️⃣ 2.5 FA/24h TARGET (thr=0.95, kernel=11, min_dur=8.0, gap=10.0)
+## 3️⃣ 2.5 FA/24h TARGET (thr=0.95, kernel=11, min_dur=8.0, gap=None)
 
 ### FROM DEV SWEEP:
 | Scoring Method | Sensitivity (%) | FA/24h | Status |
 |----------------|-----------------|--------|--------|
 | Native TAES | 8.19% | 2.48 | ✅ From sweep CSV |
-| NEDC Binary TAES | ❌ | - | Need to run |
-| NEDC Binary OVERLAP | ❌ | - | Need to run |
+| NEDC Binary TAES | 4.07% | 1.51 | CLEAN_NO_MERGE/2.5FA |
+| NEDC Binary OVERLAP | 11.51% | 8.09 | CLEAN_NO_MERGE/2.5FA |
 | Native OVERLAP | ❌ | - | Need to run |
 
 ---
@@ -67,7 +67,7 @@
 ## THE REAL NUMBERS WE SHOULD REPORT
 
 **For the README (EVAL split, paper defaults):**
-- NEDC TAES: 24.71% @ 14.80 FA/24h (?? too low)
-- NEDC OVERLAP: 45.63% @ 13.92 FA/24h (?? too low)
+- NEDC TAES: 24.15% @ 27.13 FA/24h (SEIZ label)
+- NEDC OVERLAP: 45.63% @ 100.06 FA/24h (SEIZ label)
 
 **Something is WRONG - these FA rates are 10x lower than expected!**

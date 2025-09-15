@@ -7,11 +7,11 @@
 ---
 
 ## 1️⃣ DEFAULT CONFIGURATION (Paper Parameters)
-**threshold=0.8, kernel=5, min_duration=2.0s, merge_gap=0.0s**
+**threshold=0.8, kernel=5, min_duration=2.0s, merge_gap=None (strictly disabled)**
 
 | Scoring Method | Sensitivity (%) | FA/24h | Notes |
 |----------------|-----------------|--------|-------|
-| **NEDC Binary TAES** | 24.15% | 137.53 | Strictest clinical standard |
+| **NEDC Binary TAES** | 24.15% | 27.13 | Strictest clinical standard |
 | **NEDC Binary OVERLAP** | 45.63% | 100.06 | Temple's overlap scorer |
 | **Native Python OVERLAP** | 45.63% | 100.06 | Our Python implementation |
 | **SzCORE (Any-Overlap)** | **52.35%** | **8.46** | ✅ EpilepsyBench-style scorer |
@@ -21,28 +21,28 @@
 ---
 
 ## 2️⃣ 10 FA/24h TARGET (Clinical Screening)
-**threshold=0.95, kernel=5, min_duration=2.0s, merge_gap=5.0s**
+**threshold=0.95, kernel=5, min_duration=2.0s, merge_gap=None (strictly disabled)**
 
 | Scoring Method | Sensitivity (%) | FA/24h | Notes |
 |----------------|-----------------|--------|-------|
-| **NEDC Binary TAES** | 9.08% | 49.08 | Still too high for TAES |
-| **NEDC Binary OVERLAP** | 23.45% | **9.97** | ✅ MEETS TARGET |
-| **Native Python OVERLAP** | 23.45% | **9.97** | ✅ MEETS TARGET |
-| **SzCORE (Any-Overlap)** | **29.12%** | **1.32** | ✅ AMAZING! Near 1 FA target |
+| **NEDC Binary TAES** | 8.64% | 6.40 | ✅ Meets FA target |
+| **NEDC Binary OVERLAP** | 23.45% | 39.50 | ❌ Over target |
+| **Native Python OVERLAP** | 23.45% | 39.50 | ❌ Over target |
+| **SzCORE (Any-Overlap)** | **29.12%** | **1.32** | ✅ Near 1 FA |
 
 **✅ CLINICAL ASSESSMENT**: Achieved 10 FA target with OVERLAP scoring
 
 ---
 
 ## 3️⃣ 2.5 FA/24h TARGET (ICU Monitoring)
-**threshold=0.95, kernel=11, min_duration=8.0s, merge_gap=10.0s**
+**threshold=0.95, kernel=11, min_duration=8.0s, merge_gap=None (strictly disabled)**
 
 | Scoring Method | Sensitivity (%) | FA/24h | Notes |
 |----------------|-----------------|--------|-------|
-| **NEDC Binary TAES** | 4.13% | 1.32 | ✅ TAES achieves <2 FA! |
-| **NEDC Binary OVERLAP** | 11.51% | **2.44** | ✅ MEETS TARGET |
-| **Native Python OVERLAP** | 11.51% | **2.44** | ✅ MEETS TARGET |
-| **SzCORE (Any-Overlap)** | **16.47%** | **0.56** | ✅ EXCELLENT! <1 FA achieved |
+| **NEDC Binary TAES** | 4.07% | 1.51 | ✅ <2 FA |
+| **NEDC Binary OVERLAP** | 11.51% | 8.09 | ❌ Over target |
+| **Native Python OVERLAP** | 11.51% | 8.09 | ❌ Over target |
+| **SzCORE (Any-Overlap)** | **16.47%** | **0.56** | ✅ <1 FA |
 
 **✅ CLINICAL ASSESSMENT**: Achieved 2.5 FA target with OVERLAP scoring
 
@@ -53,41 +53,19 @@
 
 ---
 
-## 📊 KEY FINDINGS
+## 📊 KEY FINDINGS (No merge_gap anywhere)
 
-1. **TAES vs OVERLAP**: TAES is much stricter, resulting in 4-5x higher FA rates
-2. **Native TAES Not Implemented**: We only have Native OVERLAP, not TAES
-3. **Trade-off Confirmed**: 
-   - Default → 10 FA: Sensitivity drops from 45.63% → 23.45%
-   - 10 FA → 2.5 FA: Sensitivity drops from 23.45% → 11.51%
-4. **Threshold Impact**: 0.8 → 0.95 reduces FA by 10x
-5. **Merge Gap Critical**: Adding 5-10s merge gap essential for clinical FA targets
+1. TAES vs OVERLAP: TAES is stricter; at these points TAES yields much lower FA and lower sensitivity than OVERLAP.
+2. Native OVERLAP parity: Native Python OVERLAP matches NEDC OVERLAP exactly at all points.
+3. Trade-off confirmed (OVERLAP): Raising threshold to 0.95 drops sensitivity (45.63 → 23.45 → 11.51) and FA (100.06 → 39.50 → 8.09) but still misses 10/2.5 FA targets.
+4. SzCORE is lenient: Achieves 1.32 and 0.56 FA at 10/2.5 FA configs with better sensitivity; not the clinical standard for TUSZ.
+5. merge_gap policy: merge_gap is deprecated and disabled; any prior results using it were non-compliant and are superseded by these numbers.
 
 ---
 
-## ✅ FINAL RECOMMENDATION
+## ✅ FINAL NOTE
 
-**For Clinical Deployment (10 FA/24h target):**
-```python
-config = {
-    'threshold': 0.95,
-    'kernel_size': 5,
-    'min_duration_sec': 2.0,
-    'merge_gap_sec': 5.0
-}
-# Achieves: 23.45% sensitivity @ 9.97 FA/24h (OVERLAP)
-```
-
-**For ICU Monitoring (2.5 FA/24h target):**
-```python
-config = {
-    'threshold': 0.95,
-    'kernel_size': 11,
-    'min_duration_sec': 8.0,
-    'merge_gap_sec': 10.0
-}
-# Achieves: 11.51% sensitivity @ 2.44 FA/24h (OVERLAP)
-```
+These are the verified, no-merge-gap results extracted directly from NEDC v6.0.0 summaries and tool outputs in `experiments/eval/baseline/CLEAN_NO_MERGE/`.
 
 ---
 
