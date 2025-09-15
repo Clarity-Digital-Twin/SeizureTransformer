@@ -27,6 +27,7 @@ This document is the top‑level orientation for where things live, what is cano
 - Docker Entrypoint: `docker/entrypoint.py`
   - Modes: `eval` (default), `nedc`, `convert`, `wu`.
   - CPU image: `Dockerfile`. GPU image: `Dockerfile.gpu`.
+  - Compose: removed to reduce confusion; prefer Make targets.
   - Make targets: `make docker-build`, `make docker-run`, `make docker-build-gpu`, `make docker-run-gpu`.
 
 - Tests: `tests/`
@@ -52,7 +53,7 @@ This document is the top‑level orientation for where things live, what is cano
 ## Native Implementation (Parity Only)
 
 - Native OVERLAP scorer: `seizure_evaluation/`
-  - Our clean Python implementation of Temple’s OVERLAP logic lives under `seizure_evaluation/taes/`.
+  - Our clean Python implementation of Temple’s OVERLAP logic lives under `seizure_evaluation/ovlp/`.
   - Purpose: testability and parity checks with NEDC binaries.
   - Not part of the production scoring path; use `nedc_scoring` for official results.
 
@@ -98,7 +99,7 @@ These are the only items worth cleaning to reduce confusion. Avoid broader refac
 - Add a short README in `seizure_evaluation/` clarifying it’s for parity/tests only. Keep it because tests rely on it.
 
 3) Dockerfile hygiene
-- Keep `Dockerfile` and `Dockerfile.gpu` as the only supported builds. Remove or archive `Dockerfile.working` and `Dockerfile.test` if no longer used by CI.
+- Keep `Dockerfile` and `Dockerfile.gpu` as the only supported builds. Legacy test/working compose/scripts/logs removed.
 
 4) Consistent entrypoints and docs
 - README already shows the repository map. Link this REPO_MAP.md from README if further clarity is needed.
@@ -115,4 +116,3 @@ Acceptance criteria
 - Evaluation tools overview: `evaluation/README.md`
 - SSOT status and metrics policy: `docs/status/SINGLE_SOURCE_OF_TRUTH.md`
 - Application architecture (broader plan): `docs/APPLICATION_ARCHITECTURE.md`
-

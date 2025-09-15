@@ -83,6 +83,7 @@ htmlcov/
 
 # Logs
 *.log
+docker-buildx
 
 # Test artifacts
 *.list

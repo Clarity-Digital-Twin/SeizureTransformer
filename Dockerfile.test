@@ -1,3 +1,0 @@
-FROM alpine:latest
-RUN echo 'Docker build works\!'
-CMD ['echo', 'Test successful']

@@ -35,7 +35,7 @@ RUN echo "Docker build works!"
 CMD ["/bin/sh", "-c", "echo SMOKE_OK"]
 EOF`
 - Compose status
-  - The provided `docker-compose.yml` references `Dockerfile.inference` and `Dockerfile.nedc`, which are not present. Treat it as experimental; prefer the single-image flow above.
+  - Legacy compose files have been removed to avoid confusion. Prefer the single-image flow above (`Dockerfile` / `Dockerfile.gpu`) or author your own Compose if needed.
 
 ## 🎯 Our Specific Requirements
 
@@ -54,10 +54,10 @@ EOF`
 
 ## 🏗️ Architecture Design
 
-### Three-Container Strategy
+### Three-Container Strategy (Archived Example)
 
 ```yaml
-# docker-compose.yml structure
+# docker-compose.yml structure (example)
 services:
   # 1. Model inference container (GPU)
   seizure-transformer:
@@ -230,9 +230,7 @@ services:
 ## 🛠️ Implementation Steps
 
 ### Phase 1: Core Infrastructure (Week 1)
-- [ ] Create multi-stage Dockerfile.inference
-- [ ] Create Dockerfile.nedc for scoring
-- [ ] Set up docker-compose.yml
+- [ ] Create multi-stage Dockerfile (single image)
 - [ ] Add .dockerignore for efficiency
 - [ ] Test GPU passthrough
 
