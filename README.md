@@ -44,10 +44,12 @@ Wu et al.'s transformer-based seizure detector won the 2025 EpilepsyBench Challe
 | Dataset | Scoring Method | Sensitivity | False Alarms/24h | F1 Score |
 |---------|---------------|-------------|------------------|-----------|
 | **Dianalund** | SzCORE Any-Overlap¹ | 37% | **1 FA/24h** ✅ | 43% |
-| **TUSZ eval (held-out)** | NEDC v6.0.0 OVERLAP² | 45.63% | **100.06 FA/24h** ❌ | 0.519 |
+| **TUSZ eval (Paper defaults)** | NEDC v6.0.0 TAES² | 24.71% | **134.01 FA/24h** ❌ | 0.33 |
+| **TUSZ eval (Paper defaults)** | NEDC v6.0.0 OVERLAP² | 45.63% | **100.06 FA/24h** ❌ | 0.519 |
+| **TUSZ eval (Tuned for 10 FA)** | NEDC v6.0.0 TAES² | 13.67% | **9.97 FA/24h** ✅ | TBD |
 
 ¹ SzCORE: Lenient event-based scoring where any overlap counts as detection (on Dianalund dataset)
-² NEDC TAES: Clinical standard with strict time-alignment penalties (on TUSZ dataset)
+² NEDC: Clinical standard scorer for TUSZ. TAES = strict time-alignment, OVERLAP = any-overlap within NEDC framework
 
 **Critical Note**: These are different datasets AND different scoring methods. The 1 FA/24h was achieved on Dianalund (small Nordic dataset), not TUSZ. Additionally, SzCORE's "Any-Overlap" is more forgiving than NEDC's TAES scoring. NEDC is the authoritative scorer for TUSZ as both were developed by Temple University for clinical EEG evaluation.
 
@@ -57,14 +59,14 @@ TUSZ annotations were created by Temple University following specific clinical g
 
 ### Clinical Operating Points
 
-| Target FA/24h | Threshold | Kernel | MinDur | Sensitivity (TAES) | Actual FA/24h | Status |
-|---------------|-----------|--------|--------|-------------------|---------------|--------|
-| Default | 0.800 | 5 | 2.0s | 45.63% | 100.06 | ✅ Verified |
-| **10** | TBD† | TBD† | TBD† | TBD† | TBD† | ⚠️ Retuning |
-| **2.5** | TBD† | TBD† | TBD† | TBD† | TBD† | ⚠️ Retuning |
-| **1** | TBD† | TBD† | TBD† | TBD† | TBD† | ⚠️ Retuning |
+| Target FA/24h | Threshold | Kernel | MinDur | MergeGap | Sensitivity (TAES) | Actual FA/24h | Status |
+|---------------|-----------|--------|--------|----------|-------------------|---------------|--------|
+| Default (Paper) | 0.800 | 5 | 2.0s | 0s | 24.71% | 134.01 | ✅ Verified |
+| **10** | **0.950** | **5** | **2.0s** | **5.0s** | **13.67%** | **9.97** | ✅ Achieved |
+| **2.5** | **0.950** | **11** | **8.0s** | **10.0s** | **8.19%** | **2.48** | ✅ Achieved |
+| **1** | 0.950 | 11 | 8.0s | 10.0s | 8.19% | 2.48 | ❌ Cannot achieve <2.48 |
 
-**†Important Note**: Clinical operating points (10/2.5/1 FA targets) require retuning. Initial parameter selection led to incorrect FA rates due to morphological kernel behavior. See `docs/analysis/PARAMETER_TUNING_ANALYSIS.md` for details. Default parameters from the paper are verified correct.
+**Note**: TAES (Time-Aligned Event Scoring) shown above. OVERLAP scoring: Default achieves 45.63% sensitivity @ 100.06 FA/24h. Parameter sweep of 108+ configurations completed on dev set, validated on eval set. See `TUNED_PARAMETERS_FINAL.md` for complete results including all 4 scoring metrics.
 
 We record the exact FA/24h achieved for tuned points (e.g., “~10 FA (10.2)”). See `docs/evaluation/TUNING_RESULTS_TRACKER.md` and `experiments/eval/baseline/COMPREHENSIVE_SWEEP_README.md`.
 
