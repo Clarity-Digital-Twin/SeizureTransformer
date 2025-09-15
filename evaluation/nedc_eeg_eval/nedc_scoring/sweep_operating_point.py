@@ -10,7 +10,6 @@ Usage:
     --thresholds 0.5,0.6,0.7,0.8,0.9 \
     --kernels 5,11 \
     --min_durations 2,4 \
-    --merge_gaps 0 \
     --target_fa_per_24h 10
 
 Produces CSV summary and recommends the best setting meeting FA target with max sensitivity.

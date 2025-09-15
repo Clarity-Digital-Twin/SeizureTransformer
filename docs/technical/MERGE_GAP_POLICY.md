@@ -14,19 +14,18 @@ Status: Phase 1 (hard-block) and Phase 2 (removal) completed; CI guards in place
 - Reproducibility: It changes FA/24h dramatically (~3–4× reduction observed), masking trade‑offs.
 - Double‑merge risk: SzCORE already merges events internally (90 s). Merging in post‑processing risks double‑merging and optimistic FA.
 
-## Where It Exists Today (code surfaces)
+## Where It Existed (now removed)
 - Post‑processing (implementation):
-  - `evaluation/nedc_eeg_eval/nedc_scoring/post_processing.py` → `apply_seizure_transformer_postprocessing(..., merge_gap_sec=...)` and `merge_nearby_events(...)`
+  - `evaluation/nedc_eeg_eval/nedc_scoring/post_processing.py` → formerly accepted `merge_gap_sec`; now removed. Utility `merge_nearby_events(...)` retained (not used by evaluation).
 - NEDC conversion/runner (CLI/API):
-  - `evaluation/nedc_eeg_eval/nedc_scoring/convert_predictions.py` `--merge_gap_sec` (passes to post‑proc; writes `NONSTANDARD_POSTPROCESSING.txt` when non‑zero)
-  - `evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py` `--merge_gap_sec` (plumbs through; writes `NONSTANDARD_POSTPROCESSING.txt` when non‑zero; includes `merge_gap_sec` in `operating_point.json`)
-  - `evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py` `--merge_gaps` (warns, still passes non‑zero)
+  - `convert_predictions.py` and `run_nedc.py` previously exposed `--merge_gap_sec`; flag and plumbing removed.
+  - `sweep_operating_point.py` previously accepted `--merge_gaps`; option and plumbing removed.
 - Other tools:
-  - `scripts/experiment_tracker.py` accepts/records `merge_gap_sec` in configs
+  - `scripts/experiment_tracker.py` previously accepted/recorded `merge_gap_sec`; field removed.
   - `evaluation/szcore_scoring/run_szcore.py` explicitly sets `merge_gap_sec=None` (correct)
   - `evaluation/szcore_scoring/convert_to_hedscore.py` uses `merge_gap_sec=None` (to avoid double‑merge); no change required
-  - Tests: `tests/test_convert_predictions.py` and `tests/test_post_processing.py` cover merge behavior
-- CI: `.github/workflows/nedc-conformance.yml` calls the sweep with `--merge_gaps 0` (safe, but parameter still present)
+  - Tests: references to merge_gap removed from evaluation tests; `merge_nearby_events` still unit‑tested
+  - CI: sweep no longer passes merge_gap arguments; added compliance checks guarding against reintroduction
 
 ## Policy
 - Academic and clinical metrics must be computed with `merge_gap=None`.

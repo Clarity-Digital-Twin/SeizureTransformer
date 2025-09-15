@@ -8,7 +8,6 @@ import tempfile
 from pathlib import Path
 
 import numpy as np
-import pytest
 
 from evaluation.nedc_eeg_eval.nedc_scoring.convert_predictions import (
     convert_checkpoint_to_nedc,
@@ -202,19 +201,7 @@ class TestConvertCheckpointToNedc:
             assert "file3" not in processed  # Has error
             assert "file4" not in processed  # No predictions
 
-    def test_convert_with_merge_gap(self):
-        """Non-zero merge_gap_sec must raise ValueError (hard-blocked)."""
-        with tempfile.TemporaryDirectory() as tmpdir:
-            checkpoint_file = self.create_test_checkpoint(tmpdir)
-            output_dir = Path(tmpdir) / "output"
-
-            with pytest.raises(ValueError):
-                convert_checkpoint_to_nedc(
-                    checkpoint_file,
-                    output_dir,
-                    threshold=0.5,
-                    merge_gap_sec=1.0,  # Non-standard parameter (blocked)
-                )
+    # merge_gap parameter removed by policy; no test needed for non-zero values
 
     def test_legacy_checkpoint_format(self):
         """Test handling of checkpoint without 'results' key."""
