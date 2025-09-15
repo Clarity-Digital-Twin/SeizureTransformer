@@ -138,7 +138,9 @@
       "Bash(zip:*)",
       "Bash(timeout 120 python:*)",
       "Bash(./evaluation/nedc_eeg_eval/v6.0.0/bin/nedc_eeg_eval:*)",
-      "Bash(PYTHONPATH=./lib:$PYTHONPATH python3 bin/nedc_eeg_eval --help)"
+      "Bash(PYTHONPATH=./lib:$PYTHONPATH python3 bin/nedc_eeg_eval --help)",
+      "Bash(PYTHONPATH=./lib python3 bin/nedc_eeg_eval --help)",
+      "Bash(PYTHONPATH=/mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/v6.0.0/lib python3 /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/evaluation/nedc_eeg_eval/v6.0.0/bin/nedc_eeg_eval --help)"
     ],
     "deny": [],
     "ask": []
