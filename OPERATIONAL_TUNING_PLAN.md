@@ -59,13 +59,25 @@ for thresh in 0.80 0.85 0.90 0.92 0.94 0.96 0.98 0.99; do
     echo "Testing: thresh=$thresh, kernel=$KERNEL, min_dur=$min_dur"
     echo "========================================="
 
-    # Run all 4 scoring methods
-    python evaluation/nedc_scoring/run_all_scorers.py \
+    # Run NEDC (Temple binary)
+    python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
       --checkpoint $CHECKPOINT \
-      --outdir $OUTPUT_DIR \
-      --threshold $thresh \
-      --kernel $KERNEL \
-      --min_duration_sec $min_dur
+      --outdir $OUTPUT_DIR/nedc_taes \
+      --backend nedc-binary \
+      --threshold $thresh --kernel $KERNEL --min_duration_sec $min_dur
+
+    # Run Native OVERLAP (parity with Temple OVERLAP)
+    python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
+      --checkpoint $CHECKPOINT \
+      --outdir $OUTPUT_DIR/native_overlap \
+      --backend native-taes \
+      --threshold $thresh --kernel $KERNEL --min_duration_sec $min_dur
+
+    # Run SzCORE Any-Overlap
+    python -m evaluation.szcore_scoring.run_szcore \
+      --checkpoint $CHECKPOINT \
+      --outdir $OUTPUT_DIR/szcore \
+      --threshold $thresh --kernel $KERNEL --min_duration_sec $min_dur
 
   done
 done

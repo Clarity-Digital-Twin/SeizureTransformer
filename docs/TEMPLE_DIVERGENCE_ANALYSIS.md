@@ -60,7 +60,7 @@ Tests updated:
 ## Validation Plan
 
 - Unit parity: Verify OVERLAP metrics on synthetic fixtures directly against Temple’s summary_ovlp.txt by programmatically parsing both.
-- DEV/EVAL parity: Re‑run the pipeline using `evaluation/nedc_scoring/run_nedc.py` with `--backend nedc-binary` and `--backend native-overlap`; confirm that:
+- DEV/EVAL parity: Re‑run the pipeline using `evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py` with `--backend nedc-binary` and `--backend native-overlap`; confirm that:
   - Sensitivity matches within ≤0.01 across operating points.
   - Total False Alarm Rate matches within ≤0.01 across operating points.
 

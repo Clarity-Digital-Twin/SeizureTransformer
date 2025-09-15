@@ -72,7 +72,7 @@ Seizure Prevalence: 5.93%
 
 ### NEDC Output Files Generated
 ```
-evaluation/nedc_scoring/output/results/
+evaluation/nedc_eeg_eval/nedc_scoring/output/results/
 ├── summary.txt (15KB) - Main summary
 ├── summary_taes.txt (313KB) - TAES scoring
 ├── summary_epoch.txt (324KB) - Epoch scoring
@@ -140,7 +140,7 @@ evaluation/nedc_scoring/output/results/
 | AUROC (TUSZ) | 0.876 | 0.9021 | ✅ Better |
 | F1 (TUSZ) | 0.6752* | 0.312 | ❌ Lower |
 | Sensitivity | 0.7110* | 0.2415 | ❌ Lower |
-| FA/day | 1** | 137.5 | ❌ Much worse |
+| FA/day | 1** | 60.83 | ❌ Much worse |
 
 *Event-based scoring (different from TAES)
 **On Dianalund dataset, not TUSZ
