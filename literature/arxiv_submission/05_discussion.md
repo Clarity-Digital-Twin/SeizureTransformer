@@ -10,7 +10,7 @@ The 3.1× difference in false alarm rates between NEDC OVERLAP (26.89 FA/24h) an
 
 ## Clinical Deployment Constraints
 
-The inability to achieve the standard clinical requirement of ≤10 FA/24h with ≥50% sensitivity reveals a critical gap between research achievements and deployment readiness. Our best clinical operating point achieved only 33.90% sensitivity at 10.27 FA/24h with NEDC OVERLAP, falling well short of the 50% sensitivity threshold that clinicians require for practical utility. This constraint is not merely academic—it determines whether AI assistants can be deployed in ICUs, where false alarms cause alarm fatigue and missed seizures delay critical treatment. Prior clinical guidance cites thresholds around ≤10 FA/24h with ≥50% sensitivity; current models do not meet these levels when evaluated with appropriate clinical standards.
+The inability to achieve clinical viability reveals a critical gap between research achievements and deployment readiness. Our best operating point at 10 FA/24h achieved only 33.90% sensitivity with NEDC OVERLAP, falling far short of the 75% sensitivity goal for clinical systems (Roy et al., 2021). This constraint is not merely academic—it determines whether AI assistants can be deployed in ICUs, where false alarms cause alarm fatigue and missed seizures delay critical treatment. While human reviewers achieve approximately 1 FA/24h (Roy et al., 2021), even at a more permissive 10 FA/24h threshold, current models cannot approach the sensitivity levels required for clinical deployment when evaluated with appropriate standards.
 
 ## Root Causes of Evaluation Gaps
 
