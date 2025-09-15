@@ -45,7 +45,7 @@ This matches Temple’s `nedc_eeg_eval_ovlp.py` definitions and avoids 1–1 ass
 - Option B: Extend `TAESScorer` with a `mode="overlap"` path that uses any-overlap counting instead of greedy matching.
 
 2) Wire native backend to use OVERLAP mode
-- In `evaluation/nedc_scoring/run_nedc.py` where we create `TAESScorer(overlap_threshold=0.0)`, either:
+- In `evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py` where we create `TAESScorer(overlap_threshold=0.0)`, either:
   - switch to `OverlapScorer()`, or
   - pass `mode="overlap"` so it uses the any-overlap path.
 
