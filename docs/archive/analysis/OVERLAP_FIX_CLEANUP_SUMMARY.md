@@ -60,3 +60,4 @@ The senior reviewer was absolutely right: We were comparing apples to oranges:
 - The fix: Use exact OVERLAP logic, not fractional TAES
 
 The codebase is now clean with no parallel/redundant implementations actively used.
+

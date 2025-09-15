@@ -96,3 +96,4 @@ sed -n '1,220p' experiments/dev/baseline/sweeps/thr0.95_k5_min2.0_gap5.0/results
 ## Resolution
 
 We target OVERLAP for gating and reporting, and native now matches Temple exactly (SEIZ sensitivity + TOTAL FA/24h) on dev/eval baselines. If we ever choose DP ALIGNMENT or true TAES (fractional), we’ll implement those separately in native and switch the parser accordingly.
+
