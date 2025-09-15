@@ -8,7 +8,7 @@ We evaluated SeizureTransformer on TUSZ v2.0.3's held-out evaluation set contain
 
 ### Default Configuration (θ=0.80, k=5, d=2.0)
 
-At the paper's default parameters, we observed dramatic variation across scoring methods (Table 1). The same predictions yielded:
+At the paper's default parameters, we observed dramatic variation across scoring methods. The same predictions yielded:
 
 - **NEDC OVERLAP**: 45.63% sensitivity, 26.89 FA/24h
 - **NEDC TAES**: 65.21% sensitivity, 136.73 FA/24h
@@ -39,7 +39,7 @@ We optimized parameters on the development set to target clinical false alarm th
 
 3. **Implementation Parity**: Our Native OVERLAP implementation achieved identical results to Temple's official NEDC binaries, validating our pipeline.
 
-4. **AUROC Performance**: We measured AUROC of 0.9019, slightly exceeding the paper's reported 0.876.
+4. **AUROC Performance**: We measured AUROC of 0.9019.
 
 ## Data Integrity
 

@@ -1,8 +1,8 @@
 # arXiv Submission Materials
 
-## Story: SeizureTransformer's 100× False Alarm Reality Check
+## Story: SeizureTransformer's 27–137× False Alarm Reality Check
 
-This directory contains materials for our arXiv preprint revealing the 100-fold gap between SeizureTransformer's benchmark claims and clinical reality when evaluated with proper scoring standards.
+This directory contains materials for our arXiv preprint revealing the 27–137× gap between SeizureTransformer's benchmark claims and clinical reality when evaluated with proper scoring standards.
 
 ## Key Files
 
