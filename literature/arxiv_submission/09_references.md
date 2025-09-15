@@ -2,7 +2,7 @@
 
 [1] Wu K, Zhao Z, Yener B. SeizureTransformer: Scaling U-Net with Transformer for Simultaneous Time-Step Level Seizure Detection from Long EEG Recordings. International Conference on Artificial Intelligence in Epilepsy and Other Neurological Disorders. 2025. arXiv:2504.00336.
 
-[2] Picone J, Obeid I, Shah V, Harabagiu S, Golmohammadi M. Objective Evaluation Metrics for Automatic Event Detection Algorithms. In: Signal Processing in Medicine and Biology. Springer; 2021. p. 235–282. Available from: https://www.isip.piconepress.com/publications/unpublished/book_sections/2021/springer/metrics/
+[2] Shah V, Golmohammadi M, Obeid I, Picone J. Objective Evaluation Metrics for Automatic Classification of EEG Events. In: Signal Processing in Medicine and Biology. Springer; 2021. p. 235–282. Available from: https://www.isip.piconepress.com/publications/unpublished/book_sections/2021/springer/metrics/
 
 [3] Shah V, von Weltin E, Lopez S, McHugh JR, Veloso L, Golmohammadi M, Obeid I, Picone J. The Temple University Hospital Seizure Detection Corpus. Front Neuroinform. 2018;12:83. doi:10.3389/fninf.2018.00083.
 
@@ -12,7 +12,7 @@
 
 [6] NEDC. Neural Engineering Data Consortium EEG Evaluation Software v6.0.0. Temple University; 2025. Available from: https://www.isip.piconepress.com/projects/nedc/
 
-[7] Beniczky S, Ryvlin P. Standards for testing and clinical validation of seizure detection algorithms. Epilepsia. 2018;59(S1):9-13.
+[7] Beniczky S, Ryvlin P. Standards for testing and clinical validation of seizure detection devices. Epilepsia. 2018;59(S1):9–13. doi:10.1111/epi.14049.
 
 [8] Haibe-Kains B, Adam GA, Hosny A, Khodakarami F, Waldron L, Wang B, et al. Transparency and reproducibility in artificial intelligence. Nature. 2020;586(7829):E14-E16.
 
