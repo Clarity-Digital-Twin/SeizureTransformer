@@ -5,11 +5,11 @@
 ### 1. First Clinical Evaluation of SeizureTransformer on TUSZ
 - **Novelty**: Despite TUSZ being the training dataset, no prior work evaluated with clinical scoring
 - **Impact**: Reveals true clinical performance vs benchmark claims
-- **Significance**: 100× gap changes deployment viability assessment
+- **Significance**: 27-137× gap changes deployment viability assessment
 
 ### 2. Quantifying Scoring Method Impact
 - **Novelty**: First systematic comparison of 4 scoring methods on identical predictions
-- **Impact**: Shows 12× performance difference from scoring alone
+- **Impact**: Shows 3.1× performance difference from scoring alone (OVERLAP vs SzCORE)
 - **Significance**: Explains discrepancies in literature without model changes
 
 ### 3. Reproducible NEDC v6.0.0 Integration
@@ -72,7 +72,7 @@
 ## Key Insights Revealed
 
 ### 1. The Benchmark Illusion
-**Finding**: Same model can claim 1 or 100 FA/24h
+**Finding**: Same model can claim 1 or 26.89-136.73 FA/24h
 **Insight**: Benchmarks without context mislead the field
 **Implication**: Need dataset-matched evaluation standards
 
@@ -156,7 +156,7 @@
 
 ## Why This Work Matters
 
-### The 100× Gap Story
+### The 27-137× Gap Story
 - Not just a number - determines clinical deployment
 - Patients deserve honest performance assessment
 - Investors need realistic expectations
@@ -186,7 +186,7 @@
 - Clinical deployment needs standards
 
 ### "Why does scoring method matter?"
-- 12× difference determines viability
+- 3.1× difference (OVERLAP vs SzCORE) determines viability
 - Clinical vs research priorities differ
 - Transparency enables informed decisions
 
@@ -200,10 +200,10 @@
 ## The Elevator Pitch
 
 **One Sentence**:
-"We show that SeizureTransformer's claimed 1 FA/24h becomes 100 FA/24h when evaluated with clinical standards on its training dataset."
+"We show that SeizureTransformer's claimed 1 FA/24h becomes 26.89 FA/24h (OVERLAP) or 136.73 FA/24h (TAES) when evaluated with clinical standards on its training dataset."
 
 **Three Sentences**:
-"SeizureTransformer won EpilepsyBench with 1 FA/24h but was never evaluated on TUSZ with clinical scoring. We reveal 100 FA/24h using Temple's NEDC standard - a 100× gap. Scoring methodology alone creates 12× performance differences, highlighting need for standardized evaluation."
+"SeizureTransformer won EpilepsyBench with 1 FA/24h but was never evaluated on TUSZ with clinical scoring. We reveal 26.89 FA/24h using Temple's NEDC OVERLAP standard - a 27× gap. Scoring methodology alone creates 3.1× performance differences (vs SzCORE), highlighting need for standardized evaluation."
 
 **One Paragraph**:
-"State-of-the-art seizure detection models report impressive benchmark performance, but clinical deployment reveals massive gaps. We present the first evaluation of SeizureTransformer using Temple's NEDC v6.0.0 clinical standard on TUSZ, revealing 100 false alarms per 24 hours versus the 1 FA/24h achieved on other datasets. Our systematic comparison shows scoring methodology alone creates a 12-fold performance difference, with the same predictions yielding anywhere from 8.46 to 137.53 FA/24h depending on the scorer. This work provides reproducible evaluation infrastructure and comprehensive operating points, demonstrating the critical need for dataset-matched clinical evaluation standards in medical AI."
+"State-of-the-art seizure detection models report impressive benchmark performance, but clinical deployment reveals massive gaps. We present the first evaluation of SeizureTransformer using Temple's NEDC v6.0.0 clinical standard on TUSZ, revealing 26.89 false alarms per 24 hours (OVERLAP) versus the 1 FA/24h achieved on other datasets. Our systematic comparison shows scoring methodology alone creates a 3.1-fold performance difference, with the same predictions yielding anywhere from 8.59 (SzCORE) to 136.73 (TAES) FA/24h depending on the scorer. This work provides reproducible evaluation infrastructure and comprehensive operating points, demonstrating the critical need for dataset-matched clinical evaluation standards in medical AI."

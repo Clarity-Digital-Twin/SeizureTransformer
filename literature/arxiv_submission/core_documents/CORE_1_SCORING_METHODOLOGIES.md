@@ -154,12 +154,12 @@ Repo source:
 
 ### The Scoring Impact (documented in-repo)
 Same predictions on TUSZ (paper defaults) yield:
-- NEDC OVERLAP: 100.06 FA/24h
-- Python OVERLAP: 100.06 FA/24h (parity)
-- SzCORE: 8.46 FA/24h
+- NEDC OVERLAP: 26.89 FA/24h (SEIZ-only)
+- Python OVERLAP: 26.89 FA/24h (parity)
+- SzCORE: 8.59 FA/24h
 
 Ratios for context:
-- OVERLAP vs SzCORE: 100.06 / 8.46 ≈ 11.8×
+- OVERLAP vs SzCORE: 26.89 / 8.59 ≈ 3.1×
 - TAES is stricter than OVERLAP and yields higher FA/24h; see canonical table for exact values.
 
 Repo source:
@@ -182,8 +182,8 @@ Repo source:
 ### Best Practice
 Always report multiple scoring methods:
 ```
-"We achieve 45.63% sensitivity @ 100.06 FA/24h (NEDC OVERLAP)
-and 52.35% sensitivity @ 8.46 FA/24h (SzCORE)"
+"We achieve 45.63% sensitivity @ 26.89 FA/24h (NEDC OVERLAP SEIZ)
+and 52.35% sensitivity @ 8.59 FA/24h (SzCORE)"
 ```
 
 Repo source for the above numbers:
@@ -231,7 +231,7 @@ Repo source for the above numbers:
 - "Papers using SzCORE are inflating numbers" (accusatory)
 
 ### Cutting but Fair Language
-- "The ~12× difference in reported false alarms (OVERLAP vs SzCORE) stems from scoring methodology"
+- "The ~3.1× difference in reported false alarms (OVERLAP vs SzCORE) stems from scoring methodology"
 - "Without transparent reporting of scoring methods, performance claims lack context"
 - "Clinical viability conclusions depend critically on evaluation standard chosen"
 
