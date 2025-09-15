@@ -8,7 +8,7 @@ import argparse
 import pickle
 from pathlib import Path
 
-from post_processing import apply_seizure_transformer_postprocessing
+from .post_processing import apply_seizure_transformer_postprocessing
 
 
 def write_nedc_csv(events, file_path, file_id, duration_sec):

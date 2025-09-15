@@ -12,7 +12,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from evaluation.nedc_eeg_eval.nedc_scoring.run_nedc import (
-    extract_nedc_metrics,
+    extract_and_save_metrics,
     parse_nedc_output,
     run_nedc_scorer,
     setup_nedc_environment,
@@ -146,7 +146,7 @@ class TestParseNedcOutput:
         assert metrics["taes"]["fa_per_24h"] == 20.15
 
 
-class TestExtractNedcMetrics:
+class TestExtractAndSaveMetrics:
     def test_extract_from_summary_file(self):
         """Test extracting metrics from summary.txt file."""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -163,8 +163,9 @@ class TestExtractNedcMetrics:
             """
 
             (results_dir / "summary.txt").write_text(summary_content)
+            metrics_file = results_dir / "metrics.json"
 
-            metrics = extract_nedc_metrics(Path(tmpdir))
+            metrics = extract_and_save_metrics(results_dir, metrics_file)
 
             assert metrics["taes"]["sensitivity"] == 75.50
             assert metrics["taes"]["fa_per_24h"] == 18.25
@@ -172,7 +173,10 @@ class TestExtractNedcMetrics:
     def test_extract_no_summary_file(self):
         """Test handling when summary.txt doesn't exist."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            metrics = extract_nedc_metrics(Path(tmpdir))
+            results_dir = Path(tmpdir) / "results"
+            metrics_file = results_dir / "metrics.json"
+
+            metrics = extract_and_save_metrics(results_dir, metrics_file)
             assert metrics == {}
 
     def test_extract_with_metrics_json(self):
@@ -192,11 +196,11 @@ class TestExtractNedcMetrics:
             """
 
             (results_dir / "summary.txt").write_text(summary_content)
+            metrics_file = results_dir / "metrics.json"
 
-            metrics = extract_nedc_metrics(Path(tmpdir))
+            metrics = extract_and_save_metrics(results_dir, metrics_file)
 
             # Check metrics.json was created
-            metrics_file = results_dir / "metrics.json"
             assert metrics_file.exists()
 
             # Verify content
