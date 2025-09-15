@@ -198,6 +198,26 @@ class OverlapScorer:
 
         return events, duration
 
+    # --- helpers ---
+    def _merge_intervals(self, events: list[Event]) -> list[Event]:
+        """Merge overlapping/contiguous intervals in the event list."""
+        if not events:
+            return []
+        # sort by start
+        sorted_events = sorted(events, key=lambda e: (e.start_time, e.stop_time))
+        merged: list[Event] = []
+        cur = Event(sorted_events[0].start_time, sorted_events[0].stop_time)
+        for ev in sorted_events[1:]:
+            if ev.start_time <= cur.stop_time:
+                # overlap or touch, extend
+                if ev.stop_time > cur.stop_time:
+                    cur.stop_time = ev.stop_time
+            else:
+                merged.append(cur)
+                cur = Event(ev.start_time, ev.stop_time)
+        merged.append(cur)
+        return merged
+
     def _complement_of_events(
         self, events: list[Event], total_duration_sec: float
     ) -> list[Event]:
@@ -207,29 +227,13 @@ class OverlapScorer:
         if not events:
             return [Event(0.0, total_duration_sec, label="bckg")]
 
-        # Merge and sort input events by start time
-        events_sorted = sorted(events, key=lambda e: e.start_time)
-        merged: list[Event] = []
-        cur = None
-        for e in events_sorted:
-            if cur is None:
-                cur = Event(e.start_time, e.stop_time, e.label, e.confidence)
-                continue
-            if e.start_time <= cur.stop_time:
-                cur.stop_time = max(cur.stop_time, e.stop_time)
-            else:
-                merged.append(cur)
-                cur = Event(e.start_time, e.stop_time, e.label, e.confidence)
-        if cur is not None:
-            merged.append(cur)
-
+        merged = self._merge_intervals(events)
         background: list[Event] = []
-        t = 0.0
-        for e in merged:
-            if e.start_time > t:
-                background.append(Event(t, e.start_time, label="bckg"))
-            t = max(t, e.stop_time)
-        if t < total_duration_sec:
-            background.append(Event(t, total_duration_sec, label="bckg"))
+        prev = 0.0
+        for ev in merged:
+            if ev.start_time > prev:
+                background.append(Event(prev, ev.start_time, label="bckg"))
+            prev = max(prev, ev.stop_time)
+        if prev < total_duration_sec:
+            background.append(Event(prev, total_duration_sec, label="bckg"))
         return background
-
