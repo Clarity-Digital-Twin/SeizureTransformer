@@ -2,7 +2,7 @@
 
 Owner: Evaluation/Scoring
 Priority: Critical (standards compliance, reproducibility)
-Status: Implement plan below; block usage now, remove next release
+Status: Phase 1 (hard-block) and Phase 2 (removal) completed; CI guards in place
 
 ## Summary
 - The `merge_gap`/`merge_gap_sec` flag merges nearby predicted events in post‑processing. This lowers false alarms by collapsing short gaps, but it is non‑standard and not part of Temple/NEDC evaluation.
@@ -52,11 +52,12 @@ Phase 1 — Hard‑block usage (no behavior change when compliant)
   - Optional: add a unit test that asserts neither conversion nor scoring produce `NONSTANDARD_POSTPROCESSING.txt` under compliant settings.
 
 Phase 2 — Remove flags and parameters (breaking surface changes)
+(Completed)
 - Post‑processing:
   - Remove `merge_gap_sec` from `apply_seizure_transformer_postprocessing` signature and implementation. Keep `merge_nearby_events` as a separate, documented helper not used by evaluation.
 - NEDC pipeline:
-  - Delete `--merge_gap_sec` from `convert_predictions.py` and `run_nedc.py` CLIs and code. Remove disclaimer write‑outs related to merge.
-  - Delete `--merge_gaps` from `sweep_operating_point.py`. Simplify naming of sweep directories.
+  - `--merge_gap_sec` removed from `convert_predictions.py` and `run_nedc.py` CLIs and code (disclaimers removed).
+  - `--merge_gaps` removed from `sweep_operating_point.py`; naming simplified.
 - Experiments:
   - Remove `merge_gap_sec` from `scripts/experiment_tracker.py` (CLI and JSON). For backwards compatibility, if the field exists in a historic config JSON, ignore it with a one‑line notice.
 - Tests:
@@ -90,18 +91,14 @@ Phase 3 — Cleanup and enforcement
   - Confirm all calls pass `merge_gap_sec=None`. No change required; keep comments explaining “avoid double‑merge; SzCORE merges internally (90s)”.
 
 - `scripts/experiment_tracker.py`
-  - Phase 1: Accept but force `None`, warn once; keep recording `merge_gap_sec: null`.
-  - Phase 2: Remove the argument and field. When loading existing configs, ignore the field if present.
+  - Argument and field removed; historic configs ignored if present.
 
 - Tests
   - Phase 1: Update `tests/test_convert_predictions.py` to expect a `ValueError` when a non‑zero merge gap is provided.
   - Phase 2: Remove tests referring to the parameter. Keep unit tests for `merge_nearby_events` under a neutral utils test (not part of evaluation pipeline tests).
 
 - CI (`.github/workflows/nedc-conformance.yml`)
-  - Ensure sweeps pass `--merge_gaps 0` during Phase 1. In Phase 2, remove the argument entirely.
-  - Add a grep step to enforce no non‑zero `merge_gap_sec` at runtime, for example:
-    - `! rg -n "\bmerge_gap_sec\b\s*:\s*(?!0(\.0+)?)" experiments/**/params.json experiments/**/operating_point.json || exit 1`
-    - `! rg -n "NONSTANDARD_POSTPROCESSING.txt" experiments/** || exit 1`
+  - Removed sweep argument; added guard to fail if any artifact contains `merge_gap_sec` or writes `NONSTANDARD_POSTPROCESSING.txt`.
 
 ## Verification Plan (invariants and parity)
 - NEDC parity:
