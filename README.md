@@ -23,6 +23,7 @@ Wu et al.'s transformer-based seizure detector won the 2025 EpilepsyBench Challe
 - TUSZ results for models trained on it are marked with 🚂, despite patient-disjoint splits enabling valid held-out evaluation
 - TUSZ paired with NEDC scoring represents the clinical gold standard
 - No one had evaluated SeizureTransformer on TUSZ using Temple's official NEDC scorer
+- See `docs/CORE3_EPILEPSYBENCH_SZCORE.md` for a professional, source-anchored writeup of EpilepsyBench vs. NEDC.
 
 <p align="center">
 <img src="docs/images/wu_ebench.png" alt="EpilepsyBench showing SeizureTransformer #1 but no TUSZ results" width="700">
