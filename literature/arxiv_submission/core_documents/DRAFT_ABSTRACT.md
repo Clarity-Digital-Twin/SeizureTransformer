@@ -41,8 +41,8 @@ We contribute: (1) reproducible NEDC evaluation infrastructure, (2) comprehensiv
 ---
 
 ## Key Abstract Elements to Include:
-1. **The Hook**: 100× gap between claimed and actual performance
+1. **The Hook**: 27× gap between claimed and actual performance (OVERLAP) or 137× (TAES)
 2. **The Method**: First NEDC v6.0.0 evaluation on TUSZ
-3. **The Finding**: Scoring alone creates 12× difference
+3. **The Finding**: Scoring alone creates 3.1× difference (OVERLAP vs SzCORE)
 4. **The Impact**: Cannot meet clinical targets with proper scoring
 5. **The Contribution**: Reproducible pipeline + operating points
