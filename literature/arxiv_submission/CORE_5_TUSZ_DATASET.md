@@ -131,8 +131,8 @@ While EpilepsyBench's caution about training data is understandable, it overlook
 ### Eval Set Characteristics
 ```python
 # Our evaluation coverage
-Files processed: 864/865 (99.88%)
-Failed files: 1 (format error)
+Files processed: 865/865 (100%)
+Notes: One file required header repair on a temporary copy (`pyedflib+repaired`)
 Total seizures: 469
 Total hours: 127.7 (459,713 seconds)
 Seizure rate: 3.68 per hour

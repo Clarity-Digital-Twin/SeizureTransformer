@@ -25,8 +25,8 @@ This document provides comprehensive testing and validation results for the Seiz
 
 ### TUSZ v2.0.3 Test Set
 ```
-Total Files: 865 (1 excluded due to format error)
-Processed: 864
+Total Files: 865 (all processed; one header repaired on a copy)
+Processed: 865
 Total Duration: 459,394.2 seconds (127.6 hours)
 Total Samples: 117,604,918
 Seizure Events: 469
@@ -35,7 +35,7 @@ Seizure Prevalence: 5.93%
 ```
 
 ### Data Integrity Checks
-✅ All EDF files readable
+✅ All EDF files readable (one loaded via `pyedflib+repaired` after header fix on a copy)
 ✅ All CSV_bi annotations valid
 ✅ Channel count consistent (19 channels)
 ✅ Sampling rate normalized (256 Hz)
@@ -124,7 +124,7 @@ evaluation/nedc_eeg_eval/nedc_scoring/output/results/
 ## 7. Error Analysis
 
 ### Known Issues
-1. **File exclusion**: aaaaaaaq_s007_t000.edf excluded due to malformed header
+1. (Resolved) aaaaaaaq_s007_t000.edf previously excluded due to malformed header; now processed via `pyedflib+repaired`
 2. **Edge effects**: 0.3% of events truncated at file boundaries
 3. **Channel mapping**: Assumed standard 10-20 montage
 

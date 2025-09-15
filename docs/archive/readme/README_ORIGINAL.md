@@ -53,7 +53,7 @@ Archived: Contains legacy numbers (e.g., 137.5 FA/day) that predate merge_gap de
 
 - ✅ **No patient overlap** between splits (prevents leakage)
 - ✅ **Standard ML practice**: train → dev → eval
-- ✅ **864/865 files processed** (1 format error)
+- ✅ **865/865 files processed** (one header repaired on a copy)
 
 ---
 

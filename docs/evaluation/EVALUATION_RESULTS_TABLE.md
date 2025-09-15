@@ -43,8 +43,8 @@ Format: Sensitivity% / FA per 24h
 
 ## Files Evaluated
 - Total: 865 files
-- Processed: 864 files
-- Skipped: 1 file (format error)
+- Processed: 865 files
+- Skipped: 0 files (one file required header repair on a temporary copy)
 - Total seizures: 469 in ground truth
 
 ## Next Steps

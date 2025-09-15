@@ -90,7 +90,7 @@ Avoid:
 - “SzCORE inflates performance” or “EpilepsyBench is misleading.” Prefer neutral framing about different goals.
 
 Precision in claims (anchor to repo where possible):
-- TUSZ eval counts we use operationally are documented in `docs/evaluation/EVALUATION_RESULTS_TABLE.md` (e.g., 865 files; 469 seizures; 1 file skipped due to EDF header error, fixed elsewhere in repo).
+- TUSZ eval counts we use operationally are documented in `docs/evaluation/EVALUATION_RESULTS_TABLE.md` (e.g., 865 files; 469 seizures; all processed — one file required header repair on a temporary copy via `pyedflib+repaired`).
 - All NEDC usage and definitions are anchored to files under `evaluation/nedc_eeg_eval/v6.0.0` (AAREADME, help, lib sources, params). Cite file paths when describing metrics/CLI.
 - SzCORE parameters are anchored to `evaluation/szcore_scoring/run_szcore.py` and dependency pin in `uv.lock`.
 
@@ -106,4 +106,3 @@ Precision in claims (anchor to repo where possible):
 - Our NEDC integration: `evaluation/nedc_eeg_eval/nedc_scoring/` (convert, run, parse). Summary at `.../output/results/summary.txt`.
 - SzCORE integration: `evaluation/szcore_scoring/run_szcore.py` (parameters: 30/60 tolerances; merge 90 s; micro-avg). Results at `.../szcore_summary.json`.
 - Dependency pin: `uv.lock` (`timescoring==0.0.6`).
-

@@ -30,7 +30,7 @@ This directory contains materials for our arXiv preprint revealing the 100-fold 
 - **865 files** - TUSZ v2.0.3 eval set
 - **469 seizures** - Ground truth events
 - **127.6 hours** - Total recording time
-- **99.88%** - Files successfully processed (864/865)
+- **100%** - Files successfully processed (865/865; one header repaired on a temporary copy)
 
 ### Operating Points
 | Target | Best Achieved | Sensitivity |

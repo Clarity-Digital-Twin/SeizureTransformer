@@ -48,6 +48,10 @@ python evaluation/tusz/run_tusz_eval.py \
   --device auto
 ```
 
+Tip: Run scripts from the repository root to avoid creating nested
+`evaluation/...` paths due to relative paths. See
+`evaluation/nedc_eeg_eval/nedc_scoring/README.md` for details.
+
 ### Score with NEDC
 ```bash
 # Run NEDC pipeline

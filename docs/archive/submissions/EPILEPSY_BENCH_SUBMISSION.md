@@ -16,7 +16,7 @@ Archived until we finalize clinical tuning points and refresh all numbers from S
 - **Dataset**: Temple University Hospital EEG Seizure Corpus (TUSZ)
 - **Version**: 2.0.3
 - **Split**: eval (held-out test set)
-- **Files**: 864/865 (1 excluded due to format error)
+- **Files**: 865/865 (all processed; one header repaired on a copy)
 - **Duration**: 127.6 hours
 - **Seizure Events**: 469
 

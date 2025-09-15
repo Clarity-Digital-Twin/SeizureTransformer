@@ -15,6 +15,13 @@ evaluation/
     └── run_nedc.py                # Run NEDC scorer and parse outputs
 ```
 
+## Backends
+
+- `nedc-binary` (default): Uses Temple’s official v6.0.0 scorer under `evaluation/nedc_eeg_eval/v6.0.0`.
+- `native-overlap`: Uses our native Python OVERLAP scorer (`seizure_evaluation/ovlp`). Useful for portability checks.
+
+Select with `--backend {nedc-binary,native-overlap}` in `run_nedc.py`.
+
 ## Workflow
 
 1. **Run SeizureTransformer** → Get predictions
@@ -49,9 +56,32 @@ $NEDC_NFC/bin/nedc_eeg_eval \
 # - Overlap and Epoch summaries
 ```
 
+## Outputs
+
+- Converted files: `output/hyp/*.csv_bi`, `output/ref/*.csv_bi`
+- Pair lists for NEDC: `output/lists/{ref.list,hyp.list}`
+- Results: `output/results/*` plus `metrics.json` and `operating_point.json`
+
 ## Why Two Directories?
 
 - `nedc_eeg_eval/` = Temple's official software (untouched)
 - `nedc_scoring/` = Our code to use their software
 
 This separation keeps Temple's code pristine while our integration scripts handle the SeizureTransformer-specific parts.
+
+## Deprecated
+
+- `run_nedc_scoring.py` is a legacy stub. Use `run_nedc.py` instead.
+
+## Conventions and tips
+
+- Always invoke these scripts from the repository root to avoid creating nested
+  `evaluation/...` directories due to relative paths. Example:
+  `python evaluation/nedc_eeg_eval/nedc_scoring/test_pipeline.py` (run from repo root).
+- Prefer `run_nedc.py --outdir <your/experiments/path>` for repeatable runs;
+  avoid writing inside `v6.0.0/` which must remain pristine.
+
+## Troubleshooting
+
+- If you see nested paths (e.g., `evaluation/nedc_eeg_eval/nedc_scoring/evaluation/...`),
+  they were created by running from the wrong CWD. Delete them safely and re-run from the repo root.

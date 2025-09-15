@@ -209,8 +209,9 @@ def run_full_test():
     print(f"Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("=" * 60)
 
-    # Set up test paths
-    test_dir = Path("evaluation/nedc_eeg_eval/nedc_scoring/test_output")
+    # Set up test paths (always relative to this script's directory)
+    base_dir = Path(__file__).resolve().parent
+    test_dir = base_dir / "test_output"
     test_checkpoint = test_dir / "test_checkpoint.pkl"
 
     # Clean up previous test

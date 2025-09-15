@@ -86,7 +86,7 @@ Note: Earlier drafts included merge_gap-based operating points. Those are deprec
 - **Dataset**: TUSZ v2.0.3 eval split (865 files, 469 seizures)
 - **Tuning methodology**: Parameters tuned on dev using NEDC OVERLAP
 - **AUROC**: 0.9021 (excellent discrimination capacity)
-- **Files processed**: 864/865 (1 format error)
+- **Files processed**: 865/865 (one header repaired on a temporary copy via `pyedflib+repaired`)
 
 ## 🔧 Evaluation Framework
 

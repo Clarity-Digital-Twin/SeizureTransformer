@@ -1,8 +1,8 @@
 # Evaluation Bug Report: EDF File Format Error
-## Status: Fixed in code (pending full re-eval)
+## Status: Fixed and verified (865/865 processed)
 
 ### Executive Summary
-During the TUSZ v2.0.3 evaluation, 1 out of 865 files (0.12%) failed to process due to an EDF format compliance issue. We implemented a safe header-repair + fallback loader (`evaluation/utils/edf_repair.py`) and updated the evaluation script to use it. Local test confirms successful loading of the problematic file. Full re-evaluation is pending to update the checkpoint and metrics.
+During the TUSZ v2.0.3 evaluation, one file initially failed due to an EDF header compliance issue. We implemented a safe header-repair + fallback loader (`evaluation/utils/edf_repair.py`) and updated the evaluation script to use it. Full re-evaluation confirms 100% coverage: all 865/865 files process successfully; the previously failing file loads via `pyedflib+repaired`.
 
 ---
 
@@ -34,27 +34,24 @@ it might contain incorrect characters, such as ':' instead of '.'
 ### Statistical Impact
 ```
 Total eval files: 865
-Successfully processed: 864
-Failed files: 1
-Success rate: 99.88%
+Successfully processed: 865
+Failed files: 0
+Success rate: 100.00%
 ```
 
 ### Why This Doesn't Affect Our Conclusions
-1. **Minimal Data Loss**: 0.12% of files represents ~11 minutes out of 127.7 hours
-2. **Random Failure**: Format error is unrelated to seizure content or model performance
-3. **Complete Session Coverage**: Other segments (t001-t005) from same session processed successfully
-4. **Sufficient Sample Size**: 864 files provide robust statistical power
+1. No data loss: all 865 eval files are now processed
+2. The issue was format-only (header separators), not related to EEG content
+3. Session coverage is complete (t000–t005), with t000 loading via `pyedflib+repaired`
 
 ### Evidence of Continued Processing
-The session `aaaaaaaq_s007` has 6 segments total:
-- ❌ t000: Failed (format error)
-- ✅ t001: Processed successfully
-- ✅ t002: Processed successfully
-- ✅ t003: Processed successfully
-- ✅ t004: Processed successfully
-- ✅ t005: Processed successfully
+The session `aaaaaaaq_s007` has 6 segments total, all processed:
+- ✅ t000: Processed via `pyedflib+repaired` (header separator fix on copy)
+- ✅ t001–t005: Processed via `pyedflib`
 
-**Source**: `/experiments/eval/baseline/CLEAN_NO_MERGE/*/results/summary_*.txt`
+Verification sources:
+- `experiments/eval/baseline/checkpoint.pkl` (no entries with `error`)
+- End-of-run loader summary in `evaluation/tusz/run_tusz_eval.py` (shows counts per `load_method`)
 
 ---
 
@@ -89,6 +86,7 @@ failed = [k for k,v in results.items() if v.get('error')]
 - Loader tries: pyedflib → header repair + reload → optional MNE fallback
 - Continues processing remaining files regardless
 - Stores error string (if any) and `load_method` in checkpoint for transparency
+- Prints loader method usage summary at end of eval (e.g., `pyedflib: 864`, `pyedflib+repaired: 1`)
 
 ### Scoring Accommodation
 - NEDC scorer handles missing files gracefully
@@ -100,9 +98,9 @@ failed = [k for k,v in results.items() if v.get('error')]
 ## Transparency Notes
 
 ### What We Report
-- **In Paper**: "864 of 865 files processed (99.88%)"
-- **In Repository**: Full error logged in checkpoint.pkl
-- **In Documentation**: This bug report for complete transparency
+- **In Paper/Docs**: "865 of 865 files processed (100%)"; one file required header repair on a temporary copy
+- **In Repository**: `checkpoint.pkl` includes the `load_method` for each file; no errors present
+- **In Documentation**: This bug report documents the fix and verification
 
 ### Best Practices Followed
 1. ✅ Logged all errors with full tracebacks
@@ -132,11 +130,18 @@ Include footnote: "*One file (0.12%) could not be processed due to EDF format er
 
 ## Conclusion
 
-This single file failure represents a known data quality issue that has **negligible impact** on our evaluation results. The 99.88% processing success rate exceeds typical standards for large-scale clinical data analysis. Our handling of this error demonstrates:
+The original single-file failure was a source data header format issue. With the repair+fallback loader in place, we achieve full coverage (865/865). This demonstrates:
 
-- **Robustness**: Pipeline continues despite errors
-- **Transparency**: Full documentation of issues
-- **Scientific Rigor**: Accurate reporting of data coverage
+- Robustness: Non-invasive repair on a temporary copy with strict scope
+- Transparency: Loader method recorded per file and summarized
+- Scientific rigor: Accurate reporting and reproducible verification
+
+### Reproducibility
+- Inspect the problematic header fields:
+  - `python scripts/test_edf_repair.py`
+- Re-run evaluation and view loader summary:
+  - `python evaluation/tusz/run_tusz_eval.py --data_dir data/tusz/edf/eval --out_dir experiments/eval/baseline --device auto --batch_size 512`
+  - End-of-run prints counts by load method; `pyedflib+repaired` should be 1, others `pyedflib`
 
 The core finding of a **100× performance gap** remains completely valid and is unaffected by this minor data quality issue.
 
