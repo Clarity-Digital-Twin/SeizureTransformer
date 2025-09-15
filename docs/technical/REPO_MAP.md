@@ -112,7 +112,7 @@ Acceptance criteria
 
 ## Pointers to Detailed Docs
 
-- Topical truth about channels and Docker: `CRITICAL_ARCHITECTURE_TRUTH.md`
+- Topical truth about channels and Docker: `../analysis/CRITICAL_ARCHITECTURE_TRUTH.md`
 - Evaluation tools overview: `evaluation/README.md`
 - SSOT status and metrics policy: `docs/status/SINGLE_SOURCE_OF_TRUTH.md`
 - Application architecture (broader plan): `docs/APPLICATION_ARCHITECTURE.md`
