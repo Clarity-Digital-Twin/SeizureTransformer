@@ -129,7 +129,8 @@
       "Bash(DOCKER_BUILDKIT=0 docker build -t st:smoke -f /tmp/Dockerfile.test /tmp/)",
       "Bash(DOCKER_BUILDKIT=0 docker build -t st:smoke -)",
       "Bash(DOCKER_BUILDKIT=0 docker build -t seizure-transformer:latest .)",
-      "Bash(TESTFILE=\"/mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/data/siena/PN00/PN00-1.edf\")"
+      "Bash(TESTFILE=\"/mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/data/siena/PN00/PN00-1.edf\")",
+      "Bash(DOCKER_BUILDKIT=0 docker build -t seizure-transformer:test -f Dockerfile .)"
     ],
     "deny": [],
     "ask": []
