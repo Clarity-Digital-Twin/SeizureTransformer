@@ -49,7 +49,6 @@ def convert_to_hedscore(
             morph_kernel_size=kernel,
             min_duration_sec=min_duration_sec,
             fs=fs,
-            merge_gap_sec=None,  # avoid double-merge; SzCORE merges internally
         )
 
         lines = [header]

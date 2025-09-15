@@ -80,7 +80,6 @@ def score_file(
         morph_kernel_size=morph_kernel_size,
         min_duration_sec=min_duration_sec,
         fs=fs,
-        merge_gap_sec=None,
     )
 
     num_samples = len(predictions)

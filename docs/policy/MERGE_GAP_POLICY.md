@@ -23,7 +23,7 @@ Defaults and recommendations
 
 Where it exists now
 - Post-processing: `merge_nearby_events(...)` utility only (not used by evaluation).
-- SzCORE wrapper: explicitly uses `merge_gap_sec=None` to avoid double-merge (SzCORE merges internally at 90s).
+- SzCORE wrapper: does not merge in our post-processing; SzCORE merges internally (90s).
 
 References
 - See `docs/policy/CRITICAL_MERGE_GAP_ISSUE.md` for the full incident write-up and history.
@@ -34,5 +34,5 @@ Quick verification
      --checkpoint experiments/eval/baseline/checkpoint.pkl \
      --outdir experiments/eval/baseline/paper_default_nomerge \
      --threshold 0.8 --kernel 5 --min_duration_sec 2.0`
-- If you try a non-zero merge gap, expect a WARNING and the disclaimer files.
+- Non-zero merge gaps are not supported anywhere in evaluation CLIs/APIs. CI will fail if any artifact or manifest contains merge-related fields.
 

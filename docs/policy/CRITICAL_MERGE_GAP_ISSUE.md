@@ -1,9 +1,15 @@
 # 🚨 CRITICAL: merge_gap_sec Parameter Issue
 
-**Status**: ACTIVE - Artificially inflating performance metrics
+**Status**: RESOLVED (2025-09-15) — Fully removed from evaluation; CI-enforced
 **Severity**: CRITICAL - Violates NEDC/Picone evaluation standards
 **Date Discovered**: September 14, 2025
-**Impact**: 4X difference in false alarm rates
+**Impact**: 4X difference in false alarm rates (historical)
+
+Update (2025-09-15)
+- Removed `merge_gap_sec` from all evaluation CLIs/APIs and codepaths.
+- Added CI guards to fail if artifacts contain merge-related fields or disclaimers.
+- Documentation and SSOT updated to CLEAN, no-merge numbers (e.g., OVERLAP SEIZ FA = 26.89).
+- A standalone helper `merge_nearby_events(...)` remains for notebook experiments only.
 
 ## Executive Summary
 
@@ -35,7 +41,7 @@ WITHOUT merge_gap (correct):
 
 **This is a 4X artificial improvement!**
 
-## Where It Exists in Code
+## Where It Existed in Code (historical)
 
 ### Files Affected:
 1. `evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py`

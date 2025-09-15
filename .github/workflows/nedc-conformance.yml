@@ -4,7 +4,7 @@ on:
   push:
     branches: [main, development, feature/nedc-integration]
     paths:
-      - 'evaluation/nedc_scoring/**'
+      - 'evaluation/**'
       - 'tests/**'
       - '.github/workflows/nedc-conformance.yml'
   pull_request:
@@ -53,13 +53,13 @@ jobs:
     - name: Lint with ruff (exclude vendor)
       run: |
         source .venv/bin/activate
-        ruff check evaluation/nedc_scoring scripts tests --exclude evaluation/nedc_eeg_eval
-        ruff format evaluation/nedc_scoring scripts tests --check --exclude evaluation/nedc_eeg_eval
+        ruff check evaluation/nedc_eeg_eval/nedc_scoring scripts tests --exclude evaluation/nedc_eeg_eval/v6.0.0
+        ruff format evaluation/nedc_eeg_eval/nedc_scoring scripts tests --check --exclude evaluation/nedc_eeg_eval/v6.0.0
 
     - name: Type check with mypy (exclude vendor)
       run: |
         source .venv/bin/activate
-        mypy evaluation/nedc_scoring scripts tests || true  # Non-blocking for now
+        mypy evaluation/nedc_eeg_eval/nedc_scoring scripts tests --exclude 'evaluation/nedc_eeg_eval/v6.0.0' || true  # Non-blocking for now
 
     - name: Run unit tests (no NEDC)
       run: |
@@ -136,33 +136,32 @@ with open('test_checkpoint.pkl', 'wb') as f:
     pickle.dump({'results': results, 'next_idx': 1}, f)
 "
         # Test sweep with minimal parameters
-        python evaluation/nedc_scoring/sweep_operating_point.py \
+        python evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py \
           --checkpoint test_checkpoint.pkl \
           --outdir_base test_sweep \
           --thresholds 0.5,0.8 \
           --kernels 5 \
           --min_durations 2 || echo "Sweep test completed (may fail without full data)"
+    - name: Verify merge_gap compliance
+      run: |
+        # Check that no artifacts contain merge_gap_sec or NONSTANDARD_POSTPROCESSING
+        echo "Checking for non-compliant merge_gap usage..."
 
-      - name: Verify merge_gap compliance
-        run: |
-          # Check that no artifacts contain non-zero merge_gap_sec
-          echo "Checking for non-compliant merge_gap usage..."
+        # Check params.json files do not contain merge_gap_sec at all
+        find . -name "params.json" -type f | while read f; do
+          if grep -q '"merge_gap_sec"' "$f" 2>/dev/null; then
+            echo "ERROR: merge_gap_sec field found in $f (should be absent)"
+            exit 1
+          fi
+        done
 
-          # Check params.json files do not contain merge_gap_sec at all
-          find . -name "params.json" -type f | while read f; do
-            if grep -q '"merge_gap_sec"' "$f" 2>/dev/null; then
-              echo "ERROR: merge_gap_sec field found in $f (should be absent)"
-              exit 1
-            fi
-          done
-
-          # Check metrics.json files do not contain merge_gap_sec in operating_point
-          find . -name "metrics.json" -type f | while read f; do
-            if grep -q '"merge_gap_sec"' "$f" 2>/dev/null; then
-              echo "ERROR: merge_gap_sec field found in $f (should be absent)"
-              exit 1
-            fi
-          done
+        # Check metrics.json files do not contain merge_gap_sec
+        find . -name "metrics.json" -type f | while read f; do
+          if grep -q '"merge_gap_sec"' "$f" 2>/dev/null; then
+            echo "ERROR: merge_gap_sec field found in $f (should be absent)"
+            exit 1
+          fi
+        done
 
         # Check for NONSTANDARD_POSTPROCESSING.txt files (should not exist)
         if find . -name "NONSTANDARD_POSTPROCESSING.txt" -type f | grep -q .; then
