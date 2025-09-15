@@ -99,3 +99,5 @@ We tuned parameters using NEDC OVERLAP (the common practice for TUSZ) and evalua
 - Model: SeizureTransformer (authors' pretrained weights)
 - Location: `/experiments/eval/baseline/CLEAN_NO_MERGE/`
 - Generated: September 15, 2025
+ 
+<!-- moved to docs/results -->
