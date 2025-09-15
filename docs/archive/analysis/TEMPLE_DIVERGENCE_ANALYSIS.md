@@ -119,7 +119,7 @@ import sys
 
 # Add to path
 sys.path.insert(0, str(Path.cwd()))
-from seizure_evaluation.taes.overlap_scorer import Event, OverlapScorer
+from seizure_evaluation.ovlp.overlap_scorer import Event, OverlapScorer
 
 # Test events
 ref = [

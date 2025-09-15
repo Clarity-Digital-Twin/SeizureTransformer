@@ -14,7 +14,7 @@ import pytest
 repo_root = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(repo_root))
 
-from seizure_evaluation.taes.overlap_scorer import Event, OverlapScorer  # noqa: E402
+from seizure_evaluation.ovlp.overlap_scorer import Event, OverlapScorer  # noqa: E402
 
 
 @pytest.mark.overlap

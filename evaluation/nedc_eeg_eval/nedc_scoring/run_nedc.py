@@ -194,7 +194,7 @@ def run_nedc_scorer(
         for p in (str(repo_root), str(eval_dir)):
             if p not in sys.path:
                 sys.path.insert(0, p)
-        from seizure_evaluation.taes.overlap_scorer import OverlapScorer
+        from seizure_evaluation.ovlp.overlap_scorer import OverlapScorer
 
         print("Running native Python OVERLAP scorer...")
 
