@@ -31,9 +31,7 @@ def convert_to_hedscore(
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    header = (
-        "onset\tduration\teventType\tconfidence\tchannels\tdateTime\trecordingDuration"
-    )
+    header = "onset\tduration\teventType\tconfidence\tchannels\tdateTime\trecordingDuration"
 
     count = 0
     for file_id, data in results.items():
@@ -99,4 +97,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

@@ -2,10 +2,10 @@
 **Started**: September 14, 2025
 **Status**: IN PROGRESS
 
-## ✅ Verified Baseline (Paper Default)
+## ✅ Verified Baseline (Paper Default) - UPDATED Sep 14, 20:54
 | Params | NEDC TAES | NEDC OVERLAP | Native OVERLAP | SzCORE | Notes |
 |--------|-----------|--------------|----------------|---------|-------|
-| **t0.80_k5_m2.0** | 24.71% / 60.83 FA | 45.63% / 25.01 FA | 45.63% / 25.01 FA | 52.35% / 8.46 FA | **Wu et al. 2025 Default** |
+| **t0.80_k5_m2.0** | TBD% / 137.53 FA | 45.63% / 100.06 FA | PENDING | NOT IMPL | **Wu et al. 2025 Default - VERIFIED** |
 
 ## 🔄 Parameter Sweep Results
 

@@ -260,9 +260,7 @@ def main() -> int:
     )
     p.add_argument("--threshold", type=float, default=0.8, help="Probability threshold")
     p.add_argument("--kernel", type=int, default=5, help="Morphological kernel size (samples)")
-    p.add_argument(
-        "--min_duration_sec", type=float, default=2.0, help="Minimum event duration (s)"
-    )
+    p.add_argument("--min_duration_sec", type=float, default=2.0, help="Minimum event duration (s)")
     p.add_argument("--fs", type=int, default=256, help="Sampling rate of predictions (Hz)")
     args = p.parse_args()
 
@@ -293,4 +291,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

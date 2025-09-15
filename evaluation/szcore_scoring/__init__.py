@@ -1,2 +1,1 @@
 """SzCORE scoring wrapper package."""
-
