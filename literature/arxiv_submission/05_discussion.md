@@ -10,7 +10,7 @@ The 3.1× difference in false alarm rates between NEDC OVERLAP (26.89 FA/24h) an
 
 ## Clinical Deployment Constraints
 
-The inability to achieve the standard clinical requirement of ≤10 FA/24h with ≥50% sensitivity reveals a critical gap between research achievements and deployment readiness. Our best clinical operating point achieved only 33.90% sensitivity at 10.27 FA/24h with NEDC OVERLAP, falling well short of the 50% sensitivity threshold that clinicians require for practical utility. This constraint is not merely academic—it determines whether AI assistants can be deployed in ICUs, where false alarms cause alarm fatigue and missed seizures delay critical treatment. The FDA's clearance of similar devices at these thresholds establishes a clear benchmark that current models cannot meet when evaluated with appropriate clinical standards.
+The inability to achieve the standard clinical requirement of ≤10 FA/24h with ≥50% sensitivity reveals a critical gap between research achievements and deployment readiness. Our best clinical operating point achieved only 33.90% sensitivity at 10.27 FA/24h with NEDC OVERLAP, falling well short of the 50% sensitivity threshold that clinicians require for practical utility. This constraint is not merely academic—it determines whether AI assistants can be deployed in ICUs, where false alarms cause alarm fatigue and missed seizures delay critical treatment. Prior clinical guidance cites thresholds around ≤10 FA/24h with ≥50% sensitivity; current models do not meet these levels when evaluated with appropriate clinical standards.
 
 ## Root Causes of Evaluation Gaps
 
@@ -18,7 +18,7 @@ The performance disparities stem from multiple compounding factors beyond scorin
 
 ## Systemic Issues in the Field
 
-The 27-137× gap we document is not unique to SeizureTransformer but reflects systemic issues in how seizure detection research approaches evaluation. The field has optimized for benchmark leaderboards rather than clinical deployment, creating perverse incentives to report results on datasets and with scoring methods that maximize apparent performance. EpilepsyBench's use of the 🚂 symbol to prevent TUSZ evaluation, while well-intentioned to ensure held-out testing, inadvertently prevents models from being evaluated on the most clinically relevant public dataset with matched evaluation tools. This creates a situation where models can claim state-of-the-art performance without ever facing the clinical standards they purport to meet.
+The 27-137× gap we document is not unique to SeizureTransformer but reflects systemic issues in how seizure detection research approaches evaluation. The field has optimized for benchmark leaderboards rather than clinical deployment, creating incentives to report results on datasets and with scoring methods that maximize apparent performance. EpilepsyBench's use of a train icon to mark TUSZ and withhold TUSZ evaluation metrics, while well‑intentioned to ensure held‑out testing, can inadvertently discourage evaluating models on TUSZ's held‑out split with matched tooling. This creates a situation where models can claim state‑of‑the‑art performance without ever facing the clinical standards they purport to meet.
 
 ## Recommendations for Transparent Evaluation
 

@@ -10,9 +10,9 @@ The development set, containing 1,832 files (435.5 hours) from 53 distinct patie
 
 ## Model and Inference Pipeline
 
-We employed the authors' publicly available pretrained SeizureTransformer weights (168MB) without any modifications, retraining, or fine-tuning. The model expects 19-channel unipolar montage EEG data sampled at 256 Hz, processing 60-second windows (15,360 samples per channel) through its U-Net-Transformer architecture.
+We employed the authors' publicly available pretrained SeizureTransformer weights (≈168 MB) without any modifications, retraining, or fine-tuning. The model expects 19-channel unipolar montage EEG data sampled at 256 Hz, processing 60-second windows (15,360 samples per channel) through its U-Net‑Transformer architecture.
 
-Our preprocessing pipeline, implemented as a wrapper around the original wu_2025 code, follows the paper's specifications exactly. For each EDF file, we: (1) load the data using epilepsy2bids.Eeg.loadEdfAutoDetectMontage, which enforces unipolar montage requirements and normalizes channel aliases; (2) apply per-channel z-score normalization across the full recording; (3) resample to 256 Hz if necessary; (4) apply a 0.5-120 Hz bandpass filter (3rd order Butterworth); and (5) apply notch filters at 1 Hz and 60 Hz (Q-factor 30) to remove powerline interference and ultra-low frequency artifacts.
+Our preprocessing pipeline, implemented as a wrapper around the original wu_2025 code, follows the paper's specifications. For each EDF file, we: (1) load the data with unipolar montage enforcement and normalized channel aliases; (2) apply per-channel z‑score normalization across the full recording; (3) resample to 256 Hz if necessary; (4) apply a 0.5–120 Hz bandpass filter (3rd‑order Butterworth); and (5) apply notch filters at 1 Hz and 60 Hz (Q=30).
 
 The model processes 60-second non-overlapping windows, outputting per-sample seizure probabilities at 256 Hz. Post-processing applies three sequential operations using configurable parameters: (1) threshold the probability values to create a binary mask; (2) apply morphological opening and closing operations with a specified kernel size; and (3) remove events shorter than a minimum duration. The paper's default configuration uses threshold θ=0.8, kernel size k=5 samples, and minimum duration d=2.0 seconds.
 
@@ -26,13 +26,13 @@ We evaluated identical model predictions using four scoring methodologies, each 
 
 **Native OVERLAP** is our Python implementation of binary any-overlap scoring, developed for computational efficiency and validation. We verified perfect parity with NEDC OVERLAP, achieving identical results to four decimal places across all metrics.
 
-**SzCORE Any-Overlap** extends binary scoring with clinical tolerances: 30-second pre-ictal and 60-second post-ictal windows around each reference event, plus merging of predictions separated by less than 90 seconds. These modifications, designed for clinical deployment scenarios where early warnings and reduced alarm fatigue are prioritized, substantially reduce reported false alarm rates.
+**SzCORE Any-Overlap** extends binary scoring with clinical tolerances: 30‑second pre‑ictal and 60‑second post‑ictal windows around each reference event, plus merging of predictions separated by less than 90 seconds. These modifications, designed for clinical deployment scenarios where early warnings and reduced alarm fatigue are prioritized, substantially reduce reported false alarm rates.
 
 All scoring implementations process the same binary prediction masks, ensuring that performance differences stem solely from scoring philosophy rather than model behavior.
 
 ## Parameter Optimization
 
-We conducted systematic post-processing parameter optimization on the TUSZ development set, targeting clinical deployment criteria of ≤10 false alarms per 24 hours while maximizing sensitivity. Our grid search explored: thresholds θ ∈ [0.60, 0.65, ..., 0.95], morphological kernel sizes k ∈ [3, 5, 7, 9, 11, 13, 15] samples, and minimum event durations d ∈ [1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0] seconds.
+We conducted systematic post‑processing parameter optimization on the TUSZ development set, targeting clinical deployment criteria of ≤10 false alarms per 24 hours while maximizing sensitivity. Our grid search explored: thresholds θ ∈ [0.60, 0.65, ..., 0.95], morphological kernel sizes k ∈ [3, 5, 7, 9, 11, 13, 15] samples, and minimum event durations d ∈ [1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0] seconds.
 
 For each configuration, we computed sensitivity and false alarm rates using NEDC OVERLAP scoring, as this represents the clinical standard for TUSZ. From the resulting parameter space, we selected three operating points for comprehensive evaluation: (1) **Default** (θ=0.80, k=5, d=2.0s) - the paper's published configuration; (2) **Clinical** (θ=0.95, k=15, d=5.0s) - optimized for the ≤10 FA/24h clinical threshold; and (3) **Aggressive** (θ=0.60, k=3, d=1.0s) - maximum sensitivity configuration.
 
@@ -46,6 +46,6 @@ To enable full reproducibility, we provide our complete evaluation codebase, inc
 
 ## Statistical Analysis
 
-We report standard seizure detection metrics for each configuration and scorer combination: sensitivity (seizure-level recall), false alarm rate per 24 hours (computed from the total recording duration), and F1 score. For NEDC scorers, we use Temple's standard false alarm calculation combining both seizure and background false positives. For SzCORE, we follow its event-based false positive definition. We also computed AUROC across threshold values to assess overall discriminative capability independent of operating point selection.
+We report standard seizure detection metrics for each configuration and scorer combination: sensitivity (seizure‑level recall), false alarm rate per 24 hours (computed from total recording duration), and F1 score. For NEDC scorers, we report SEIZ‑only FA/24h as the primary metric (Temple’s "Total FA" is archived in summaries). For SzCORE, we follow its event‑based false positive definition. We also computed AUROC across threshold values to assess overall discriminative capability independent of operating point selection.
 
 This comprehensive evaluation framework, combining the authors' pretrained model with multiple clinical scoring standards applied to a properly held-out test set, reveals how methodological choices fundamentally shape reported performance metrics in seizure detection systems.
