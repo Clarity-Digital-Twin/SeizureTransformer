@@ -59,8 +59,8 @@ TUSZ annotations were created by Temple University following specific clinical g
 
 ### Authoritative Results
 
-- See `FINAL_COMPREHENSIVE_RESULTS_TABLE.md` for the single source of truth: 4 scoring methods × 3 operating points (Default, 10 FA, 2.5 FA), all without merge_gap.
-- See `PARAMETER_TUNING_METHODOLOGY.md` for why we tuned on NEDC OVERLAP and how to interpret differences across scoring methods.
+- See `docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md` for the single source of truth: 4 scoring methods × 3 operating points (Default, 10 FA, 2.5 FA), all without merge_gap.
+- See `docs/evaluation/PARAMETER_TUNING_METHODOLOGY.md` for why we tuned on NEDC OVERLAP and how to interpret differences across scoring methods.
 
 Note: Earlier drafts included merge_gap-based operating points. Those are deprecated and archived. All current numbers are computed with merge_gap disabled.
 

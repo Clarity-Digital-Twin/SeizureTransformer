@@ -1,8 +1,8 @@
 # ⚠️ SUPERSEDED – See FINAL_COMPREHENSIVE_RESULTS_TABLE.md
 
 This file predates the final cleanup and includes mixed assumptions (e.g., merge_gap, split mismatches). For authoritative, up-to-date numbers, see:
-- `FINAL_COMPREHENSIVE_RESULTS_TABLE.md`
-- `PARAMETER_TUNING_METHODOLOGY.md`
+- `docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md`
+- `docs/evaluation/PARAMETER_TUNING_METHODOLOGY.md`
 
 # 🎯 FINAL COMPLETE RESULTS - ALL SCORING METHODS
 

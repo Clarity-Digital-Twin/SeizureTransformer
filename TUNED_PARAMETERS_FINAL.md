@@ -3,8 +3,8 @@
 This document contains earlier notes from sweeps that used merge_gap and mixed scoring assumptions. It is retained for traceability but is not authoritative.
 
 Authoritative sources:
-- `FINAL_COMPREHENSIVE_RESULTS_TABLE.md` – 4 scoring methods × 3 operating points (no merge_gap)
-- `PARAMETER_TUNING_METHODOLOGY.md` – why we tuned on NEDC OVERLAP and how to interpret the metrics
+- `docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md` – 4 scoring methods × 3 operating points (no merge_gap)
+- `docs/evaluation/PARAMETER_TUNING_METHODOLOGY.md` – why we tuned on NEDC OVERLAP and how to interpret the metrics
 
 # 🎯 FINAL TUNED PARAMETERS & COMPLETE RESULTS
 
