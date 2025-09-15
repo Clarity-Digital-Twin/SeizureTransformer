@@ -1,130 +1,117 @@
-# SeizureTransformer Makefile - NEDC Integration
-.PHONY: help install test format lint typecheck check-all clean run-eval
+# SeizureTransformer Makefile
+.PHONY: help setup test lint format typecheck clean docker-build docker-run benchmark sweep
 
-# Default target
 help:
 	@echo "SeizureTransformer Development Commands"
-	@echo "======================================="
 	@echo ""
-	@echo "Setup:"
-	@echo "  install         - Install dependencies with uv"
-	@echo "  install-dev     - Install with dev dependencies"
+	@echo "Setup & Environment:"
+	@echo "  make setup          - Create venv and install dependencies"
+	@echo "  make setup-dev      - Setup with dev dependencies"
 	@echo ""
-	@echo "Quality:"
-	@echo "  lint            - Run ruff linter (excludes vendor)"
-	@echo "  format          - Format code with ruff"
-	@echo "  typecheck       - Run mypy type checker"
-	@echo "  test            - Run all tests"
-	@echo "  test-fast       - Run tests excluding NEDC"
-	@echo "  test-nedc       - Run NEDC conformance tests"
-	@echo "  check-all       - Run all quality checks"
+	@echo "Code Quality:"
+	@echo "  make lint           - Run ruff linting"
+	@echo "  make format         - Format code with ruff"
+	@echo "  make typecheck      - Run mypy type checking"
+	@echo "  make test           - Run test suite"
+	@echo "  make quality        - Run all quality checks"
+	@echo ""
+	@echo "Docker:"
+	@echo "  make docker-build   - Build Docker image"
+	@echo "  make docker-run     - Run Docker container"
+	@echo "  make docker-shell   - Interactive Docker shell"
 	@echo ""
 	@echo "Evaluation:"
-	@echo "  run-dev-eval    - Run TUSZ dev evaluation"
-	@echo "  run-eval-sweep  - Run parameter sweep on dev"
-	@echo "  run-nedc-score  - Run NEDC scoring pipeline"
-	@echo "  run-szcore-score- Run SzCORE scoring (timescoring)"
-	@echo "  check-dev       - Check dev evaluation status"
+	@echo "  make benchmark      - Run all benchmarks at paper defaults"
+	@echo "  make sweep          - Run parameter sweeps for clinical targets"
+	@echo "  make nedc-test      - Test NEDC pipeline"
 	@echo ""
 	@echo "Utilities:"
-	@echo "  clean           - Remove generated files"
+	@echo "  make clean          - Remove build artifacts"
+	@echo "  make monitor-sweep  - Monitor parameter sweep progress"
 
-# Environment setup
-install:
-	uv venv
-	. .venv/bin/activate && uv pip install ./wu_2025
-	. .venv/bin/activate && uv pip install -e .
-	. .venv/bin/activate && uv pip install lxml  # For NEDC
-	@echo "✅ Environment ready! Activate with: source .venv/bin/activate"
+# Setup
+setup:
+	python -m venv .venv
+	. .venv/bin/activate && pip install --upgrade pip
+	. .venv/bin/activate && pip install ./wu_2025
+	. .venv/bin/activate && pip install -r requirements.txt
 
-install-dev:
-	uv venv
-	. .venv/bin/activate && uv pip install ./wu_2025
-	. .venv/bin/activate && uv pip install -e . --extra dev
-	. .venv/bin/activate && uv pip install lxml
-	@echo "✅ Dev environment ready!"
+setup-dev:
+	python -m venv .venv
+	. .venv/bin/activate && pip install --upgrade pip
+	. .venv/bin/activate && pip install ./wu_2025
+	. .venv/bin/activate && pip install -e .[dev]
 
-# Testing
-test:
-	. .venv/bin/activate && python -m pytest tests/ -v
-
-test-fast:
-	. .venv/bin/activate && pytest tests -v -m "not nedc"
-
-test-nedc:
-	. .venv/bin/activate && pytest tests -v -m "nedc"
-
-test-conformance:
-	. .venv/bin/activate && pytest tests/integration/test_nedc_conformance.py -v
-
-test-cov:
-	. .venv/bin/activate && python -m pytest tests/ --cov --cov-report=html
-	@echo "Coverage report: htmlcov/index.html"
-
-# Code quality
-format:
-	. .venv/bin/activate && ruff format evaluation/ scripts/ tests/ --exclude evaluation/nedc_eeg_eval
-
+# Code Quality
 lint:
-	. .venv/bin/activate && ruff check evaluation/ scripts/ tests/ --exclude evaluation/nedc_eeg_eval/v6.0.0
+	ruff check evaluation/ scripts/ tests/
+
+format:
+	ruff format evaluation/ scripts/ tests/
 
 typecheck:
-	. .venv/bin/activate && mypy evaluation/ scripts/ tests/ --ignore-missing-imports --exclude evaluation/nedc_eeg_eval/v6.0.0 || true
+	mypy evaluation/ scripts/ tests/
 
-check-all: lint typecheck test
-	@echo "✅ All quality checks passed!"
+test:
+	pytest tests/ -v
 
-# Clean up
-clean:
-	rm -rf .venv/
-	rm -rf __pycache__/
-	rm -rf .pytest_cache/
-	rm -rf htmlcov/
-	rm -rf .coverage
-	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
-	find . -type f -name "*.pyc" -delete
+quality: lint typecheck test
+	@echo "✅ All quality checks passed"
 
-# Evaluation workflows
-run-dev-eval:
-	@echo "Starting TUSZ dev evaluation..."
-	. .venv/bin/activate && python evaluation/tusz/run_tusz_eval.py \
-		--data_dir wu_2025/data/tusz/edf/dev \
-		--out_dir experiments/dev/baseline \
-		--device auto
+# Docker
+docker-build:
+	docker build -t seizure-transformer:latest .
 
-run-eval-sweep:
-	@echo "Running parameter sweep on dev checkpoint..."
-	. .venv/bin/activate && python evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py \
-		--checkpoint experiments/dev/baseline/checkpoint.pkl \
-		--outdir_base experiments/dev/sweeps \
-		--thresholds 0.3,0.4,0.5,0.6,0.7,0.8,0.9 \
-		--kernels 3,5,7,11,15 \
-		--min_durations 1,2,3,4,5 \
-		--merge_gaps 0 \
-		--target_fa_per_24h 10
+docker-run:
+	docker run --gpus all \
+		-v $$(pwd)/data:/app/data \
+		-v $$(pwd)/experiments:/app/experiments \
+		seizure-transformer:latest
 
-run-nedc-score:
-	$(MAKE) -C evaluation/nedc_eeg_eval/nedc_scoring all
+docker-shell:
+	docker run --gpus all -it \
+		-v $$(pwd)/data:/app/data \
+		-v $$(pwd)/experiments:/app/experiments \
+		--entrypoint /bin/bash \
+		seizure-transformer:latest
 
-run-szcore-score:
-	. .venv/bin/activate && python evaluation/szcore_scoring/run_szcore.py \
+# Evaluation
+benchmark:
+	@echo "Running benchmarks at paper defaults (threshold=0.8)..."
+	python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
 		--checkpoint experiments/eval/baseline/checkpoint.pkl \
-		--outdir experiments/eval/baseline/szcore_results
+		--outdir experiments/eval/baseline/paper_default_nedc \
+		--threshold 0.8 --kernel 5 --min_duration_sec 2.0
+	python evaluation/szcore_scoring/run_szcore.py \
+		--checkpoint experiments/eval/baseline/checkpoint.pkl \
+		--outdir experiments/eval/baseline/paper_default_szcore \
+		--threshold 0.8 --kernel 5 --min_duration_sec 2.0
 
-# Monitoring
-check-dev:
-	@echo "Checking dev evaluation status..."
-	@if [ -f experiments/dev/baseline/checkpoint.pkl ]; then \
-		. .venv/bin/activate && python -c "import pickle; \
-		c = pickle.load(open('experiments/dev/baseline/checkpoint.pkl', 'rb')); \
-		total = len(c.get('results', {})); \
-		print(f'Processed {total} files');"; \
-	else \
-		echo "No checkpoint found"; \
-	fi
+sweep:
+	@echo "Starting parameter sweeps in tmux..."
+	@echo "Run 'make monitor-sweep' to check progress"
+	tmux new-session -d -s sweep_10fa '. .venv/bin/activate && python evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py --checkpoint experiments/eval/baseline/checkpoint.pkl --outdir_base experiments/eval/baseline/sweep_10fa --target_fa_per_24h 10'
+	tmux new-session -d -s sweep_2_5fa '. .venv/bin/activate && python evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py --checkpoint experiments/eval/baseline/checkpoint.pkl --outdir_base experiments/eval/baseline/sweep_2_5fa --target_fa_per_24h 2.5'
 
-# Quick inference test
-test-inference:
-	. .venv/bin/activate && python tests/test_inference.py
+monitor-sweep:
+	@echo "=== Sweep Progress ==="
+	@echo "10 FA/24h: $$(ls experiments/eval/baseline/sweep_10fa 2>/dev/null | wc -l)/140 completed"
+	@echo "2.5 FA/24h: $$(ls experiments/eval/baseline/sweep_2_5fa 2>/dev/null | wc -l)/120 completed"
+	@echo "1.0 FA/24h: $$(ls experiments/eval/baseline/sweep_1fa 2>/dev/null | wc -l)/150 completed"
+	@echo ""
+	@echo "Attach to tmux: tmux attach -t sweep_10fa"
 
-.PHONY: install install-dev test test-fast test-nedc test-conformance test-cov format lint typecheck check-all clean run-dev-eval run-eval-sweep run-nedc-score run-szcore-score check-dev test-inference
+nedc-test:
+	cd evaluation/nedc_eeg_eval/nedc_scoring && make test
+
+# Utilities
+clean:
+	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+	find . -type f -name "*.pyc" -delete
+	find . -type f -name "*.pyo" -delete
+	find . -type f -name "*.pyd" -delete
+	find . -type f -name ".coverage" -delete
+	find . -type d -name "*.egg-info" -exec rm -rf {} + 2>/dev/null || true
+	find . -type d -name ".pytest_cache" -exec rm -rf {} + 2>/dev/null || true
+	find . -type d -name ".mypy_cache" -exec rm -rf {} + 2>/dev/null || true
+	find . -type d -name ".ruff_cache" -exec rm -rf {} + 2>/dev/null || true

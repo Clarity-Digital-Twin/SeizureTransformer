@@ -1,0 +1,62 @@
+# Data directories (use volume mounts instead)
+data/
+wu_2025/data/
+experiments/
+*.edf
+*.csv
+*.pkl
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Jupyter
+*.ipynb_checkpoints
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Tests
+tests/
+coverage/
+.coverage
+htmlcov/
+
+# Temporary
+tmp/
+temp/
+*.log
+*.tmp
+
+# Large model files (copy only needed ones)
+*.pth
+!wu_2025/src/wu_2025/model.pth
