@@ -44,33 +44,37 @@ Wu et al.'s transformer-based seizure detector won the 2025 EpilepsyBench Challe
 | Dataset | Scoring Method | Sensitivity | False Alarms/24h | F1 Score |
 |---------|---------------|-------------|------------------|-----------|
 | **Dianalund** | SzCORE Any-Overlap¹ | 37% | **1 FA/24h** ✅ | 43% |
-| **TUSZ dev (Paper defaults)** | NEDC v6.0.0 TAES² | 24.15% | **144.28 FA/24h** ❌ | 0.30 |
-| **TUSZ dev (Paper defaults)** | NEDC v6.0.0 OVERLAP² | 45.63% | **100.06 FA/24h** ❌ | 0.519 |
-| **TUSZ dev (Tuned for 10 FA)** | NEDC v6.0.0 OVERLAP² | 23.45% | **39.50 FA/24h** ❌ | 0.331 |
+| **TUSZ eval (Paper defaults)** | NEDC v6.0.0 TAES² | 24.15% | **144.28 FA/24h** ❌ | 0.30 |
+| **TUSZ eval (Paper defaults)** | NEDC v6.0.0 OVERLAP² | 45.63% | **100.06 FA/24h** ❌ | 0.519 |
+| **TUSZ eval (Paper defaults)** | SzCORE³ | 52.35% | **8.46 FA/24h** ⚠️ | - |
+| **TUSZ eval (Tuned for 10 FA)** | NEDC v6.0.0 OVERLAP² | 23.45% | **39.50 FA/24h** ❌ | 0.331 |
 
-¹ SzCORE: Lenient event-based scoring where any overlap counts as detection (on Dianalund dataset)
+¹ SzCORE: Event-based scoring with 30s pre-ictal, 60s post-ictal tolerances, merges events <90s apart (on Dianalund dataset)
 ² NEDC: Clinical standard scorer for TUSZ. TAES = strict time-alignment, OVERLAP = any-overlap within NEDC framework
+³ SzCORE: Same tolerances applied to TUSZ eval - note ~10x FA reduction vs NEDC due to event merging
 
-**Critical Note**: These are different datasets AND different scoring methods. The 1 FA/24h was achieved on Dianalund (small Nordic dataset), not TUSZ. Additionally, SzCORE's "Any-Overlap" is more forgiving than NEDC's TAES scoring. NEDC is the authoritative scorer for TUSZ as both were developed by Temple University for clinical EEG evaluation.
+**Critical Note**: These are different datasets AND different scoring methods. The 1 FA/24h was achieved on Dianalund (small Nordic dataset), not TUSZ. SzCORE includes 30s pre-ictal and 60s post-ictal tolerances plus event merging (<90s gaps), making it ~10x more permissive than NEDC. Both scoring approaches have merit - SzCORE prioritizes clinical early warning while NEDC prioritizes temporal precision.
 
-### Why NEDC for TUSZ?
+### Understanding Scoring Differences
 
-TUSZ annotations were created by Temple University following specific clinical guidelines. NEDC scoring was designed by the same team to evaluate these annotations correctly. Using alternative scoring methods (like SzCORE) on TUSZ is like grading a Harvard exam with MIT's answer key - it may produce numbers, but they don't reflect the intended evaluation criteria.
+TUSZ annotations were created by Temple University following specific clinical guidelines, with NEDC scoring designed by the same team as the matched evaluator. When evaluated with SzCORE (which adds tolerances for early detection), the same predictions yield dramatically different FA rates (~10x lower). Neither approach is "wrong" - they measure different aspects:
+
+- **NEDC**: Prioritizes temporal precision for research
+- **SzCORE**: Prioritizes clinical utility with early warning tolerances
 
 ### Authoritative Results
 
-- See `docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md` for the single source of truth: 4 scoring methods × 3 operating points (Default, 10 FA, 2.5 FA), all without merge_gap.
-- See `docs/evaluation/PARAMETER_TUNING_METHODOLOGY.md` for why we tuned on NEDC OVERLAP and how to interpret differences across scoring methods.
+- See `FINAL_COMPREHENSIVE_RESULTS_TABLE.md` for the single source of truth: 4 scoring methods × 3 operating points (Default, 10 FA, 2.5 FA), all without merge_gap.
+- See `PARAMETER_TUNING_METHODOLOGY.md` for why we tuned on NEDC OVERLAP and how to interpret differences across scoring methods.
 
 Note: Earlier drafts included merge_gap-based operating points. Those are deprecated and archived. All current numbers are computed with merge_gap disabled.
 
-### Key Metrics (NEDC v6.0.0)
-- **Scoring**: NEDC v6.0.0 TAES/OVERLAP (Temple's official metrics for TUSZ)
-- **Default**: We report TAES by default (strictest clinical standard)
-- **Why NEDC**: Temple created both TUSZ dataset and NEDC scorer as a matched pair
+### Key Metrics (TUSZ v2.0.3 eval)
+- **Primary scorer**: NEDC v6.0.0 (Temple's official metrics for TUSZ)
+- **Comparison scorer**: SzCORE (EpilepsyBench standard with clinical tolerances)
+- **Dataset**: TUSZ v2.0.3 eval split (865 files, 469 seizures)
+- **Tuning methodology**: Parameters tuned on dev using NEDC OVERLAP
 - **AUROC**: 0.9021 (excellent discrimination capacity)
-- **Detected**: 115.91/469 seizures at default threshold (TAES fractional scoring)
-- **Precision**: 59.57% at default threshold
 - **Files processed**: 864/865 (1 format error)
 
 ## 🔧 Evaluation Framework
@@ -100,10 +104,10 @@ python tests/integration/test_nedc_conformance.py  # Confirms ±0.1% match
 | TUSZ Split | Files | Hours | Seizures | Our Use |
 |------------|-------|-------|----------|----------|
 | Train | 1,557 | 3,050 | ~2,900 | Not used (pretrained model) |
-| Dev | 1,013 | 1,015 | ~920 | Threshold tuning |
+| Dev | 1,832 | 1,015 | ~920 | Threshold tuning |
 | Eval (held-out) | 865 | 127.6 | 469 | Final results |
 
-**Note**: Paper trains on TUSZ train subset (≈910h) + Siena (128h). Hours shown reflect full split sizes. We use the authors' pretrained weights; no retraining performed. Patient-disjoint splits prevent leakage. Standard practice: tune on dev, report on eval.
+**Note**: Paper trains on TUSZ train subset (≈910h) + Siena (128h). We use the authors' pretrained weights; no retraining performed. Post-processing parameters were tuned on dev set using NEDC OVERLAP as target, then evaluated across all scoring methods for transparency.
 
 ## 🚀 Installation and Usage
 
