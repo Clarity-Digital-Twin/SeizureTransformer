@@ -57,6 +57,8 @@ Wu et al.'s transformer-based seizure detector won the 2025 EpilepsyBench Challe
 
 Note: Python OVERLAP matches NEDC OVERLAP at all operating points (omitted for brevity).
 
+FA/24h reporting: For NEDC and Python OVERLAP rows, values are Temple’s Total False Alarm Rate (SEIZ + BCKG) from v6.0.0 summaries. SzCORE FA/24h follows its event-based definition.
+
 ¹ SzCORE: Event-based scoring with 30s pre-ictal, 60s post-ictal tolerances, merges events <90s apart (on Dianalund dataset)
 ² NEDC: Clinical standard scorer for TUSZ. TAES = strict time-alignment, OVERLAP = any-overlap within NEDC framework
 ³ SzCORE: Same tolerances applied to TUSZ eval - note ~10x FA reduction vs NEDC due to event merging
