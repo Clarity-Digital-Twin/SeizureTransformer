@@ -29,3 +29,5 @@
 [14] Gemein LAW, Schirrmeister RT, Chrabąszcz P, Wilson D, Boedecker J, Schulze-Bonhage A, et al. Machine-learning-based diagnostics of EEG pathology. NeuroImage. 2020;220:117021.
 
 [15] Roy Y, Banville H, Albuquerque I, Gramfort A, Falk TH, Faubert J. Deep learning-based electroencephalography analysis: a systematic review. J Neural Eng. 2019;16(5):051001.
+
+[16] Roy S, Kiral I, Mirmomeni M, et al. Evaluation of artificial intelligence systems for assisting neurologists with fast and accurate annotations of scalp electroencephalography data. eBioMedicine. 2021;66:103275. doi:10.1016/j.ebiom.2021.103275
