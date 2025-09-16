@@ -1,9 +1,7 @@
 ---
 title: "SeizureTransformer on TUSZ: A 27-137× Performance Gap Between Claims and Reproducible Evaluation"
-author:
-  - name: "John H. Jung, MD, MS"
-    affiliation: "Independent Researcher"
-    email: "JJ@novamindnyc.com"
+author: "John H. Jung, MD, MS"
+institute: "Independent Researcher"
 date: "September 2025"
 ---
 

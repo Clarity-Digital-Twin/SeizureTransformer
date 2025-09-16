@@ -144,7 +144,13 @@
       "Bash(mkdir:*)",
       "Bash(PYTHONPATH=:*)",
       "Bash(do echo \"=== $f ===\")",
-      "Bash(head:*)"
+      "Bash(head:*)",
+      "Bash(./convert_to_pdf.sh:*)",
+      "Bash(pandoc:*)",
+      "Bash(./convert_arxiv_style.sh:*)",
+      "Bash(pdflatex:*)",
+      "Bash(./convert_final_arxiv.sh:*)",
+      "Bash(./final_complete_conversion.sh:*)"
     ],
     "deny": [],
     "ask": []
