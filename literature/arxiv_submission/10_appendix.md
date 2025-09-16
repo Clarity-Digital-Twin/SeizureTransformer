@@ -94,7 +94,7 @@ Note: All statistics in Tables D1–D2 are computed from the eval split annotati
 | Focal | 215 | 45.8% |
 | Unknown/Other | 67 | 14.3% |
 
-Note: Derived from TUSZ v2.0.3 eval CSV_bi annotations; reproducible via `scripts/compile_tables.py`.
+Note: Derived from TUSZ v2.0.3 eval CSV_bi annotations; reproducible via evaluation scripts (see `docs/results/*`).
 
 ## E. Computational Performance
 
@@ -127,7 +127,7 @@ Hardware: NVIDIA RTX 4090, AMD Ryzen 9 5950X, 64GB RAM
 ## G. Code Availability
 
 All analysis code, including figure generation scripts, is available at:
-https://github.com/[REDACTED]/seizure-transformer-eval
+https://github.com/Clarity-Digital-Twin/SeizureTransformer
 
 Key scripts:
 - `evaluation/tusz/run_tusz_eval.py`: Generate predictions

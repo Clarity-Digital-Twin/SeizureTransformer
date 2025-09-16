@@ -2,8 +2,8 @@
 
 ## Code and Data Availability
 
-**Evaluation Pipeline**: https://github.com/[REDACTED]/seizure-transformer-eval
-**Commit**: `a7f3c29` (tag: `v1.0-arxiv`)
+**Evaluation Pipeline**: https://github.com/Clarity-Digital-Twin/SeizureTransformer
+**Release**: `v1.0-arxiv`
 **Model Weights**: Authors' pretrained `model.pth` (168MB) from https://github.com/keruiwu/SeizureTransformer
 **TUSZ Dataset**: v2.0.3 via Data Use Agreement from https://isip.piconepress.com/projects/tuh_eeg/
 **NEDC Scorer**: v6.0.0 from https://isip.piconepress.com/projects/nedc/ (August 2025 release)
@@ -19,8 +19,8 @@
 
 ### 1. Environment Setup
 ```bash
-git clone https://github.com/[REDACTED]/seizure-transformer-eval
-cd seizure-transformer-eval
+git clone https://github.com/Clarity-Digital-Twin/SeizureTransformer
+cd SeizureTransformer
 uv venv && source .venv/bin/activate
 uv pip install -e . --extra dev
 ```
