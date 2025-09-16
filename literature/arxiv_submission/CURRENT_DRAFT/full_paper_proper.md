@@ -8,6 +8,8 @@ header-includes:
   - \makeatother
   - \usepackage{listings}
   - \lstset{breaklines=true, breakatwhitespace=true, basicstyle=\small\ttfamily}
+  - \usepackage{url}
+  - \urlstyle{same}
 ---
 
 # SeizureTransformer on TUSZ: A 27-137x Performance Gap Between Claims and Reproducible Evaluation
@@ -227,11 +229,11 @@ The path forward demands fundamental changes in how the field approaches evaluat
 
 ## Code and Data Availability
 
-**Evaluation Pipeline**: https://github.com/Clarity-Digital-Twin/SeizureTransformer
+**Evaluation Pipeline**: <https://github.com/Clarity-Digital-Twin/SeizureTransformer>
 **Release**: `v1.0-arxiv`
-**Model Weights**: Authors' pretrained `model.pth` (168MB) from https://github.com/keruiwu/SeizureTransformer
-**TUSZ Dataset**: v2.0.3 via Data Use Agreement from https://isip.piconepress.com/projects/tuh_eeg/
-**NEDC Scorer**: v6.0.0 from https://isip.piconepress.com/projects/nedc/ (August 2025 release)
+**Model Weights**: Authors' pretrained `model.pth` (168MB) from <https://github.com/keruiwu/SeizureTransformer>
+**TUSZ Dataset**: v2.0.3 via Data Use Agreement from <https://isip.piconepress.com/projects/tuh_eeg/>
+**NEDC Scorer**: v6.0.0 from <https://isip.piconepress.com/projects/nedc/> (August 2025 release)
 
 ## Computational Requirements
 
@@ -312,15 +314,15 @@ We thank Joseph Picone and the Neural Engineering Data Consortium at Temple Univ
 
 [1] Wu K, Zhao Z, Yener B. SeizureTransformer: Scaling U-Net with Transformer for Simultaneous Time-Step Level Seizure Detection from Long EEG Recordings. International Conference on Artificial Intelligence in Epilepsy and Other Neurological Disorders. 2025. arXiv:2504.00336.
 
-[2] Shah V, Golmohammadi M, Obeid I, Picone J. Objective Evaluation Metrics for Automatic Classification of EEG Events. In: Signal Processing in Medicine and Biology. Springer; 2021. p. 235-282. Available from: https://www.isip.piconepress.com/publications/unpublished/book_sections/2021/springer/metrics/
+[2] Shah V, Golmohammadi M, Obeid I, Picone J. Objective Evaluation Metrics for Automatic Classification of EEG Events. In: Signal Processing in Medicine and Biology. Springer; 2021. p. 235-282.
 
 [3] Shah V, von Weltin E, Lopez S, McHugh JR, Veloso L, Golmohammadi M, Obeid I, Picone J. The Temple University Hospital Seizure Detection Corpus. Front Neuroinform. 2018;12:83. doi:10.3389/fninf.2018.00083.
 
-[4] Dan J, Pale U, Amirshahi A, Cappelletti W, Ingolfsson TM, Wang X, et al. SzCORE: A Seizure Community Open-source Research Evaluation framework for the validation of EEG-based automated seizure detection algorithms. 2024. Available from: https://github.com/esl-epfl/epilepsy-seizure-detection-benchmarks
+[4] Dan J, Pale U, Amirshahi A, Cappelletti W, Ingolfsson TM, Wang X, et al. SzCORE: A Seizure Community Open-source Research Evaluation framework for the validation of EEG-based automated seizure detection algorithms. 2024.
 
 [5] EpilepsyBench Consortium. EpilepsyBench: Seizure Detection Challenge and Benchmarks. 2025. Available from: https://epilepsybenchmarks.com
 
-[6] NEDC. Neural Engineering Data Consortium EEG Evaluation Software v6.0.0. Temple University; 2025. Available from: https://www.isip.piconepress.com/projects/nedc/
+[6] NEDC. Neural Engineering Data Consortium EEG Evaluation Software v6.0.0. Temple University; 2025.
 
 [7] Beniczky S, Ryvlin P. Standards for testing and clinical validation of seizure detection devices. Epilepsia. 2018;59(S1):9-13. doi:10.1111/epi.14049.
 
@@ -330,13 +332,13 @@ We thank Joseph Picone and the Neural Engineering Data Consortium at Temple Univ
 
 [10] Roy S, Kiral I, Mirmomeni M, et al. Evaluation of artificial intelligence systems for assisting neurologists with fast and accurate annotations of scalp electroencephalography data. eBioMedicine. 2021;66:103275. doi:10.1016/j.ebiom.2021.103275
 
-[11] Detti P. Siena Scalp EEG Database (version 1.0.0). PhysioNet. 2020. RRID:SCR_007345. doi:10.13026/5d4a-j060. Available from: https://doi.org/10.13026/5d4a-j060
+[11] Detti P. Siena Scalp EEG Database (version 1.0.0). PhysioNet. 2020. RRID:SCR_007345. doi:10.13026/5d4a-j060.
 
-[12] World Health Organization. Epilepsy. Fact sheet. 7 February 2024. Available from: https://www.who.int/news-room/fact-sheets/detail/epilepsy
+[12] World Health Organization. Epilepsy. Fact sheet. 7 February 2024.
 
 [13] Perucca E, Perucca P, White HS, Wirrell EC. Drug resistance in epilepsy. Lancet Neurol. 2023;22(8):723–734.
 
-[14] Holger, Kern S, Papadopoulos Orfanos D, Vallat R, Brunner C, Cerina L, Appelhoff S, et al. pyEDFlib: v0.1.42. Zenodo; 2025. doi:10.5281/zenodo.15748763. Available from: https://doi.org/10.5281/zenodo.15748763
+[14] Holger, Kern S, Papadopoulos Orfanos D, Vallat R, Brunner C, Cerina L, Appelhoff S, et al. pyEDFlib: v0.1.42. Zenodo; 2025. doi:10.5281/zenodo.15748763.
 
 # Appendix
 
@@ -467,11 +469,12 @@ Hardware: NVIDIA RTX 4090, AMD Ryzen 9 5950X, 64GB RAM
 ## G. Code Availability
 
 All analysis code, including figure generation scripts, is available at:
-https://github.com/Clarity-Digital-Twin/SeizureTransformer
+<https://github.com/Clarity-Digital-Twin/SeizureTransformer>
 
 Key scripts:
+
 - `evaluation/tusz/run_tusz_eval.py`: Generate predictions
 - `evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py`: NEDC evaluation
 - `evaluation/szcore_scoring/run_szcore.py`: SzCORE evaluation
 - `scripts/visualize_results.py`: Recreate figures from results
-- `evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py`: Grid search
+- `evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py`: Parameter grid search
