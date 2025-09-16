@@ -7,7 +7,8 @@
       "Bash(python3 preprocess_markdown.py:*)",
       "Bash(pdffonts:*)",
       "Bash(pandoc:*)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []
