@@ -8,7 +8,7 @@
 
 [4] Dan J, Pale U, Amirshahi A, Cappelletti W, Ingolfsson TM, Wang X, et al. SzCORE: A Seizure Community Open-source Research Evaluation framework for the validation of EEG-based automated seizure detection algorithms. 2024. Available from: https://github.com/esl-epfl/epilepsy-seizure-detection-benchmarks
 
-[5] EpilepsyBench Consortium. EpilepsyBench: Machine Learning for Seizure Forecasting Challenge. 2025. Available from: https://epilepsybenchmarks.com
+[5] EpilepsyBench Consortium. EpilepsyBench: Seizure Detection Challenge and Benchmarks. 2025. Available from: https://epilepsybenchmarks.com
 
 [6] NEDC. Neural Engineering Data Consortium EEG Evaluation Software v6.0.0. Temple University; 2025. Available from: https://www.isip.piconepress.com/projects/nedc/
 

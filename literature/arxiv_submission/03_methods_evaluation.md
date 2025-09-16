@@ -22,7 +22,7 @@ We evaluated identical model predictions using four scoring methodologies, each 
 
 **NEDC TAES (Time-Aligned Event Scoring)** computes partial credit based on temporal overlap between predictions and ground truth. If a 60-second reference seizure has 45 seconds correctly detected, TAES awards 0.75 true positive credit. This methodology emphasizes temporal precision, making it the strictest evaluation standard.
 
-**NEDC OVERLAP** implements Temple's binary any-overlap scoring within the NEDC v6.0.0 framework. Any temporal overlap between prediction and reference, regardless of duration, counts as a full true positive. This represents the clinical standard for TUSZ evaluation, matching the dataset's annotation philosophy.
+**NEDC OVERLAP** implements Temple's binary any-overlap scoring within the NEDC v6.0.0 framework. Any temporal overlap between prediction and reference, regardless of duration, counts as a full true positive. This represents the commonly reported mode for TUSZ evaluation, matching the dataset's annotation philosophy.
 
 **Native OVERLAP** is our Python implementation of binary any-overlap scoring, developed for computational efficiency and validation. We verified perfect parity with NEDC OVERLAP, achieving identical results to four decimal places across all metrics.
 
@@ -34,7 +34,7 @@ All scoring implementations process the same binary prediction masks, ensuring t
 
 We conducted systematic post‑processing parameter optimization on the TUSZ development set, targeting clinical deployment criteria of ≤10 false alarms per 24 hours while maximizing sensitivity. Our grid search explored: thresholds θ ∈ {0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.88, 0.90, 0.92, 0.95, 0.98}, morphological kernel sizes k ∈ {3, 5, 7, 9, 11, 13, 15} samples, and minimum event durations d ∈ {1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 6.0} seconds.
 
-For each configuration, we computed sensitivity and false alarm rates using NEDC OVERLAP scoring, as this represents the clinical standard for TUSZ. From the resulting parameter space, we selected operating points for comprehensive evaluation: (1) **Default** (θ=0.80, k=5, d=2.0s) — the paper's published configuration; (2) **Clinical 10 FA/24h target** (θ=0.88, k=5, d=3.0s) — optimized to meet the ≤10 FA/24h constraint; and (3) **ICU‑like 2.5 FA/24h target** (θ=0.95, k=5, d=5.0s) — a more conservative operating point. We additionally report selected high‑threshold points (e.g., θ=0.98) when illustrating the full trade‑off curve.
+For each configuration, we computed sensitivity and false alarm rates using NEDC OVERLAP scoring, as this is the commonly reported mode for TUSZ. From the resulting parameter space, we selected operating points for comprehensive evaluation: (1) **Default** (θ=0.80, k=5, d=2.0s) — the paper's published configuration; (2) **Clinical 10 FA/24h target** (θ=0.88, k=5, d=3.0s) — optimized to meet the ≤10 FA/24h constraint; and (3) **ICU‑like 2.5 FA/24h target** (θ=0.95, k=5, d=5.0s) — a more conservative operating point. We additionally report selected high‑threshold points (e.g., θ=0.98) when illustrating the full trade‑off curve.
 
 ## Implementation and Validation
 
@@ -48,4 +48,4 @@ To enable full reproducibility, we provide our complete evaluation codebase, inc
 
 We report standard seizure detection metrics for each configuration and scorer combination: sensitivity (seizure‑level recall), false alarm rate per 24 hours (computed from total recording duration), and F1 score. For NEDC scorers, we report SEIZ‑only FA/24h as the primary metric (Temple’s "Total FA" is archived in summaries). For SzCORE, we follow its event‑based false positive definition. We also computed AUROC across threshold values to assess overall discriminative capability independent of operating point selection.
 
-This comprehensive evaluation framework, combining the authors' pretrained model with multiple clinical scoring standards applied to a properly held-out test set, reveals how methodological choices fundamentally shape reported performance metrics in seizure detection systems.
+This comprehensive evaluation framework, combining the authors' pretrained model with multiple scoring standards applied to a properly held-out test set, reveals how methodological choices fundamentally shape reported performance metrics in seizure detection systems.

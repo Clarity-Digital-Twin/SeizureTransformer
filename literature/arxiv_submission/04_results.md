@@ -2,7 +2,7 @@
 
 ## Evaluation Setup
 
-We evaluated SeizureTransformer on TUSZ v2.0.3's held-out evaluation set containing 865 EEG files (127.7 hours of recordings). Using the authors' pretrained weights, we generated predictions and evaluated them using four scoring methodologies: NEDC OVERLAP (Temple's clinical standard), NEDC TAES (time-aligned), Native OVERLAP (our Python implementation), and SzCORE (EpilepsyBench standard).
+We evaluated SeizureTransformer on TUSZ v2.0.3's held-out evaluation set containing 865 EEG files (127.7 hours of recordings). Using the authors' pretrained weights, we generated predictions and evaluated them using four scoring methodologies: NEDC OVERLAP (Temple's official any-overlap mode), NEDC TAES (time-aligned), Native OVERLAP (our Python implementation), and SzCORE (EpilepsyBench standard).
 
 ## Primary Results
 
