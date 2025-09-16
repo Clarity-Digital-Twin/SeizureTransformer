@@ -11,7 +11,7 @@ echo "=========================================="
 
 # Step 1: Preprocess markdown
 echo "Step 1: Preprocessing markdown..."
-python3 preprocess_markdown.py paper_clean.md paper_preprocessed.md
+python3 preprocess_markdown.py ../CURRENT_DRAFT/full_paper_proper.md paper_preprocessed.md
 
 # Step 2: Convert to PDF with simpler options
 echo "Step 2: Converting to PDF..."
