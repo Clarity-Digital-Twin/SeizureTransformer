@@ -1,4 +1,12 @@
-# Abstract
+# SeizureTransformer on TUSZ: A 27-137× Performance Gap Between Claims and Reproducible Evaluation
+
+**John H. Jung, MD, MS**
+Independent Researcher
+September 2025
+
+---
+
+## Abstract
 
 SeizureTransformer reports ~1 false alarm per 24 hours on the EpilepsyBench Dianalund dataset. Despite being trained on the Temple University Hospital Seizure (TUSZ) dataset, it has not been evaluated on TUSZ using Temple’s official scoring software. We provide, to our knowledge, the first such evaluation with NEDC v6.0.0 and find a 27–137× gap between benchmark claims and clinical reality.
 
