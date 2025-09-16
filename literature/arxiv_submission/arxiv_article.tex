@@ -1,0 +1,98 @@
+\documentclass[10pt,a4paper]{article}
+
+% Essential packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{times}  % Times font for professional look
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{algorithm,algorithmic}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{lipsum}
+
+% Professional hyperref setup (black links for print)
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=black,
+    filecolor=black,
+    pdftitle={$if(title)$$title$$endif$},
+    pdfauthor={$if(author)$$for(author)$$author.name$$sep$, $endfor$$endif$},
+    pdfsubject={$if(subject)$$subject$$endif$},
+    pdfkeywords={$if(keywords)$$keywords$$endif$}
+}
+
+% Professional spacing
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+\renewcommand{\baselinestretch}{1.1}
+
+% Section formatting - professional academic style
+\usepackage{titlesec}
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{}
+
+% Figure and table caption formatting
+\captionsetup{font=small,labelfont=bf}
+
+% Custom commands for consistency
+\newcommand{\fa}[1]{#1~FA/24h}
+\newcommand{\sens}[1]{#1\% sensitivity}
+
+% Title and author block - pandoc variables
+\title{\vspace{-2em}\Large\bfseries $title$}
+
+$if(author)$
+\author{
+$for(author)$
+$author.name$$if(author.affiliation)$\\{\small $author.affiliation$}$endif$$if(author.email)$\\{\small\texttt{$author.email$}}$endif$$sep$ \and
+$endfor$
+}
+$else$
+\author{}
+$endif$
+
+\date{$if(date)$$date$$else$\today$endif$}
+
+% Abstract environment
+\usepackage{abstract}
+\renewcommand{\abstractnamefont}{\normalfont\bfseries}
+\renewcommand{\abstracttextfont}{\normalfont\small}
+\setlength{\absleftindent}{0pt}
+\setlength{\absrightindent}{0pt}
+
+% Start document
+\begin{document}
+
+% Title and author block
+\maketitle
+\vspace{-1em}
+
+% Abstract if provided
+$if(abstract)$
+\begin{abstract}
+\noindent $abstract$
+\end{abstract}
+$endif$
+
+% Main content
+$body$
+
+% Bibliography if exists
+$if(bibliography)$
+\bibliographystyle{plain}
+\bibliography{$bibliography$}
+$endif$
+
+\end{document}
