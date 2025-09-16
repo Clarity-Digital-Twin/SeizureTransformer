@@ -1,12 +1,11 @@
 ---
 title: "**Scoring Matters: A Reproducible NEDC Evaluation of SeizureTransformer on TUSZ**"
-author: "John H. Jung, MD, MS"
+author: "John H. Jung, MD, MS • Independent Researcher • jj@novamindnyc.com"
 header-includes:
   - \usepackage{etoolbox}
   - \makeatletter
   - \patchcmd{\@maketitle}{\thispagestyle{plain}}{\thispagestyle{empty}}{}{}
   - \makeatother
-  - \renewcommand{\@author}{\parbox{\textwidth}{\centering John H. Jung, MD, MS\\ Independent Researcher\\ jj@novamindnyc.com}}
 ---
 
 ## Abstract {.unnumbered}
