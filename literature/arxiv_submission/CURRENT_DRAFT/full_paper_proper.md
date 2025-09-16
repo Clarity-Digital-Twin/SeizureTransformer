@@ -1,7 +1,14 @@
 ---
-title: "SeizureTransformer on TUSZ: A 27-137x Performance Gap Between Claims and Reproducible Evaluation"
-author: "John H. Jung, MD, MS"
-date: "September 2025"
+title: "Scoring Matters: A Reproducible NEDC Evaluation of SeizureTransformer on TUSZ"
+author: |
+  John H. Jung, MD, MS
+  Independent Researcher
+  \texttt{jj@novamindnyc.com}
+header-includes:
+  - \usepackage{etoolbox}
+  - \makeatletter
+  - \patchcmd{\@maketitle}{\thispagestyle{plain}}{\thispagestyle{empty}}{}{}
+  - \makeatother
 ---
 
 # SeizureTransformer on TUSZ: A 27-137x Performance Gap Between Claims and Reproducible Evaluation

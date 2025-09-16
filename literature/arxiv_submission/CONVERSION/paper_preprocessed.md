@@ -1,7 +1,24 @@
 ---
-title: "SeizureTransformer on TUSZ: A 27-137x Performance Gap Between Claims and Reproducible Evaluation"
-author: "John H. Jung, MD, MS"
+title: "Scoring Matters: A Reproducible NEDC Evaluation of SeizureTransformer on TUSZ"
+author: |
+  John H. Jung, MD, MS
+  Independent Researcher
+  \texttt{jj@novamindnyc.com}
+header-includes:
+  - \usepackage{etoolbox}
+  - \makeatletter
+  - \patchcmd{\@maketitle}{\thispagestyle{plain}}{\thispagestyle{empty}}{}{}
+  - \makeatother
 ---
+
+# SeizureTransformer on TUSZ: A 27-137x Performance Gap Between Claims and Reproducible Evaluation
+
+**John H. Jung, MD, MS**
+Independent Researcher
+September 2025
+
+---
+
 ## Abstract {.unnumbered}
 SeizureTransformer reports ~1 false alarm per 24 hours on the EpilepsyBench Dianalund dataset [5]. Despite being trained on the Temple University Hospital Seizure (TUSZ) dataset [3], it has not been evaluated on TUSZ using Temple’s official scoring software [6]. We provide, to our knowledge, the first such evaluation with NEDC v6.0.0 [6] and find a 27-137x gap between benchmark claims and clinical reality.
 
