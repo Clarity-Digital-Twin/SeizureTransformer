@@ -17,6 +17,16 @@ At the paper's default parameters, we observed dramatic variation across scoring
 
 This represents a **3.1× difference** in false alarm rates between NEDC OVERLAP and SzCORE scoring on identical predictions. Compared to the paper's reported ~1 FA/24h on Dianalund, we observe a **27-fold gap** with NEDC OVERLAP and a **137-fold gap** with NEDC TAES.
 
+| Scoring Method | Sensitivity (%) | FA/24h  | Multiplier vs Claimed | F1 Score |
+|:---------------|----------------:|--------:|----------------------:|---------:|
+| **Dianalund (Claimed)** | 37.00 | 1.00 | 1× | 0.43* |
+| SzCORE | 52.35 | 8.59 | 9× | 0.485 |
+| NEDC OVERLAP | 45.63 | 26.89 | **27×** | 0.396 |
+| Native OVERLAP | 45.63 | 26.89 | **27×** | 0.396 |
+| NEDC TAES | 60.45 | 136.73 | **137×** | 0.237 |
+
+Table 1: Performance at default parameters (θ=0.80, k=5, d=2.0). *F1 from competition leaderboard.
+
 ### Clinical Deployment Targets
 
 We optimized parameters on the development set to target clinical false alarm thresholds:
