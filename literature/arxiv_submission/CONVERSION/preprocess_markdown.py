@@ -10,8 +10,8 @@ def preprocess_markdown(input_file: str, output_file: str) -> None:
     content = Path(input_file).read_text(encoding='utf-8')
 
     # Remove the duplicate title block that appears after the YAML
-    # The pattern is: # Title\n**Author**\nAffiliation\nDate\n---\n
-    pattern = r'^#\s+SeizureTransformer[^\n]+\n\n?\*\*[^\n]+\*\*\n[^\n]+\n[^\n]+\n\n?---\s*\n'
+    # Pattern matches: # Title\n\n**Author**\nAffiliation\nDate\n\n---\n
+    pattern = r'^#\s+SeizureTransformer[^\n]+\n\n\*\*[^\n]+\*\*\n[^\n]+\n[^\n]+\n\n---\s*\n'
     content = re.sub(pattern, '', content, count=1, flags=re.MULTILINE)
 
     # Make Abstract unnumbered

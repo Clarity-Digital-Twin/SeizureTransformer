@@ -1,9 +1,9 @@
 ---
-title: "Scoring Matters: A Reproducible NEDC Evaluation of SeizureTransformer on TUSZ"
+title: "**Scoring Matters: A Reproducible NEDC Evaluation of SeizureTransformer on TUSZ**"
 author: |
   John H. Jung, MD, MS
   Independent Researcher
-  \texttt{jj@novamindnyc.com}
+  jj@novamindnyc.com
 header-includes:
   - \usepackage{etoolbox}
   - \makeatletter
