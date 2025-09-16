@@ -19,3 +19,11 @@
 [9] Gemein LAW, Schirrmeister RT, Chrabąszcz P, Wilson D, Boedecker J, Schulze-Bonhage A, et al. Machine-learning-based diagnostics of EEG pathology. NeuroImage. 2020;220:117021.
 
 [10] Roy S, Kiral I, Mirmomeni M, et al. Evaluation of artificial intelligence systems for assisting neurologists with fast and accurate annotations of scalp electroencephalography data. eBioMedicine. 2021;66:103275. doi:10.1016/j.ebiom.2021.103275
+
+[11] Detti P. Siena Scalp EEG Database (version 1.0.0). PhysioNet. 2020. RRID:SCR_007345. doi:10.13026/5d4a-j060. Available from: https://doi.org/10.13026/5d4a-j060
+
+[12] World Health Organization. Epilepsy. Fact sheet. 7 February 2024. Available from: https://www.who.int/news-room/fact-sheets/detail/epilepsy
+
+[13] Perucca E, Perucca P, White HS, Wirrell EC. Drug resistance in epilepsy. Lancet Neurol. 2023;22(8):723–734.
+
+[14] Holger, Kern S, Papadopoulos Orfanos D, Vallat R, Brunner C, Cerina L, Appelhoff S, et al. pyEDFlib: v0.1.42. Zenodo; 2025. doi:10.5281/zenodo.15748763. Available from: https://doi.org/10.5281/zenodo.15748763

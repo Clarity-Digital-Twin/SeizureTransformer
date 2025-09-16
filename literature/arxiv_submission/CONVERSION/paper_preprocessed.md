@@ -4,6 +4,7 @@ author: "John H. Jung, MD, MS"
 date: "September 2025"
 ---
 
+
 # SeizureTransformer on TUSZ: A 27-137x Performance Gap Between Claims and Reproducible Evaluation
 
 **John H. Jung, MD, MS**
@@ -12,15 +13,17 @@ September 2025
 
 ---
 
+
 ## Abstract
 
 SeizureTransformer reports ~1 false alarm per 24 hours on the EpilepsyBench Dianalund dataset [5]. Despite being trained on the Temple University Hospital Seizure (TUSZ) dataset [3], it has not been evaluated on TUSZ using Temple’s official scoring software [6]. We provide, to our knowledge, the first such evaluation with NEDC v6.0.0 [6] and find a 27-137x gap between benchmark claims and clinical reality.
 
-We evaluate the authors’ pretrained model on TUSZ v2.0.3’s held-out set (865 files, 127.7 hours) and assess identical predictions with four scoring methodologies. With NEDC OVERLAP [6], the model produces 26.89 FA/24h; with SzCORE [4], 8.59 FA/24h (~=3.1x lower due solely to scoring tolerances); with NEDC TAES [2], 136.73 FA/24h.
+We evaluate the authors’ pretrained model on TUSZ v2.0.3’s held-out set (865 files, 127.7 hours) and assess identical predictions with four scoring methodologies. With NEDC OVERLAP [6], the model produces 26.89 FA/24h; with SzCORE [4], 8.59 FA/24h (≈3.1x lower due solely to scoring tolerances); with NEDC TAES [2], 136.73 FA/24h.
 
 When tuned toward deployment goals, the model cannot meet clinical thresholds with NEDC scoring: targeting 10 FA/24h achieves only 33.90% sensitivity, far below the 75% sensitivity goal for clinical systems [10]. Acceptable false-alarm rates occur only under SzCORE's permissive tolerances [4].
 
 We contribute a reproducible NEDC evaluation pipeline, operating points tailored to clinical targets, and quantitative evidence that scoring choice alone drives multi-fold differences. Dataset-matched, clinician-aligned evaluation is essential for credible seizure-detection claims.
+
 
 # Introduction
 
@@ -34,11 +37,12 @@ The choice of scoring methodology profoundly impacts reported performance. The s
 
 We present, to our knowledge, the first evaluation of SeizureTransformer on TUSZ's held-out test set using Temple's NEDC v6.0.0 scoring software. Our systematic comparison evaluates identical model predictions using four scoring methodologies: NEDC TAES (time-aligned event scoring), NEDC OVERLAP (binary any-overlap), our Python implementation of OVERLAP (achieving perfect parity with NEDC), and SzCORE. At the paper's default parameters (threshold=0.8, kernel=5, duration=2.0s), we observe 45.63% sensitivity at 26.89 FA/24h with NEDC OVERLAP—a 27-fold increase from the Dianalund benchmark claim. The same predictions yield 136.73 FA/24h with NEDC TAES (137-fold increase) and 8.59 FA/24h with SzCORE. This 3.1-fold difference between NEDC OVERLAP and SzCORE stems entirely from scoring methodology, independent of model architecture or parameters.
 
-![Figure 1: Performance gap visualization showing the 27-137x difference between claimed and measured false alarm rates. Panel A shows false alarm rates on a logarithmic scale, comparing Dianalund's claimed performance (1 FA/24h) against our TUSZ evaluation using different scoring methods. Panel B displays sensitivity at the 10 FA/24h operating point across scoring methodologies.](../figures/fig1_performance_gap_optimized.png){#fig:performance-gap width=100%}
+**Figure 1:** Performance gap visualization showing the 27-137x difference between claimed and measured false alarm rates. Panel A shows false alarm rates on a logarithmic scale, comparing Dianalund's claimed performance (1 FA/24h) against our TUSZ evaluation using different scoring methods. Panel B displays sensitivity at the 10 FA/24h operating point across scoring methodologies.
 
-Our contributions extend beyond revealing performance gaps. We provide: (1) a reproducible NEDC v6.0.0 evaluation pipeline for TUSZ, bridging the research-to-clinic evaluation gap [6]; (2) comprehensive operating points for clinical deployment, including evaluation at a clinically-motivated threshold of <=10 FA/24h; (3) quantitative evidence that scoring methodology alone can account for multi-fold performance differences, highlighting the critical need for transparent reporting; and (4) open-source infrastructure enabling the community to replicate and extend our evaluation framework. When optimizing for the 10 FA/24h threshold, SeizureTransformer achieves only 33.90% sensitivity with NEDC OVERLAP, falling far short of the 75% sensitivity goal for clinical systems [10].
+Our contributions extend beyond revealing performance gaps. We provide: (1) a reproducible NEDC v6.0.0 evaluation pipeline for TUSZ, bridging the research-to-clinic evaluation gap [6]; (2) comprehensive operating points for clinical deployment, including evaluation at a clinically-motivated threshold of ≤10 FA/24h; (3) quantitative evidence that scoring methodology alone can account for multi-fold performance differences, highlighting the critical need for transparent reporting; and (4) open-source infrastructure enabling the community to replicate and extend our evaluation framework. When optimizing for the 10 FA/24h threshold, SeizureTransformer achieves only 33.90% sensitivity with NEDC OVERLAP, falling far short of the 75% sensitivity goal for clinical systems [10].
 
 The remainder of this paper is organized as follows. Section 2 provides background and related work on TUSZ, NEDC, and scoring methodologies. Section 3 details our evaluation methodology, including data preparation, model inference, and multi-scorer validation. Section 4 presents comprehensive results across multiple operating points and scoring methods. Section 5 discusses implications for clinical deployment, the need for standardized evaluation, and limitations of current benchmarking practices. Section 6 concludes. Section 7 outlines reproducibility resources and exact rerun procedures.
+
 
 # Background and Related Work
 
@@ -50,15 +54,17 @@ The choice of scoring methodology profoundly impacts reported performance, as di
 
 At the most permissive end of the spectrum, SzCORE [4] extends any-overlap scoring with clinical tolerances designed for real-world deployment. The system adds 30-second pre-ictal and 60-second post-ictal windows around each ground truth event [4], recognizing that early warnings before seizure onset provide clinical value and that EEG patterns normalize gradually after seizure termination. Additionally, SzCORE merges predictions separated by less than 90 seconds into single events, substantially reducing alarm fatigue in clinical settings [4]. These modifications, while clinically motivated, can reduce reported false alarm rates by factors of 3-10x compared to stricter scoring methods [4]. Importantly, these different approaches represent not right or wrong methods but rather different valid perspectives on what constitutes meaningful seizure detection—research precision versus clinical utility versus deployment practicality.
 
-SeizureTransformer [1] exemplifies both the advances and evaluation gaps in modern seizure detection. The architecture combines U-Net's biomedical segmentation capabilities with Transformer self-attention to capture local and global EEG patterns [1]. Trained on a subset of TUSZ v1.5.2 (~910 hours) [3] plus the Siena Scalp EEG Database (128 hours) [11], the model processes 19-channel EEG at 256 Hz through 60-second windows [1]. With roughly 41 million parameters and publicly available pretrained weights (~=168 MB) [1], SeizureTransformer won the EpilepsyBench Challenge, achieving 37% sensitivity at 1 false alarm per 24 hours on the Dianalund dataset [5]—a Danish long-term monitoring corpus distinct from its training data. The authors' decision to openly share their weights enables reproducible evaluation, a practice we build on here [1].
+SeizureTransformer [1] exemplifies both the advances and evaluation gaps in modern seizure detection. The architecture combines U-Net's biomedical segmentation capabilities with Transformer self-attention to capture local and global EEG patterns [1]. Trained on a subset of TUSZ v1.5.2 (~910 hours) [3] plus the Siena Scalp EEG Database (128 hours) [11], the model processes 19-channel EEG at 256 Hz through 60-second windows [1]. With roughly 41 million parameters and publicly available pretrained weights (≈168 MB) [1], SeizureTransformer won the EpilepsyBench Challenge, achieving 37% sensitivity at 1 false alarm per 24 hours on the Dianalund dataset [5]—a Danish long-term monitoring corpus distinct from its training data. The authors' decision to openly share their weights enables reproducible evaluation, a practice we build on here [1].
 
 Despite training on TUSZ, SeizureTransformer has never been evaluated on TUSZ's held-out evaluation set using Temple's official scoring software [6]. EpilepsyBench marks TUSZ results with a train emoji ([train]) [5], indicating the model was trained on this dataset and therefore showing no evaluation metrics. While this conservative approach prevents overfitting claims, it overlooks the careful patient-disjoint split design that specifically enables valid held-out evaluation [3]. This represents a broader pattern in the field: models are trained on Dataset X, evaluated on Dataset Y with favorable scoring, generalization is claimed, yet performance on X's properly designed evaluation set remains unknown [7,8]. The uniform application of SzCORE scoring across all EpilepsyBench datasets, while ensuring consistency, obscures dataset-specific performance that would be revealed by matched evaluation tools [5].
 
 The clinical deployment of seizure detection systems requires meeting stringent performance thresholds. Clinical goals typically target 75% sensitivity or higher [10], while human reviewers achieve approximately 1 false alarm per 24 hours [10]. These requirements reflect the reality of clinical workflows where excessive false alarms lead to alarm fatigue and system abandonment. However, whether a system meets these thresholds depends critically on the evaluation methodology employed. Previous work has highlighted challenges in cross-dataset generalization [9], the need for standardized evaluation metrics [7], and broader reproducibility issues in medical AI [8]. Our work addresses these challenges by performing the missing evaluation: testing SeizureTransformer on TUSZ's held-out set using multiple scoring methodologies, revealing how evaluation choices fundamentally shape performance claims in seizure detection systems.
 
+
 # Methods
 
 We evaluated SeizureTransformer on the TUSZ v2.0.3 held-out test set using the authors' pretrained weights without modification [1]. Our evaluation employed four distinct scoring methodologies on identical model predictions to quantify the impact of evaluation standards on reported performance.
+
 
 ## Dataset
 
@@ -66,13 +72,15 @@ We used the Temple University Hospital Seizure Corpus (TUSZ) v2.0.3, focusing on
 
 The development set, containing 1,832 files (435.5 hours) from 53 distinct patients with 1,075 seizures, was used exclusively for post-processing parameter optimization. This maintains the integrity of the held-out evaluation while allowing systematic exploration of clinical operating points.
 
+
 ## Model and Inference Pipeline
 
-We employed the authors' publicly available pretrained SeizureTransformer weights (~=168 MB) without any modifications, retraining, or fine-tuning [1]. The model expects 19-channel unipolar montage EEG data sampled at 256 Hz, processing 60-second windows (15,360 samples per channel) through its U-Net-Transformer architecture [1].
+We employed the authors' publicly available pretrained SeizureTransformer weights (≈168 MB) without any modifications, retraining, or fine-tuning [1]. The model expects 19-channel unipolar montage EEG data sampled at 256 Hz, processing 60-second windows (15,360 samples per channel) through its U-Net-Transformer architecture [1].
 
 Our preprocessing pipeline, implemented as a wrapper around the original wu_2025 code, largely follows the paper's specifications [1]. For each EDF file, we: (1) load the data with unipolar montage enforcement and normalized channel aliases; (2) apply per-channel z-score normalization across the full recording; (3) resample to 256 Hz if necessary; (4) apply a 0.5-120 Hz bandpass filter (3rd-order Butterworth); and (5) apply notch filters at 1 Hz and 60 Hz (Q=30). The 1 Hz notch (to suppress heart-rate artifacts) reflects our released evaluation code and is an addition beyond the paper’s brief preprocessing description [1].
 
 The model processes 60-second non-overlapping windows, outputting per-sample seizure probabilities at 256 Hz. Post-processing applies three sequential operations using configurable parameters: (1) threshold the probability values to create a binary mask; (2) apply morphological opening and closing operations with a specified kernel size; and (3) remove events shorter than a minimum duration. The paper's default configuration uses threshold theta=0.8, kernel size k=5 samples, and minimum duration d=2.0 seconds [1].
+
 
 ## Scoring Methodologies
 
@@ -88,15 +96,17 @@ We evaluated identical model predictions using four scoring methodologies, each 
 
 All scoring implementations process the same binary prediction masks, ensuring that performance differences stem solely from scoring philosophy rather than model behavior.
 
-![Figure 3: Impact of scoring methodology on reported performance. The same SeizureTransformer predictions flow through different scoring pipelines, yielding a 15.9x difference in false alarm rates between NEDC TAES and SzCORE. This visualization demonstrates how evaluation standards, not model improvements, can account for order-of-magnitude performance variations.](../figures/fig3_scoring_impact_optimized.png){#fig:scoring-impact width=100%}
+**Figure 3:** Impact of scoring methodology on reported performance. The same SeizureTransformer predictions flow through different scoring pipelines, yielding a 15.9x difference in false alarm rates between NEDC TAES and SzCORE. This visualization demonstrates how evaluation standards, not model improvements, can account for order-of-magnitude performance variations.
+
 
 ## Parameter Optimization
 
-We conducted systematic post-processing parameter optimization on the TUSZ development set, targeting clinical deployment criteria of <=10 false alarms per 24 hours while maximizing sensitivity. Our grid search explored: thresholds theta in {0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.88, 0.90, 0.92, 0.95, 0.98}, morphological kernel sizes k in {3, 5, 7, 9, 11, 13, 15} samples, and minimum event durations d in {1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 6.0} seconds.
+We conducted systematic post-processing parameter optimization on the TUSZ development set, targeting clinical deployment criteria of ≤10 false alarms per 24 hours while maximizing sensitivity. Our grid search explored: thresholds theta in {0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.88, 0.90, 0.92, 0.95, 0.98}, morphological kernel sizes k in {3, 5, 7, 9, 11, 13, 15} samples, and minimum event durations d in {1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 6.0} seconds.
 
-For each configuration, we computed sensitivity and false alarm rates using NEDC OVERLAP scoring, as this is the commonly reported mode for TUSZ. From the resulting parameter space, we selected operating points for comprehensive evaluation: (1) **Default** (theta=0.80, k=5, d=2.0s) — the paper's published configuration; (2) **Clinical 10 FA/24h target** (theta=0.88, k=5, d=3.0s) — optimized to meet the <=10 FA/24h constraint; and (3) **ICU-like 2.5 FA/24h target** (theta=0.95, k=5, d=5.0s) — a more conservative operating point. We additionally report selected high-threshold points (e.g., theta=0.98) when illustrating the full trade-off curve.
+For each configuration, we computed sensitivity and false alarm rates using NEDC OVERLAP scoring, as this is the commonly reported mode for TUSZ. From the resulting parameter space, we selected operating points for comprehensive evaluation: (1) **Default** (theta=0.80, k=5, d=2.0s) — the paper's published configuration; (2) **Clinical 10 FA/24h target** (theta=0.88, k=5, d=3.0s) — optimized to meet the ≤10 FA/24h constraint; and (3) **ICU-like 2.5 FA/24h target** (theta=0.95, k=5, d=5.0s) — a more conservative operating point. We additionally report selected high-threshold points (e.g., theta=0.98) when illustrating the full trade-off curve.
 
-![Figure 4: Parameter sensitivity analysis showing F1 scores across threshold and minimum duration values for NEDC OVERLAP scoring. The heatmaps reveal that optimal parameters vary by morphological kernel size, with the paper's default (theta=0.8, d=2.0) marked. Higher thresholds are required to achieve clinically acceptable false alarm rates.](../figures/fig4_parameter_heatmap_optimized.png){#fig:parameter-heatmap width=100%}
+**Figure 4:** Parameter sensitivity analysis showing F1 scores across threshold and minimum duration values for NEDC OVERLAP scoring. The heatmaps reveal that optimal parameters vary by morphological kernel size, with the paper's default (theta=0.8, d=2.0) marked. Higher thresholds are required to achieve clinically acceptable false alarm rates.
+
 
 ## Implementation and Validation
 
@@ -106,19 +116,24 @@ We validated our implementation through multiple approaches. First, we verified 
 
 To enable full reproducibility, we provide our complete evaluation codebase, including the preprocessing wrapper, scoring implementations, and parameter optimization scripts. The pretrained SeizureTransformer weights remain available from the authors' repository, and NEDC v6.0.0 can be obtained from Temple University.
 
+
 ## Statistical Analysis
 
 We report standard seizure detection metrics for each configuration and scorer combination: sensitivity (seizure-level recall), false alarm rate per 24 hours (computed from total recording duration), and F1 score. For NEDC scorers, we report SEIZ-only FA/24h as the primary metric (Temple’s "Total FA" is archived in summaries). For SzCORE, we follow its event-based false positive definition. We also computed AUROC across threshold values to assess overall discriminative capability independent of operating point selection.
 
 This comprehensive evaluation framework, combining the authors' pretrained model with multiple scoring standards applied to a properly held-out test set, reveals how methodological choices fundamentally shape reported performance metrics in seizure detection systems.
 
+
 # Results
+
 
 ## Evaluation Setup
 
 We evaluated SeizureTransformer on TUSZ v2.0.3's held-out evaluation set containing 865 EEG files (127.7 hours of recordings). Using the authors' pretrained weights, we generated predictions and evaluated them using four scoring methodologies: NEDC OVERLAP (Temple's official any-overlap mode), NEDC TAES (time-aligned), Native OVERLAP (our Python implementation), and SzCORE (EpilepsyBench standard).
 
+
 ## Primary Results
+
 
 ### Default Configuration (theta=0.80, k=5, d=2.0)
 
@@ -141,6 +156,7 @@ This represents a **3.1x difference** in false alarm rates between NEDC OVERLAP 
 
 Table 1: Performance at default parameters (theta=0.80, k=5, d=2.0). *F1 from competition leaderboard.
 
+
 ### Clinical Deployment Targets
 
 We optimized parameters on the development set to target clinical false alarm thresholds:
@@ -155,17 +171,19 @@ We optimized parameters on the development set to target clinical false alarm th
 - Sensitivity too low for clinical viability
 - SzCORE achieved 19.71% sensitivity at 0.75 FA/24h
 
-![Figure 2: Operating characteristic curves across scoring methodologies. The same model predictions yield dramatically different sensitivity-false alarm tradeoffs depending on scoring choice. The clinical target zone (green) represents the desired operating region for deployment (>=75% sensitivity, <=10 FA/24h). The paper's default operating point (black circle) falls far outside clinical viability for all scoring methods on TUSZ.](../figures/fig2_operating_curves.png){#fig:operating-curves width=100%}
+**Figure 2:** Operating characteristic curves across scoring methodologies. The same model predictions yield dramatically different sensitivity-false alarm tradeoffs depending on scoring choice. The clinical target zone (green) represents the desired operating region for deployment (≥75% sensitivity, ≤10 FA/24h). The paper's default operating point (black circle) falls far outside clinical viability for all scoring methods on TUSZ.
+
 
 ## Key Findings
 
-1. **Scoring Impact**: The ~=3.1x difference at default (NEDC OVERLAP vs SzCORE) stems entirely from scoring methodology, with TAES showing even larger divergence (5.1x vs OVERLAP).
+1. **Scoring Impact**: The ≈3.1x difference at default (NEDC OVERLAP vs SzCORE) stems entirely from scoring methodology, with TAES showing even larger divergence (5.1x vs OVERLAP).
 
 2. **Clinical Viability**: SeizureTransformer cannot achieve clinical viability when evaluated with NEDC scoring on TUSZ. At 10 FA/24h, it reaches only 33.90% sensitivity, far below the 75% goal for clinical systems [10].
 
 3. **Implementation Parity**: Our Native OVERLAP implementation achieved identical results to Temple's official NEDC binaries, validating our pipeline.
 
 4. **AUROC Performance**: We measured AUROC of 0.9019.
+
 
 ## Data Integrity
 
@@ -177,39 +195,49 @@ All evaluations used:
 
 See Appendix Tables A1-A2 for full metrics; accompanying plots are reproducible via `scripts/visualize_results.py` and included in the repository.
 
+
 # Discussion
+
 
 ## Performance Gap Analysis
 
 Our evaluation reveals a 27-137x gap between SeizureTransformer's reported performance and its clinical reality on TUSZ. The model's ~1 FA/24h achievement on Dianalund becomes 26.89 FA/24h with NEDC OVERLAP and 136.73 FA/24h with NEDC TAES when evaluated on its training dataset. This dramatic variation is not an indictment of SeizureTransformer's architecture, which represents a genuine advance in combining U-Net feature extraction with Transformer sequence modeling. Rather, it exposes fundamental issues in how the field evaluates seizure detection models, where the same predictions can yield vastly different performance metrics depending on evaluation choices.
 
+
 ## Impact of Scoring Methodology
 
 The 3.1x difference in false alarm rates between NEDC OVERLAP (26.89 FA/24h) and SzCORE (8.59 FA/24h) on identical predictions demonstrates that scoring methodology alone can determine whether a model appears clinically viable. NEDC TAES, with its strict time-aligned evaluation, shows an even larger 5.1x increase over OVERLAP and a 15.9x increase over SzCORE. These differences stem from fundamental philosophical disagreements about what constitutes a correct detection: TAES requires precise temporal alignment and penalizes both over- and under-segmentation through partial credit scoring, OVERLAP accepts any temporal intersection as sufficient, while SzCORE adds 30-second pre-ictal and 60-second post-ictal tolerances before applying overlap logic. Each approach serves legitimate clinical purposes—TAES for applications requiring precise seizure boundaries, OVERLAP for standard clinical review, and SzCORE for screening where missing events is costlier than false alarms.
+
 
 ## Clinical Deployment Constraints
 
 The inability to achieve clinical viability reveals a critical gap between research achievements and deployment readiness. Our best operating point at 10 FA/24h achieved only 33.90% sensitivity with NEDC OVERLAP, falling far short of the 75% sensitivity goal for clinical systems [10]. This constraint is not merely academic—it determines whether AI assistants can be deployed in ICUs, where false alarms cause alarm fatigue and missed seizures delay critical treatment. While human reviewers achieve approximately 1 FA/24h [10], even at a more permissive 10 FA/24h threshold, current models cannot approach the sensitivity levels required for clinical deployment when evaluated with appropriate standards.
 
+
 ## Root Causes of Evaluation Gaps
 
 The performance disparities stem from multiple compounding factors beyond scoring methodology. Dataset characteristics play a crucial role: TUSZ contains 865 evaluation files with diverse seizure types and recording conditions from an urban academic medical center, while Dianalund represents a specialized epilepsy monitoring unit with potentially cleaner recordings and different patient populations. Training choices further compound these differences—SeizureTransformer was trained on TUSZ v1.5.2 combined with the Siena dataset [11], potentially creating distribution shifts even within TUSZ versions. The lack of standardized evaluation protocols allows models to be tested on favorable datasets with permissive scoring, creating an illusion of clinical readiness that disappears under rigorous evaluation.
+
 
 ## Systemic Issues in the Field
 
 The 27-137x gap we document is not unique to SeizureTransformer but reflects systemic issues in how seizure detection research approaches evaluation. The field has optimized for benchmark leaderboards rather than clinical deployment, creating incentives to report results on datasets and with scoring methods that maximize apparent performance. EpilepsyBench's use of a train icon to mark TUSZ and withhold TUSZ evaluation metrics, while well-intentioned to ensure held-out testing, can inadvertently discourage evaluating models on TUSZ's held-out split with matched tooling. This creates a situation where models can claim state-of-the-art performance without ever facing the clinical standards they purport to meet.
 
+
 ## Recommendations for Transparent Evaluation
 
 Addressing these challenges requires fundamental changes in evaluation practices. First, models should always be evaluated on held-out portions of their training datasets using dataset-matched scoring tools—TUSZ with NEDC, CHB-MIT with their protocols, and private datasets with their clinical standards. Second, papers must report performance across multiple scoring methodologies, acknowledging that different clinical applications require different evaluation approaches. Third, researchers should provide complete operating point curves showing the full sensitivity-false alarm tradeoff space, allowing clinicians to select thresholds appropriate for their use cases. Finally, the community needs to establish minimum reporting standards that include dataset version, evaluation tool version, and complete post-processing parameters to ensure reproducibility.
+
 
 ## Limitations and Scope
 
 Our evaluation focuses on a single model and dataset combination, limiting generalizability to other architectures or datasets. We used the authors' pretrained weights without retraining, preventing us from exploring whether architectural modifications or training strategies could close the performance gap. Our analysis is restricted to seizure detection metrics without considering computational requirements, latency, or other practical deployment constraints. Additionally, TUSZ represents only one clinical context—academic medical center EEG—and performance may differ in community hospitals, ICUs, or ambulatory monitoring scenarios. These limitations emphasize the need for comprehensive evaluation across multiple models, datasets, and clinical contexts.
 
+
 ## Future Directions
 
 This work highlights several critical areas for future research. The field urgently needs standardized evaluation protocols that specify dataset versions, scoring tools, and reporting requirements. Models should be developed with explicit clinical requirements as optimization targets rather than benchmark metrics that may not reflect deployment needs. Real-world validation studies comparing model predictions to clinical outcomes would provide the ultimate test of utility beyond detection metrics. The community should also explore whether ensemble methods, domain adaptation, or clinical fine-tuning can bridge the gap between benchmark and clinical performance. Most importantly, closer collaboration between AI researchers and clinical practitioners is essential to ensure that technical advances translate into patient benefit rather than merely impressive benchmark scores.
+
 
 # Conclusion
 
@@ -217,7 +245,9 @@ Our evaluation of SeizureTransformer on TUSZ's held-out test set reveals a 27-13
 
 The path forward demands fundamental changes in how the field approaches evaluation. Models must be evaluated on held-out portions of their training datasets using dataset-matched scoring tools—TUSZ with NEDC, CHB-MIT with their protocols, and private datasets with their clinical standards. Papers should report performance across multiple scoring methodologies, acknowledging that different clinical applications require different evaluation approaches while maintaining transparency about which methods are used. Complete operating curves showing the sensitivity-false alarm tradeoff space enable clinicians to select thresholds appropriate for their specific use cases. Most critically, the community must establish minimum reporting standards that include dataset version, evaluation tool version, and complete post-processing parameters to ensure reproducibility. As seizure detection models approach deployment readiness, the field stands at a crossroads: continue optimizing for benchmarks that may mislead, or establish rigorous evaluation standards that bridge the gap between laboratory success and patient benefit. The 27-137x gap we document is not insurmountable but requires the collective will to prioritize clinical validity over benchmark performance.
 
+
 # Reproducibility and Resources
+
 
 ## Code and Data Availability
 
@@ -227,14 +257,17 @@ The path forward demands fundamental changes in how the field approaches evaluat
 **TUSZ Dataset**: v2.0.3 via Data Use Agreement from https://isip.piconepress.com/projects/tuh_eeg/
 **NEDC Scorer**: v6.0.0 from https://isip.piconepress.com/projects/nedc/ (August 2025 release)
 
+
 ## Computational Requirements
 
-- **Hardware**: NVIDIA GPU with >=8GB VRAM (RTX 3060 or better)
+- **Hardware**: NVIDIA GPU with ≥8GB VRAM (RTX 3060 or better)
 - **Processing Time**: ~8 hours for 865 TUSZ eval files on RTX 4090
 - **Storage**: 45GB for TUSZ eval set, 5GB for intermediate outputs
 - **Memory**: 16GB system RAM minimum
 
+
 ## Exact Reproduction Procedure
+
 
 ### 1. Environment Setup
 ```bash
@@ -244,6 +277,7 @@ uv venv && source .venv/bin/activate
 uv pip install -e . --extra dev
 ```
 
+
 ### 2. Generate Model Predictions
 ```bash
 python evaluation/tusz/run_tusz_eval.py \
@@ -252,14 +286,17 @@ python evaluation/tusz/run_tusz_eval.py \
   --device cuda
 ```
 
+
 ### 3. Apply NEDC Clinical Scoring
 ```bash
+
 # Paper default (threshold=0.8, kernel=5, duration=2.0s)
 python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
   --checkpoint experiments/eval/reproduction/checkpoint.pkl \
   --outdir results/nedc_default \
   --backend nedc-binary \
   --threshold 0.80 --kernel 5 --min_duration_sec 2.0
+
 
 # Clinical operating point (10 FA/24h target)
 python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
@@ -269,6 +306,7 @@ python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
   --threshold 0.88 --kernel 5 --min_duration_sec 3.0
 ```
 
+
 ### 4. Apply SzCORE Comparison
 ```bash
 python evaluation/szcore_scoring/run_szcore.py \
@@ -277,11 +315,14 @@ python evaluation/szcore_scoring/run_szcore.py \
   --threshold 0.80 --kernel 5 --min_duration_sec 2.0
 ```
 
+
 ### 5. Generate Figures and Tables
 ```bash
 python scripts/visualize_results.py --results_dir results/
+
 # Table compilation is integrated in evaluation scripts; see docs/results/* for generated summaries.
 ```
+
 
 ## Key Implementation Details
 
@@ -291,6 +332,7 @@ python scripts/visualize_results.py --results_dir results/
 - **CSV Format**: NEDC requires `.csv_bi` extension with 4-decimal precision
 - **Scoring Backends**: Both NEDC binary and native Python implementations provided
 
+
 ## Validation Checksums
 
 To verify correct reproduction, key outputs should match:
@@ -298,9 +340,11 @@ To verify correct reproduction, key outputs should match:
 - NEDC OVERLAP @ default: 26.89 ± 0.01 FA/24h
 - SzCORE @ default: 8.59 ± 0.01 FA/24h
 
+
 # Acknowledgments
 
 We thank Joseph Picone and the Neural Engineering Data Consortium at Temple University for creating and maintaining the TUSZ dataset and NEDC evaluation tools, which enabled this rigorous assessment. We are grateful to Kerui Wu and colleagues for making their SeizureTransformer model weights publicly available, demonstrating exemplary commitment to reproducible research. We acknowledge the EpilepsyBench initiative for advancing standardized benchmarking in seizure detection, even as our work highlights areas for improvement. Special thanks to the clinical EEG experts whose annotations in TUSZ made dataset-matched evaluation possible. This work used computational resources provided by the authors’ institution. The authors declare no competing interests.
+
 
 # References
 
@@ -332,9 +376,12 @@ We thank Joseph Picone and the Neural Engineering Data Consortium at Temple Univ
 
 [14] Holger, Kern S, Papadopoulos Orfanos D, Vallat R, Brunner C, Cerina L, Appelhoff S, et al. pyEDFlib: v0.1.42. Zenodo; 2025. doi:10.5281/zenodo.15748763. Available from: https://doi.org/10.5281/zenodo.15748763
 
+
 # Appendix
 
+
 ## A. Extended Performance Metrics
+
 
 ### Table A1: Complete Performance Matrix Across All Scoring Methods
 | Scoring Method | Sensitivity (%) | Specificity (%) | Precision (%) | F1 Score | FA/24h | AUROC |
@@ -353,6 +400,7 @@ We thank Joseph Picone and the Neural Engineering Data Consortium at Temple Univ
 | NEDC TAES | 18.12 | 99.97 | 40.41 | 0.2513 | 10.64 | - |
 | SzCORE | 19.71 | 100.00 | 91.07 | 0.3242 | 0.75 | - |
 
+
 ### Table A2: Sensitivity at Fixed False Alarm Rates
 | FA/24h Threshold | NEDC OVERLAP Sens. (%) | SzCORE Sens. (%) |
 |---|---|---|
@@ -364,7 +412,9 @@ We thank Joseph Picone and the Neural Engineering Data Consortium at Temple Univ
 
 Note: Each scorer is tuned independently to meet the specified FA/24h threshold; operating parameters generally differ by scorer. See `docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md` for parameterizations.
 
+
 ## B. Parameter Sweep Analysis
+
 
 ### Table B1: Grid Search Results (NEDC OVERLAP)
 | Threshold | Kernel | Min Duration (s) | Sensitivity (%) | FA/24h | F1 Score |
@@ -379,7 +429,9 @@ Note: Each scorer is tuned independently to meet the specified FA/24h threshold;
 | 0.95 | 7 | 5.0 | 14.50 | 2.05 | 0.2426 |
 | 0.98 | 9 | 6.0 | 8.10 | 0.86 | 0.1473 |
 
+
 ## C. Scoring Methodology Details
+
 
 ### C.1 NEDC TAES Calculation
 TAES weights true positives by temporal overlap percentage:
@@ -389,6 +441,7 @@ FP_weight = non_overlap_duration / hypothesis_duration
 ```
 This explains why TAES produces higher false alarm rates—partial overlaps contribute fractional false positives.
 
+
 ### C.2 SzCORE Tolerance Windows
 SzCORE expands evaluation windows:
 - **Pre-ictal**: 30 seconds before seizure onset
@@ -397,6 +450,7 @@ SzCORE expands evaluation windows:
 
 These tolerances reduce false alarms by ~3.1x compared to NEDC OVERLAP.
 
+
 ### C.3 Native OVERLAP Validation
 Our Python implementation achieved perfect parity with NEDC binary:
 - Identical TP/FP/FN counts across all 865 files
@@ -404,7 +458,9 @@ Our Python implementation achieved perfect parity with NEDC binary:
 - Matching FA/24h: 26.89
 - Validates our evaluation pipeline integrity
 
+
 ## D. Dataset Statistics
+
 
 ### Table D1: TUSZ v2.0.3 Evaluation Set Characteristics
 | Metric | Value |
@@ -421,6 +477,7 @@ Our Python implementation achieved perfect parity with NEDC binary:
 
 Note: All statistics in Tables D1-D2 are computed from the eval split annotations and durations; see `docs/results/*` for derivations and checks.
 
+
 ### Table D2: Seizure Type Distribution
 | Seizure Type | Count | Percentage |
 |---|---|---|
@@ -430,7 +487,9 @@ Note: All statistics in Tables D1-D2 are computed from the eval split annotation
 
 Note: Derived from TUSZ v2.0.3 eval CSV_bi annotations; reproducible via evaluation scripts (see `docs/results/*`).
 
+
 ## E. Computational Performance
+
 
 ### Table E1: Processing Time Breakdown
 | Stage | Time (hours) | Files/hour |
@@ -443,7 +502,9 @@ Note: Derived from TUSZ v2.0.3 eval CSV_bi annotations; reproducible via evaluat
 
 Hardware: NVIDIA RTX 4090, AMD Ryzen 9 5950X, 64GB RAM
 
+
 ## F. Error Analysis
+
 
 ### F.1 Common False Positive Patterns
 1. **Movement artifacts**: 34% of FPs
@@ -452,11 +513,13 @@ Hardware: NVIDIA RTX 4090, AMD Ryzen 9 5950X, 64GB RAM
 4. **Eye movements/blinks**: 15% of FPs
 5. **Other artifacts**: 11% of FPs
 
+
 ### F.2 Missed Seizures (False Negatives)
 1. **Brief seizures (<10s)**: 42% of FNs
 2. **Low-amplitude events**: 28% of FNs
 3. **Focal seizures**: 20% of FNs
 4. **Heavily artifacted segments**: 10% of FNs
+
 
 ## G. Code Availability
 

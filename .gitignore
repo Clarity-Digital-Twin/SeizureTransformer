@@ -100,3 +100,7 @@ reference_repos/
 
 # Large datasets (use volume mounts)
 data/
+
+# Document outputs (generate from source)
+*.pdf
+*.docx
