@@ -4,7 +4,8 @@
       "WebSearch",
       "Bash(cat:*)",
       "Bash(./convert_final.sh:*)",
-      "Bash(python3 preprocess_markdown.py:*)"
+      "Bash(python3 preprocess_markdown.py:*)",
+      "Bash(pdffonts:*)"
     ],
     "deny": [],
     "ask": []
