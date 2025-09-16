@@ -6,7 +6,8 @@
       "Bash(./convert_final.sh:*)",
       "Bash(python3 preprocess_markdown.py:*)",
       "Bash(pdffonts:*)",
-      "Bash(pandoc:*)"
+      "Bash(pandoc:*)",
+      "Bash(sed:*)"
     ],
     "deny": [],
     "ask": []

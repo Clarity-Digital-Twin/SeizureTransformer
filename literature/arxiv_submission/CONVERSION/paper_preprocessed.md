@@ -6,6 +6,8 @@ header-includes:
   - \makeatletter
   - \patchcmd{\@maketitle}{\thispagestyle{plain}}{\thispagestyle{empty}}{}{}
   - \makeatother
+  - \usepackage{listings}
+  - \lstset{breaklines=true, breakatwhitespace=true, basicstyle=\small\ttfamily}
 ---
 
 ## Abstract {.unnumbered}
@@ -243,22 +245,22 @@ uv pip install -e . --extra dev
 ```bash
 python evaluation/tusz/run_tusz_eval.py \
   --data_dir /path/to/tusz_v2.0.3/edf/eval \
-  --out_dir experiments/eval/reproduction \
+  --out_dir experiments/eval/repro \
   --device cuda
 ```
 
 ### 3. Apply NEDC Clinical Scoring
 ```bash
-# Paper default (threshold=0.8, kernel=5, duration=2.0s)
+# Paper default (theta=0.8, k=5, d=2.0s)
 python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
-  --checkpoint experiments/eval/reproduction/checkpoint.pkl \
+  --checkpoint experiments/eval/repro/checkpoint.pkl \
   --outdir results/nedc_default \
   --backend nedc-binary \
   --threshold 0.80 --kernel 5 --min_duration_sec 2.0
 
-# Clinical operating point (10 FA/24h target)
+# Clinical 10 FA/24h target
 python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
-  --checkpoint experiments/eval/reproduction/checkpoint.pkl \
+  --checkpoint experiments/eval/repro/checkpoint.pkl \
   --outdir results/nedc_10fa \
   --backend nedc-binary \
   --threshold 0.88 --kernel 5 --min_duration_sec 3.0
@@ -267,7 +269,7 @@ python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
 ### 4. Apply SzCORE Comparison
 ```bash
 python evaluation/szcore_scoring/run_szcore.py \
-  --checkpoint experiments/eval/reproduction/checkpoint.pkl \
+  --checkpoint experiments/eval/repro/checkpoint.pkl \
   --outdir results/szcore_default \
   --threshold 0.80 --kernel 5 --min_duration_sec 2.0
 ```
@@ -463,4 +465,4 @@ Key scripts:
 - `evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py`: NEDC evaluation
 - `evaluation/szcore_scoring/run_szcore.py`: SzCORE evaluation
 - `scripts/visualize_results.py`: Recreate figures from results
-- `evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py`: Grid search optimization
+- `evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py`: Grid search

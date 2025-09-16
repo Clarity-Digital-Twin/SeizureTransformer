@@ -33,6 +33,7 @@ PANDOC_OPTS=(
   -V linkcolor=black -V urlcolor=black -V citecolor=black
   --number-sections
   --standalone
+  --listings
 )
 
 if [[ "$TWOCOL" -eq 1 ]]; then
