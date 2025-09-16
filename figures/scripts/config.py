@@ -107,7 +107,7 @@ def setup_axes(ax, title=None, xlabel=None, ylabel=None, grid=True):
                 linestyle='-', color=COLORS['grid'])
         ax.set_axisbelow(True)
 
-def add_panel_label(ax, label, x=-0.15, y=1.05):
+def add_panel_label(ax, label, x=-0.08, y=1.05):
     """Add panel labels (A, B, C, etc.) to subplots"""
     ax.text(x, y, label, transform=ax.transAxes,
             fontsize=FONT_SIZE['panel_label'], fontweight='bold',

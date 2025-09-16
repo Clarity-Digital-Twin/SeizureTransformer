@@ -99,19 +99,21 @@ def fig2_operating_curves():
     taes_factor = 136.73 / 26.89  # ~5.1x FA increase
     szcore_factor = 8.59 / 26.89   # ~0.32x FA decrease
 
-    nedc_taes_fa = [fa * taes_factor for fa in nedc_overlap_fa]
-    nedc_taes_sens = [s + 5 for s in nedc_overlap_sens]  # TAES slightly higher sens
+    # Limit TAES to reasonable range (don't extend beyond ~200 FA/24h)
+    nedc_taes_fa = [fa * taes_factor for fa in nedc_overlap_fa if fa * taes_factor <= 200]
+    nedc_taes_sens = [s + 5 for s in nedc_overlap_sens][:len(nedc_taes_fa)]  # Match length
 
-    szcore_fa = [fa * szcore_factor for fa in nedc_overlap_fa]
-    szcore_sens = [min(s + 8, 65) for s in nedc_overlap_sens]  # SzCORE higher sens
+    # Limit SzCORE to reasonable range (start from where it makes sense)
+    szcore_fa = [fa * szcore_factor for fa in nedc_overlap_fa if fa * szcore_factor >= 0.27]
+    szcore_sens = [min(s + 8, 65) for s in nedc_overlap_sens[-len(szcore_fa):]]  # Match from end
 
-    # Plot curves
+    # Plot curves in order for legend: SzCORE first, then NEDC OVERLAP, then NEDC TAES
+    ax.semilogx(szcore_fa, szcore_sens, '^-', color=COLORS['szcore'],
+                linewidth=2, markersize=7, label='SzCORE', alpha=0.9)
     ax.semilogx(nedc_overlap_fa, nedc_overlap_sens, 'o-', color=COLORS['nedc_overlap'],
                 linewidth=2, markersize=7, label='NEDC OVERLAP', alpha=0.9)
     ax.semilogx(nedc_taes_fa, nedc_taes_sens, 's-', color=COLORS['nedc_taes'],
                 linewidth=2, markersize=6, label='NEDC TAES', alpha=0.9)
-    ax.semilogx(szcore_fa, szcore_sens, '^-', color=COLORS['szcore'],
-                linewidth=2, markersize=7, label='SzCORE', alpha=0.9)
 
     # Clinical viability zone
     ax.axvspan(0.1, 10, ymin=0.75, ymax=1, alpha=0.15, color='green', label='Clinical target zone')
@@ -119,19 +121,21 @@ def fig2_operating_curves():
     ax.axvline(x=10, color=COLORS['threshold'], linestyle='--', alpha=0.5, linewidth=1)
     ax.axvline(x=1, color='red', linestyle=':', alpha=0.4, linewidth=1)
 
-    # Annotations
+    # Annotations - position to avoid line overlaps
     ax.annotate('Clinical\ntarget', xy=(3, 85), fontsize=9, ha='center', color='green', fontweight='bold')
-    ax.annotate('Human level\n(~1 FA/24h)', xy=(1, 5), fontsize=8, ha='center', color='red')
+    ax.annotate('Human level\n(~1 FA/24h)', xy=(0.7, 12), fontsize=8, ha='right', color='red',
+                bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.8, edgecolor='none'))
 
     # Mark paper's default operating point
     ax.plot(26.89, 45.63, 'o', color='black', markersize=10, zorder=5)
-    ax.annotate('Paper default\n(θ=0.8, k=5, d=2.0)', xy=(26.89, 45.63),
-                xytext=(50, 35), fontsize=8, ha='center',
+    ax.annotate('Paper default\n(threshold=0.8, k=5, d=2.0)', xy=(26.89, 45.63),
+                xytext=(40, 28), fontsize=8, ha='center',
+                bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.9, edgecolor='black'),
                 arrowprops=dict(arrowstyle='->', color='black', alpha=0.7))
 
     ax.set_xlabel('False Alarms per 24 Hours', fontsize=11)
     ax.set_ylabel('Sensitivity (%)', fontsize=11)
-    ax.set_xlim(0.5, 200)
+    ax.set_xlim(0.5, 250)  # Add padding on right
     ax.set_ylim(0, 100)
     ax.grid(True, alpha=0.3, which='both')
     ax.legend(loc='lower right', fontsize=9, framealpha=0.95)

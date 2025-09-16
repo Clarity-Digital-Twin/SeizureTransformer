@@ -25,19 +25,15 @@ def generate_fig1_optimized():
     methods = data['method'].str.replace(' ', '\n', regex=False)
     fa_rates = data['fa_per_24h']
     colors = data['color_hex']
-    multipliers = data['multiplier']
+    multipliers = data['multiplier']  # Already has 'x' in CSV
     fa_std = data['fa_std'].fillna(0)  # Fill NaN with 0 for Dianalund
 
-    # Create bars with error bars
+    # Create bars WITHOUT error bars (not meaningful for this comparison)
     bars = ax1.bar(range(len(methods)), fa_rates,
                    color=colors,
                    alpha=ALPHA['bar'],
                    edgecolor='black',
-                   linewidth=LINE_WIDTH['box'],
-                   yerr=fa_std,
-                   capsize=4,
-                   error_kw={'linewidth': LINE_WIDTH['reference'],
-                            'ecolor': COLORS['annotation']})
+                   linewidth=LINE_WIDTH['box'])
 
     # Set log scale and limits
     ax1.set_yscale('log')
@@ -52,8 +48,8 @@ def generate_fig1_optimized():
                zorder=0)
 
     # Enhanced multiplier annotations with background boxes
-    for i, (fa, mult, std) in enumerate(zip(fa_rates, multipliers, fa_std)):
-        y_pos = fa + std if std > 0 else fa  # Position above error bar
+    for i, (fa, mult) in enumerate(zip(fa_rates, multipliers)):
+        y_pos = fa  # Position above bar
         ax1.annotate(mult,
                     xy=(i, y_pos),
                     xytext=(0, 8),
@@ -70,7 +66,7 @@ def generate_fig1_optimized():
     ax1.set_xticks(range(len(methods)))
     ax1.set_xticklabels(methods, fontsize=FONT_SIZE['tick'])
     setup_axes(ax1,
-              title='A. False Alarm Rates Across Evaluation Methods',
+              title='False Alarm Rates Across Scoring Methods',
               ylabel='False Alarms per 24 Hours (log scale)',
               grid=True)
 
@@ -82,21 +78,19 @@ def generate_fig1_optimized():
     add_panel_label(ax1, 'A')
 
     # ============ Panel B: Sensitivity at 10 FA/24h ============
-    scorers = ['NEDC\nOVERLAP', 'NEDC\nTAES', 'SzCORE']
-    sensitivities = data['sensitivity_at_10fa'].dropna().tolist()  # Get all non-NaN values
-    sens_std = data['sens_std'].dropna().tolist()  # Get all non-NaN values
-    colors_b = [COLORS['nedc_overlap'], COLORS['nedc_taes'], COLORS['szcore']]
+    # Get data in same order as Panel A (minus Dianalund)
+    panel_b_data = data[data['sensitivity_at_10fa'].notna()]
+    scorers = ['SzCORE', 'NEDC\nOVERLAP', 'NEDC\nTAES']
+    sensitivities = panel_b_data['sensitivity_at_10fa'].tolist()
+    sens_std = panel_b_data['sens_std'].tolist()
+    colors_b = [COLORS['szcore'], COLORS['nedc_overlap'], COLORS['nedc_taes']]
 
-    # Create bars with error bars
+    # Create bars WITHOUT error bars
     bars2 = ax2.bar(range(len(scorers)), sensitivities,
                    color=colors_b,
                    alpha=ALPHA['bar'],
                    edgecolor='black',
-                   linewidth=LINE_WIDTH['box'],
-                   yerr=sens_std,
-                   capsize=4,
-                   error_kw={'linewidth': LINE_WIDTH['reference'],
-                            'ecolor': COLORS['annotation']})
+                   linewidth=LINE_WIDTH['box'])
 
     # Add clinical goal line
     ax2.axhline(y=CLINICAL_THRESHOLDS['sensitivity'],
@@ -114,8 +108,8 @@ def generate_fig1_optimized():
                linewidth=LINE_WIDTH['grid'])
 
     # Value annotations with percentage signs
-    for i, (bar, sens, std) in enumerate(zip(bars2, sensitivities, sens_std)):
-        y_pos = sens + std
+    for i, (bar, sens) in enumerate(zip(bars2, sensitivities)):
+        y_pos = sens
         ax2.annotate(f'{sens:.1f}%',
                     xy=(i, y_pos),
                     xytext=(0, 3),
@@ -129,7 +123,7 @@ def generate_fig1_optimized():
     ax2.set_xticks(range(len(scorers)))
     ax2.set_xticklabels(scorers, fontsize=FONT_SIZE['tick'])
     setup_axes(ax2,
-              title='B. Sensitivity at 10 FA/24h Threshold',
+              title='Sensitivity at 10 FA/24h Threshold',
               ylabel='Sensitivity (%)',
               grid=True)
 
