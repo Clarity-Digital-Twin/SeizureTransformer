@@ -20,25 +20,10 @@ def rebuild(yaml: str, body: str) -> str:
     return f"---\n{yaml}---\n{body}"
 
 def strip_manual_title_block_with_yaml(yaml: str, body: str) -> str:
-    # if we can read title from YAML, remove a matching manual block in body
-    mt = re.search(r'^\s*title:\s*"?(.+?)"?\s*$', yaml, flags=re.M)
-    title = mt.group(1) if mt else None
-    if not title:
-        return body
-    bl = body.lstrip('\n')
-    lines = bl.splitlines(True)
-    i = 0
-    # Match H1 with the same title
-    if i < len(lines) and re.match(r'^#\s+' + re.escape(title) + r'\s*$', lines[i]):
-        i += 1
-        # Skip up to 5 short lines (author, affiliation, date)
-        k = 0
-        while i < len(lines) and k < 5 and lines[i].strip() and len(lines[i].strip()) <= 60:
-            i += 1; k += 1
-        # Remove an immediate horizontal rule
-        if i < len(lines) and lines[i].strip() == '---':
-            i += 1
-        body = ''.join(lines[i:]).lstrip('\n')
+    # Look for the manual title/author block in body and remove it
+    # Pattern: # Title\n**Author**\nAffiliation\nDate\n---\n
+    pattern = r'^#\s+[^\n]+\n(?:\*\*[^\n]+\*\*\n)?[^\n]*\n[^\n]*\n---\n'
+    body = re.sub(pattern, '', body, count=1)
     return body
 
 def extract_author_tokens(yaml: str):

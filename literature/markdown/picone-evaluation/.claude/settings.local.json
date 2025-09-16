@@ -3,7 +3,8 @@
     "allow": [
       "WebSearch",
       "Bash(cat:*)",
-      "Bash(./convert_final.sh:*)"
+      "Bash(./convert_final.sh:*)",
+      "Bash(python3 preprocess_markdown.py:*)"
     ],
     "deny": [],
     "ask": []
