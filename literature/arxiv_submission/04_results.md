@@ -49,4 +49,4 @@ All evaluations used:
 - Identical post-processing across all scorers
 - merge_gap disabled (no event merging) for NEDC compliance
 
-Figure 1 illustrates the performance spectrum across scoring methods, while Figure 3 shows operating points relative to clinical deployment zones.
+See Appendix Tables A1–A2 for full metrics; accompanying plots are reproducible via `scripts/visualize_results.py` and included in the repository.
