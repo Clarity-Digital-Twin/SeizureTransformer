@@ -150,7 +150,8 @@
       "Bash(./convert_arxiv_style.sh:*)",
       "Bash(pdflatex:*)",
       "Bash(./convert_final_arxiv.sh:*)",
-      "Bash(./final_complete_conversion.sh:*)"
+      "Bash(./final_complete_conversion.sh:*)",
+      "Bash(./convert_proper_to_pdf.sh:*)"
     ],
     "deny": [],
     "ask": []
