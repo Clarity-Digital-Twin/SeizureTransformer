@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
 """Test visualization stack - generate sample of Figure 1: The Gap Visualization"""
 
-import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
 import plotext as pltxt
 from rich.console import Console
 from rich.table import Table
-import scienceplots
 
 # Test data from our paper
 methods = ["Dianalund\n(Claimed)", "TUSZ\nNEDC OVERLAP", "TUSZ\nNEDC TAES", "TUSZ\nSzCORE"]
@@ -38,7 +35,7 @@ def rich_table():
     table.add_column("Multiplier", justify="right", style="red")
     table.add_column("Clinical Viable?", justify="center")
 
-    for method, fa, mult in zip(methods, fa_rates, multipliers):
+    for method, fa, mult in zip(methods, fa_rates, multipliers, strict=False):
         viable = "✓" if fa < 10 else "✗"
         style = "green" if fa < 10 else "red"
         table.add_row(method.replace("\n", " "), f"{fa:.2f}", mult, f"[{style}]{viable}[/{style}]")
@@ -64,7 +61,7 @@ def publication_figure():
     ax1.grid(True, alpha=0.3, axis="y")
 
     # Add multiplier annotations
-    for bar, mult, fa in zip(bars, multipliers, fa_rates):
+    for bar, mult, fa in zip(bars, multipliers, fa_rates, strict=False):
         height = bar.get_height()
         ax1.text(
             bar.get_x() + bar.get_width() / 2.0,
@@ -99,7 +96,7 @@ def publication_figure():
     ax2.grid(True, alpha=0.3, axis="y")
 
     # Add value annotations
-    for bar, sens in zip(bars2, sensitivities):
+    for bar, sens in zip(bars2, sensitivities, strict=False):
         height = bar.get_height()
         ax2.text(
             bar.get_x() + bar.get_width() / 2.0,
