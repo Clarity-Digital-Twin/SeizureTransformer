@@ -25,14 +25,15 @@ All figures now clarify "SzCORE Event":
 
 **SzCORE Event** (Any-Overlap with tolerances):
 - Default (θ=0.80): 52.35% sensitivity @ 8.59 FA/24h
-- 10 FA target (θ=0.88): 40.59% sensitivity @ 3.36 FA/24h
-- 2.5 FA target (θ=0.95): 19.71% sensitivity @ 0.75 FA/24h
+- At NEDC 10‑FA settings (θ=0.88, k=5, d=3.0): 40.59% sensitivity @ 3.36 FA/24h
+- Closest to 10 FA: 59.78% sensitivity @ 13.47 FA/24h
+- 2.5 FA setting (θ=0.95, k=5, d=5.0): 19.71% sensitivity @ 0.75 FA/24h
 
 ## Why Not Report SzCORE Epoch?
 
-We do not report SzCORE Epoch (time-aligned) because:
-1. It would be redundant with NEDC TAES (both do partial credit)
-2. It conflates SzCORE's clinical tolerance philosophy with strict temporal scoring
+We do not report SzCORE Epoch (sample-based) because:
+1. It aligns with NEDC EPOCH (per‑second labels) and is not our focus
+2. Our emphasis is on event-based metrics used in clinical comparison (TAES/OVERLAP/SzCORE Event)
 3. The Event mode is what EpilepsyBench uses for benchmarking
 
 ## CSV Updates Complete

@@ -73,7 +73,7 @@ grep -A20 "NEDC TAES SCORING SUMMARY" results/summary.txt
 # FA/24h: Calculated from total FP count / (duration_hours / 24)
 ```
 
-#### SzCORE Any-Overlap (Default)
+#### SzCORE Event (Any-Overlap) — Default
 ```bash
 # File: experiments/eval/baseline/szcore_results/szcore_summary.json
 cat szcore_summary.json | jq '.corpus_micro_avg'

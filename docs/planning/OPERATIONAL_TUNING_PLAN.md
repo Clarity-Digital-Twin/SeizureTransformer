@@ -41,7 +41,7 @@ For EACH parameter combination, we run ALL 4 scorers:
    - Our Python implementation
    - Should match Temple OVERLAP ±0.1%
 
-4. **SzCORE Any-Overlap** (`szcore`)
+4. **SzCORE Event (Any-Overlap)** (`szcore`)
    - Competition standard
    - 30s/60s tolerance windows
 
@@ -78,7 +78,7 @@ for thresh in 0.80 0.85 0.90 0.92 0.94 0.96 0.98 0.99; do
       --backend native-taes \
       --threshold $thresh --kernel $KERNEL --min_duration_sec $min_dur
 
-    # Run SzCORE Any-Overlap
+    # Run SzCORE Event (Any-Overlap)
     python -m evaluation.szcore_scoring.run_szcore \
       --checkpoint $CHECKPOINT \
       --outdir $OUTPUT_DIR/szcore \
@@ -122,7 +122,7 @@ save_results_table(results)
 
 Results will be tracked in `docs/evaluation/TUNING_RESULTS_TRACKER.md`:
 
-| Params | TAES Sen/FA | Overlap Temple Sen/FA | Overlap Native Sen/FA | SzCORE Sen/FA | Best For (Exact FA) |
+| Params | TAES Sen/FA | Overlap Temple Sen/FA | Overlap Native Sen/FA | SzCORE Event Sen/FA | Best For (Exact FA) |
 |--------|-------------|----------------------|----------------------|---------------|--------------------|
 | t0.80_k5_m2.0 | TBD/TBD | 45.63/100.06 | 45.63/100.06 | 52.35/8.46 | Paper Default (100.06) |
 | t0.85_k5_m3.0 | TBD | TBD | TBD | TBD | - |

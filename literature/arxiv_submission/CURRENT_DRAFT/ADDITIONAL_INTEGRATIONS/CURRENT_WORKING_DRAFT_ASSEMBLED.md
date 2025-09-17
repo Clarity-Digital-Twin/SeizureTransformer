@@ -125,7 +125,7 @@ This comprehensive evaluation framework, combining the authors' pretrained model
 
 ## Evaluation Setup
 
-We evaluated SeizureTransformer on TUSZ v2.0.3's held-out evaluation set containing 865 EEG files (127.7 hours of recordings). Using the authors' pretrained weights, we generated predictions and evaluated them using four scoring methodologies: NEDC OVERLAP (Temple's official any-overlap mode), NEDC TAES (time-aligned), Native OVERLAP (our Python implementation), and SzCORE (EpilepsyBench standard).
+We evaluated SeizureTransformer on TUSZ v2.0.3's held-out evaluation set containing 865 EEG files (127.7 hours of recordings). Using the authors' pretrained weights, we generated predictions and evaluated them using four scoring methodologies: NEDC OVERLAP (Temple's official any-overlap mode), NEDC TAES (time-aligned), Native OVERLAP (our Python implementation), and SzCORE Event (EpilepsyBench standard).
 
 ## Primary Results
 
@@ -136,14 +136,14 @@ At the paper's default parameters, we observed dramatic variation across scoring
 - **NEDC OVERLAP**: 45.63% sensitivity, 26.89 FA/24h
 - **NEDC TAES**: 65.21% sensitivity, 136.73 FA/24h
 - **Native OVERLAP**: 45.63% sensitivity, 26.89 FA/24h (perfect parity with NEDC)
-- **SzCORE**: 52.35% sensitivity, 8.59 FA/24h
+- **SzCORE Event**: 52.35% sensitivity, 8.59 FA/24h
 
-This represents a **3.1x difference** in false alarm rates between NEDC OVERLAP and SzCORE scoring on identical predictions. Compared to the paper's reported ~1 FA/24h on Dianalund, we observe a **27-fold gap** with NEDC OVERLAP and a **137-fold gap** with NEDC TAES.
+This represents a **3.1x difference** in false alarm rates between NEDC OVERLAP and SzCORE Event scoring on identical predictions. Compared to the paper's reported ~1 FA/24h on Dianalund, we observe a **27-fold gap** with NEDC OVERLAP and a **137-fold gap** with NEDC TAES.
 
 | Scoring Method | Sensitivity (%) | FA/24h  | Multiplier vs Claimed | F1 Score |
 |:---------------|----------------:|--------:|----------------------:|---------:|
 | **Dianalund (Claimed)** | 37.00 | 1.00 | 1x | 0.43* |
-| SzCORE | 52.35 | 8.59 | 9x | 0.485 |
+| SzCORE Event | 52.35 | 8.59 | 9x | 0.485 |
 | NEDC OVERLAP | 45.63 | 26.89 | **27x** | 0.396 |
 | Native OVERLAP | 45.63 | 26.89 | **27x** | 0.396 |
 | NEDC TAES | 60.45 | 136.73 | **137x** | 0.237 |
@@ -157,12 +157,12 @@ We optimized parameters on the development set to target clinical false alarm th
 **10 FA/24h Target (theta=0.88, k=5, d=3.0)**:
 - NEDC OVERLAP achieved 33.90% sensitivity at 10.27 FA/24h
 - While meeting our FA constraint, this falls far below the 75% sensitivity goal for clinical systems [10]
-- SzCORE achieved 40.59% sensitivity at only 3.36 FA/24h
+- SzCORE Event achieved 40.59% sensitivity at only 3.36 FA/24h
 
 **2.5 FA/24h Target (theta=0.95, k=5, d=5.0)**:
 - NEDC OVERLAP achieved 14.50% sensitivity at 2.05 FA/24h
 - Sensitivity too low for clinical viability
-- SzCORE achieved 19.71% sensitivity at 0.75 FA/24h
+- SzCORE Event achieved 19.71% sensitivity at 0.75 FA/24h
 
 ![Figure 2: Operating characteristic curves across scoring methodologies. The same model predictions yield dramatically different sensitivity-false alarm tradeoffs depending on scoring choice. The clinical target zone (green) represents the desired operating region for deployment (>=75% sensitivity, <=10 FA/24h). The paper's default operating point (black circle) falls far outside clinical viability for all scoring methods on TUSZ.](../figures/fig2_operating_curves.png){#fig:operating-curves width=100%}
 
@@ -194,7 +194,7 @@ Our evaluation reveals a 27-137x gap between SeizureTransformer's reported perfo
 
 ## Impact of Scoring Methodology
 
-The 3.1x difference in false alarm rates between NEDC OVERLAP (26.89 FA/24h) and SzCORE (8.59 FA/24h) on identical predictions demonstrates that scoring methodology alone can determine whether a model appears clinically viable. NEDC TAES, with its strict time-aligned evaluation, shows an even larger 5.1x increase over OVERLAP and a 15.9x increase over SzCORE. These differences stem from fundamental philosophical disagreements about what constitutes a correct detection: TAES requires precise temporal alignment and penalizes both over- and under-segmentation through partial credit scoring, OVERLAP accepts any temporal intersection as sufficient, while SzCORE adds 30-second pre-ictal and 60-second post-ictal tolerances before applying overlap logic. Each approach serves legitimate clinical purposes—TAES for applications requiring precise seizure boundaries, OVERLAP for standard clinical review, and SzCORE for screening where missing events is costlier than false alarms.
+The 3.1x difference in false alarm rates between NEDC OVERLAP (26.89 FA/24h) and SzCORE Event (8.59 FA/24h) on identical predictions demonstrates that scoring methodology alone can determine whether a model appears clinically viable. NEDC TAES, with its strict time-aligned evaluation, shows an even larger 5.1x increase over OVERLAP and a 15.9x increase over SzCORE Event. These differences stem from fundamental philosophical disagreements about what constitutes a correct detection: TAES requires precise temporal alignment and penalizes both over- and under-segmentation through partial credit scoring, OVERLAP accepts any temporal intersection as sufficient, while SzCORE Event adds 30-second pre-ictal and 60-second post-ictal tolerances before applying overlap logic. Each approach serves legitimate clinical purposes—TAES for applications requiring precise seizure boundaries, OVERLAP for standard clinical review, and SzCORE Event for screening where missing events is costlier than false alarms.
 
 ## Clinical Deployment Constraints
 
@@ -305,7 +305,7 @@ python scripts/visualize_results.py --results_dir results/
 To verify correct reproduction, key outputs should match:
 - `checkpoint.pkl`: MD5 `3f8a2b...` (469 seizures detected)
 - NEDC OVERLAP @ default: 26.89 ± 0.01 FA/24h
-- SzCORE @ default: 8.59 ± 0.01 FA/24h
+- SzCORE Event @ default: 8.59 ± 0.01 FA/24h
 
 # Acknowledgments
 
