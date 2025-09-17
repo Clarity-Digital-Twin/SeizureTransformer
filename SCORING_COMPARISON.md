@@ -257,6 +257,44 @@ Given our findings, future papers should:
 
 This educational approach reveals how dramatically scoring affects perceived performance and helps readers understand what the numbers really mean.
 
+## 11. Comprehensive Results Matrix
+
+### 11.1 What We Have Computed (✅) vs What We Need (❌)
+
+| Parameter Set | Scorer | Type | Sensitivity | FA/24h | Status |
+|--------------|--------|------|-------------|---------|---------|
+| **DEFAULT (θ=0.8, k=5, d=2.0)** |
+| | NEDC TAES | Event (fractional) | 65.21% | 136.73 | ✅ |
+| | NEDC OVLP | Event (any-overlap) | 45.63% | 26.89 | ✅ |
+| | NEDC EPOCH | Sample (1s) | ? | ? | ❌ NEED |
+| | Native OVLP | Event (any-overlap) | 45.63% | 26.89 | ✅ |
+| | SzCORE Event | Event (overlap+tol) | 52.35% | 8.59 | ✅ |
+| | SzCORE Sample | Sample (1s) | ? | ? | ❌ NEED |
+| **10 FA TARGET (θ=0.88, k=5, d=3.0)** |
+| | NEDC TAES | Event (fractional) | 60.45% | 83.88 | ✅ |
+| | NEDC OVLP | Event (any-overlap) | 33.90% | 10.27 | ✅ |
+| | NEDC EPOCH | Sample (1s) | ? | ? | ❌ NEED |
+| | Native OVLP | Event (any-overlap) | 33.90% | 10.27 | ✅ |
+| | SzCORE Event | Event (overlap+tol) | 40.59% | 3.36 | ✅ |
+| | SzCORE Sample | Sample (1s) | ? | ? | ❌ NEED |
+| **2.5 FA TARGET (θ=0.95, k=5, d=5.0)** |
+| | NEDC TAES | Event (fractional) | 18.12% | 10.64 | ✅ |
+| | NEDC OVLP | Event (any-overlap) | 14.50% | 2.05 | ✅ |
+| | NEDC EPOCH | Sample (1s) | ? | ? | ❌ NEED |
+| | Native OVLP | Event (any-overlap) | 14.50% | 2.05 | ✅ |
+| | SzCORE Event | Event (overlap+tol) | 19.71% | 0.75 | ✅ |
+| | SzCORE Sample | Sample (1s) | ? | ? | ❌ NEED |
+
+### 11.2 Missing Scores To Compute
+
+We need to compute **6 missing scores**:
+1. NEDC EPOCH at DEFAULT (θ=0.8, k=5, d=2.0)
+2. NEDC EPOCH at 10FA (θ=0.88, k=5, d=3.0)
+3. NEDC EPOCH at 2.5FA (θ=0.95, k=5, d=5.0)
+4. SzCORE Sample at DEFAULT (θ=0.8, k=5, d=2.0)
+5. SzCORE Sample at 10FA (θ=0.88, k=5, d=3.0)
+6. SzCORE Sample at 2.5FA (θ=0.95, k=5, d=5.0)
+
 ## Appendix: Quick Reference
 
 ### NEDC Command (Produces 5 scores)
