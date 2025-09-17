@@ -483,6 +483,6 @@ Key scripts:
 
 - `tusz-eval`: CLI to generate predictions
 - `nedc-run`: CLI for NEDC evaluation
-- `szcore-run`: CLI for SzCORE evaluation
+- `szcore-run`: CLI for SzCORE Event evaluation
 - `scripts/visualize_results.py`: Recreate figures from results
 - `evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py`: Parameter grid search

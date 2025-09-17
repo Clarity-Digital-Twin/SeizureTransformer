@@ -83,7 +83,7 @@ Edit at `.../CURRENT_WORKING_DRAFT.md:476–478` to:
 """
 - `tusz-eval` (CLI): Generate predictions; entry point `seizure_evaluation.tusz.cli:main`
 - `nedc-run` (CLI): NEDC orchestration; wrapper defers to vendored NEDC tools
-- `szcore-run` (CLI): SzCORE evaluation; entry point `seizure_evaluation.szcore.cli:main`
+- `szcore-run` (CLI): SzCORE Event evaluation; entry point `seizure_evaluation.szcore.cli:main`
 - `scripts/visualize_results.py`: Recreate figures from results
 - `evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py`: Parameter grid search (vendored tools)
 """
@@ -143,4 +143,3 @@ We pin NEDC v6.0.0 and TUSZ v2.0.3; reproducibility requires these exact version
 4) Add Discussion “Cross‑Dataset Validity” paragraph (linking to ADDITIONAL_INTEGRATIONS/COMPARISON_VALIDITY.md).
 5) Add preprocessing and post‑processing clarifications in Methods.
 6) Re‑scan for any remaining legacy path references (`evaluation/tusz/run_tusz_eval.py`, `evaluation/szcore_scoring/*`).
-

@@ -137,7 +137,7 @@ Appendix C.3 retitled and updated:
 All reproduction commands updated to use new CLIs:
 - `tusz-eval` - Generate predictions
 - `nedc-run` - NEDC evaluation
-- `szcore-run` - SzCORE evaluation
+- `szcore-run` - SzCORE Event evaluation
 
 ## Summary
 
