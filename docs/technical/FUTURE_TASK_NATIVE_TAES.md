@@ -11,7 +11,7 @@ TAES (Time-Aligned Event Scoring) is Temple University's strictest seizure detec
 - Industry standard for clinical EEG evaluation
 
 ## Current State
-- **Have**: Native OVERLAP scorer at `seizure_evaluation/taes/overlap_scorer.py`
+- **Have**: Native OVERLAP scorer at `src/seizure_evaluation/ovlp/overlap_scorer.py`
 - **Have**: Access to Temple TAES via their binary (`evaluation/nedc_eeg_eval/v6.0.0/bin/nedc_eeg_eval`)
 - **Missing**: Native Python TAES implementation
 

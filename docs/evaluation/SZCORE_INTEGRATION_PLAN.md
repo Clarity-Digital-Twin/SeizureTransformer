@@ -66,7 +66,7 @@ graph LR
 
 ### Where Code Lives:
 1. **Model inference**: `wu_2025/` (untouched upstream)
-2. **TUSZ evaluation**: `evaluation/tusz/run_tusz_eval.py`
+2. **TUSZ evaluation**: `tusz-eval` (entry point to `src/seizure_evaluation/tusz/cli.py`)
 3. **Checkpoint storage**: `experiments/eval/baseline/checkpoint.pkl`
 4. **NEDC wrapper**: `evaluation/nedc_eeg_eval/nedc_scoring/` (orchestrates Temple binary)
 5. **SzCORE wrapper**: `evaluation/szcore_scoring/` (calls pip package)

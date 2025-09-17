@@ -159,7 +159,8 @@
       "Bash(pip uninstall:*)",
       "Bash(pip show:*)",
       "Bash(tusz-eval:*)",
-      "Bash(szcore-run:*)"
+      "Bash(szcore-run:*)",
+      "Bash(nedc-run:*)"
     ],
     "deny": [],
     "ask": []

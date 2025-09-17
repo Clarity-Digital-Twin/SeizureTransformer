@@ -5,7 +5,7 @@
 ### What We Have
 We have implemented a **native Python OVERLAP scorer**, NOT a native TAES scorer as originally intended.
 
-**Location**: `seizure_evaluation/taes/overlap_scorer.py`
+**Location**: `src/seizure_evaluation/ovlp/overlap_scorer.py`
 - Despite being in a folder named "taes", this is actually an `OverlapScorer` class
 - Implements Temple NEDC's OVERLAP scoring method (any-overlap counting)
 - Does NOT implement TAES (Time-Aligned Event Scoring with fractional temporal matching)

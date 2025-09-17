@@ -28,7 +28,7 @@ We need this for:
 - **STATUS**: Working, being used by parameter sweep RIGHT NOW
 
 ### Part 2: Native Python Implementation (OVERLAP) ✅ DONE
-- Location: `seizure_evaluation/taes/overlap_scorer.py`
+- Location: `src/seizure_evaluation/ovlp/overlap_scorer.py`
 - **STATUS**: Implemented and integrated via `--backend native-taes` (now runs OVERLAP scorer)
 - **PARITY (OVERLAP)**: Matches Temple OVERLAP for seizure sensitivity and TOTAL FA/24h (SEIZ + BCKG) on dev/eval
   - Dev/default: 23.53% @ 19.45 FA/24h (Temple = Native)
@@ -120,7 +120,7 @@ Given an `--outdir <DIR>`, the runner writes:
 
 ## Native OVERLAP Implementation (PRIMARY GOAL) 🎯
 
-Full Python implementation at `seizure_evaluation/taes/overlap_scorer.py` to:
+Full Python implementation at `src/seizure_evaluation/ovlp/overlap_scorer.py` to:
 - Remove ALL dependency on Temple binary
 - Enable Windows support without WSL
 - Speed up evaluation
