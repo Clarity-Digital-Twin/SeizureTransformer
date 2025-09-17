@@ -149,7 +149,7 @@ This represents a **3.1x difference** in false alarm rates between NEDC OVERLAP 
 | **Dianalund (Claimed)** | 37.00 | 1.00 | 1x | 0.43* |
 | SzCORE Event | 52.35 | 8.59 | 9x | 0.485 |
 | NEDC OVERLAP | 45.63 | 26.89 | **27x** | 0.396 |
-| NEDC TAES | 60.45 | 136.73 | **137x** | 0.237 |
+| NEDC TAES | 65.21 | 136.73 | **137x** | 0.237 |
 
 Table 1: Performance at default parameters (theta=0.80, k=5, d=2.0). *F1 from competition leaderboard.
 
