@@ -24,13 +24,17 @@ We evaluated identical model predictions using three scoring methodologies, each
 
 **NEDC OVERLAP** implements Temple's binary any-overlap scoring within the NEDC v6.0.0 framework [6]. Any temporal overlap between prediction and reference, regardless of duration, counts as a full true positive. This represents the commonly reported mode for TUSZ evaluation, matching the dataset's annotation philosophy [6].
 
-**SzCORE Any-Overlap** extends binary scoring with clinical tolerances: 30-second pre-ictal and 60-second post-ictal windows around each reference event, plus merging of predictions separated by less than 90 seconds [4]. These modifications, designed for clinical deployment scenarios where early warnings and reduced alarm fatigue are prioritized, substantially reduce reported false alarm rates [4].
+**SzCORE Event (Any-Overlap + tolerances)** extends binary scoring with clinical tolerances: 30-second pre-ictal and 60-second post-ictal windows around each reference event, plus merging of predictions separated by less than 90 seconds [4]. These modifications, designed for clinical deployment scenarios where early warnings and reduced alarm fatigue are prioritized, substantially reduce reported false alarm rates [4].
 
 We additionally implemented a native Python any-overlap scorer for validation and confirmed perfect parity with NEDC OVERLAP (identical metrics to four decimal places). To avoid redundancy, we report only the three primary scorers.
 
 All scoring implementations process the same binary prediction masks, ensuring that performance differences stem solely from scoring philosophy rather than model behavior.
 
-![Figure 3: Impact of scoring methodology on reported performance. The same SeizureTransformer predictions flow through different scoring pipelines, yielding a 15.9x difference in false alarm rates between NEDC TAES and SzCORE. This visualization demonstrates how evaluation standards, not model improvements, can account for order-of-magnitude performance variations.](../figures/fig3_scoring_impact_optimized.png){#fig:scoring-impact width=100%}
+![Figure 3: Impact of scoring methodology on reported performance. The same SeizureTransformer predictions flow through different scoring pipelines, yielding a 15.9x difference in false alarm rates between NEDC TAES and SzCORE Event. This visualization demonstrates how evaluation standards, not model improvements, can account for order-of-magnitude performance variations.](../figures/fig3_scoring_impact.png){#fig:scoring-impact width=100%}
+
+### Choice of Event-Based Metrics
+
+We report only event-based metrics (NEDC OVERLAP, NEDC TAES, SzCORE Event) because clinical evaluation focuses on detecting discrete seizure events. Sample-based (epoch) methods (e.g., NEDC EPOCH; SzCORE Sample-based) compare 1 Hz labels and can inflate scores by rewarding long non-seizure periods, obscuring event detection quality. To avoid this pitfall, all reported results are event-based. “SzCORE Event” denotes any-overlap with ±30 s/60 s tolerances and merge/split rules (merge <90 s, split >5 min); we do not report SzCORE Sample-based.
 
 ## Parameter Optimization
 
@@ -38,7 +42,7 @@ We conducted systematic post-processing parameter optimization on the TUSZ devel
 
 For each configuration, we computed sensitivity and false alarm rates using NEDC OVERLAP scoring, as this is the commonly reported mode for TUSZ. From the resulting parameter space, we selected operating points for comprehensive evaluation: (1) **Default** (theta=0.80, k=5, d=2.0s) — the paper's published configuration; (2) **Clinical 10 FA/24h target** (theta=0.88, k=5, d=3.0s) — optimized to meet the <=10 FA/24h constraint; and (3) **ICU-like 2.5 FA/24h target** (theta=0.95, k=5, d=5.0s) — a more conservative operating point. We additionally report selected high-threshold points (e.g., theta=0.98) when illustrating the full trade-off curve.
 
-![Figure 4: Parameter sensitivity analysis showing F1 scores across threshold and minimum duration values for NEDC OVERLAP scoring. The heatmaps reveal that optimal parameters vary by morphological kernel size, with the paper's default (theta=0.8, d=2.0) marked. Higher thresholds are required to achieve clinically acceptable false alarm rates.](../figures/fig4_parameter_heatmap_optimized.png){#fig:parameter-heatmap width=100%}
+![Figure 4: Parameter sensitivity analysis showing F1 scores across threshold and minimum duration values for NEDC OVERLAP scoring. The heatmaps reveal that optimal parameters vary by morphological kernel size, with the paper's default (theta=0.8, d=2.0) marked. Higher thresholds are required to achieve clinically acceptable false alarm rates.](../figures/fig4_parameter_heatmap.png){#fig:parameter-heatmap width=100%}
 
 ## Implementation and Validation
 
@@ -50,7 +54,7 @@ To enable full reproducibility, we provide our complete evaluation codebase, inc
 
 ## Statistical Analysis
 
-We report standard seizure detection metrics for each configuration and scorer combination: sensitivity (seizure-level recall), false alarm rate per 24 hours (computed from total recording duration), and F1 score. For NEDC scorers, we report SEIZ-only FA/24h as the primary metric (Temple’s "Total FA" is archived in summaries). For SzCORE, we follow its event-based false positive definition. We also computed AUROC across threshold values to assess overall discriminative capability independent of operating point selection.
+We report standard seizure detection metrics for each configuration and scorer combination: sensitivity (seizure-level recall), false alarm rate per 24 hours (computed from total recording duration), and F1 score. For NEDC scorers, we report SEIZ-only FA/24h as the primary metric (Temple’s "Total FA" is archived in summaries). For SzCORE Event, we follow its event-based false positive definition. We also computed AUROC across threshold values to assess overall discriminative capability independent of operating point selection.
 
 This comprehensive evaluation framework, combining the authors' pretrained model with multiple scoring standards applied to a properly held-out test set, reveals how methodological choices fundamentally shape reported performance metrics in seizure detection systems.
 

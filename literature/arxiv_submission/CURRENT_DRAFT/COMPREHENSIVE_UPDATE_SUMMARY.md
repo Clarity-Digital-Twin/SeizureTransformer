@@ -101,17 +101,17 @@ All performance metrics remain unchanged:
 **Default (θ=0.80)**
 - NEDC TAES: 65.21% / 136.73 FA/24h
 - NEDC OVERLAP: 45.63% / 26.89 FA/24h
-- SzCORE: 52.35% / 8.59 FA/24h
+- SzCORE Event: 52.35% / 8.59 FA/24h
 
 **10 FA/24h Target (θ=0.88)**
 - NEDC TAES: 60.45% / 83.88 FA/24h
 - NEDC OVERLAP: 33.90% / 10.27 FA/24h
-- SzCORE: 40.59% / 3.36 FA/24h
+- SzCORE Event: 40.59% / 3.36 FA/24h
 
 **2.5 FA/24h Target (θ=0.95)**
 - NEDC TAES: 18.12% / 10.64 FA/24h
 - NEDC OVERLAP: 14.50% / 2.05 FA/24h
-- SzCORE: 19.71% / 0.75 FA/24h
+- SzCORE Event: 19.71% / 0.75 FA/24h
 
 **~1 FA/24h (θ=0.98)**
 - NEDC OVERLAP: 8.10% / 0.86 FA/24h

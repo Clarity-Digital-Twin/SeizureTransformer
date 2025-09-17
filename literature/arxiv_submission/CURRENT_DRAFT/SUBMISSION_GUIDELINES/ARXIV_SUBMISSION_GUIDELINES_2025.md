@@ -61,7 +61,7 @@ Then: copy figures into `CONVERSION/figures/` and replace `../figures/` → `fig
 - Authors/Affiliation: Provide complete names; affiliations can be included in the abstract page metadata.
 - License: Choose appropriate license during submission.
 - Categories: Choose the most appropriate (e.g., cs.LG / eess.SP / q-bio.NC) — verify at submission time.
-- Filenames: Ensure no spaces and case‑exact matches for included figures (e.g., `fig1_performance_gap_optimized.png`).
+- Filenames: Ensure no spaces and case‑exact matches for included figures (e.g., `fig1_performance_gap.png`).
 
 # Known Constraints & Resolutions
 
