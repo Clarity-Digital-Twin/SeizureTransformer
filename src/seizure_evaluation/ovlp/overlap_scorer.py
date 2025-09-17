@@ -137,8 +137,7 @@ class OverlapScorer:
             # if this hyp background event does NOT overlap any ref background
             # event, it is a BCKG false alarm under Temple OVERLAP
             if not any(
-                (hb.start_time < rb.stop_time and rb.start_time < hb.stop_time)
-                for rb in ref_bckg
+                (hb.start_time < rb.stop_time and rb.start_time < hb.stop_time) for rb in ref_bckg
             ):
                 bckg_false_alarms += 1
 
@@ -218,9 +217,7 @@ class OverlapScorer:
         merged.append(cur)
         return merged
 
-    def _complement_of_events(
-        self, events: list[Event], total_duration_sec: float
-    ) -> list[Event]:
+    def _complement_of_events(self, events: list[Event], total_duration_sec: float) -> list[Event]:
         """Compute background (complement) events over [0, total_duration_sec]."""
         if total_duration_sec <= 0:
             return []

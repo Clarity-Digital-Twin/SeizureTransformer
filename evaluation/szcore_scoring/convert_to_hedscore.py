@@ -20,7 +20,7 @@ warnings.warn(
     "Importing from evaluation.szcore_scoring.convert_to_hedscore is deprecated. "
     "Please use 'from seizure_evaluation.szcore.convert_to_hedscore import ...' instead.",
     DeprecationWarning,
-    stacklevel=2
+    stacklevel=2,
 )
 
 # Re-export everything from the new location

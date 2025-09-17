@@ -20,7 +20,7 @@ warnings.warn(
     "Importing from evaluation.tusz.run_tusz_eval is deprecated. "
     "Please use 'from seizure_evaluation.tusz.cli import main' instead.",
     DeprecationWarning,
-    stacklevel=2
+    stacklevel=2,
 )
 
 # Re-export everything from the new location

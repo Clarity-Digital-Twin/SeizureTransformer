@@ -20,7 +20,7 @@ warnings.warn(
     "Importing from evaluation.utils.edf_repair is deprecated. "
     "Please use 'from seizure_evaluation.utils.edf_repair import ...' instead.",
     DeprecationWarning,
-    stacklevel=2
+    stacklevel=2,
 )
 
 # Re-export everything from the new location

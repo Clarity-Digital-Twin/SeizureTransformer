@@ -20,7 +20,7 @@ warnings.warn(
     "Importing from evaluation.utils.enhance_evaluation_robustness is deprecated. "
     "Please use 'from seizure_evaluation.utils.enhance_evaluation_robustness import ...' instead.",
     DeprecationWarning,
-    stacklevel=2
+    stacklevel=2,
 )
 
 # Re-export everything from the new location

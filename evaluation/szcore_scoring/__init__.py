@@ -11,5 +11,5 @@ warnings.warn(
     "The evaluation.szcore_scoring package has been moved to seizure_evaluation.szcore. "
     "Please update your imports.",
     DeprecationWarning,
-    stacklevel=2
+    stacklevel=2,
 )
