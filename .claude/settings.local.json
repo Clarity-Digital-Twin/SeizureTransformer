@@ -154,7 +154,8 @@
       "Bash(./convert_proper_to_pdf.sh:*)",
       "Bash(./convert_canonical.sh:*)",
       "Bash(./convert_final.sh:*)",
-      "Bash(do echo \"=== $branch ===\")"
+      "Bash(do echo \"=== $branch ===\")",
+      "Bash(touch:*)"
     ],
     "deny": [],
     "ask": []
