@@ -22,6 +22,11 @@ dependencies = [
     "tqdm>=4.65.0",
 ]
 
+[project.scripts]
+tusz-eval = "seizure_evaluation.tusz.cli:main"
+szcore-run = "seizure_evaluation.szcore.cli:main"
+nedc-run = "evaluation.nedc_eeg_eval.nedc_scoring.run_nedc:main"
+
 [project.optional-dependencies]
 dev = [
     "pytest>=7.4.0",
@@ -37,7 +42,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["evaluation", "scripts"]
+packages = ["src/seizure_evaluation"]
 
 # Modern Python tooling configuration (2025 best practices)
 
@@ -75,7 +80,7 @@ indent-style = "space"
 skip-magic-trailing-comma = false
 
 [tool.ruff.lint.isort]
-known-first-party = ["seizure_transformer_replication"]
+known-first-party = ["seizure_evaluation", "seizure_transformer_replication"]
 
 [tool.mypy]
 python_version = "3.10"
@@ -90,8 +95,9 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 addopts = [
     "--verbose",
+    "--cov=src/seizure_evaluation",
     "--cov=scripts",
-    "--cov=evaluation",
+    "--cov=evaluation/nedc_eeg_eval",
     "--cov-report=term-missing",
     "--cov-report=html",
     "--strict-markers",
