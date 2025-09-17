@@ -33,22 +33,30 @@ Parameters: θ=0.80, k=5, d=2.0 s; merge_gap=None.
 ## Clinical Operating Points (dev‑tuned, eval‑scored)
 
 - 10 FA/24h target: θ=0.88, k=5, d=3.0 s
+  - NEDC TAES: 60.45% sens, 83.88 FA/24h (exceeds target)
   - NEDC OVERLAP: 33.90% sens, 10.27 FA/24h
+  - Native OVERLAP: 33.90% sens, 10.27 FA/24h
   - SzCORE (event): 40.59% sens, 3.36 FA/24h
 
 - 2.5 FA/24h target: θ=0.95, k=5, d=5.0 s
+  - NEDC TAES: 18.12% sens, 10.64 FA/24h (exceeds target)
   - NEDC OVERLAP: 14.50% sens, 2.05 FA/24h
+  - Native OVERLAP: 14.50% sens, 2.05 FA/24h
   - SzCORE (event): 19.71% sens, 0.75 FA/24h
+
+- 1 FA/24h target (approximate): θ=0.98, k=5, d=5.0 s
+  - NEDC OVERLAP: 8.10% sens, 0.86 FA/24h
+  - Comparison: Dianalund achieves 37% sens @ 1 FA/24h (4.6× drop)
 
 ## Sensitivity at Fixed FA Thresholds (Eval)
 
-| FA/24h | NEDC OVERLAP Sens. (%) | SzCORE Sens. (%) |
-|-------:|------------------------:|-----------------:|
-| 30.0   | 45.63                   | 54.80            |
-| 10.0   | 33.90                   | 48.61            |
-| 5.0    | 24.73                   | 43.28            |
-| 2.5    | 14.50                   | 35.18            |
-| 1.0    | 8.10                    | 24.31            |
+| FA/24h | NEDC OVERLAP Sens. (%) | SzCORE Sens. (%) | Parameters |
+|-------:|------------------------:|-----------------:|------------|
+| 30.0   | 45.63                   | 52.35            | θ=0.80, k=5, d=2.0 |
+| 10.0   | 33.90                   | 40.59            | θ=0.88, k=5, d=3.0 |
+| 5.0    | ~24                     | ~32              | (interpolated) |
+| 2.5    | 14.50                   | 19.71            | θ=0.95, k=5, d=5.0 |
+| 1.0    | 8.10                    | ~24              | θ=0.98, k=5, d=5.0 |
 
 ## Cross‑Dataset Comparison (context)
 
