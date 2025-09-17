@@ -23,7 +23,7 @@ def generate_fig2_optimized():
     # Separate data by scorer
     nedc_overlap = data[data['scorer'] == 'NEDC OVERLAP'].copy()
     nedc_taes = data[data['scorer'] == 'NEDC TAES'].copy()
-    szcore = data[data['scorer'] == 'SzCORE'].copy()
+    szcore = data[data['scorer'] == 'SzCORE Event'].copy()
 
     # Sort by FA rate for smooth curves
     nedc_overlap = nedc_overlap.sort_values('fa_per_24h')
@@ -57,7 +57,7 @@ def generate_fig2_optimized():
                 color=COLORS['szcore'],
                 linewidth=2.5,
                 markersize=8,
-                label='SzCORE',
+                label='SzCORE Event',
                 alpha=0.9,
                 markeredgecolor='black',
                 markeredgewidth=0.5,
@@ -142,7 +142,7 @@ def generate_fig2_optimized():
     # Legend - order by performance
     handles, labels = ax.get_legend_handles_labels()
     # Find indices
-    szcore_idx = labels.index('SzCORE')
+    szcore_idx = labels.index('SzCORE Event')
     overlap_idx = labels.index('NEDC OVERLAP')
     taes_idx = labels.index('NEDC TAES')
     zone_idx = labels.index('Clinical target zone')

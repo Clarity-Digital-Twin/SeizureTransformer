@@ -49,7 +49,7 @@ def generate_fig3_optimized():
             fontweight='bold')
 
     # ============ Scorer and Result Boxes ============
-    scorers = ['NEDC TAES', 'NEDC OVERLAP', 'SzCORE']
+    scorers = ['NEDC TAES', 'NEDC OVERLAP', 'SzCORE Event']
     results = ['136.73 FA/24h\n65.21% Sens',
                '26.89 FA/24h\n45.63% Sens',
                '8.59 FA/24h\n52.35% Sens']
@@ -111,7 +111,7 @@ def generate_fig3_optimized():
 
     # ============ Annotation Box ============
     # Use 'x' instead of × to avoid font encoding issues
-    annotation = '15.9x difference in FA/24h\nbetween TAES and SzCORE'
+    annotation = '15.9x difference in FA/24h\nbetween TAES and SzCORE Event'
     annotation_box = FancyBboxPatch((result_x-1.5, -0.3), 3, 0.6,
                                    boxstyle="round,pad=0.05",
                                    facecolor='yellow',

@@ -80,7 +80,7 @@ def generate_fig1_optimized():
     # ============ Panel B: Sensitivity at 10 FA/24h ============
     # Get data in same order as Panel A (minus Dianalund)
     panel_b_data = data[data['sensitivity_at_10fa'].notna()]
-    scorers = ['SzCORE', 'NEDC\nOVERLAP', 'NEDC\nTAES']
+    scorers = ['SzCORE\n(Event)', 'NEDC\nOVERLAP', 'NEDC\nTAES']
     sensitivities = panel_b_data['sensitivity_at_10fa'].tolist()
     sens_std = panel_b_data['sens_std'].fillna(0).tolist()  # Handle any NaN
     colors_b = [COLORS['szcore'], COLORS['nedc_overlap'], COLORS['nedc_taes']]
