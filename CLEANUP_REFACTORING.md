@@ -56,15 +56,11 @@ Notes:
 
 - `pyproject.toml`
   - OK: src layout is active; package is `src/seizure_evaluation`.
-  - Review: `[project.scripts].nedc-run = "evaluation.nedc_eeg_eval.nedc_scoring.run_nedc:main"` targets a non-packaged path (works in-repo/editable, not in a built wheel).
-    - Option A (dev-only): Keep `nedc-run` as a dev convenience; document that it works in editable installs or in-repo only.
-    - Option B (preferred for distribution): Add a thin wrapper under `src/seizure_evaluation/nedc/cli.py` that imports and calls `evaluation.nedc_eeg_eval.nedc_scoring.run_nedc:main` and point the entry to `seizure_evaluation.nedc.cli:main`. This keeps all shipped entry points within the packaged namespace. Wrapper must only orchestrate; do not modify vendored code.
+  - FIXED: `nedc-run` now points to `seizure_evaluation.nedc.cli:main` (wrapper that defers to vendored tools when present).
 
 - Makefile
   - Lint/format/typecheck: Correctly target `src/ evaluation/ scripts/ tests/`.
-  - Docker targets: They currently invoke `... image eval ...` and `docker-smoke` calls `eval --help` and `nedc --help`. Align to entry points:
-    - Replace `eval` with `tusz-eval`.
-    - Replace `nedc` with `nedc-run` (if keeping) or call module path explicitly.
+  - Docker smoke tests now override entrypoint to run `tusz-eval --help` and `nedc-run --help` inside the container for CLI availability.
   - Benchmark/sweep: Prefer `szcore-run` and the NEDC scripts via the stable module path under `evaluation/nedc_eeg_eval/nedc_scoring` or via the wrapper.
 
 ## Docs and Examples to Update
