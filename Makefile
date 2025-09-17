@@ -68,7 +68,8 @@ docker-run:
 	docker run \
 		-v $$(pwd)/data:/data \
 		-v $$(pwd)/experiments:/experiments \
-		seizure-transformer:latest eval --data_dir /data/tusz/edf/eval --out_dir /experiments/results
+		--entrypoint tusz-eval \
+		seizure-transformer:latest --data_dir /data/tusz/edf/eval --out_dir /experiments/results
 
 docker-shell:
 	docker run --gpus all -it \
@@ -84,7 +85,8 @@ docker-run-gpu:
 	docker run --gpus all \
 		-v $$(pwd)/data:/data \
 		-v $$(pwd)/experiments:/experiments \
-		seizure-transformer:gpu eval --data_dir /data/tusz/edf/eval --out_dir /experiments/results
+		--entrypoint tusz-eval \
+		seizure-transformer:gpu --data_dir /data/tusz/edf/eval --out_dir /experiments/results
 
 docker-smoke:
 	@echo "Running container smoke checks (CPU image)..."
@@ -103,11 +105,11 @@ docker-smoke-gpu:
 # Evaluation
 benchmark:
 	@echo "Running benchmarks at paper defaults (threshold=0.8)..."
-	python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
+	nedc-run \
 		--checkpoint experiments/eval/baseline/checkpoint.pkl \
 		--outdir experiments/eval/baseline/paper_default_nedc \
 		--threshold 0.8 --kernel 5 --min_duration_sec 2.0
-	python evaluation/szcore_scoring/run_szcore.py \
+	szcore-run \
 		--checkpoint experiments/eval/baseline/checkpoint.pkl \
 		--outdir experiments/eval/baseline/paper_default_szcore \
 		--threshold 0.8 --kernel 5 --min_duration_sec 2.0
