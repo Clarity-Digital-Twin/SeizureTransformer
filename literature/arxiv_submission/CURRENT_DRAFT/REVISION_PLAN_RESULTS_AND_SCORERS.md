@@ -6,13 +6,13 @@ Purpose: capture decisions and exact surgical edits to finalize the paper's Resu
 
 - Do not report "Native OVERLAP" as a separate line in tables/figures/text.
 - Keep a concise parity note: our native any-overlap implementation matches NEDC OVERLAP to 4 decimals across all metrics; we retain it for validation only.
-- Public reporting focuses on three scorers: NEDC TAES, NEDC OVERLAP, SzCORE (event-level with clinical tolerances).
+- Public reporting focuses on three scorers: NEDC TAES, NEDC OVERLAP, SzCORE Event (event-level with clinical tolerances).
 
 ## Affected Content (where to edit)
 
 Primary draft (split files):
 - 02_introduction.md
-  - Replace phrases like "four scoring methodologies" with "three scoring methodologies (NEDC TAES, NEDC OVERLAP, SzCORE)."
+  - Replace phrases like "four scoring methodologies" with "three scoring methodologies (NEDC TAES, NEDC OVERLAP, SzCORE Event)."
 - 04_methods.md
   - Under "Scoring Methodologies": add a one-line parity note (native OVERLAP = NEDC OVERLAP; not reported separately).
   - Optionally retain Appendix C.3 for validation details; Methods should only carry the brief note.
@@ -90,4 +90,3 @@ Insert under 04_methods.md, after the SzCORE paragraph in "Scoring Methodologies
 - literature/arxiv_submission/current_draft/RESULTS.md
 - literature/arxiv_submission/current_draft/COMPLETE_RESULTS_COLLATED.md
 - literature/arxiv_submission/current_draft/ADDITIONAL_INTEGRATIONS/{RESULTS_ROOT.md,SCORING_COMPARISON.md}
-
