@@ -36,15 +36,17 @@ def main() -> int:
     args = sys.argv[2:]
 
     if mode == "eval":
+        # Prefer installed CLI entry point
         cmd = [
-            sys.executable,
-            "/app/evaluation/tusz/run_tusz_eval.py",
-        ] + args
+            "tusz-eval",
+            *args,
+        ]
     elif mode == "nedc":
+        # Wrapper that defers to vendored NEDC tools
         cmd = [
-            sys.executable,
-            "/app/evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py",
-        ] + args
+            "nedc-run",
+            *args,
+        ]
     elif mode == "convert":
         cmd = [
             sys.executable,
