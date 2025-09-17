@@ -10,7 +10,7 @@ One EDF file failed due to malformed header metadata (incorrect date separator).
 
 ### Error Chain (TRACED & CONFIRMED)
 ```
-1. evaluation/tusz/run_tusz_eval.py:37
+1. src/seizure_evaluation/tusz/cli.py: process_single_file (loader integration)
    └─> eeg = Eeg.loadEdf(str(edf_path))
        └─> epilepsy2bidsA.eeg.Eeg.loadEdf() [line 159]
            └─> pyedflib.EdfReader(edfFile) [line 147 in _pyedflib.pyx]
@@ -23,7 +23,7 @@ One EDF file failed due to malformed header metadata (incorrect date separator).
 
 ### Current Error Handling
 ```python
-# evaluation/tusz/run_tusz_eval.py:33-66
+# src/seizure_evaluation/tusz/cli.py: loader + fallback
 def process_single_file(edf_path, model, device, batch_size: int = 512):
     try:
         eeg = Eeg.loadEdf(str(edf_path))  # <-- FAILS HERE
@@ -33,7 +33,7 @@ def process_single_file(edf_path, model, device, batch_size: int = 512):
 ```
 
 **Status (historical)**: Previously, we caught the error but did not repair it.
-**Status (current)**: Fixed via `evaluation/utils/edf_repair.py` and integrated in `evaluation/tusz/run_tusz_eval.py`.
+**Status (current)**: Fixed via `seizure_evaluation/utils/edf_repair.py` and integrated in `tusz-eval`.
 
 ---
 
@@ -272,7 +272,7 @@ except Exception as e:
 - `python scripts/test_edf_repair.py` prints header fields pre/post and loads via `pyedflib+repaired`.
 
 ### End-to-end eval
-- `python evaluation/tusz/run_tusz_eval.py --data_dir data/tusz/edf/eval --out_dir experiments/eval/baseline --device auto --batch_size 512`
+  - `tusz-eval --data_dir data/tusz/edf/eval --out_dir experiments/eval/baseline --device auto --batch_size 512`
 - Loader summary at end shows: `pyedflib+repaired: 1` and remaining files `pyedflib`.
 
 ### Coverage
@@ -322,7 +322,7 @@ with open('experiments/eval/baseline/checkpoint.pkl', 'wb') as f:
 "
 
 # Re-run evaluation (will process just the one file)
-python evaluation/tusz/run_tusz_eval.py
+tusz-eval
 ```
 
 ---
@@ -390,10 +390,10 @@ EOF
 python scripts/test_edf_repair.py
 
 # 3. Update evaluation script
-sed -i 's/Eeg.loadEdf/load_with_fallback/g' evaluation/tusz/run_tusz_eval.py
+sed -i 's/Eeg.loadEdf/load_with_fallback/g' src/seizure_evaluation/tusz/cli.py
 
 # 4. Re-run evaluation
-python evaluation/tusz/run_tusz_eval.py
+tusz-eval
 
 # 5. Check success
 python -c "
