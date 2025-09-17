@@ -20,7 +20,7 @@ This directory contains materials for our arXiv preprint revealing the 27–137�
 - `CORE_4_NEDC_SOFTWARE.md`
 - `CORE_5_TUSZ_DATASET.md`
 
-All other docs and outlines must align to the facts and numbers in these five core documents (e.g., 865 files, 469 seizures, 127.7 hours; NEDC OVERLAP 26.89 FA/24h; SzCORE 8.59 FA/24h; ≈3.1× difference OVERLAP vs SzCORE at default; ≈16× TAES vs SzCORE).
+All other docs and outlines must align to the facts and numbers in these five core documents (e.g., 865 files, 469 seizures, 127.7 hours; NEDC OVERLAP 26.89 FA/24h; SzCORE Event 8.59 FA/24h; ≈3.1× difference OVERLAP vs SzCORE Event at default; ≈16× TAES vs SzCORE Event).
 
 ### Siena dataset policy
 - Siena Scalp EEG Database is used in training by Wu et al. and has no official train/dev/eval splits in its public release.
@@ -37,8 +37,8 @@ All other docs and outlines must align to the facts and numbers in these five co
 ### Performance Numbers
 - **26.89 FA/24h (SEIZ)** - NEDC OVERLAP default (Temple)
 - **136.73 FA/24h** - NEDC TAES default (Temple)
-- **8.59 FA/24h** - SzCORE default (EpilepsyBench)
-- **≈3.1×** - OVERLAP vs SzCORE FA at default (26.89 / 8.59)
+- **8.59 FA/24h** - SzCORE Event default (EpilepsyBench)
+- **≈3.1×** - OVERLAP vs SzCORE Event FA at default (26.89 / 8.59)
 - **27×–137×** - Gap to “1 FA/24h” claim depending on scorer
 
 ### Dataset
@@ -48,7 +48,7 @@ All other docs and outlines must align to the facts and numbers in these five co
 - **100%** - Files successfully processed (865/865; one header repaired on a temporary copy)
 
 ### Operating Points
-| Target | OVERLAP (FA/24h, Sens) | TAES (FA/24h, Sens) | SzCORE (FA/24h, Sens) |
+| Target | OVERLAP (FA/24h, Sens) | TAES (FA/24h, Sens) | SzCORE Event (FA/24h, Sens) |
 |--------|-------------------------|---------------------|------------------------|
 | Default | 26.89, 45.63% | 136.73, 65.21% | 8.59, 52.35% |
 | 10 FA | 10.27, 33.90% | 83.88, 60.45% | 3.36, 40.59% |
