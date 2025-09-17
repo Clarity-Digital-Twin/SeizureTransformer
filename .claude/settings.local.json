@@ -1,8 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(__NEW_LINE__ for script in fig*.py)",
-      "Bash(do echo \"Generating $script...\" python $script)"
+      "Bash(do echo \"Generating $script...\")",
+      "Bash(ls:*)"
     ],
     "deny": [],
     "ask": []
