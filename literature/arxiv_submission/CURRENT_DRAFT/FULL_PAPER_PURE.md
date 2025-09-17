@@ -62,7 +62,7 @@ Scoring paradigms broadly fall into event-based (e.g., OVERLAP, TAES, SzCORE Eve
 
 SeizureTransformer [1] exemplifies both the advances and evaluation gaps in modern seizure detection. The architecture combines U-Net's biomedical segmentation capabilities with Transformer self-attention to capture local and global EEG patterns [1]. Trained on a subset of TUSZ v1.5.2 (~910 hours) [3] plus the Siena Scalp EEG Database (128 hours) [11], the model processes 19-channel EEG at 256 Hz through 60-second windows [1]. With roughly 41 million parameters and publicly available pretrained weights (~=168 MB) [1], SeizureTransformer won the EpilepsyBench Challenge, achieving 37% sensitivity at 1 false alarm per 24 hours on the Dianalund dataset [5]—a Danish long-term monitoring corpus distinct from its training data. The authors' decision to openly share their weights enables reproducible evaluation, a practice we build on here [1].
 
-Despite training on TUSZ, SeizureTransformer has never been evaluated on TUSZ's held-out evaluation set using Temple's official scoring software [6]. EpilepsyBench marks TUSZ results with a train emoji ([train]) [5], indicating the model was trained on this dataset and therefore showing no evaluation metrics. While this conservative approach prevents overfitting claims, it overlooks the careful patient-disjoint split design that specifically enables valid held-out evaluation [3]. This represents a broader pattern in the field: models are trained on Dataset X, evaluated on Dataset Y with favorable scoring, generalization is claimed, yet performance on X's properly designed evaluation set remains unknown [7,8]. The uniform application of SzCORE scoring across all EpilepsyBench datasets, while ensuring consistency, obscures dataset-specific performance that would be revealed by matched evaluation tools [5].
+Despite training on TUSZ, SeizureTransformer has never been evaluated on TUSZ's held-out evaluation set using Temple's official scoring software [6]. EpilepsyBench marks TUSZ results with a train emoji ([train]) [5], indicating the model was trained on this dataset and therefore showing no evaluation metrics. While this conservative approach prevents overfitting claims, it overlooks the careful patient-disjoint split design that specifically enables valid held-out evaluation [3]. This represents a broader pattern in the field: models are trained on Dataset X, evaluated on Dataset Y with favorable scoring, generalization is claimed, yet performance on X's properly designed evaluation set remains unknown [7,8]. The uniform application of SzCORE Event scoring across all EpilepsyBench datasets, while ensuring consistency, obscures dataset-specific performance that would be revealed by matched evaluation tools [5].
 
 The clinical deployment of seizure detection systems requires meeting stringent performance thresholds. Clinical goals typically target 75% sensitivity or higher [10], while human reviewers achieve approximately 1 false alarm per 24 hours [10]. These requirements reflect the reality of clinical workflows where excessive false alarms lead to alarm fatigue and system abandonment. However, whether a system meets these thresholds depends critically on the evaluation methodology employed. Previous work has highlighted challenges in cross-dataset generalization [9], the need for standardized evaluation metrics [7], and broader reproducibility issues in medical AI [8]. Our work addresses these challenges by performing the missing evaluation: testing SeizureTransformer on TUSZ's held-out set using multiple scoring methodologies, revealing how evaluation choices fundamentally shape performance claims in seizure detection systems.
 
@@ -295,7 +295,7 @@ make -C evaluation/nedc_eeg_eval/nedc_scoring \
   OUTDIR=../../results/nedc_default
 ```
 
-### 4. Apply SzCORE Comparison
+### 4. Apply SzCORE Event Comparison
 ```bash
 szcore-run \
   --checkpoint experiments/eval/repro/checkpoint.pkl \
@@ -322,7 +322,7 @@ python scripts/visualize_results.py --results_dir results/
 To verify correct reproduction, key outputs should match:
 - `checkpoint.pkl`: MD5 `3f8a2b...` (469 seizures detected)
 - NEDC OVERLAP @ default: 26.89 ± 0.01 FA/24h
-- SzCORE @ default: 8.59 ± 0.01 FA/24h
+- SzCORE Event @ default: 8.59 ± 0.01 FA/24h
 
 # Acknowledgments
 
@@ -368,18 +368,18 @@ We thank Joseph Picone and the Neural Engineering Data Consortium at Temple Univ
 | **Default Parameters (theta=0.80, k=5, d=2.0)** |
 | NEDC TAES | 65.21 | 99.68 | 14.73 | 0.2403 | 136.73 | - |
 | NEDC OVERLAP | 45.63 | 99.90 | 37.83 | 0.4136 | 26.89 | - |
-| SzCORE | 52.35 | 99.97 | 67.07 | 0.5880 | 8.59 | - |
+| SzCORE Event | 52.35 | 99.97 | 67.07 | 0.5880 | 8.59 | - |
 | **10 FA/24h Target (theta=0.88, k=5, d=3.0)** |
 | NEDC OVERLAP | 33.90 | 99.96 | 55.98 | 0.4223 | 10.27 | - |
 | NEDC TAES | 60.45 | 99.85 | 12.03 | 0.2025 | 83.88 | - |
-| SzCORE | 40.59 | 99.99 | 83.77 | 0.5470 | 3.36 | - |
+| SzCORE Event | 40.59 | 99.99 | 83.77 | 0.5470 | 3.36 | - |
 | **2.5 FA/24h Target (theta=0.95, k=5, d=5.0)** |
 | NEDC OVERLAP | 14.50 | 99.99 | 74.44 | 0.2426 | 2.05 | - |
 | NEDC TAES | 18.12 | 99.97 | 40.41 | 0.2513 | 10.64 | - |
-| SzCORE | 19.71 | 100.00 | 91.07 | 0.3242 | 0.75 | - |
+| SzCORE Event | 19.71 | 100.00 | 91.07 | 0.3242 | 0.75 | - |
 
 ### Table A2: Sensitivity at Fixed False Alarm Rates
-| FA/24h Threshold | NEDC OVERLAP Sens. (%) | SzCORE Sens. (%) |
+| FA/24h Threshold | NEDC OVERLAP Sens. (%) | SzCORE Event Sens. (%) |
 |---|---|---|
 | 30.0 | 45.63 | 54.80 |
 | 10.0 | 33.90 | 48.61 |
@@ -414,8 +414,8 @@ FP_weight = non_overlap_duration / hypothesis_duration
 ```
 This explains why TAES produces higher false alarm rates—partial overlaps contribute fractional false positives.
 
-### C.2 SzCORE Tolerance Windows
-SzCORE expands evaluation windows:
+### C.2 SzCORE Event Tolerance Windows
+SzCORE Event expands evaluation windows:
 - **Pre-ictal**: 30 seconds before seizure onset
 - **Post-ictal**: 60 seconds after seizure offset
 - **Gap Merging**: Events <90s apart treated as single event

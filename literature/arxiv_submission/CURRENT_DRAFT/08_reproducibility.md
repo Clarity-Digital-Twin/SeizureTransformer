@@ -58,7 +58,7 @@ make -C evaluation/nedc_eeg_eval/nedc_scoring \
   OUTDIR=../../results/nedc_default
 ```
 
-### 4. Apply SzCORE Comparison
+### 4. Apply SzCORE Event Comparison
 ```bash
 szcore-run \
   --checkpoint experiments/eval/repro/checkpoint.pkl \
@@ -85,5 +85,5 @@ python scripts/visualize_results.py --results_dir results/
 To verify correct reproduction, key outputs should match:
 - `checkpoint.pkl`: MD5 `3f8a2b...` (469 seizures detected)
 - NEDC OVERLAP @ default: 26.89 ± 0.01 FA/24h
-- SzCORE @ default: 8.59 ± 0.01 FA/24h
+- SzCORE Event @ default: 8.59 ± 0.01 FA/24h
 

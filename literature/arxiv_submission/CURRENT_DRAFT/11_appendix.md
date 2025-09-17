@@ -8,18 +8,18 @@
 | **Default Parameters (theta=0.80, k=5, d=2.0)** |
 | NEDC TAES | 65.21 | 99.68 | 14.73 | 0.2403 | 136.73 | - |
 | NEDC OVERLAP | 45.63 | 99.90 | 37.83 | 0.4136 | 26.89 | - |
-| SzCORE | 52.35 | 99.97 | 67.07 | 0.5880 | 8.59 | - |
+| SzCORE Event | 52.35 | 99.97 | 67.07 | 0.5880 | 8.59 | - |
 | **10 FA/24h Target (theta=0.88, k=5, d=3.0)** |
 | NEDC OVERLAP | 33.90 | 99.96 | 55.98 | 0.4223 | 10.27 | - |
 | NEDC TAES | 60.45 | 99.85 | 12.03 | 0.2025 | 83.88 | - |
-| SzCORE | 40.59 | 99.99 | 83.77 | 0.5470 | 3.36 | - |
+| SzCORE Event | 40.59 | 99.99 | 83.77 | 0.5470 | 3.36 | - |
 | **2.5 FA/24h Target (theta=0.95, k=5, d=5.0)** |
 | NEDC OVERLAP | 14.50 | 99.99 | 74.44 | 0.2426 | 2.05 | - |
 | NEDC TAES | 18.12 | 99.97 | 40.41 | 0.2513 | 10.64 | - |
-| SzCORE | 19.71 | 100.00 | 91.07 | 0.3242 | 0.75 | - |
+| SzCORE Event | 19.71 | 100.00 | 91.07 | 0.3242 | 0.75 | - |
 
 ### Table A2: Sensitivity at Fixed False Alarm Rates
-| FA/24h Threshold | NEDC OVERLAP Sens. (%) | SzCORE Sens. (%) |
+| FA/24h Threshold | NEDC OVERLAP Sens. (%) | SzCORE Event Sens. (%) |
 |---|---|---|
 | 30.0 | 45.63 | 54.80 |
 | 10.0 | 33.90 | 48.61 |
@@ -54,8 +54,8 @@ FP_weight = non_overlap_duration / hypothesis_duration
 ```
 This explains why TAES produces higher false alarm rates—partial overlaps contribute fractional false positives.
 
-### C.2 SzCORE Tolerance Windows
-SzCORE expands evaluation windows:
+### C.2 SzCORE Event Tolerance Windows
+SzCORE Event expands evaluation windows:
 - **Pre-ictal**: 30 seconds before seizure onset
 - **Post-ictal**: 60 seconds after seizure offset
 - **Gap Merging**: Events <90s apart treated as single event
