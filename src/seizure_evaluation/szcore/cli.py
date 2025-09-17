@@ -32,7 +32,7 @@ from timescoring.annotations import Annotation
 from timescoring.scoring import EventScoring
 
 # Ensure repo root is on sys.path for local package imports
-repo_root = Path(__file__).resolve().parents[2]
+repo_root = Path(__file__).resolve().parents[4]
 if str(repo_root) not in sys.path:
     sys.path.insert(0, str(repo_root))
 

@@ -158,7 +158,8 @@
       "Bash(touch:*)",
       "Bash(pip uninstall:*)",
       "Bash(pip show:*)",
-      "Bash(tusz-eval:*)"
+      "Bash(tusz-eval:*)",
+      "Bash(szcore-run:*)"
     ],
     "deny": [],
     "ask": []
