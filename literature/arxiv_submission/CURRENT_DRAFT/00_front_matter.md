@@ -1,6 +1,8 @@
 ---
-title: "**Scoring Matters: A Reproducible NEDC Evaluation of SeizureTransformer on TUSZ**"
+title: "Scoring Matters: A Reproducible NEDC Evaluation of SeizureTransformer on TUSZ"
+subtitle: "A 27–137× gap between claims and reproducible evaluation on TUSZ"
 author: "John H. Jung, MD, MS • Independent Researcher • jj@novamindnyc.com"
+date: "September 2025"
 header-includes:
   - \usepackage{etoolbox}
   - \makeatletter
@@ -10,13 +12,5 @@ header-includes:
   - \lstset{breaklines=true, breakatwhitespace=true, basicstyle=\small\ttfamily}
   - \usepackage{url}
   - \urlstyle{same}
----
-
-# SeizureTransformer on TUSZ: A 27-137x Performance Gap Between Claims and Reproducible Evaluation
-
-**John H. Jung, MD, MS**
-Independent Researcher
-September 2025
-
 ---
 

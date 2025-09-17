@@ -13,6 +13,9 @@
 | NEDC OVERLAP | 33.90 | 99.96 | 55.98 | 0.4223 | 10.27 | - |
 | NEDC TAES | 60.45 | 99.85 | 12.03 | 0.2025 | 83.88 | - |
 | SzCORE Event | 40.59 | 99.99 | 83.77 | 0.5470 | 3.36 | - |
+
+Note: The NEDC TAES row at 60.45% (83.88 FA/24h) reflects an alternate operating point (not the default).
+It is shown for completeness; default TAES appears in the first block above.
 | **2.5 FA/24h Target (theta=0.95, k=5, d=5.0)** |
 | NEDC OVERLAP | 14.50 | 99.99 | 74.44 | 0.2426 | 2.05 | - |
 | NEDC TAES | 18.12 | 99.97 | 40.41 | 0.2513 | 10.64 | - |
