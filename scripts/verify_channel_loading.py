@@ -9,6 +9,7 @@ import pyedflib
 
 # Import from vendored wu_2025 - this script is for development debugging only
 import sys
+
 sys.path.insert(0, str(Path(__file__).parent.parent / "wu_2025/src"))
 from epilepsy2bids.eeg import Eeg  # noqa: E402
 
