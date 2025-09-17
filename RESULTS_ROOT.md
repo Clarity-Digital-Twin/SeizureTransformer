@@ -51,7 +51,7 @@ Goal: repeat the exact defaults and the two clinical targets, confirm parity acr
 - Produces: Temple TAES/OVERLAP summaries and native OVERLAP parity, including FA/24h and sensitivity.
 
 3) Score with SzCORE
-- `python evaluation/szcore_scoring/run_szcore.py --checkpoint experiments/eval/baseline/checkpoint.pkl --outdir experiments/eval/baseline/paper_default_szcore --threshold 0.8 --kernel 5 --min_duration_sec 2.0`
+- `szcore-run --checkpoint experiments/eval/baseline/checkpoint.pkl --outdir experiments/eval/baseline/paper_default_szcore --threshold 0.8 --kernel 5 --min_duration_sec 2.0`
 
 4) Parameter sweeps for operating points (dev‑tuned, eval‑scored)
 - Ensure dev sweep uses only TUSZ dev (1,832 files) to pick params.

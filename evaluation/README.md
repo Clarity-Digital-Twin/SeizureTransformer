@@ -15,9 +15,6 @@ evaluation/
 │   ├── sweep_operating_point.py  # Grid search for optimal parameters
 │   └── test_pipeline.py          # Validate pipeline with synthetic data
 │
-├── tusz/                   # Temporary shims (deprecated)
-│   └── run_tusz_eval.py    # Back-compat shim → use `tusz-eval` CLI instead
-│
 ├── utils/                  # Shared evaluation utilities
 │   ├── monitor_evaluation.sh    # Monitor running evaluations
 │   └── enhance_evaluation_robustness.py # Add robustness improvements
@@ -46,9 +43,6 @@ tusz-eval \
   --data_dir /path/to/TUSZ/eval \
   --out_dir experiments/eval/my_experiment \
   --device auto
-
-# Legacy path (shim; prints deprecation warning)
-# python evaluation/tusz/run_tusz_eval.py --help
 ```
 
 Tip: Run scripts from the repository root to avoid creating nested
@@ -83,8 +77,9 @@ python evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py \
 - `results.json` (AUROC and sample-level metrics)  
 - `eval_log.txt` (execution log)
 
-✅ **Remaining in evaluation/tusz/**:
-- `run_tusz_eval.py` (evaluation script - reusable tool)
+✅ **First‑party CLIs**:
+- `tusz-eval` (TUSZ inference)
+- `szcore-run` (SzCORE scoring)
 
 This organization follows ML best practices:
 - **Tools are version-controlled and shared**

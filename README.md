@@ -173,8 +173,8 @@ CPU image:
 ```
 make docker-build
 make docker-run
-# Note: Docker image uses internal entrypoints (eval/nedc). For local runs, prefer the
-# `tusz-eval` CLI shown above.
+# Note: Docker container routes eval → tusz-eval and nedc → nedc-run internally.
+# For local runs outside Docker, prefer the `tusz-eval` and `nedc-run` CLIs.
 ```
 
 GPU image (requires NVIDIA Container Toolkit):

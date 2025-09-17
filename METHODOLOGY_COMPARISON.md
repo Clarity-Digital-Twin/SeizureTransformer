@@ -155,7 +155,7 @@ The paper shows two different scoring scales for TUSZ evaluation:
 - Original paper analysis: `/literature/markdown/seizure_transformer/SeizureTransformer.md`
 - Our results table: `/docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md`
 - Parameter sweep data: Appendix Table B1 in paper
-- SzCORE implementation: `/evaluation/szcore_scoring/run_szcore.py`
+- SzCORE implementation: `szcore-run` CLI → `src/seizure_evaluation/szcore/cli.py`
 - NEDC integration: `/evaluation/nedc_eeg_eval/nedc_scoring/`
 
 ---
