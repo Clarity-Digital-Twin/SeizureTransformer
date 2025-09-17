@@ -54,6 +54,7 @@ Notes:
   `src/seizure_evaluation/` package.
 - We retain `evaluation/nedc_eeg_eval/nedc_scoring/*` under the same path to avoid breaking
   conformance scripts and to align with “tools only” intent.
+ - Vendoring policy and provenance are documented in `docs/VENDORED_SOURCES.md`.
 
 ## File Move Map (Phase 1)
 

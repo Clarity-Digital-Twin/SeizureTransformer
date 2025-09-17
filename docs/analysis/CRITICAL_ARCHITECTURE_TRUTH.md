@@ -42,8 +42,8 @@ We have **THREE COMPLETELY DIFFERENT** code paths that all claim to run "Seizure
   - Siena files (have `EEG Fp1` with prefix)
 - **Status**: BROKEN for our datasets
 
-### 2. Our Evaluation Pipeline (`evaluation/tusz/run_tusz_eval.py`)
-- **Entry**: `evaluation/tusz/run_tusz_eval.py`
+### 2. Our Evaluation Pipeline (tusz-eval)
+- **Entry**: `tusz-eval` (wraps `src/seizure_evaluation/tusz/cli.py`; legacy shim at `evaluation/tusz/run_tusz_eval.py` remains for compatibility)
 - **EDF Loading**: `Eeg.loadEdf()` - NO electrode name validation!
 - **CRITICAL**: Only checks channel COUNT (19), ignores names
 - **Works on**: TUSZ and potentially Siena

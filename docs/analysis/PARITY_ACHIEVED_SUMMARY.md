@@ -4,7 +4,7 @@
 We achieved **100% EXACT PARITY** between Temple NEDC OVERLAP and our Native OVERLAP implementation.
 
 ## What Was Fixed
-1. **Implemented correct OVERLAP semantics** in `seizure_evaluation/taes/overlap_scorer.py`
+1. **Implemented correct OVERLAP semantics** in `src/seizure_evaluation/ovlp/overlap_scorer.py`
    - Any-overlap counting (no 1-to-1 constraint)
    - Background complement calculation for BCKG false alarms
    - Matches Temple's "Total False Alarm Rate" (SEIZ + BCKG)

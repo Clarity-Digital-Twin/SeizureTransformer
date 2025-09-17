@@ -190,7 +190,7 @@ min_durations = [2.0, 3.0, 4.0, 5.0, 6.0, 7.0]
 The following components work correctly and need NO modifications:
 - `evaluation/nedc_eeg_eval/nedc_scoring/convert_predictions.py`
 - `evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py`
-- `seizure_evaluation/taes/overlap_scorer.py`
+- `src/seizure_evaluation/ovlp/overlap_scorer.py`
 - Temple NEDC binary integration
 
 ## Summary
