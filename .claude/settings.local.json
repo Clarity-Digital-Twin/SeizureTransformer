@@ -155,7 +155,8 @@
       "Bash(./convert_canonical.sh:*)",
       "Bash(./convert_final.sh:*)",
       "Bash(do echo \"=== $branch ===\")",
-      "Bash(touch:*)"
+      "Bash(touch:*)",
+      "Bash(pip uninstall:*)"
     ],
     "deny": [],
     "ask": []
