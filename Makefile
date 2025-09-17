@@ -89,14 +89,15 @@ docker-run-gpu:
 docker-smoke:
 	@echo "Running container smoke checks (CPU image)..."
 	docker run --rm seizure-transformer:latest || true
-	docker run --rm seizure-transformer:latest eval --help >/dev/null
-	docker run --rm seizure-transformer:latest nedc --help >/dev/null
+	# Test CLIs inside container by overriding entrypoint
+	docker run --rm --entrypoint tusz-eval seizure-transformer:latest --help >/dev/null
+	docker run --rm --entrypoint nedc-run seizure-transformer:latest --help >/dev/null
 	@echo "✅ CPU image smoke OK"
 
 docker-smoke-gpu:
 	@echo "Running container smoke checks (GPU image)..."
 	docker run --rm --gpus all seizure-transformer:gpu python -c "import torch; assert torch.cuda.is_available()"
-	docker run --rm --gpus all seizure-transformer:gpu eval --help >/dev/null
+	docker run --rm --gpus all --entrypoint tusz-eval seizure-transformer:gpu --help >/dev/null
 	@echo "✅ GPU image smoke OK"
 
 # Evaluation

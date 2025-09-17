@@ -25,7 +25,7 @@ dependencies = [
 [project.scripts]
 tusz-eval = "seizure_evaluation.tusz.cli:main"
 szcore-run = "seizure_evaluation.szcore.cli:main"
-nedc-run = "evaluation.nedc_eeg_eval.nedc_scoring.run_nedc:main"
+nedc-run = "seizure_evaluation.nedc.cli:main"
 
 [project.optional-dependencies]
 dev = [

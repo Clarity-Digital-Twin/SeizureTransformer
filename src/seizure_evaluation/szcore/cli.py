@@ -22,22 +22,14 @@ from __future__ import annotations
 import argparse
 import json
 import pickle
-import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
 
 import numpy as np
-from timescoring.annotations import Annotation
 from timescoring.scoring import EventScoring
-
-# Ensure repo root is on sys.path for local package imports
-repo_root = Path(__file__).resolve().parents[4]
-if str(repo_root) not in sys.path:
-    sys.path.insert(0, str(repo_root))
-
-# Reuse our existing post-processing to derive events from probabilities
-from evaluation.nedc_eeg_eval.nedc_scoring.post_processing import (  # noqa: E402
+from timescoring.annotations import Annotation
+from seizure_evaluation.ovlp.post_processing import (
     apply_seizure_transformer_postprocessing,
 )
 
