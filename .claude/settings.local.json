@@ -153,7 +153,8 @@
       "Bash(./final_complete_conversion.sh:*)",
       "Bash(./convert_proper_to_pdf.sh:*)",
       "Bash(./convert_canonical.sh:*)",
-      "Bash(./convert_final.sh:*)"
+      "Bash(./convert_final.sh:*)",
+      "Bash(do echo \"=== $branch ===\")"
     ],
     "deny": [],
     "ask": []
