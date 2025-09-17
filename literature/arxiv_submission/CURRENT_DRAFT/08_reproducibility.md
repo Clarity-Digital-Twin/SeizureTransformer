@@ -50,6 +50,14 @@ nedc-run \
   --threshold 0.88 --kernel 5 --min_duration_sec 3.0
 ```
 
+Note: `nedc-run` is a thin wrapper intended for development use from a repo checkout (or editable install). It expects the vendored NEDC tree under `evaluation/nedc_eeg_eval/v6.0.0` to be available. If running outside this repo context, invoke the vendored Makefile directly:
+
+```bash
+make -C evaluation/nedc_eeg_eval/nedc_scoring \
+  all CHECKPOINT=../../experiments/eval/repro/checkpoint.pkl \
+  OUTDIR=../../results/nedc_default
+```
+
 ### 4. Apply SzCORE Comparison
 ```bash
 szcore-run \

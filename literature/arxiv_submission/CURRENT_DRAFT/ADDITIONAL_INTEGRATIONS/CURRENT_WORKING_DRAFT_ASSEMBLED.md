@@ -1,3 +1,4 @@
+<!-- ARCHIVE NOTICE: Legacy assembled monolithic draft preserved for context. Do not edit or use for publication. Contains outdated paths and references (e.g., four scoring methodologies). Authoritative split manuscript lives in literature/arxiv_submission/current_draft and assembles via assemble.sh. -->
 ---
 title: "**Scoring Matters: A Reproducible NEDC Evaluation of SeizureTransformer on TUSZ**"
 author: "John H. Jung, MD, MS • Independent Researcher • jj@novamindnyc.com"
