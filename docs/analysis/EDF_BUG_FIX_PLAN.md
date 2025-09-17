@@ -208,7 +208,7 @@ def validate_edf_header(edf_path):
     pass
 ```
 
-### 2. Modified: `evaluation/tusz/run_tusz_eval.py`
+### 2. Modified: `src/seizure_evaluation/tusz/cli.py`
 ```python
 # Add at top
 from evaluation.utils.edf_repair import load_with_fallback

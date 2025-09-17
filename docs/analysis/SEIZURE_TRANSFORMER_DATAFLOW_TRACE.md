@@ -17,7 +17,7 @@ assert eeg.montage is Eeg.Montage.UNIPOLAR, "Error: Only unipolar montages are s
 **VERIFICATION POINT 1**: 
 - ✅ Loads unipolar montage (19 channels expected)
 - ✅ Paper specifies: "19 channels, unipolar montage, continuous EDF"
-- ✅ Our TUSZ evaluation uses same channel check in `evaluation/tusz/run_tusz_eval.py:36`
+- ✅ Our TUSZ evaluation uses the same channel check in `src/seizure_evaluation/tusz/cli.py`
 
 ### Raw EDF Data:
 - **Channels**: 19 (International 10-20 system)
