@@ -62,15 +62,6 @@ SzCORE Event expands evaluation windows:
 
 These tolerances reduce false alarms by ~3.1x compared to NEDC OVERLAP.
 
-### C.3 Implementation Validation
-We developed a native Python implementation of any-overlap scoring and verified perfect parity with NEDC OVERLAP:
-- Identical TP/FP/FN counts across all 865 files
-- Matching sensitivity: 45.63%
-- Matching FA/24h: 26.89
-- Validates our evaluation pipeline integrity
-
-This implementation is retained for validation purposes but not reported separately to avoid redundancy.
-
 ## D. Dataset Statistics
 
 ### Table D1: TUSZ v2.0.3 Evaluation Set Characteristics
