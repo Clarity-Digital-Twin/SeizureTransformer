@@ -26,8 +26,6 @@ We evaluated identical model predictions using three scoring methodologies, each
 
 **SzCORE Event (Any-Overlap + tolerances)** extends binary scoring with clinical tolerances: 30-second pre-ictal and 60-second post-ictal windows around each reference event, plus merging of predictions separated by less than 90 seconds [4]. These modifications, designed for clinical deployment scenarios where early warnings and reduced alarm fatigue are prioritized, substantially reduce reported false alarm rates [4].
 
-We additionally implemented a native Python any-overlap scorer for validation and confirmed perfect parity with NEDC OVERLAP (identical metrics to four decimal places). To avoid redundancy, we report only the three primary scorers.
-
 All scoring implementations process the same binary prediction masks, ensuring that performance differences stem solely from scoring philosophy rather than model behavior.
 
 ![Figure 3: Impact of scoring methodology on reported performance. The same SeizureTransformer predictions flow through different scoring pipelines, yielding a 15.9x difference in false alarm rates between NEDC TAES and SzCORE Event. This visualization demonstrates how evaluation standards, not model improvements, can account for order-of-magnitude performance variations.](../figures/output/arxiv/fig3_scoring_impact.png){#fig:scoring-impact width=100%}
@@ -48,7 +46,7 @@ For each configuration, we computed sensitivity and false alarm rates using NEDC
 
 Our evaluation pipeline integrates multiple software components to ensure reproducibility and clinical validity. Model inference uses the original wu_2025 codebase with our preprocessing wrapper. Predictions are converted to NEDC's CSV_bi format, which requires specific formatting: four decimal places for timestamps, "TERM" as the channel identifier, and standardized header metadata including file duration.
 
-We validated our implementation through multiple approaches. First, we verified that our native overlap scorer produces identical results to NEDC OVERLAP, confirming correct interpretation of Temple's scoring standard. Second, we processed a subset of files through both pipelines to ensure preprocessing consistency. Third, we confirmed that all 865 eval files were successfully processed, with the single header-repair case properly handled.
+We validated our implementation through consistency checks across tools and confirmed that all 865 eval files were successfully processed (with one automated header repair). Reported results use the official NEDC scorers and SzCORE Event.
 
 To enable full reproducibility, we provide our complete evaluation codebase, including the preprocessing wrapper, scoring implementations, and parameter optimization scripts. The pretrained SeizureTransformer weights remain available from the authors' repository, and NEDC v6.0.0 can be obtained from Temple University.
 

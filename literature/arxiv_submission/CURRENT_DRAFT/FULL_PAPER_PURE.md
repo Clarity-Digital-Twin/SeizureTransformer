@@ -116,7 +116,7 @@ For each configuration, we computed sensitivity and false alarm rates using NEDC
 
 Our evaluation pipeline integrates multiple software components to ensure reproducibility and clinical validity. Model inference uses the original wu_2025 codebase with our preprocessing wrapper. Predictions are converted to NEDC's CSV_bi format, which requires specific formatting: four decimal places for timestamps, "TERM" as the channel identifier, and standardized header metadata including file duration.
 
-We validated our implementation through multiple approaches. First, we verified that our native overlap scorer produces identical results to NEDC OVERLAP, confirming correct interpretation of Temple's scoring standard. Second, we processed a subset of files through both pipelines to ensure preprocessing consistency. Third, we confirmed that all 865 eval files were successfully processed, with the single header-repair case properly handled.
+We validated our implementation through consistency checks across tools and confirmed that all 865 eval files were successfully processed (with one automated header repair). Reported results use the official NEDC scorers and SzCORE Event.
 
 To enable full reproducibility, we provide our complete evaluation codebase, including the preprocessing wrapper, scoring implementations, and parameter optimization scripts. The pretrained SeizureTransformer weights remain available from the authors' repository, and NEDC v6.0.0 can be obtained from Temple University.
 
@@ -175,9 +175,7 @@ We optimized parameters on the development set to target clinical false alarm th
 
 2. **Clinical Viability**: SeizureTransformer cannot achieve clinical viability when evaluated with NEDC scoring on TUSZ. At 10 FA/24h, it reaches only 33.90% sensitivity, far below the 75% goal for clinical systems [10].
 
-3. **Implementation Parity**: We validated our pipeline by confirming that our native overlap implementation achieved identical results to Temple's official NEDC binaries (to four decimal places).
-
-4. **AUROC Performance**: We measured AUROC of 0.9019.
+3. **AUROC Performance**: We measured AUROC of 0.9019.
 
 ## Data Integrity
 
@@ -421,15 +419,6 @@ SzCORE Event expands evaluation windows:
 - **Gap Merging**: Events <90s apart treated as single event
 
 These tolerances reduce false alarms by ~3.1x compared to NEDC OVERLAP.
-
-### C.3 Implementation Validation
-We developed a native Python implementation of any-overlap scoring and verified perfect parity with NEDC OVERLAP:
-- Identical TP/FP/FN counts across all 865 files
-- Matching sensitivity: 45.63%
-- Matching FA/24h: 26.89
-- Validates our evaluation pipeline integrity
-
-This implementation is retained for validation purposes but not reported separately to avoid redundancy.
 
 ## D. Dataset Statistics
 

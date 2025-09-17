@@ -47,9 +47,7 @@ We optimized parameters on the development set to target clinical false alarm th
 
 2. **Clinical Viability**: SeizureTransformer cannot achieve clinical viability when evaluated with NEDC scoring on TUSZ. At 10 FA/24h, it reaches only 33.90% sensitivity, far below the 75% goal for clinical systems [10].
 
-3. **Implementation Parity**: We validated our pipeline by confirming that our native overlap implementation achieved identical results to Temple's official NEDC binaries (to four decimal places).
-
-4. **AUROC Performance**: We measured AUROC of 0.9019.
+3. **AUROC Performance**: We measured AUROC of 0.9019.
 
 ## Data Integrity
 
