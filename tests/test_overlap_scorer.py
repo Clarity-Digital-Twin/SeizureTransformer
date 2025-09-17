@@ -121,6 +121,7 @@ class TestOverlapScorer:
     def test_csv_bi_parsing(self):
         """Test parsing CSV_bi files."""
         import tempfile
+        from pathlib import Path
 
         scorer = OverlapScorer()
 

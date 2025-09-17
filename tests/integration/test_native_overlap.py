@@ -5,16 +5,11 @@ Ensures our Python implementation matches Temple NEDC OVERLAP scorer.
 """
 
 import json
-import sys
 from pathlib import Path
 
 import pytest
 
-# Add seizure_evaluation to path
-repo_root = Path(__file__).resolve().parent.parent.parent
-sys.path.insert(0, str(repo_root))
-
-from seizure_evaluation.ovlp.overlap_scorer import Event, OverlapScorer  # noqa: E402
+from seizure_evaluation.ovlp.overlap_scorer import Event, OverlapScorer
 
 
 @pytest.mark.overlap
