@@ -1,3 +1,4 @@
+# ruff: noqa
 """
 Backwards compatibility shim for evaluation/szcore_scoring/convert_to_hedscore.py
 This module has been moved to src/seizure_evaluation/szcore/convert_to_hedscore.py

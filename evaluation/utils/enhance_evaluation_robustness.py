@@ -1,3 +1,4 @@
+# ruff: noqa
 """
 Backwards compatibility shim for evaluation/utils/enhance_evaluation_robustness.py
 This module has been moved to src/seizure_evaluation/utils/enhance_evaluation_robustness.py

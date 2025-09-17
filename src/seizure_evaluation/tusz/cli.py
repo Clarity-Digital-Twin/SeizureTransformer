@@ -4,16 +4,18 @@ Bulletproof TUSZ evaluation for SeizureTransformer.
 Saves checkpoints and handles errors gracefully.
 
 CLI:
-  python evaluation/tusz/run_tusz_eval.py \
+  python -m seizure_evaluation.tusz.cli \
     --data_dir wu_2025/data/tusz/edf/eval \
-    --out_dir evaluation/tusz \
+    --out_dir experiments/dev/baseline \
     --device auto
+
+Or via entry point (after editable install):
+  tusz-eval --data_dir <path> --out_dir <path> --device auto
 """
 
 import argparse
 import json
 import pickle
-import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -22,15 +24,9 @@ import torch
 from sklearn.metrics import roc_auc_score
 from tqdm import tqdm
 
-# Add wu_2025 to path
-sys.path.append(str(Path(__file__).parent.parent.parent / "wu_2025/src"))
-
-
-from wu_2025.utils import get_dataloader, load_models  # noqa: E402
-
-# Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-from evaluation.utils.edf_repair import load_with_fallback  # noqa: E402
+# First-party imports
+from seizure_evaluation.utils.edf_repair import load_with_fallback
+from wu_2025.utils import get_dataloader, load_models
 
 
 def process_single_file(edf_path, model, device, batch_size: int = 512):

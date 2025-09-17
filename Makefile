@@ -46,13 +46,13 @@ setup-dev:
 
 # Code Quality
 lint:
-	ruff check evaluation/ scripts/ tests/
+	ruff check src/ evaluation/ scripts/ tests/
 
 format:
-	ruff format evaluation/ scripts/ tests/
+	ruff format src/ evaluation/ scripts/ tests/
 
 typecheck:
-	mypy evaluation/ scripts/ tests/
+	mypy src/ scripts/ tests/
 
 test:
 	pytest tests/ -v

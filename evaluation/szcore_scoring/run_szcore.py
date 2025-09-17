@@ -1,3 +1,4 @@
+# ruff: noqa
 """
 Backwards compatibility shim for evaluation/szcore_scoring/run_szcore.py
 This module has been moved to src/seizure_evaluation/szcore/cli.py

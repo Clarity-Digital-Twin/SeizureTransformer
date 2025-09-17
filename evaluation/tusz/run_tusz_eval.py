@@ -1,3 +1,4 @@
+# ruff: noqa
 """
 Backwards compatibility shim for evaluation/tusz/run_tusz_eval.py
 This module has been moved to src/seizure_evaluation/tusz/cli.py

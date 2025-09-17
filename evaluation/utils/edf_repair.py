@@ -1,3 +1,4 @@
+# ruff: noqa
 """
 Backwards compatibility shim for evaluation/utils/edf_repair.py
 This module has been moved to src/seizure_evaluation/utils/edf_repair.py
