@@ -13,7 +13,6 @@ All numbers needed for publication, organized by operating point and scoring met
 |----------------|-----------------|--------|-------|
 | **NEDC TAES** | 65.21 | 136.73 | Strictest (partial credit) |
 | **NEDC OVERLAP** | 45.63 | 26.89 | Temple standard |
-| **Native OVERLAP** | 45.63 | 26.89 | Validates parity |
 | **SzCORE Event** | 52.35 | 8.59 | Permissive (tolerances) |
 
 **Key Finding**: 15.9× spread in FA/24h (136.73/8.59) from same predictions
@@ -26,7 +25,6 @@ All numbers needed for publication, organized by operating point and scoring met
 |----------------|-----------------|--------|---------------|
 | **NEDC TAES** | 60.45 | 83.88 | ❌ |
 | **NEDC OVERLAP** | 33.90 | 10.27 | ≈ (close) |
-| **Native OVERLAP** | 33.90 | 10.27 | ≈ (close) |
 | **SzCORE Event** | 40.59 | 3.36 | ✅ |
 
 ---
@@ -37,7 +35,6 @@ All numbers needed for publication, organized by operating point and scoring met
 |----------------|-----------------|--------|---------------|
 | **NEDC TAES** | 18.12 | 10.64 | ❌ |
 | **NEDC OVERLAP** | 14.50 | 2.05 | ✅ |
-| **Native OVERLAP** | 14.50 | 2.05 | ✅ |
 | **SzCORE Event** | 19.71 | 0.75 | ✅ |
 
 ---
@@ -110,6 +107,7 @@ All numbers needed for publication, organized by operating point and scoring met
 - Default parameters: 26.89 FA/24h with NEDC (vs 1 FA/24h claimed)
 - Clinical target (10 FA/24h): Only 33.90% sensitivity
 - Extreme tuning (θ=0.98): Only 8.10% sensitivity
+- Native OVERLAP validation: Perfect parity with NEDC OVERLAP (not reported separately)
 
 ---
 
@@ -120,6 +118,7 @@ All numbers needed for publication, organized by operating point and scoring met
 - **Runtime**: ~8 hours on RTX 4090
 - **Model**: Authors' pretrained weights (168MB model.pth)
 - **Policy**: merge_gap=None (disabled) for all runs
+- **Validation**: Native OVERLAP implementation matches NEDC OVERLAP to 4 decimals (omitted from reporting)
 
 ---
 

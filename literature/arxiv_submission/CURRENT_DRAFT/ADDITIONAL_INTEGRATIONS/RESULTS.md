@@ -1,12 +1,15 @@
 # Collated Results — SeizureTransformer on TUSZ v2.0.3 (Final for Paper)
 
+> **Reporting Policy**: Native OVERLAP is not reported as a separate scorer in the paper. We validated perfect parity with NEDC OVERLAP (identical to 4 decimals) but report only NEDC TAES, NEDC OVERLAP, and SzCORE to avoid redundancy.
+
 Scope: single source of truth for all reported numbers, operating points, scorers, and exact rerun commands. Aligned with the refactored CLIs and src/ layout.
 
 ## Dataset, Model, Versions
 
 - Dataset: TUSZ v2.0.3 — evaluation split only (865 files, 127.7 h, 43 patients, 469 seizures). Dev split used for tuning.
 - Model: SeizureTransformer (authors’ pretrained weights; no retraining).
-- Scorers reported on identical predictions: NEDC TAES, NEDC OVERLAP, Native OVERLAP (Python), SzCORE event‑level with clinical tolerances.
+- Scorers reported on identical predictions: NEDC TAES, NEDC OVERLAP, SzCORE event‑level with clinical tolerances.
+- Validation: Native OVERLAP (Python) matches NEDC OVERLAP to 4 decimals; not reported separately.
 - Tools/versions: NEDC v6.0.0; SzCORE via timescoring (event‑level any‑overlap with −30 s, +60 s windows, 90 s merge); our code in src/ layout.
 
 ## Preprocessing & Post‑processing (locked)
@@ -24,7 +27,6 @@ Parameters: θ=0.80, k=5, d=2.0 s; merge_gap=None.
 |------------------|----------------:|------:|-------|
 | NEDC TAES        | 65.21           | 136.73| Strict, partial‑credit |
 | NEDC OVERLAP     | 45.63           | 26.89 | Temple any‑overlap |
-| Native OVERLAP   | 45.63           | 26.89 | Parity with NEDC |
 | SzCORE (event)   | 52.35           | 8.59  | −30 s/+60 s tolerances, 90 s merge |
 
 - AUROC: 0.9019 (threshold sweep over θ).
@@ -35,13 +37,11 @@ Parameters: θ=0.80, k=5, d=2.0 s; merge_gap=None.
 - 10 FA/24h target: θ=0.88, k=5, d=3.0 s
   - NEDC TAES: 60.45% sens, 83.88 FA/24h (exceeds target)
   - NEDC OVERLAP: 33.90% sens, 10.27 FA/24h
-  - Native OVERLAP: 33.90% sens, 10.27 FA/24h
   - SzCORE (event): 40.59% sens, 3.36 FA/24h
 
 - 2.5 FA/24h target: θ=0.95, k=5, d=5.0 s
   - NEDC TAES: 18.12% sens, 10.64 FA/24h (exceeds target)
   - NEDC OVERLAP: 14.50% sens, 2.05 FA/24h
-  - Native OVERLAP: 14.50% sens, 2.05 FA/24h
   - SzCORE (event): 19.71% sens, 0.75 FA/24h
 
 - 1 FA/24h target (approximate): θ=0.98, k=5, d=5.0 s
@@ -112,7 +112,7 @@ Notes
 
 - Coverage: 865/865 eval files processed; one EDF header repaired on a temporary copy (pyEDFlib) — no file drops.
 - Post‑processing: merge_gap disabled for NEDC; SzCORE merging only inside SzCORE pipeline.
-- Parity: Native OVERLAP results equal NEDC OVERLAP.
+- Parity: Native OVERLAP implementation validates NEDC OVERLAP (identical results, not reported separately).
 
 ## Open Calculations (optional additions)
 

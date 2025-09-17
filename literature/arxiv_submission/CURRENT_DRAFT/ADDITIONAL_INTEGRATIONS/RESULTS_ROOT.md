@@ -6,28 +6,26 @@ Purpose: lock what we will publish at paper defaults, identify illustrative oper
 
 - Dataset: TUSZ v2.0.3 eval (865 files, 469 seizures, 127.7 hours). Dev set used for tuning: 1,832 files. Patient‑disjoint splits.
 - Model: SeizureTransformer, authors’ pretrained weights (trained on TUSZ train + Siena). No retraining.
-- Primary metric: NEDC OVERLAP (Temple) on identical predictions. Report all four scorers for transparency.
+- Primary metric: NEDC OVERLAP (Temple) on identical predictions. Report three scorers (NEDC TAES, NEDC OVERLAP, SzCORE) for transparency.
+- Validation: Native OVERLAP matches NEDC OVERLAP to 4 decimals; not reported separately to avoid redundancy.
 
 ### Paper Defaults (threshold=0.8, kernel=5, min_duration=2.0; merge_gap=None)
 - NEDC TAES: 65.21% sens, 136.73 FA/24h
 - NEDC OVERLAP: 45.63% sens, 26.89 FA/24h
-- Python OVERLAP: 45.63% sens, 26.89 FA/24h
 - SzCORE: 52.35% sens, 8.59 FA/24h
 
 ### Clinical Operating Points (illustrative)
 - 10 FA/24h target (t=0.88, k=5, m=3.0)
-  - NEDC TAES: TBD (running)
-  - NEDC OVERLAP: TBD (running)
-  - Python OVERLAP: 33.90% sens, 10.27 FA/24h
+  - NEDC TAES: 60.45% sens, 83.88 FA/24h
+  - NEDC OVERLAP: 33.90% sens, 10.27 FA/24h
   - SzCORE: 40.59% sens, 3.36 FA/24h (met)
 - 2.5 FA/24h target (t=0.95, k=5, m=5.0)
-  - NEDC TAES: TBD (running)
-  - NEDC OVERLAP: TBD (running)
-  - Python OVERLAP: 14.50% sens, 2.05 FA/24h (met)
+  - NEDC TAES: 18.12% sens, 10.64 FA/24h
+  - NEDC OVERLAP: 14.50% sens, 2.05 FA/24h (met)
   - SzCORE: 19.71% sens, 0.75 FA/24h (met)
 
 Notes
-- The same predictions, scored four ways, produce ≈12× difference (OVERLAP vs SzCORE) and ≈16× (TAES vs SzCORE) in FA/24h.
+- The same predictions, scored three ways, produce ~3× difference (OVERLAP vs SzCORE) and ~16× (TAES vs SzCORE) in FA/24h.
 - “1 FA/24h” claims hold under SzCORE on Dianalund; they do not hold under NEDC on TUSZ.
 
 ## Config Locks (must not drift)
