@@ -8,7 +8,6 @@
 | **Default Parameters (theta=0.80, k=5, d=2.0)** |
 | NEDC TAES | 65.21 | 99.68 | 14.73 | 0.2403 | 136.73 | - |
 | NEDC OVERLAP | 45.63 | 99.90 | 37.83 | 0.4136 | 26.89 | - |
-| Native OVERLAP | 45.63 | 99.90 | 37.83 | 0.4136 | 26.89 | - |
 | SzCORE | 52.35 | 99.97 | 67.07 | 0.5880 | 8.59 | - |
 | **10 FA/24h Target (theta=0.88, k=5, d=3.0)** |
 | NEDC OVERLAP | 33.90 | 99.96 | 55.98 | 0.4223 | 10.27 | - |
@@ -63,12 +62,14 @@ SzCORE expands evaluation windows:
 
 These tolerances reduce false alarms by ~3.1x compared to NEDC OVERLAP.
 
-### C.3 Native OVERLAP Validation
-Our Python implementation achieved perfect parity with NEDC binary:
+### C.3 Implementation Validation
+We developed a native Python implementation of any-overlap scoring and verified perfect parity with NEDC OVERLAP:
 - Identical TP/FP/FN counts across all 865 files
 - Matching sensitivity: 45.63%
 - Matching FA/24h: 26.89
 - Validates our evaluation pipeline integrity
+
+This implementation is retained for validation purposes but not reported separately to avoid redundancy.
 
 ## D. Dataset Statistics
 
@@ -131,8 +132,8 @@ All analysis code, including figure generation scripts, is available at:
 
 Key scripts:
 
-- `evaluation/tusz/run_tusz_eval.py`: Generate predictions
-- `evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py`: NEDC evaluation
-- `evaluation/szcore_scoring/run_szcore.py`: SzCORE evaluation
+- `tusz-eval`: CLI to generate predictions
+- `nedc-run`: CLI for NEDC evaluation
+- `szcore-run`: CLI for SzCORE evaluation
 - `scripts/visualize_results.py`: Recreate figures from results
 - `evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py`: Parameter grid search

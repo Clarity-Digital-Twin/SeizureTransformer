@@ -2,7 +2,7 @@
 
 ## Evaluation Setup
 
-We evaluated SeizureTransformer on TUSZ v2.0.3's held-out evaluation set containing 865 EEG files (127.7 hours of recordings). Using the authors' pretrained weights, we generated predictions and evaluated them using four scoring methodologies: NEDC OVERLAP (Temple's official any-overlap mode), NEDC TAES (time-aligned), Native OVERLAP (our Python implementation), and SzCORE (EpilepsyBench standard).
+We evaluated SeizureTransformer on TUSZ v2.0.3's held-out evaluation set containing 865 EEG files (127.7 hours of recordings). Using the authors' pretrained weights, we generated predictions and evaluated them using three scoring methodologies: NEDC OVERLAP (Temple's official any-overlap mode), NEDC TAES (time-aligned), and SzCORE (EpilepsyBench standard).
 
 ## Primary Results
 
@@ -12,7 +12,6 @@ At the paper's default parameters, we observed dramatic variation across scoring
 
 - **NEDC OVERLAP**: 45.63% sensitivity, 26.89 FA/24h
 - **NEDC TAES**: 65.21% sensitivity, 136.73 FA/24h
-- **Native OVERLAP**: 45.63% sensitivity, 26.89 FA/24h (perfect parity with NEDC)
 - **SzCORE**: 52.35% sensitivity, 8.59 FA/24h
 
 This represents a **3.1x difference** in false alarm rates between NEDC OVERLAP and SzCORE scoring on identical predictions. Compared to the paper's reported ~1 FA/24h on Dianalund, we observe a **27-fold gap** with NEDC OVERLAP and a **137-fold gap** with NEDC TAES.
@@ -22,7 +21,6 @@ This represents a **3.1x difference** in false alarm rates between NEDC OVERLAP 
 | **Dianalund (Claimed)** | 37.00 | 1.00 | 1x | 0.43* |
 | SzCORE | 52.35 | 8.59 | 9x | 0.485 |
 | NEDC OVERLAP | 45.63 | 26.89 | **27x** | 0.396 |
-| Native OVERLAP | 45.63 | 26.89 | **27x** | 0.396 |
 | NEDC TAES | 60.45 | 136.73 | **137x** | 0.237 |
 
 Table 1: Performance at default parameters (theta=0.80, k=5, d=2.0). *F1 from competition leaderboard.
@@ -49,7 +47,7 @@ We optimized parameters on the development set to target clinical false alarm th
 
 2. **Clinical Viability**: SeizureTransformer cannot achieve clinical viability when evaluated with NEDC scoring on TUSZ. At 10 FA/24h, it reaches only 33.90% sensitivity, far below the 75% goal for clinical systems [10].
 
-3. **Implementation Parity**: Our Native OVERLAP implementation achieved identical results to Temple's official NEDC binaries, validating our pipeline.
+3. **Implementation Parity**: We validated our pipeline by confirming that our native overlap implementation achieved identical results to Temple's official NEDC binaries (to four decimal places).
 
 4. **AUROC Performance**: We measured AUROC of 0.9019.
 

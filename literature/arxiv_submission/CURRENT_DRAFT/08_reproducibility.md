@@ -27,7 +27,7 @@ uv pip install -e . --extra dev
 
 ### 2. Generate Model Predictions
 ```bash
-python evaluation/tusz/run_tusz_eval.py \
+tusz-eval \
   --data_dir /path/to/tusz_v2.0.3/edf/eval \
   --out_dir experiments/eval/repro \
   --device cuda
@@ -36,14 +36,14 @@ python evaluation/tusz/run_tusz_eval.py \
 ### 3. Apply NEDC Clinical Scoring
 ```bash
 # Paper default (theta=0.8, k=5, d=2.0s)
-python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
+nedc-run \
   --checkpoint experiments/eval/repro/checkpoint.pkl \
   --outdir results/nedc_default \
   --backend nedc-binary \
   --threshold 0.80 --kernel 5 --min_duration_sec 2.0
 
 # Clinical 10 FA/24h target
-python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
+nedc-run \
   --checkpoint experiments/eval/repro/checkpoint.pkl \
   --outdir results/nedc_10fa \
   --backend nedc-binary \
@@ -52,7 +52,7 @@ python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py \
 
 ### 4. Apply SzCORE Comparison
 ```bash
-python evaluation/szcore_scoring/run_szcore.py \
+szcore-run \
   --checkpoint experiments/eval/repro/checkpoint.pkl \
   --outdir results/szcore_default \
   --threshold 0.80 --kernel 5 --min_duration_sec 2.0
