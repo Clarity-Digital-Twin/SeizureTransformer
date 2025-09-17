@@ -160,7 +160,8 @@
       "Bash(pip show:*)",
       "Bash(tusz-eval:*)",
       "Bash(szcore-run:*)",
-      "Bash(nedc-run:*)"
+      "Bash(nedc-run:*)",
+      "Bash(git pull:*)"
     ],
     "deny": [],
     "ask": []
