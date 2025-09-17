@@ -24,7 +24,7 @@ Purpose: Document all planning doc updates to remove Native OVERLAP reporting
 - Added reporting policy header
 - Removed Native OVERLAP from primary results table
 - Removed Native OVERLAP from clinical operating points (10 FA, 2.5 FA)
-- Updated scorers list to show only 3 (NEDC TAES, NEDC OVERLAP, SzCORE)
+- Updated scorers list to show only 3 (NEDC TAES, NEDC OVERLAP, SzCORE Event)
 - Added validation note about parity
 
 ### 3. ADDITIONAL_INTEGRATIONS/RESULTS_ROOT.md ✅
@@ -48,17 +48,17 @@ All performance numbers remain exactly the same:
 **Default (θ=0.80, k=5, d=2.0s):**
 - NEDC TAES: 65.21% sens, 136.73 FA/24h
 - NEDC OVERLAP: 45.63% sens, 26.89 FA/24h
-- SzCORE: 52.35% sens, 8.59 FA/24h
+- SzCORE Event: 52.35% sens, 8.59 FA/24h
 
 **10 FA/24h Target (θ=0.88, k=5, d=3.0s):**
 - NEDC TAES: 60.45% sens, 83.88 FA/24h
 - NEDC OVERLAP: 33.90% sens, 10.27 FA/24h
-- SzCORE: 40.59% sens, 3.36 FA/24h
+- SzCORE Event: 40.59% sens, 3.36 FA/24h
 
 **2.5 FA/24h Target (θ=0.95, k=5, d=5.0s):**
 - NEDC TAES: 18.12% sens, 10.64 FA/24h
 - NEDC OVERLAP: 14.50% sens, 2.05 FA/24h
-- SzCORE: 19.71% sens, 0.75 FA/24h
+- SzCORE Event: 19.71% sens, 0.75 FA/24h
 
 **~1 FA/24h Comparison (θ=0.98, k=5, d=5.0s):**
 - NEDC OVERLAP: 8.10% sens, 0.86 FA/24h
