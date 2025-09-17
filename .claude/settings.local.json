@@ -162,7 +162,8 @@
       "Bash(szcore-run:*)",
       "Bash(nedc-run:*)",
       "Bash(git pull:*)",
-      "Bash(git rev-parse:*)"
+      "Bash(git rev-parse:*)",
+      "Bash(__NEW_LINE__ for file in *_optimized.*)"
     ],
     "deny": [],
     "ask": []

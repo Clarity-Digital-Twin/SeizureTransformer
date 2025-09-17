@@ -162,11 +162,7 @@ def generate_fig4_optimized():
                dpi=DPI_SCREEN,
                **EXPORT_SETTINGS)
 
-    # Replace original in arxiv folder
-    plt.savefig('../arxiv/fig4_parameter_heatmap.png',
-               dpi=DPI_WEB,
-               **EXPORT_SETTINGS)
-    print("✓ Replaced original arxiv figure")
+    # No need to save in additional locations
 
     plt.close()
     print("✓ Figure 4 optimized generation complete")

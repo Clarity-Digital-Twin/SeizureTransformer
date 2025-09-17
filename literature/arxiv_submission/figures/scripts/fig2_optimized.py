@@ -2,6 +2,7 @@
 """Generate optimized Figure 2: Operating Characteristic Curves"""
 
 import sys
+import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
@@ -13,30 +14,26 @@ from config import *
 def generate_fig2_optimized():
     """Generate publication-quality Figure 2 with precise control"""
 
+    # Load the actual operating curves data
+    data = pd.read_csv('../data/operating_curves.csv')
+
     # Create figure
     fig, ax = plt.subplots(figsize=(DOUBLE_COL, HEIGHT_DEFAULT), dpi=DPI_ARXIV)
 
-    # Data points from parameter sweep
-    nedc_overlap_fa = [68.47, 42.13, 26.89, 16.48, 10.27, 7.14, 4.86, 2.05, 0.86]
-    nedc_overlap_sens = [58.42, 51.60, 45.63, 39.23, 33.90, 28.78, 24.73, 14.50, 8.10]
+    # Separate data by scorer
+    nedc_overlap = data[data['scorer'] == 'NEDC OVERLAP'].copy()
+    nedc_taes = data[data['scorer'] == 'NEDC TAES'].copy()
+    szcore = data[data['scorer'] == 'SzCORE'].copy()
 
-    # Approximate curves for other scorers (scaled from OVERLAP)
-    taes_factor = 136.73 / 26.89  # ~5.1x FA increase
-    szcore_factor = 8.59 / 26.89   # ~0.32x FA decrease
+    # Sort by FA rate for smooth curves
+    nedc_overlap = nedc_overlap.sort_values('fa_per_24h')
+    nedc_taes = nedc_taes.sort_values('fa_per_24h')
+    szcore = szcore.sort_values('fa_per_24h')
 
-    # Limit TAES to reasonable range (don't extend beyond ~200 FA/24h)
-    nedc_taes_fa = [fa * taes_factor for fa in nedc_overlap_fa if fa * taes_factor <= 200]
-    nedc_taes_sens = [s + 5 for s in nedc_overlap_sens][:len(nedc_taes_fa)]  # Match length
-
-    # Limit SzCORE to reasonable range (start from where it makes sense)
-    szcore_fa = [fa * szcore_factor for fa in nedc_overlap_fa if fa * szcore_factor >= 0.27]
-    szcore_sens = [min(s + 8, 65) for s in nedc_overlap_sens[-len(szcore_fa):]]  # Match from end
-
-    # Plot OTHER curves first with semilogx
     # Plot NEDC OVERLAP
-    ax.semilogx(nedc_overlap_fa, nedc_overlap_sens, 'o-',
+    ax.semilogx(nedc_overlap['fa_per_24h'], nedc_overlap['sensitivity'], 'o-',
                 color=COLORS['nedc_overlap'],
-                linewidth=2,
+                linewidth=2.5,
                 markersize=7,
                 label='NEDC OVERLAP',
                 alpha=0.9,
@@ -45,9 +42,9 @@ def generate_fig2_optimized():
                 zorder=8)
 
     # Plot NEDC TAES
-    ax.semilogx(nedc_taes_fa, nedc_taes_sens, 's-',
+    ax.semilogx(nedc_taes['fa_per_24h'], nedc_taes['sensitivity'], 's-',
                 color=COLORS['nedc_taes'],
-                linewidth=2,
+                linewidth=2.5,
                 markersize=6,
                 label='NEDC TAES',
                 alpha=0.9,
@@ -55,28 +52,16 @@ def generate_fig2_optimized():
                 markeredgewidth=0.5,
                 zorder=7)
 
-    # ========= CRITICAL FIX: Plot SzCORE last, with no automatic lines =========
-    # Plot SzCORE markers ONLY first
-    ax.scatter(szcore_fa, szcore_sens,
-               marker='^',
-               s=80,
-               color=COLORS['szcore'],
-               label='SzCORE',
-               alpha=0.9,
-               edgecolors='black',
-               linewidths=0.5,
-               zorder=10)
-
-    # Now add lines MANUALLY between each pair of points
-    for i in range(len(szcore_fa) - 1):
-        # Use base plot, not semilogx, to avoid any automatic extensions
-        x_points = [szcore_fa[i], szcore_fa[i+1]]
-        y_points = [szcore_sens[i], szcore_sens[i+1]]
-        ax.plot(x_points, y_points, '-',
+    # Plot SzCORE with triangles
+    ax.semilogx(szcore['fa_per_24h'], szcore['sensitivity'], '^-',
                 color=COLORS['szcore'],
-                linewidth=2,
+                linewidth=2.5,
+                markersize=8,
+                label='SzCORE',
                 alpha=0.9,
-                zorder=5)
+                markeredgecolor='black',
+                markeredgewidth=0.5,
+                zorder=9)
 
     # Clinical viability zone
     ax.axvspan(0.1, 10, ymin=0.75, ymax=1, alpha=0.15, color='green',
@@ -94,10 +79,9 @@ def generate_fig2_optimized():
                 fontweight='bold',
                 zorder=15)
 
-    # CRITICAL: Position Human level label LOWER and away from orange line
-    # At x=1.0, the orange line is around y=22, so place label at y=17
+    # Human level annotation
     ax.annotate('Human level\n(1 FA/24h)',
-                xy=(1.0, 17),  # Much lower position
+                xy=(1.0, 22),
                 fontsize=8,
                 ha='center',
                 color='red',
@@ -109,9 +93,11 @@ def generate_fig2_optimized():
                 zorder=20)
 
     # Mark paper's default operating point
-    ax.plot(26.89, 45.63, 'o', color='black', markersize=10, zorder=15)
-    ax.annotate('Paper default\n(threshold=0.8, k=5, d=2.0)',
-                xy=(26.89, 45.63),
+    default_point = nedc_overlap[nedc_overlap['threshold'] == 0.80].iloc[0]
+    ax.plot(default_point['fa_per_24h'], default_point['sensitivity'],
+            'o', color='black', markersize=10, zorder=15)
+    ax.annotate('Paper default\n(θ=0.8, k=5, d=2.0)',
+                xy=(default_point['fa_per_24h'], default_point['sensitivity']),
                 xytext=(50, 30),
                 fontsize=8,
                 ha='center',
@@ -126,14 +112,34 @@ def generate_fig2_optimized():
                                lw=1),
                 zorder=15)
 
+    # Mark 10 FA/24h operating point
+    ten_fa_point = nedc_overlap[nedc_overlap['threshold'] == 0.88].iloc[0]
+    ax.plot(ten_fa_point['fa_per_24h'], ten_fa_point['sensitivity'],
+            'D', color='purple', markersize=8, zorder=14)
+    ax.annotate('10 FA/24h\ntarget',
+                xy=(ten_fa_point['fa_per_24h'], ten_fa_point['sensitivity']),
+                xytext=(15, 50),
+                fontsize=8,
+                ha='left',
+                bbox=dict(boxstyle='round,pad=0.3',
+                         facecolor='white',
+                         alpha=0.95,
+                         edgecolor='purple',
+                         linewidth=0.5),
+                arrowprops=dict(arrowstyle='-',
+                               color='purple',
+                               alpha=0.7,
+                               lw=1),
+                zorder=14)
+
     # Axes configuration
     ax.set_xlabel('False Alarms per 24 Hours', fontsize=FONT_SIZE['label'])
     ax.set_ylabel('Sensitivity (%)', fontsize=FONT_SIZE['label'])
-    ax.set_xlim(0.5, 250)
+    ax.set_xlim(0.2, 400)
     ax.set_ylim(0, 100)
     ax.grid(True, alpha=0.3, which='both', zorder=0)
 
-    # Legend - manually reorder to show SzCORE first
+    # Legend - order by performance
     handles, labels = ax.get_legend_handles_labels()
     # Find indices
     szcore_idx = labels.index('SzCORE')

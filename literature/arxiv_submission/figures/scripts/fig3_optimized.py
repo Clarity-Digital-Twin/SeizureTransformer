@@ -23,8 +23,8 @@ def generate_fig3_optimized():
     scorer_x = 7
     result_x = 10
 
-    # Y positions for scorers
-    scorer_y = [3.2, 2.4, 1.6, 0.8]
+    # Y positions for scorers (only 3 now)
+    scorer_y = [3.0, 2.0, 1.0]
 
     # ============ Input Box ============
     input_box = FancyBboxPatch((input_x-0.8, input_y-0.4), 1.6, 0.8,
@@ -49,13 +49,11 @@ def generate_fig3_optimized():
             fontweight='bold')
 
     # ============ Scorer and Result Boxes ============
-    scorers = ['NEDC TAES', 'NEDC OVERLAP', 'Native Python', 'SzCORE']
+    scorers = ['NEDC TAES', 'NEDC OVERLAP', 'SzCORE']
     results = ['136.73 FA/24h\n65.21% Sens',
                '26.89 FA/24h\n45.63% Sens',
-               '26.89 FA/24h\n45.63% Sens',
                '8.59 FA/24h\n52.35% Sens']
-    colors = [COLORS['nedc_taes'], COLORS['nedc_overlap'],
-              COLORS['nedc_overlap'], COLORS['szcore']]
+    colors = [COLORS['nedc_taes'], COLORS['nedc_overlap'], COLORS['szcore']]
 
     for scorer, result, color, y in zip(scorers, results, colors, scorer_y):
         # Scorer box
@@ -129,7 +127,7 @@ def generate_fig3_optimized():
 
     # ============ Styling ============
     ax.set_xlim(0, 11.5)
-    ax.set_ylim(-0.8, 4)
+    ax.set_ylim(-0.8, 3.5)
     ax.axis('off')
 
     # Title
@@ -169,11 +167,7 @@ def generate_fig3_optimized():
                dpi=DPI_SCREEN,
                **EXPORT_SETTINGS)
 
-    # Replace original in arxiv folder
-    plt.savefig('../arxiv/fig3_scoring_impact.png',
-               dpi=DPI_WEB,
-               **EXPORT_SETTINGS)
-    print("✓ Replaced original arxiv figure")
+    # No need to save in additional locations
 
     plt.close()
     print("✓ Figure 3 optimized generation complete")
