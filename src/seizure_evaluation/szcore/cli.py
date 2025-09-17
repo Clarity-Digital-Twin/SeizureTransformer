@@ -2,7 +2,7 @@
 """
 SzCORE "Any-Overlap" event scoring wrapper using the official `timescoring` package.
 
-- Consumes the checkpoint produced by `evaluation/tusz/run_tusz_eval.py`.
+  - Consumes the checkpoint produced by `tusz-eval` (or legacy shim `evaluation/tusz/run_tusz_eval.py`).
 - Converts per-sample probabilities to events via our post-processing.
 - Scores with SzCORE defaults (30s pre, 60s post; merge <90s; split >5min; any-overlap).
 -

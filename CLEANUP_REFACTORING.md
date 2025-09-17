@@ -2,6 +2,8 @@
 
 This document tracks all remaining cleanup after the src/ migration. Goal: remove shims, eliminate path hacks, and finalize a crisp structure that clearly separates vendored tools from first‑party code.
 
+See also: `docs/VENDORED_SOURCES.md` for vendored provenance and policy.
+
 Scope is limited to our code; do not edit vendored trees: `wu_2025/` and `evaluation/nedc_eeg_eval/`.
 
 ## Goals
@@ -111,4 +113,3 @@ Notes:
 ---
 
 When the checklist is complete, the repository will be fully clean: no shims, no path hacks, clear boundaries, and consistent tooling/docs.
-

@@ -51,7 +51,7 @@ The session `aaaaaaaq_s007` has 6 segments total, all processed:
 
 Verification sources:
 - `experiments/eval/baseline/checkpoint.pkl` (no entries with `error`)
-- End-of-run loader summary in `evaluation/tusz/run_tusz_eval.py` (shows counts per `load_method`)
+- End-of-run loader summary in `tusz-eval` output (implemented in `src/seizure_evaluation/tusz/cli.py`, shows counts per `load_method`)
 
 ---
 
@@ -140,7 +140,7 @@ The original single-file failure was a source data header format issue. With the
 - Inspect the problematic header fields:
   - `python scripts/test_edf_repair.py`
 - Re-run evaluation and view loader summary:
-  - `python evaluation/tusz/run_tusz_eval.py --data_dir data/tusz/edf/eval --out_dir experiments/eval/baseline --device auto --batch_size 512`
+  - `tusz-eval --data_dir data/tusz/edf/eval --out_dir experiments/eval/baseline --device auto --batch_size 512`
   - End-of-run prints counts by load method; `pyedflib+repaired` should be 1, others `pyedflib`
 
 The core finding of a **100× performance gap** remains completely valid and is unaffected by this minor data quality issue.

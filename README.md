@@ -135,7 +135,7 @@ cd SeizureTransformer
 # Get model weights from https://github.com/keruiwu/SeizureTransformer
 # Place at: wu_2025/src/wu_2025/model.pth
 
-make install && source .venv/bin/activate
+make setup-dev && source .venv/bin/activate
 ```
 
 ### Obtaining TUSZ Dataset

@@ -1,7 +1,7 @@
 SzCORE Scoring (timescoring)
 
 - Purpose: run SzCORE’s Any-Overlap event scoring using the official `timescoring` package on TUSZ predictions.
-- Inputs: `checkpoint.pkl` produced by `evaluation/tusz/run_tusz_eval.py`.
+- Inputs: `checkpoint.pkl` produced by `tusz-eval` (or legacy shim at `evaluation/tusz/run_tusz_eval.py`).
 - Output: Micro-averaged corpus metrics and per-file breakdown.
 
 Install
@@ -9,7 +9,7 @@ Install
 - Optional plotting: pip install "timescoring[plotting]"
 
 Usage
-- python evaluation/szcore_scoring/run_szcore.py \
+- szcore-run \
   --checkpoint experiments/eval/baseline/checkpoint.pkl \
   --outdir experiments/eval/baseline/szcore_results \
   --threshold 0.8 --kernel 5 --min_duration_sec 2.0

@@ -15,8 +15,8 @@ evaluation/
 │   ├── sweep_operating_point.py  # Grid search for optimal parameters
 │   └── test_pipeline.py          # Validate pipeline with synthetic data
 │
-├── tusz/                   # TUSZ dataset evaluation scripts
-│   └── run_tusz_eval.py    # Main evaluation script (generates checkpoints)
+├── tusz/                   # Temporary shims (deprecated)
+│   └── run_tusz_eval.py    # Back-compat shim → use `tusz-eval` CLI instead
 │
 ├── utils/                  # Shared evaluation utilities
 │   ├── monitor_evaluation.sh    # Monitor running evaluations
@@ -41,11 +41,14 @@ evaluation/
 
 ### Generate Predictions
 ```bash
-# Create experiment checkpoint
-python evaluation/tusz/run_tusz_eval.py \
+# Create experiment checkpoint (preferred)
+tusz-eval \
   --data_dir /path/to/TUSZ/eval \
   --out_dir experiments/eval/my_experiment \
   --device auto
+
+# Legacy path (shim; prints deprecation warning)
+# python evaluation/tusz/run_tusz_eval.py --help
 ```
 
 Tip: Run scripts from the repository root to avoid creating nested

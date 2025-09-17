@@ -43,7 +43,7 @@ Notes
 Goal: repeat the exact defaults and the two clinical targets, confirm parity across scorers, and archive outputs.
 
 1) Generate predictions checkpoint (TUSZ eval)
-- `python evaluation/tusz/run_tusz_eval.py --data_dir /path/to/TUSZ/eval --out_dir experiments/eval/baseline --device auto`
+- `tusz-eval --data_dir /path/to/TUSZ/eval --out_dir experiments/eval/baseline --device auto`
 - Expect: `experiments/eval/baseline/checkpoint.pkl` and per‑file raw predictions.
 
 2) Convert + score with NEDC (Temple) and native OVERLAP
