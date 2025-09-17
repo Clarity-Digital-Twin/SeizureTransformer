@@ -39,7 +39,7 @@ We optimized parameters on the development set to target clinical false alarm th
 - Sensitivity too low for clinical viability
 - SzCORE Event achieved 19.71% sensitivity at 0.75 FA/24h
 
-![Figure 2: Operating characteristic curves across scoring methodologies. The same model predictions yield dramatically different sensitivity-false alarm tradeoffs depending on scoring choice. The clinical target zone (green) represents the desired operating region for deployment (>=75% sensitivity, <=10 FA/24h). The paper's default operating point (black circle) falls far outside clinical viability for all scoring methods on TUSZ.](../figures/fig2_operating_curves.png){#fig:operating-curves width=100%}
+![Figure 2: Operating characteristic curves across scoring methodologies. The same model predictions yield dramatically different sensitivity-false alarm tradeoffs depending on scoring choice. The clinical target zone (green) represents the desired operating region for deployment (>=75% sensitivity, <=10 FA/24h). The paper's default operating point (black circle) falls far outside clinical viability for all scoring methods on TUSZ.](../figures/output/arxiv/fig2_operating_curves.png){#fig:operating-curves width=100%}
 
 ## Key Findings
 

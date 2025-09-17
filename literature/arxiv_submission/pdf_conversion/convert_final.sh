@@ -18,7 +18,13 @@ fi
 
 # Step 1: Preprocess markdown
 echo "Step 1: Preprocessing markdown..."
-python3 preprocess_markdown.py ../CURRENT_DRAFT/full_paper_proper.md paper_preprocessed.md
+# Prefer the new single-file draft name; fall back to assembled if needed
+INPUT_MD="../CURRENT_DRAFT/FULL_PAPER_PURE.md"
+if [[ ! -f "$INPUT_MD" ]]; then
+  INPUT_MD="../CURRENT_DRAFT/CURRENT_WORKING_DRAFT_ASSEMBLED.md"
+fi
+echo "  • Input: $INPUT_MD"
+python3 preprocess_markdown.py "$INPUT_MD" paper_preprocessed.md
 
 # Step 2: Convert to PDF with robust options (TeX Gyre Termes)
 echo "Step 2: Converting to PDF..."
