@@ -1,5 +1,7 @@
 # Complete Collated Results - ALL NUMBERS for Paper
 
+> Reporting policy: We will not report Native OVERLAP as a separate scorer in the paper. It is retained solely as a validation check (parity with NEDC OVERLAP). In the final integration pass, remove Native OVERLAP rows from tables/figures; keep a one-line Methods/Appendix note about parity.
+
 ## Executive Summary
 All numbers needed for publication, organized by operating point and scoring method.
 
