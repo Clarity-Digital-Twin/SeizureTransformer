@@ -161,7 +161,8 @@
       "Bash(tusz-eval:*)",
       "Bash(szcore-run:*)",
       "Bash(nedc-run:*)",
-      "Bash(git pull:*)"
+      "Bash(git pull:*)",
+      "Bash(git rev-parse:*)"
     ],
     "deny": [],
     "ask": []
