@@ -60,7 +60,7 @@ WITHOUT merge_gap (correct):
 4. `evaluation/nedc_eeg_eval/nedc_scoring/sweep_operating_point.py`
    - Used in parameter sweeps
 
-5. `evaluation/szcore_scoring/run_szcore.py`
+5. `src/seizure_evaluation/szcore/cli.py`
    - Uses merge_gap=None intentionally (avoids double-merge; SzCORE merges internally)
 
 ## Why This Violates Standards

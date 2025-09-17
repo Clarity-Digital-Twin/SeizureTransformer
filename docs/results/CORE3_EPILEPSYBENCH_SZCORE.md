@@ -12,14 +12,14 @@
 
 - Scoring philosophy: Any-Overlap within extended clinical windows.
   - 30 s pre-ictal tolerance; 60 s post-ictal tolerance; events <90 s apart are merged.
-  - See in-repo implementation of these parameters in `evaluation/szcore_scoring/run_szcore.py` (EventScoring.Parameters: `toleranceStart=30`, `toleranceEnd=60`, `minDurationBetweenEvents=90`).
+  - See in-repo implementation of these parameters in `src/seizure_evaluation/szcore/cli.py` (EventScoring.Parameters: `toleranceStart=30`, `toleranceEnd=60`, `minDurationBetweenEvents=90`).
 - Library: `timescoring` (official SzCORE/EpilepsyBench package).
   - Version pinned in this repo’s lockfile: `uv.lock` → `timescoring==0.0.6`.
-  - Our wrapper: `evaluation/szcore_scoring/run_szcore.py` (outputs `szcore_summary.json` with micro-averaged metrics including `fpRate` = FA/24h).
+  - Our wrapper CLI: `szcore-run` (see `src/seizure_evaluation/szcore/cli.py`), outputs `szcore_summary.json` with micro-averaged metrics including `fpRate` = FA/24h.
 
 References in repo:
-- Parameters and defaults: `evaluation/szcore_scoring/run_szcore.py` lines 60–100, 120–145 (tolerances, merge=90 s, micro-averaging, FA/24h formula).
-- Usage and notes: `evaluation/szcore_scoring/README.md` (install `timescoring`; do not double-merge in post-proc; SzCORE merges internally).
+- Parameters and defaults: `src/seizure_evaluation/szcore/cli.py` (tolerances, merge=90 s, micro-averaging, FA/24h formula).
+- Usage and notes: `szcore-run --help` (install `timescoring`; do not double-merge in post-proc; SzCORE merges internally).
 
 ---
 
@@ -54,7 +54,7 @@ Input format (from AAREADME “Input Files”):
 
 ## SzCORE vs NEDC: Practical Differences
 
-- SzCORE (EpilepsyBench): Any-Overlap within extended windows; merges events <90 s apart; reports FA/24h as an event rate post-merge. Implemented in `evaluation/szcore_scoring/run_szcore.py` using `timescoring`.
+- SzCORE (EpilepsyBench): Any-Overlap within extended windows; merges events <90 s apart; reports FA/24h as an event rate post-merge. Implemented via `szcore-run` using `timescoring`.
 - NEDC OVERLAP (Temple): Any-Overlap without clinical tolerances; counts FP rate normalized by record duration. Implemented in Temple’s `lib/nedc_eeg_eval_ovlp.py` and surfaced in `summary.txt`.
 - NEDC TAES (Temple): Time-aligned event scoring providing stricter clinical temporal precision. Implemented in `lib/nedc_eeg_eval_taes.py` and summarized in `summary.txt`.
 
@@ -74,7 +74,7 @@ NEDC (Temple v6.0.0):
 
 SzCORE (timescoring):
 - Install dependency: `pip install timescoring`
-- Run: `python evaluation/szcore_scoring/run_szcore.py --checkpoint experiments/eval/baseline/checkpoint.pkl --outdir experiments/eval/baseline/szcore_results`
+- Run: `szcore-run --checkpoint experiments/eval/baseline/checkpoint.pkl --outdir experiments/eval/baseline/szcore_results`
 - Inspect `experiments/eval/baseline/szcore_results/szcore_summary.json` for `sensitivity`, `f1`, and `fpRate` (FA/24h).
 
 ---
@@ -104,5 +104,5 @@ Precision in claims (anchor to repo where possible):
 - TAES implementation: `evaluation/nedc_eeg_eval/v6.0.0/lib/nedc_eeg_eval_taes.py`.
 - Default parameters (epoch duration, etc.): `evaluation/nedc_eeg_eval/v6.0.0/src/nedc_eeg_eval/nedc_eeg_eval_params_v00.toml`.
 - Our NEDC integration: `evaluation/nedc_eeg_eval/nedc_scoring/` (convert, run, parse). Summary at `.../output/results/summary.txt`.
-- SzCORE integration: `evaluation/szcore_scoring/run_szcore.py` (parameters: 30/60 tolerances; merge 90 s; micro-avg). Results at `.../szcore_summary.json`.
+- SzCORE integration: `src/seizure_evaluation/szcore/cli.py` (parameters: 30/60 tolerances; merge 90 s; micro-avg). Results at `.../szcore_summary.json`.
 - Dependency pin: `uv.lock` (`timescoring==0.0.6`).

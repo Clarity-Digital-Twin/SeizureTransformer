@@ -188,7 +188,8 @@ NEDC scoring on saved predictions:
 
 ```
 docker run -v $(pwd)/experiments:/experiments \
-  seizure-transformer:latest nedc \
+  --entrypoint nedc-run \
+  seizure-transformer:latest \
   --checkpoint /experiments/results/checkpoint.pkl \
   --outdir /experiments/nedc_results
 ```
@@ -208,8 +209,6 @@ SeizureTransformer/
 │   ├── nedc_eeg_eval/
 │   │   ├── v6.0.0/                   # Official Temple NEDC (untouched)
 │   │   └── nedc_scoring/             # Orchestration tools (ours)
-│   ├── tusz/                         # Temporary shims to new CLIs (deprecated)
-│   └── szcore_scoring/               # Temporary shims (deprecated)
 ├── wu_2025/                          # Original SeizureTransformer (vendored; do not modify)
 └── experiments/                      # Results & checkpoints
 ```

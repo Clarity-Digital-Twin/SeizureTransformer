@@ -86,7 +86,7 @@ Phase 3 — Cleanup and enforcement
   - Phase 1: Change `--merge_gaps` default to `0` and error on any non‑zero value; do not pass it through.
   - Phase 2: Remove the option and all plumbing (`merge_gap` from `Result` dataclass, CSV columns, recommended JSON).
 
-- `evaluation/szcore_scoring/*`
+- `src/seizure_evaluation/szcore/*`
   - Confirm all calls pass `merge_gap_sec=None`. No change required; keep comments explaining “avoid double‑merge; SzCORE merges internally (90s)”.
 
 - `scripts/experiment_tracker.py`

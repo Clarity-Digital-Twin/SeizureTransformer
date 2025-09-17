@@ -122,7 +122,7 @@ def main():
     parser.add_argument(
         "--out_dir",
         type=str,
-        default=str(Path("evaluation/tusz")),
+        default=str(Path("experiments/eval/baseline")),
         help="Output directory for checkpoint and results",
     )
     parser.add_argument(
