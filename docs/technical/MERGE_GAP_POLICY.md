@@ -22,8 +22,8 @@ Status: Phase 1 (hard-block) and Phase 2 (removal) completed; CI guards in place
   - `sweep_operating_point.py` previously accepted `--merge_gaps`; option and plumbing removed.
 - Other tools:
   - `scripts/experiment_tracker.py` previously accepted/recorded `merge_gap_sec`; field removed.
-  - `evaluation/szcore_scoring/run_szcore.py` explicitly sets `merge_gap_sec=None` (correct)
-  - `evaluation/szcore_scoring/convert_to_hedscore.py` uses `merge_gap_sec=None` (to avoid double‑merge); no change required
+  - `szcore-run` (src/seizure_evaluation/szcore/cli.py) operates with `merge_gap=None` (correct)
+  - `seizure_evaluation/szcore/convert_to_hedscore.py` uses `merge_gap=None` (to avoid double‑merge); no change required
   - Tests: references to merge_gap removed from evaluation tests; `merge_nearby_events` still unit‑tested
   - CI: sweep no longer passes merge_gap arguments; added compliance checks guarding against reintroduction
 

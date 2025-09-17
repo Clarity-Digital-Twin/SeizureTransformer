@@ -84,4 +84,3 @@ def binary_mask_to_events(binary_mask: np.ndarray, fs: int = 256) -> list[tuple[
         events.append((start, end))
 
     return events
-

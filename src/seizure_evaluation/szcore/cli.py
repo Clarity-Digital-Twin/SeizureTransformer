@@ -27,8 +27,9 @@ from pathlib import Path
 from typing import Any, cast
 
 import numpy as np
-from timescoring.scoring import EventScoring
 from timescoring.annotations import Annotation
+from timescoring.scoring import EventScoring
+
 from seizure_evaluation.ovlp.post_processing import (
     apply_seizure_transformer_postprocessing,
 )

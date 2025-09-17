@@ -46,7 +46,7 @@ This document is the top‑level orientation for where things live, what is cano
 
 ## Optional / Secondary
 
-- SzCORE scoring wrapper: `evaluation/szcore_scoring/`
+- SzCORE scoring wrapper: `szcore-run` CLI → `src/seizure_evaluation/szcore/`
   - For EpilepsyBench Any‑Overlap comparisons using `timescoring`.
   - Not used for TUSZ clinical reporting; NEDC remains primary on TUSZ.
 

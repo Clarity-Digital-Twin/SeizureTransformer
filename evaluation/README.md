@@ -16,8 +16,7 @@ evaluation/
 │   └── test_pipeline.py          # Validate pipeline with synthetic data
 │
 ├── utils/                  # Shared evaluation utilities
-│   ├── monitor_evaluation.sh    # Monitor running evaluations
-│   └── enhance_evaluation_robustness.py # Add robustness improvements
+│   └── monitor_evaluation.sh    # Monitor running evaluations
 │
 └── nedc_eeg_eval/v6.0.0/   # Official NEDC binaries and libraries (do not modify)
 ```
