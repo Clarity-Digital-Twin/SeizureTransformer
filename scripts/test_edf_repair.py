@@ -7,14 +7,9 @@ Run:
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.append(str(ROOT))
-
-from evaluation.utils.edf_repair import (  # noqa: E402
+from seizure_evaluation.utils.edf_repair import (
     load_with_fallback,
     repair_edf_header_copy,
     validate_edf_header,

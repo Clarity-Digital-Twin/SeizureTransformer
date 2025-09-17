@@ -3,13 +3,14 @@
 FINAL VERIFICATION: Does loadEdf actually select the right 19 channels?
 """
 
-import sys
 from pathlib import Path
 
 import pyedflib
 
-sys.path.append(str(Path(__file__).parent.parent / "wu_2025/src"))
-from epilepsy2bids.eeg import Eeg
+# Import from vendored wu_2025 - this script is for development debugging only
+import sys
+sys.path.insert(0, str(Path(__file__).parent.parent / "wu_2025/src"))
+from epilepsy2bids.eeg import Eeg  # noqa: E402
 
 
 def verify_channel_selection():
