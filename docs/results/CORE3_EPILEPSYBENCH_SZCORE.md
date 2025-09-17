@@ -10,7 +10,7 @@
 
 ## What EpilepsyBench Uses (SzCORE)
 
-- Scoring philosophy: Any-Overlap within extended clinical windows.
+- Scoring philosophy: Any-Overlap within extended clinical windows (SzCORE Event).
   - 30 s pre-ictal tolerance; 60 s post-ictal tolerance; events <90 s apart are merged.
   - See in-repo implementation of these parameters in `src/seizure_evaluation/szcore/cli.py` (EventScoring.Parameters: `toleranceStart=30`, `toleranceEnd=60`, `minDurationBetweenEvents=90`).
 - Library: `timescoring` (official SzCORE/EpilepsyBench package).
@@ -59,7 +59,7 @@ Input format (from AAREADME “Input Files”):
 - NEDC TAES (Temple): Time-aligned event scoring providing stricter clinical temporal precision. Implemented in `lib/nedc_eeg_eval_taes.py` and summarized in `summary.txt`.
 
 In-repo example demonstrating the impact (same predictions, different scorers):
-- See `docs/evaluation/EVALUATION_RESULTS_TABLE.md` → Default row shows NEDC OVERLAP (SEIZ FA) 26.89 FA/24h vs SzCORE 8.59 FA/24h on TUSZ eval.
+- See `docs/evaluation/EVALUATION_RESULTS_TABLE.md` → Default row shows NEDC OVERLAP (SEIZ FA) 26.89 FA/24h vs SzCORE Event 8.59 FA/24h on TUSZ eval.
 - Screenshot of EpilepsyBench leaderboard context: `docs/images/wu_ebench.png` (TUSZ marked with 🚂 when trained on TUSZ).
 
 ---

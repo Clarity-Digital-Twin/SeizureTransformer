@@ -4,7 +4,7 @@
 
 ## All Scoring Methods Comparison
 
-| Operating Point | Threshold | Kernel | MinDur | NEDC TAES (Temple) | NEDC OVERLAP (Temple) | NEDC OVERLAP (Native)* | SzCORE Any-Overlap |
+| Operating Point | Threshold | Kernel | MinDur | NEDC TAES (Temple) | NEDC OVERLAP (Temple) | NEDC OVERLAP (Native)* | SzCORE Event (Any-Overlap) |
 |-----------------|-----------|--------|--------|--------------------|-----------------------|-----------------------|-------------------|
 | **Default (paper)** | 0.800 | 5 | 2.0s | 65.21% / 136.73 FA | **45.63% / 26.89 FA** | 45.63% / 26.89 FA | **52.35% / 8.59 FA** |
 | **10 FA target** | TBD | 5 | TBD | TBD | *PENDING SWEEP* | *PENDING SWEEP* | TBD |
@@ -22,14 +22,14 @@ Format: Sensitivity% / FA per 24h
 | **NEDC TAES** | Temple's strictest clinical standard with fractional time-alignment scoring | Exact temporal alignment required (v6.0.0) |
 | **NEDC OVERLAP** | Temple's overlap-based scoring (any overlap within bounds) | Total FA/24h includes SEIZ + BCKG |
 | **NEDC OVERLAP (Native)*** | Our Python implementation of OVERLAP scoring | Achieves parity with Temple OVERLAP (±0.01%) |
-| **SzCORE Any-Overlap** | EpilepsyBench competition scoring | 30s pre, 60s post tolerance; merge <90s; any overlap counts |
+| **SzCORE Event (Any-Overlap)** | EpilepsyBench competition scoring | 30s pre, 60s post tolerance; merge <90s; any overlap counts |
 
 ## Key Findings
 
 ### 1. Default Parameters (0.8/5/2.0, no merge)
 - **NEDC OVERLAP (Temple)**: 45.63% sensitivity, 26.89 FA/24h (SEIZ)
 - **Native OVERLAP**: Matches Temple OVERLAP exactly
-- **SzCORE**: 52.35% sensitivity, 8.59 FA/24h
+- **SzCORE Event**: 52.35% sensitivity, 8.59 FA/24h
 - **Key Gap**: SzCORE’s tolerances/merge yield ≈3.1× lower FA than OVERLAP at default
 
 ### 2. Tuned Operating Points

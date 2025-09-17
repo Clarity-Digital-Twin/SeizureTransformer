@@ -19,7 +19,7 @@ Each scoring method serves different purposes in seizure detection evaluation:
    - Validates parity with Temple's NEDC binary
    - Identical results to NEDC OVERLAP
 
-4. **SzCORE** - EpilepsyBench standard (most permissive)
+4. **SzCORE Event** (Any-Overlap + tolerances) - EpilepsyBench standard (most permissive)
    - Includes 30s pre-ictal and 60s post-ictal tolerances
    - Merges events <90s apart
    - Designed for clinical applications where early warning is valuable
@@ -35,7 +35,7 @@ Each scoring method serves different purposes in seizure detection evaluation:
 | **NEDC Temple TAES** | 65.21 | 136.73 |
 | **NEDC Temple OVERLAP** | 45.63 | 26.89 |
 | **Python OVERLAP** | 45.63 | 26.89 |
-| **SzCORE** | 52.35 | 8.59 |
+| **SzCORE Event** | 52.35 | 8.59 |
 
 ---
 
@@ -48,7 +48,7 @@ Each scoring method serves different purposes in seizure detection evaluation:
 | **NEDC Temple TAES** | 60.45 | 83.88 | ❌ |
 | **NEDC Temple OVERLAP** | 33.90 | 10.27 | ❌ (≈10.3) |
 | **Python OVERLAP** | 33.90 | 10.27 | ❌ (≈10.3) |
-| **SzCORE** | 40.59 | 3.36 | ✅ |
+| **SzCORE Event** | 40.59 | 3.36 | ✅ |
 
 ---
 
@@ -61,7 +61,7 @@ Each scoring method serves different purposes in seizure detection evaluation:
 | **NEDC Temple TAES** | 18.12 | 10.64 | ❌ |
 | **NEDC Temple OVERLAP** | 14.50 | 2.05 | ✅ |
 | **Python OVERLAP** | 14.50 | 2.05 | ✅ |
-| **SzCORE** | 19.71 | 0.75 | ✅ |
+| **SzCORE Event** | 19.71 | 0.75 | ✅ |
 
 ---
 
@@ -83,15 +83,15 @@ Each scoring method serves different purposes in seizure detection evaluation:
   - 10 FA target setting: 60.45% sens, 83.88 FA/24h (does not meet FA target)
   - 2.5 FA target setting: 18.12% sens, 10.64 FA/24h (does not meet FA target)
 
-- **SzCORE (EpilepsyBench):** Meets both FA targets with higher sensitivity than OVERLAP at the same settings (e.g., 3.36 FA @ 40.59% and 0.75 FA @ 19.71%).
+- **SzCORE Event (EpilepsyBench):** Meets both FA targets with higher sensitivity than OVERLAP at the same settings (e.g., 3.36 FA @ 40.59% and 0.75 FA @ 19.71%).
 
 ### Important Context
 - Different scoring methods serve different clinical and research needs
-- SzCORE's permissiveness reflects real-world clinical priorities (early warning)
+- SzCORE Event's permissiveness reflects real-world clinical priorities (early warning)
 - NEDC's stricter scoring reflects research priorities (temporal precision)
 - **Neither approach is "wrong" - they measure different aspects of performance**
 
-Note on FA/24h: For NEDC and Python OVERLAP rows, FA/24h reported here is SEIZ-only (primary), consistent with our reporting policy; NEDC’s “Total False Alarm Rate” (SEIZ+BCKG) is also available in raw summaries. SzCORE FA/24h follows its event-based definition.
+Note on FA/24h: For NEDC and Python OVERLAP rows, FA/24h reported here is SEIZ-only (primary), consistent with our reporting policy; NEDC’s “Total False Alarm Rate” (SEIZ+BCKG) is also available in raw summaries. SzCORE Event FA/24h follows its event-based definition.
 
 ### Methodology Note
 We tuned parameters using NEDC OVERLAP (the common practice for TUSZ) and evaluated across all metrics for transparency. This reveals how scoring methodology significantly impacts reported performance.

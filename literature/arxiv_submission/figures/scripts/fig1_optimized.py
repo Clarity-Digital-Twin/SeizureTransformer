@@ -123,7 +123,7 @@ def generate_fig1_optimized():
     ax2.set_xticks(range(len(scorers)))
     ax2.set_xticklabels(scorers, fontsize=FONT_SIZE['tick'])
     setup_axes(ax2,
-              title='Sensitivity at 10 FA/24h Threshold',
+              title='Sensitivity near 10 FA/24h (closest point)',
               ylabel='Sensitivity (%)',
               grid=True)
 

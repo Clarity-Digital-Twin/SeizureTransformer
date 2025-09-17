@@ -11,7 +11,7 @@
 |--------|------------|--------|----------|-------|
 | **NEDC OVERLAP** | 45.63% | 26.89 | 0.518 | Temple's binary event scorer (SEIZ FA) |
 | **Native OVERLAP** | 45.63% | 26.89 | 0.518 | Exact parity with NEDC |
-| **SzCORE** | 52.35% | 8.59 | - | 90s internal merge reduces FA |
+| **SzCORE Event** | 52.35% | 8.59 | - | 90s internal merge reduces FA |
 
 ## ✅ WHAT'S WORKING NOW
 
@@ -73,7 +73,7 @@ make check-all  # All pass
 
 1. **Always use merge_gap=None** for academic/clinical reporting
 2. **NEDC OVERLAP** is our primary metric (matches Temple standards)
-3. **SzCORE** has internal 90s merge (reduces FA vs NEDC by ≈3.1× at default OVERLAP)
+3. **SzCORE Event** has internal 90s merge (reduces FA vs NEDC by ≈3.1× at default OVERLAP)
 4. **AUROC 0.9019** (our pipeline) vs paper's 0.876
 
 ## 📈 NEXT STEPS
