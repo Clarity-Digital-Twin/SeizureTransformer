@@ -1,19 +1,19 @@
 # Repository Map and Single Source of Truth (SSOT)
 
-Last updated: 2025-09-15
+Last updated: 2025-09-17
 
 This document is the top‑level orientation for where things live, what is canonical, and what is legacy/experimental. It complements the detailed README and docs/ tree by calling out the Single Source of Truth (SSOT) for the TUSZ evaluation + scoring pipeline and highlighting cleanup items.
 
 ## TL;DR
 
-- Canonical pipeline: `evaluation/tusz/run_tusz_eval.py` → `evaluation/nedc_eeg_eval/nedc_scoring/*` → results in `experiments/`.
+- Canonical pipeline: `tusz-eval` (CLI) → `evaluation/nedc_eeg_eval/nedc_scoring/*` → results in `experiments/`.
 - Vendored/immutable: `wu_2025/` (upstream model) and `evaluation/nedc_eeg_eval/v6.0.0/` (Temple NEDC binaries) — do not modify.
-- Native scorer exists for parity/testing only: `seizure_evaluation/` — not used by the production pipeline.
+- Native scorer exists for parity/testing only: `src/seizure_evaluation/ovlp/` — not used by the production pipeline.
 - Channel order: correct by position; names differ only. Do not “fix” channels; use our evaluation entrypoint.
 
 ## What’s Canonical (SSOT)
 
-- Inference (TUSZ): `evaluation/tusz/run_tusz_eval.py`
+- Inference (TUSZ): `tusz-eval` (entry point to `src/seizure_evaluation/tusz/cli.py`)
   - Loads EDFs positionally (19 channels required), matches Wu model expectations.
   - Produces `checkpoint.pkl` in `experiments/...` for scoring.
   - Config: `--batch_size` (default 512), device auto/cpu/cuda.
@@ -52,8 +52,8 @@ This document is the top‑level orientation for where things live, what is cano
 
 ## Native Implementation (Parity Only)
 
-- Native OVERLAP scorer: `seizure_evaluation/`
-  - Our clean Python implementation of Temple’s OVERLAP logic lives under `seizure_evaluation/ovlp/`.
+- Native OVERLAP scorer: `src/seizure_evaluation/`
+  - Our clean Python implementation of Temple’s OVERLAP logic lives under `src/seizure_evaluation/ovlp/`.
   - Purpose: testability and parity checks with NEDC binaries.
   - Not part of the production scoring path; use `nedc_scoring` for official results.
 
@@ -75,7 +75,7 @@ This document is the top‑level orientation for where things live, what is cano
 ## Clean Run Paths
 
 Local (CPU):
-- `python evaluation/tusz/run_tusz_eval.py --data_dir wu_2025/data/tusz/v2.0.3/edf/eval --out_dir experiments/eval/baseline`
+- `tusz-eval --data_dir wu_2025/data/tusz/v2.0.3/edf/eval --out_dir experiments/eval/baseline`
 - `python evaluation/nedc_eeg_eval/nedc_scoring/run_nedc.py --checkpoint experiments/eval/baseline/checkpoint.pkl --outdir experiments/eval/baseline/nedc_results`
 
 Docker (CPU):
@@ -102,7 +102,7 @@ These are the only items worth cleaning to reduce confusion. Avoid broader refac
 - Keep `Dockerfile` and `Dockerfile.gpu` as the only supported builds. Legacy test/working compose/scripts/logs removed.
 
 4) Consistent entrypoints and docs
-- README already shows the repository map. Link this REPO_MAP.md from README if further clarity is needed.
+- README shows the repository map and links to `docs/VENDORED_SOURCES.md`.
 
 Acceptance criteria
 - One canonical evaluation path documented and runnable end‑to‑end (local + Docker).

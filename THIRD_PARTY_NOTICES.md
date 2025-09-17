@@ -13,7 +13,10 @@ This repository includes or integrates with the following third-party software. 
 
 3) SeizureTransformer (original)
 - Provider: Kerui Wu et al.
-- License: MIT (see upstream repository)
+- Upstream: https://github.com/keruiwu/SeizureTransformer
+- Location (vendored): `wu_2025/` (installed via `pip install ./wu_2025`)
+- License: MIT (per upstream repository)
+
+See also: `docs/VENDORED_SOURCES.md` for provenance and vendoring policy.
 
 If you are redistributing this repository, ensure all third-party license terms are met. If redistribution of any third-party component is restricted, remove the bundled copy and provide installation instructions instead.
-

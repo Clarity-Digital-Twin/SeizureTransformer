@@ -150,14 +150,15 @@ rsync -auxvL nedc-tuh-eeg@www.isip.piconepress.com:data/tuh_eeg/tuh_eeg_seizure/
 
 ### Running the Evaluation (Local)
 ```bash
-# 1. Run inference on TUSZ
-python evaluation/tusz/run_tusz_eval.py \
+# 1. Run inference on TUSZ (new CLI)
+tusz-eval \
   --data_dir wu_2025/data/tusz/v2.0.3/edf/eval \
   --out_dir experiments/eval/baseline
 
 # 2. Score with NEDC v6.0.0
 make -C evaluation/nedc_eeg_eval/nedc_scoring all \
-  CHECKPOINT=../../experiments/eval/baseline/checkpoint.pkl
+  CHECKPOINT=../../experiments/eval/baseline/checkpoint.pkl \
+  OUTDIR=../../experiments/eval/baseline/nedc_results
 # Output: experiments/eval/baseline/nedc_results/
 
 # 3. Tune thresholds (optional)
@@ -172,9 +173,8 @@ CPU image:
 ```
 make docker-build
 make docker-run
-# Equivalent:
-# docker run -v $(pwd)/data:/data -v $(pwd)/experiments:/experiments \
-#   seizure-transformer:latest eval --data_dir /data/tusz/edf/eval --out_dir /experiments/results
+# Note: Docker image uses internal entrypoints (eval/nedc). For local runs, prefer the
+# `tusz-eval` CLI shown above.
 ```
 
 GPU image (requires NVIDIA Container Toolkit):
@@ -198,15 +198,20 @@ docker run -v $(pwd)/experiments:/experiments \
 
 ```
 SeizureTransformer/
-├── wu_2025/                    # Original model (do not modify)
-│   ├── src/wu_2025/model.pth   # Pretrained weights (168MB)
-│   └── data/tusz/v2.0.3/       # TUSZ dataset location
-├── evaluation/                 # Evaluation pipeline
-│   ├── tusz/                   # TUSZ inference
-│   ├── nedc_eeg_eval/nedc_scoring/  # NEDC orchestration tools
-│   └── nedc_eeg_eval/v6.0.0/       # Temple binaries
-├── seizure_evaluation/         # Native Python NEDC
-└── experiments/                # Results & checkpoints
+├── src/
+│   └── seizure_evaluation/           # First‑party package (our code)
+│       ├── tusz/                     # TUSZ inference CLI (tusz-eval)
+│       ├── szcore/                   # SzCORE wrappers
+│       ├── ovlp/                     # Native OVERLAP scorer (parity)
+│       └── utils/                    # Utilities (EDF repair, etc.)
+├── evaluation/                       # Vendored tools only
+│   ├── nedc_eeg_eval/
+│   │   ├── v6.0.0/                   # Official Temple NEDC (untouched)
+│   │   └── nedc_scoring/             # Orchestration tools (ours)
+│   ├── tusz/                         # Temporary shims to new CLIs (deprecated)
+│   └── szcore_scoring/               # Temporary shims (deprecated)
+├── wu_2025/                          # Original SeizureTransformer (vendored; do not modify)
+└── experiments/                      # Results & checkpoints
 ```
 
 ## 📚 Technical Documentation
@@ -215,6 +220,7 @@ SeizureTransformer/
 <summary>For Deep Dives</summary>
 
 - [Documentation Index](docs/README.md) - Full, up‑to‑date docs map
+- [Vendored Sources](docs/VENDORED_SOURCES.md) - Provenance and policy for vendored code
 - [Complete Results](docs/evaluation/EVALUATION_RESULTS_TABLE.md) - Canonical metrics & analysis
 - [Operating Points](docs/planning/OPERATIONAL_TUNING_PLAN.md) - Threshold tuning methodology (no merge, kernel=5)
 - [NEDC Integration](docs/planning/NEDC_INTEGRATION_PLAN.md) - Temple scorer details

@@ -24,3 +24,7 @@ This index lists the canonical, current docs. Superseded or historical drafts li
 
 ## Archive
 - `archive/` — Historical drafts and reconciliation notes
+
+## Vendored & Structure
+- `technical/REPO_MAP.md` — Repository map and current entry points (src/ layout)
+- `VENDORED_SOURCES.md` — Provenance and policy for vendored code (wu_2025, NEDC)
