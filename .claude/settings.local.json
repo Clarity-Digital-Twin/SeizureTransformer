@@ -31,7 +31,8 @@
       "Bash(do echo \"==== $fig ====\")",
       "Bash(do)",
       "Bash(git add:*)",
-      "Bash(pdffonts:*)"
+      "Bash(pdffonts:*)",
+      "Bash(md5sum:*)"
     ],
     "deny": [],
     "ask": []
