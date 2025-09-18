@@ -102,15 +102,15 @@ SeizureTransformer/
 ## 📝 Paper & Citations
 
 ```bibtex
-@article{clarity2025seizuretransformer,
-  title = {SeizureTransformer on TUSZ: Clinical Evaluation Reveals 27-137x False Alarm Gap},
+@article{clarity2025scoring,
+  title = {Scoring Matters: A Reproducible NEDC Evaluation of SeizureTransformer on TUSZ},
   author = {{Clarity Digital Twin Team}},
   journal = {arXiv preprint arXiv:2025.XXXXX},
   year = {2025}
 }
 ```
 
-Also cite: [Wu et al. 2025](https://arxiv.org/abs/2504.00336) (original model), [Shah et al. 2021](https://doi.org/10.1007/978-3-030-79891-8) (NEDC), [Shah et al. 2018](https://doi.org/10.3389/fninf.2018.00083) (TUSZ dataset)
+Also cite: [Wu et al. 2025](https://arxiv.org/abs/2504.00336) (original model), [Shah et al. 2021](https://www.isip.piconepress.com/publications/conference_presentations/2021/ieee_spmb/evaluation/) (NEDC), [Shah et al. 2018](https://doi.org/10.3389/fninf.2018.00083) (TUSZ dataset)
 
 ## ⚖️ License
 
