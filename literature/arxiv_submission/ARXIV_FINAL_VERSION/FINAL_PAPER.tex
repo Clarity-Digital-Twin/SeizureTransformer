@@ -150,7 +150,7 @@ TAES {[}5{]}, 136.73 FA/24h.
 When tuned toward deployment goals, the model cannot meet clinical
 thresholds with NEDC scoring: targeting 10 FA/24h achieves only 33.90\%
 sensitivity, far below the 75\% sensitivity goal for clinical systems
-{[}6{]}. Acceptable false-alarm rates occur only under SzCORE Event's
+{[}13{]}. Acceptable false-alarm rates occur only under SzCORE Event's
 permissive tolerances {[}4{]}.
 
 We contribute a reproducible NEDC evaluation pipeline, operating points
@@ -201,9 +201,9 @@ SeizureTransformer was trained on TUSZ's training set, no published
 evaluation exists using TUSZ's carefully designed, patient-disjoint
 held-out evaluation set. This 127.7-hour test set, containing 865 files
 from 43 patients with 469 seizures, was specifically created to enable
-valid performance assessment. Moreover, Temple University developed the
-NEDC (Neural Event Detection Competition) scoring software explicitly to
-match TUSZ's annotation philosophy, ensuring consistent evaluation
+valid performance assessment. Moreover, Temple University's Neural
+Engineering Data Consortium (NEDC) developed scoring software explicitly
+to match TUSZ's annotation philosophy, ensuring consistent evaluation
 standards. The absence of TUSZ evaluation is not unique to
 SeizureTransformer---it reflects a broader pattern where models trained
 on datasets are evaluated elsewhere, with results reported using varying
@@ -261,7 +261,7 @@ reporting; and (4) open-source infrastructure enabling the community to
 replicate and extend our evaluation framework. When optimizing for the
 10 FA/24h threshold, SeizureTransformer achieves only 33.90\%
 sensitivity with NEDC OVERLAP, falling far short of the 75\% sensitivity
-goal for clinical systems {[}6{]}.
+goal for clinical systems {[}13{]}.
 
 The remainder of this paper is organized as follows. Section 2 provides
 background and related work on TUSZ, NEDC, and scoring methodologies.
@@ -285,18 +285,19 @@ assessment. The evaluation set contains 865 EDF files totaling 127.7
 hours from 43 patients with 469 seizures, specifically reserved for
 final held-out testing {[}2{]}. This careful split design follows
 machine learning best practices often violated in medical AI
-applications. The annotations, performed by board-certified neurologists
-at Temple University Hospital, follow conservative clinical guidelines
-requiring clear electrographic seizures with definite evolution and
-temporal precision in marking onset and offset.
+applications. The annotations, performed by highly trained
+undergraduates and validated against board-certified neurologists
+{[}2{]}, follow conservative clinical guidelines requiring clear
+electrographic seizures with definite evolution and temporal precision
+in marking onset and offset.
 
-Alongside TUSZ, Temple University developed the Neural Event Detection
-Competition (NEDC) scoring software suite, creating a matched evaluation
-ecosystem {[}3{]}. NEDC v6.0.0 provides the definitive scoring
-implementation for TUSZ evaluation {[}3{]}. This matched pairing is no
-coincidence---the same research group created both the dataset and its
-evaluation tools, ensuring consistency between annotation philosophy and
-scoring methodology. NEDC implements multiple scoring modes, with
+Alongside TUSZ, Temple University's Neural Engineering Data Consortium
+(NEDC) developed the scoring software suite, creating a matched
+evaluation ecosystem {[}3{]}. NEDC v6.0.0 provides the definitive
+scoring implementation for TUSZ evaluation {[}3{]}. This matched pairing
+is no coincidence---the same research group created both the dataset and
+its evaluation tools, ensuring consistency between annotation philosophy
+and scoring methodology. NEDC implements multiple scoring modes, with
 OVERLAP (any-overlap binary scoring) serving as the commonly reported
 evaluation mode for TUSZ. The software is widely used in the literature
 and serves as a reference implementation for seizure detection
@@ -326,12 +327,14 @@ warnings before seizure onset provide clinical value and that EEG
 patterns normalize gradually after seizure termination. Additionally,
 SzCORE Event merges predictions separated by less than 90 seconds into
 single events, substantially reducing alarm fatigue in clinical settings
-{[}4{]}. These modifications, while clinically motivated, can reduce
-reported false alarm rates by factors of 3-10x compared to stricter
-scoring methods {[}4{]}. Importantly, these different approaches
-represent not right or wrong methods but rather different valid
-perspectives on what constitutes meaningful seizure detection---research
-precision versus clinical utility versus deployment practicality.
+{[}4{]}. These modifications, while clinically motivated, can
+substantially reduce reported false alarm rates compared to stricter
+scoring methods---as we demonstrate in our results, observing a 3.1x
+reduction between NEDC OVERLAP and SzCORE Event. Importantly, these
+different approaches represent not right or wrong methods but rather
+different valid perspectives on what constitutes meaningful seizure
+detection---research precision versus clinical utility versus deployment
+practicality.
 
 Scoring paradigms broadly fall into event-based (e.g., OVERLAP, TAES,
 SzCORE Event) and sample-based (epoch) methods. Event-based evaluation
@@ -347,9 +350,9 @@ biomedical segmentation capabilities with Transformer self-attention to
 capture local and global EEG patterns {[}10{]}. Trained on a subset of
 TUSZ v2.0.3 (\textasciitilde910 hours) {[}2{]} plus the Siena Scalp EEG
 Database (128 hours) {[}9{]}, the model processes 19-channel EEG at 256
-Hz through 60-second windows {[}10{]}. With roughly 41 million
-parameters and publicly available pretrained weights
-(\textasciitilde=168 MB) {[}10{]}, SeizureTransformer won the
+Hz through 60-second windows {[}10{]}. With publicly available
+pretrained weights (we measured approximately 41 million parameters,
+\textasciitilde168 MB file size), SeizureTransformer won the
 EpilepsyBench Challenge, achieving 37\% sensitivity at 1 false alarm per
 24 hours on the Dianalund dataset {[}10{]}---a Danish long-term
 monitoring corpus distinct from its training data. The authors' decision
@@ -373,8 +376,8 @@ would be revealed by matched evaluation tools {[}10{]}.
 
 The clinical deployment of seizure detection systems requires meeting
 stringent performance thresholds. Clinical goals typically target 75\%
-sensitivity or higher {[}6{]}, while human reviewers achieve
-approximately 1 false alarm per 24 hours {[}6{]}. These requirements
+sensitivity or higher {[}13{]}, while human reviewers achieve
+approximately 1 false alarm per 24 hours {[}13{]}. These requirements
 reflect the reality of clinical workflows where excessive false alarms
 lead to alarm fatigue and system abandonment. However, whether a system
 meets these thresholds depends critically on the evaluation methodology
@@ -745,10 +748,10 @@ The inability to achieve clinical viability reveals a critical gap
 between research achievements and deployment readiness. Our best
 operating point at 10 FA/24h achieved only 33.90\% sensitivity with NEDC
 OVERLAP, falling far short of the 75\% sensitivity goal for clinical
-systems {[}6{]}. This constraint is not merely academic---it determines
+systems {[}13{]}. This constraint is not merely academic---it determines
 whether AI assistants can be deployed in ICUs, where false alarms cause
 alarm fatigue and missed seizures delay critical treatment. While human
-reviewers achieve approximately 1 FA/24h {[}6{]}, even at a more
+reviewers achieve approximately 1 FA/24h {[}13{]}, even at a more
 permissive 10 FA/24h threshold, current models cannot approach the
 sensitivity levels required for clinical deployment when evaluated with
 appropriate standards.
@@ -866,7 +869,7 @@ OVERLAP {[}3{]}, and 136.73 FA/24h with NEDC TAES {[}5{]}---a nearly
 16-fold spread determined entirely by scoring philosophy. When optimized
 for a 10 FA/24h threshold with NEDC scoring, the model achieves only
 33.90\% sensitivity, falling far short of the 75\% sensitivity goal for
-clinical systems {[}6{]}. These findings demonstrate that meaningful
+clinical systems {[}13{]}. These findings demonstrate that meaningful
 progress in automated seizure detection requires evaluation standards
 that match clinical reality rather than optimize benchmark metrics.
 
@@ -1118,6 +1121,11 @@ Nature. 2020;586(7829):E14-E16.
 {[}12{]} Holger, Kern S, Papadopoulos Orfanos D, Vallat R, Brunner C,
 Cerina L, Appelhoff S, et al.~pyEDFlib: v0.1.42. Zenodo; 2025.
 doi:10.5281/zenodo.15748763.
+
+{[}13{]} Roy S, Kiral-Kornek I, Harrer S, et al.~Evaluation of
+artificial intelligence systems for assisted annotation of epileptic
+seizure EEG signals using expert human reviewers. EBioMedicine.
+2021;70:103512. doi:10.1016/j.ebiom.2021.103512.
 
 \hypertarget{appendix}{%
 \section{Appendix}\label{appendix}}
