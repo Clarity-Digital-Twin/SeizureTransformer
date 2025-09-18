@@ -83,7 +83,7 @@ def generate_fig4_optimized():
             ax.annotate('Default\n(threshold=0.8, d=2.0)',
                        xy=(default_thr_idx, default_dur_idx),
                        xytext=(default_thr_idx+1.5, default_dur_idx-1),
-                       fontsize=FONT_SIZE['annotation'],
+                       fontsize=10,  # Increased from 8
                        fontweight='bold',
                        color='black',
                        bbox=dict(boxstyle='round,pad=0.3',
@@ -94,50 +94,50 @@ def generate_fig4_optimized():
                                      color='black',
                                      lw=1.5))
 
-        # Set ticks and labels
+        # Set ticks and labels - INCREASED FONT SIZE for readability in heatmap
         ax.set_xticks(range(len(thresholds)))
         ax.set_xticklabels([f'{t:.2f}' for t in thresholds],
                           rotation=45, ha='right',
-                          fontsize=FONT_SIZE['tick'])
+                          fontsize=11)  # Increased from 9
         ax.set_yticks(range(len(durations)))
         ax.set_yticklabels([f'{d:.1f}' for d in durations],
-                          fontsize=FONT_SIZE['tick'])
+                          fontsize=11)  # Increased from 9
 
-        # Labels
-        ax.set_xlabel('Threshold', fontsize=FONT_SIZE['label'])
+        # Labels - INCREASED FONT SIZE
+        ax.set_xlabel('Threshold', fontsize=13)  # Increased from 11
         if ax == ax1:
-            ax.set_ylabel('Min Duration (seconds)', fontsize=FONT_SIZE['label'])
+            ax.set_ylabel('Min Duration (seconds)', fontsize=13)  # Increased from 11
 
-        # Title with emphasis on default
+        # Title with emphasis on default - INCREASED FONT SIZE
         if kernel == 5:
-            ax.set_title(name, fontsize=FONT_SIZE['label'],
+            ax.set_title(name, fontsize=13,  # Increased from 11
                         fontweight='bold', color='darkblue')
         else:
-            ax.set_title(name, fontsize=FONT_SIZE['label'])
+            ax.set_title(name, fontsize=13)  # Increased from 11
 
         # Add grid for better readability
         ax.grid(True, which='both', color='white', linewidth=0.5, alpha=0.3)
         ax.set_axisbelow(False)  # Grid on top of heatmap
 
-    # Add single colorbar on the right
+    # Add single colorbar on the right - INCREASED FONT SIZE
     cbar = plt.colorbar(images[0], cax=cbar_ax, orientation='vertical')
-    cbar.set_label('F1 Score', fontsize=FONT_SIZE['label'], rotation=270, labelpad=15)
-    cbar.ax.tick_params(labelsize=FONT_SIZE['tick'])
+    cbar.set_label('F1 Score', fontsize=13, rotation=270, labelpad=15)  # Increased from 11
+    cbar.ax.tick_params(labelsize=11)  # Increased from 9
 
-    # Add value annotations at top and bottom of colorbar
+    # Add value annotations at top and bottom of colorbar - INCREASED FONT SIZE
     cbar.ax.text(0.5, -0.1, 'Poor', transform=cbar.ax.transAxes,
-                fontsize=8, va='top', ha='center')
+                fontsize=10, va='top', ha='center')  # Increased from 8
     cbar.ax.text(0.5, 1.1, 'Good', transform=cbar.ax.transAxes,
-                fontsize=8, va='bottom', ha='center')
+                fontsize=10, va='bottom', ha='center')  # Increased from 8
 
     # Overall title
     # fig.suptitle('Figure 4: Parameter Sensitivity Analysis (NEDC OVERLAP Scoring)',
     #             fontsize=FONT_SIZE['title']+1, fontweight='bold', y=1.02)
 
-    # Add explanatory text - use 'threshold' instead of theta symbol
+    # Add explanatory text - use 'threshold' instead of theta symbol - INCREASED FONT SIZE
     fig.text(0.5, -0.05,
             'Higher F1 scores (green) indicate better performance. Default parameters (K=5, threshold=0.8, d=2.0) marked with circle.',
-            ha='center', fontsize=FONT_SIZE['annotation'], style='italic')
+            ha='center', fontsize=10, style='italic')  # Increased from 8
 
     plt.tight_layout()
 
