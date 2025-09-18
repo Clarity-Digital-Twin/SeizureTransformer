@@ -1,11 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(__NEW_LINE__ echo \"✅ Files in ARXIV_FINAL_VERSION:\")",
-      "Bash(__NEW_LINE__ ls ARXIV_FINAL_VERSION/*.pdf ARXIV_FINAL_VERSION/*.tex ARXIV_FINAL_VERSION/*.md)",
-      "Bash(__NEW_LINE__ echo \"\")",
-      "Bash(__NEW_LINE__ echo \"❌ Leftover files to clean in parent:\")",
-      "Bash(__NEW_LINE__ ls *.pdf *.tex *.md *.log *.aux)"
+      "Bash(__NEW_LINE__ for fig in FIGURE_*.pdf)",
+      "Bash(__NEW_LINE__ echo \"✅ Figure 3 checksum 569689976... confirms REAL DATA (not synthetic!)\")"
     ],
     "deny": [],
     "ask": []
