@@ -8,7 +8,8 @@
       "Bash(__NEW_LINE__ echo \"✅ Everything looks correct!\")",
       "Bash(__NEW_LINE__ grep -c \"Neural Engineering Data Consortium\" FINAL_PAPER_CLEAN.md)",
       "Bash(__NEW_LINE__ grep -c \"\\[13\\]\" FINAL_PAPER_CLEAN.md)",
-      "Bash(__NEW_LINE__ grep -q \"0.414\" ../figures/data/key_results_summary.csv)"
+      "Bash(__NEW_LINE__ grep -q \"0.414\" ../figures/data/key_results_summary.csv)",
+      "Bash(tee:*)"
     ],
     "deny": [],
     "ask": []
