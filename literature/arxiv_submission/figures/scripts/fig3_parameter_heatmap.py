@@ -34,8 +34,12 @@ def calculate_f1_score(sensitivity, fa_per_24h):
 def generate_fig3_from_real_data():
     """Generate publication-quality Figure 3 using REAL parameter sweep data"""
 
+    # Resolve repo-relative paths based on this script's location
+    script_dir = Path(__file__).resolve().parent
+    base_dir = script_dir.parent  # figures/
+
     # Load the REAL parameter sweep data
-    data_path = Path('../data/parameter_sweep_heatmap.csv')
+    data_path = base_dir / 'data' / 'parameter_sweep_heatmap.csv'
     if not data_path.exists():
         print(f"ERROR: {data_path} not found!")
         return
@@ -139,7 +143,8 @@ def generate_fig3_from_real_data():
                 ax.plot(default_thr_idx, default_dur_idx, 'ko',
                        markersize=12, markerfacecolor='none',
                        markeredgewidth=2.5)
-                ax.annotate('Default\n(θ=0.8, d=2.0)',
+                # Use mathtext for theta to avoid platform font issues
+                ax.annotate('Default\n($\\theta$=0.8, d=2.0)',
                            xy=(default_thr_idx, default_dur_idx),
                            xytext=(default_thr_idx+1.5, default_dur_idx-1),
                            fontsize=10,
@@ -193,13 +198,13 @@ def generate_fig3_from_real_data():
 
     # Add explanatory text
     fig.text(0.5, -0.05,
-            'Higher F1 scores (green) indicate better performance. Default parameters (K=5, θ=0.8, d=2.0) marked with circle.',
+            'Higher F1 scores (green) indicate better performance. Default parameters (K=5, $\\theta$=0.8, d=2.0) marked with circle.',
             ha='center', fontsize=12, style='italic')
 
     plt.tight_layout()
 
     # Save in multiple formats
-    output_dir = Path('../output/arxiv')
+    output_dir = base_dir / 'output' / 'arxiv'
     output_dir.mkdir(parents=True, exist_ok=True)
 
     for fmt in ['pdf', 'png']:
@@ -212,7 +217,7 @@ def generate_fig3_from_real_data():
         print(f"✓ Saved: {filename}")
 
     # Also save web version
-    web_dir = Path('../output/web')
+    web_dir = base_dir / 'output' / 'web'
     web_dir.mkdir(parents=True, exist_ok=True)
     plt.savefig(web_dir / 'fig3_parameter_heatmap.png',
                dpi=DPI_SCREEN,
