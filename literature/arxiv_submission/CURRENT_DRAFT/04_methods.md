@@ -4,7 +4,7 @@ We evaluated SeizureTransformer on the TUSZ v2.0.3 held-out test set using the a
 
 ## Dataset
 
-We used the Temple University Hospital Seizure Corpus (TUSZ) v2.0.3, focusing on its carefully designed evaluation split [2]. The eval set contains 865 EDF files totaling 127.7 hours from 43 patients with 469 expert-annotated seizures [2]. Critically, this set is patient-disjoint from the training and development splits, ensuring no data leakage and enabling valid generalization assessment [2]. We achieved 100% file coverage, with one file requiring automated header repair using pyEDFlib's repair functionality on a temporary copy [7].
+We used the Temple University Hospital Seizure Corpus (TUSZ) v2.0.3, focusing on its carefully designed evaluation split [2]. The eval set contains 865 EDF files totaling 127.7 hours from 43 patients with 469 expert-annotated seizures [2]. Critically, this set is patient-disjoint from the training and development splits, ensuring no data leakage and enabling valid generalization assessment [2]. We achieved 100% file coverage, with one file requiring automated header repair using pyEDFlib's repair functionality on a temporary copy [12].
 
 The development set, containing 1,832 files (435.5 hours) from 53 distinct patients with 1,075 seizures, was used exclusively for post-processing parameter optimization. This maintains the integrity of the held-out evaluation while allowing systematic exploration of clinical operating points.
 
@@ -20,11 +20,11 @@ The model processes 60-second non-overlapping windows, outputting per-sample sei
 
 We evaluated identical model predictions using three scoring methodologies, each representing different clinical and research priorities:
 
-**NEDC TAES (Time-Aligned Event Scoring)** computes partial credit based on temporal overlap between predictions and ground truth [2]. If a 60-second reference seizure has 45 seconds correctly detected, TAES awards 0.75 true positive credit [2]. This methodology emphasizes temporal precision, making it the strictest evaluation standard.
+**NEDC TAES (Time-Aligned Event Scoring)** computes partial credit based on temporal overlap between predictions and ground truth [5]. If a 60-second reference seizure has 45 seconds correctly detected, TAES awards 0.75 true positive credit [5]. This methodology emphasizes temporal precision, making it the strictest evaluation standard.
 
-**NEDC OVERLAP** implements Temple's binary any-overlap scoring within the NEDC v6.0.0 framework [2]. Any temporal overlap between prediction and reference, regardless of duration, counts as a full true positive. This represents the commonly reported mode for TUSZ evaluation, matching the dataset's annotation philosophy [2].
+**NEDC OVERLAP** implements Temple's binary any-overlap scoring within the NEDC v6.0.0 framework [3]. Any temporal overlap between prediction and reference, regardless of duration, counts as a full true positive. This represents the commonly reported mode for TUSZ evaluation, matching the dataset's annotation philosophy [3].
 
-**SzCORE Event (Any-Overlap + tolerances)** extends binary scoring with clinical tolerances: 30-second pre-ictal and 60-second post-ictal windows around each reference event, plus merging of predictions separated by less than 90 seconds [3]. These modifications, designed for clinical deployment scenarios where early warnings and reduced alarm fatigue are prioritized, substantially reduce reported false alarm rates [3].
+**SzCORE Event (Any-Overlap + tolerances)** extends binary scoring with clinical tolerances: 30-second pre-ictal and 60-second post-ictal windows around each reference event, plus merging of predictions separated by less than 90 seconds [4]. These modifications, designed for clinical deployment scenarios where early warnings and reduced alarm fatigue are prioritized, substantially reduce reported false alarm rates [4].
 
 All scoring implementations process the same binary prediction masks, ensuring that performance differences stem solely from scoring philosophy rather than model behavior.
 
@@ -55,4 +55,3 @@ To enable full reproducibility, we provide our complete evaluation codebase, inc
 We report standard seizure detection metrics for each configuration and scorer combination: sensitivity (seizure-level recall), false alarm rate per 24 hours (computed from total recording duration), and F1 score. For NEDC scorers, we report SEIZ-only FA/24h as the primary metric (Temple’s "Total FA" is archived in summaries). For SzCORE Event, we follow its event-based false positive definition. We also computed AUROC across threshold values to assess overall discriminative capability independent of operating point selection.
 
 This comprehensive evaluation framework, combining the authors' pretrained model with multiple scoring standards applied to a properly held-out test set, reveals how methodological choices fundamentally shape reported performance metrics in seizure detection systems.
-
