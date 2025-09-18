@@ -27,21 +27,32 @@ cd current_draft
 cd ..
 
 # Step 3: Copy assembled markdown to ARXIV_FINAL_VERSION with clear name
-echo "[2/5] Creating final markdown from SSOT..."
+echo "[2/6] Creating final markdown from SSOT..."
 cp current_draft/CURRENT_WORKING_DRAFT_ASSEMBLED.md ARXIV_FINAL_VERSION/FINAL_PAPER_FROM_SSOT.md
 cp current_draft/CURRENT_WORKING_DRAFT_ASSEMBLED.md ARXIV_FINAL_VERSION/FINAL_PAPER_CLEAN.md
 
 # Step 4: Convert markdown to LaTeX in ARXIV_FINAL_VERSION
-echo "[3/5] Converting markdown to LaTeX..."
+echo "[3/6] Converting markdown to LaTeX..."
 pandoc ARXIV_FINAL_VERSION/FINAL_PAPER_FROM_SSOT.md \
     -o ARXIV_FINAL_VERSION/FINAL_PAPER.tex \
     --standalone \
-    --pdf-engine=xelatex \
-    -H <(echo "\usepackage{caption}") \
-    -H <(echo "\captionsetup[figure]{font=small,labelfont=bf,skip=5pt}")
+    -H arxiv_header.tex
 
-# Step 5: Convert markdown to PDF in ARXIV_FINAL_VERSION (no TOC, smart figure placement)
-echo "[4/5] Generating PDF..."
+# Step 5: Stage figures inside ARXIV_FINAL_VERSION with original paths
+echo "[4/6] Staging figures for arXiv (preserve relative paths)..."
+mkdir -p ARXIV_FINAL_VERSION/figures/output/arxiv
+if compgen -G "figures/output/arxiv/FIGURE_*.pdf" > /dev/null; then
+    cp figures/output/arxiv/FIGURE_*.pdf ARXIV_FINAL_VERSION/figures/output/arxiv/ 2>/dev/null || true
+    echo "  ✓ Figures staged from figures/output/arxiv"
+elif compgen -G "ARXIV_FINAL_VERSION/FIGURE_*.pdf" > /dev/null; then
+    cp ARXIV_FINAL_VERSION/FIGURE_*.pdf ARXIV_FINAL_VERSION/figures/output/arxiv/ 2>/dev/null || true
+    echo "  ✓ Figures staged from ARXIV_FINAL_VERSION root"
+else
+    echo "  ⚠ No figures found to stage (expected FIGURE_*.pdf)"
+fi
+
+# Step 6: Convert markdown to PDF in ARXIV_FINAL_VERSION (local review)
+echo "[5/6] Generating review PDF..."
 pandoc ARXIV_FINAL_VERSION/FINAL_PAPER_FROM_SSOT.md \
     -o ARXIV_FINAL_VERSION/SEIZURE_TRANSFORMER_ARXIV.pdf \
     --pdf-engine=xelatex \
@@ -49,16 +60,12 @@ pandoc ARXIV_FINAL_VERSION/FINAL_PAPER_FROM_SSOT.md \
     -V fontsize=11pt \
     -V documentclass=article \
     -V colorlinks=true \
-    -H <(echo "\usepackage{caption}") \
-    -H <(echo "\captionsetup[figure]{font=small,labelfont=bf,skip=5pt}") \
-    --resource-path=.:current_draft
+    -H arxiv_header.tex \
+    --resource-path=.:current_draft:figures/output/arxiv:ARXIV_FINAL_VERSION:ARXIV_FINAL_VERSION/figures/output/arxiv
 
-# Step 6: Copy figures to ARXIV_FINAL_VERSION if they exist
-echo "[5/5] Copying figures to ARXIV_FINAL_VERSION..."
-if [[ -d "figures/output/arxiv" ]]; then
-    cp figures/output/arxiv/FIGURE_*.pdf ARXIV_FINAL_VERSION/ 2>/dev/null || true
-    echo "  ✓ Figures copied"
-fi
+echo "[6/6] Optional: also copy figures to root for convenience..."
+cp ARXIV_FINAL_VERSION/figures/output/arxiv/FIGURE_*.pdf ARXIV_FINAL_VERSION/ 2>/dev/null || true
+echo "  ✓ Figures available both in root and nested path"
 
 echo ""
 echo "CONVERSION COMPLETE!"
