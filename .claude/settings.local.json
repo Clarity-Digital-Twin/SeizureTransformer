@@ -23,7 +23,9 @@
       "Bash(mkdir:*)",
       "Bash(mv:*)",
       "Bash(pdftotext:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(chmod:*)",
+      "Bash(./CLEAN_CONVERSION_CHAIN.sh:*)"
     ],
     "deny": [],
     "ask": []

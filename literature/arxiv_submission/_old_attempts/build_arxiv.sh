@@ -26,8 +26,7 @@ common_args=(
   --variable geometry:margin=1in
   --variable fontsize=11pt
   --variable documentclass=article
-  -V colorlinks=true
-  --toc
+  -V colorlinks=true -V linkcolor=black -V citecolor=black -V urlcolor=blue
   --resource-path="${RES_PATH}"
 )
 
@@ -39,4 +38,3 @@ pandoc "$SRC_MD" -o "$OUT_PDF" "${common_args[@]}"
 
 echo "Done. Outputs:"
 ls -la "$OUT_TEX" "$OUT_PDF"
-
