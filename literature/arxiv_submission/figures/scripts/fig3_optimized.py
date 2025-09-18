@@ -131,10 +131,10 @@ def generate_fig3_optimized():
     ax.axis('off')
 
     # Title
-    ax.set_title('Figure 3: How Scoring Methodology Determines Performance Metrics',
-                fontsize=FONT_SIZE['title']+1,
-                fontweight='bold',
-                pad=20)
+    # ax.set_title('Figure 3: How Scoring Methodology Determines Performance Metrics',
+    #             fontsize=FONT_SIZE['title']+1,
+    #             fontweight='bold',
+    #             pad=20)
 
     # Add subtle annotations (changed to black for better readability)
     ax.text(2.5, 2.6, 'Same data', ha='center', fontsize=9,

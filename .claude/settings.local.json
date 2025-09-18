@@ -25,7 +25,11 @@
       "Bash(pdftotext:*)",
       "Bash(grep:*)",
       "Bash(chmod:*)",
-      "Bash(./CLEAN_CONVERSION_CHAIN.sh:*)"
+      "Bash(./CLEAN_CONVERSION_CHAIN.sh:*)",
+      "Bash(do echo \"==== PAGE $i ====\")",
+      "Bash(bash:*)",
+      "Bash(do echo \"==== $fig ====\")",
+      "Bash(do)"
     ],
     "deny": [],
     "ask": []

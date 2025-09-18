@@ -154,8 +154,8 @@ def generate_fig2_optimized():
               loc='lower right', fontsize=FONT_SIZE['legend'], framealpha=0.95)
 
     # Title
-    ax.set_title('Figure 2: Operating Characteristic Curves Across Scoring Methods',
-                 fontsize=FONT_SIZE['title'], fontweight='bold', pad=15)
+    # ax.set_title('Figure 2: Operating Characteristic Curves Across Scoring Methods',
+    #              fontsize=FONT_SIZE['title'], fontweight='bold', pad=15)
 
     # Clean up
     ax.spines['top'].set_visible(False)

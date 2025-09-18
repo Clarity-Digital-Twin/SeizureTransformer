@@ -18,7 +18,7 @@ def generate_fig1_optimized():
     data = pd.read_csv('../data/performance_metrics.csv')
 
     # Create figure with golden ratio
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(DOUBLE_COL, HEIGHT_DEFAULT),
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(DOUBLE_COL, HEIGHT_DEFAULT * 0.9),
                                    dpi=DPI_ARXIV)
 
     # ============ Panel A: False Alarm Rates ============
@@ -139,10 +139,10 @@ def generate_fig1_optimized():
     add_panel_label(ax2, 'B')
 
     # ============ Overall Figure Title ============
-    plt.suptitle('Figure 1: The Gap Between Benchmark Claims and Clinical Reality',
-                fontsize=FONT_SIZE['title'] + 1,
-                fontweight='bold',
-                y=1.02)
+    # plt.suptitle('Figure 1: The Gap Between Benchmark Claims and Clinical Reality',
+    #             fontsize=FONT_SIZE['title'] + 1,
+    #             fontweight='bold',
+    #             y=1.02)
 
     # Adjust layout
     plt.tight_layout()

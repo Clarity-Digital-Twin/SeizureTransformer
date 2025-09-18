@@ -33,7 +33,7 @@ pandoc FINAL_PAPER_FROM_SSOT.md \
     --standalone \
     --pdf-engine=xelatex
 
-# Step 5: Convert markdown to PDF (no TOC)
+# Step 5: Convert markdown to PDF (no TOC, smart figure placement)
 echo "[4/4] Generating PDF..."
 pandoc FINAL_PAPER_FROM_SSOT.md \
     -o SEIZURE_TRANSFORMER_ARXIV.pdf \
@@ -41,7 +41,8 @@ pandoc FINAL_PAPER_FROM_SSOT.md \
     -V geometry:margin=1in \
     -V fontsize=11pt \
     -V documentclass=article \
-    -V colorlinks=true
+    -V colorlinks=true \
+    --resource-path=.:current_draft
 
 echo ""
 echo "CONVERSION COMPLETE!"

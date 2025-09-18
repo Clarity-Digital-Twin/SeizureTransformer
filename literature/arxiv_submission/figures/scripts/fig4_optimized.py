@@ -131,8 +131,8 @@ def generate_fig4_optimized():
                 fontsize=8, va='bottom', ha='center')
 
     # Overall title
-    fig.suptitle('Figure 4: Parameter Sensitivity Analysis (NEDC OVERLAP Scoring)',
-                fontsize=FONT_SIZE['title']+1, fontweight='bold', y=1.02)
+    # fig.suptitle('Figure 4: Parameter Sensitivity Analysis (NEDC OVERLAP Scoring)',
+    #             fontsize=FONT_SIZE['title']+1, fontweight='bold', y=1.02)
 
     # Add explanatory text - use 'threshold' instead of theta symbol
     fig.text(0.5, -0.05,

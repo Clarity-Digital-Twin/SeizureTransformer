@@ -34,15 +34,18 @@ tusz-eval \
 ```
 
 ### 3. Apply NEDC Clinical Scoring
+
+**Paper default (theta=0.8, k=5, d=2.0s):**
 ```bash
-# Paper default (theta=0.8, k=5, d=2.0s)
 nedc-run \
   --checkpoint experiments/eval/repro/checkpoint.pkl \
   --outdir results/nedc_default \
   --backend nedc-binary \
   --threshold 0.80 --kernel 5 --min_duration_sec 2.0
+```
 
-# Clinical 10 FA/24h target
+**Clinical 10 FA/24h target:**
+```bash
 nedc-run \
   --checkpoint experiments/eval/repro/checkpoint.pkl \
   --outdir results/nedc_10fa \
@@ -69,8 +72,9 @@ szcore-run \
 ### 5. Generate Figures and Tables
 ```bash
 python scripts/visualize_results.py --results_dir results/
-# Table compilation is integrated in evaluation scripts; see docs/results/* for generated summaries.
 ```
+
+Note: Table compilation is integrated in evaluation scripts; see `docs/results/*` for generated summaries.
 
 ## Key Implementation Details
 
@@ -86,4 +90,5 @@ To verify correct reproduction, key outputs should match:
 - `checkpoint.pkl`: MD5 `3f8a2b...` (469 seizures detected)
 - NEDC OVERLAP @ default: 26.89 ± 0.01 FA/24h
 - SzCORE Event @ default: 8.59 ± 0.01 FA/24h
+
 
