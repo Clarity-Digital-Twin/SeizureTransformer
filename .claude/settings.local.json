@@ -15,7 +15,11 @@
       "Bash(do md5sum /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/literature/arxiv_submission/figures/output/arxiv/$fig.pdf)",
       "Bash(pandoc:*)",
       "Bash(cat:*)",
-      "Bash(./assemble.sh:*)"
+      "Bash(./assemble.sh:*)",
+      "Bash(__NEW_LINE__ pandoc FULL_PAPER_CLEAN.md -o COMPLETE_ARXIV_PAPER.pdf --pdf-engine=xelatex --variable geometry:margin=1in --variable fontsize=10pt --variable documentclass=article --toc -V colorlinks=true)",
+      "Bash(pdfinfo:*)",
+      "Bash(for:*)",
+      "Bash(done)"
     ],
     "deny": [],
     "ask": []
