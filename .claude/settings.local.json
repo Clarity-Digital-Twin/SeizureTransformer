@@ -35,7 +35,9 @@
       "Bash(md5sum:*)",
       "Bash(cp:*)",
       "Bash(find:*)",
-      "Bash(do echo \"Generating $fig...\")"
+      "Bash(do echo \"Generating $fig...\")",
+      "Bash(while read line)",
+      "Bash(do echo \"$line\")"
     ],
     "deny": [],
     "ask": []
