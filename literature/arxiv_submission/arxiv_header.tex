@@ -20,7 +20,10 @@
 \usepackage{graphicx}
 \graphicspath{{.}{figures/output/arxiv/}}
 
-% Map common Unicode characters for pdflatex compatibility
-\DeclareUnicodeCharacter{2212}{-} % minus sign
-\DeclareUnicodeCharacter{2013}{--} % en dash
-\DeclareUnicodeCharacter{2014}{---} % em dash
+% Map common Unicode characters for pdflatex compatibility (not needed on XeLaTeX/LuaLaTeX)
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0
+  \DeclareUnicodeCharacter{2212}{-}   % minus sign
+  \DeclareUnicodeCharacter{2013}{--}  % en dash
+  \DeclareUnicodeCharacter{2014}{---} % em dash
+\fi
