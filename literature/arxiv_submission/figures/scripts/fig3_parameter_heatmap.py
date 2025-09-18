@@ -134,10 +134,10 @@ def generate_fig4_optimized():
     # fig.suptitle('Figure 4: Parameter Sensitivity Analysis (NEDC OVERLAP Scoring)',
     #             fontsize=FONT_SIZE['title']+1, fontweight='bold', y=1.02)
 
-    # Add explanatory text - use 'threshold' instead of theta symbol - INCREASED FONT SIZE
+    # Add explanatory text - use 'threshold' instead of theta symbol - FURTHER INCREASED FONT SIZE
     fig.text(0.5, -0.05,
             'Higher F1 scores (green) indicate better performance. Default parameters (K=5, threshold=0.8, d=2.0) marked with circle.',
-            ha='center', fontsize=10, style='italic')  # Increased from 8
+            ha='center', fontsize=12, style='italic')  # Increased to 12 for better readability
 
     plt.tight_layout()
 
