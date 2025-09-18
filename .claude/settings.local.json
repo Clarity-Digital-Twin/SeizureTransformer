@@ -22,7 +22,8 @@
       "Bash(done)",
       "Bash(mkdir:*)",
       "Bash(mv:*)",
-      "Bash(pdftotext:*)"
+      "Bash(pdftotext:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []
