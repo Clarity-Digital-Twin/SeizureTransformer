@@ -84,8 +84,14 @@ SeizureTransformer/
 │       ├── v6.0.0/                   # Temple's official NEDC scorer (unmodified)
 │       └── nedc_scoring/             # Our wrapper scripts for NEDC
 ├── src/seizure_evaluation/           # Our evaluation pipeline
-└── literature/arxiv_submission/      # Full paper and analysis
+├── literature/arxiv_submission/      # Full paper and analysis
+└── docs/                             # Comprehensive technical documentation
 ```
+
+### Key Documentation
+- **[Full Paper](literature/arxiv_submission/current_draft/FULL_PAPER_PURE.md)** — Complete arXiv submission
+- **[Results Table](docs/results/FINAL_COMPREHENSIVE_RESULTS_TABLE.md)** — All metrics across scoring methods
+- **[Methods](docs/evaluation/PARAMETER_TUNING_METHODOLOGY.md)** — Tuning and evaluation details
 
 ## 📝 Paper & Citations
 
