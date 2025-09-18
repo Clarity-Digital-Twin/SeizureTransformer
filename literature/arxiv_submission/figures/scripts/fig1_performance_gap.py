@@ -14,14 +14,17 @@ from config import *
 def generate_fig1_optimized():
     """Generate publication-quality Figure 1 with all optimizations"""
 
+    # Resolve repo-relative paths based on this script's location
+    script_dir = Path(__file__).resolve().parent
+    base_dir = script_dir.parent  # figures/
+    data_file = base_dir / 'data' / 'performance_metrics.csv'
+
     # Load data
-    data = pd.read_csv('../data/performance_metrics.csv')
+    data = pd.read_csv(data_file)
 
     # Create figure with golden ratio
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(DOUBLE_COL, HEIGHT_DEFAULT),
                                    dpi=DPI_ARXIV)
-    # Increase horizontal spacing between Panel A and Panel B (wspace in Axes widths)
-    fig.subplots_adjust(wspace=0.30)
 
     # ============ Panel A: False Alarm Rates ============
     methods = data['method'].str.replace(' ', '\n', regex=False)
@@ -146,11 +149,13 @@ def generate_fig1_optimized():
     #             fontweight='bold',
     #             y=1.02)
 
-    # Adjust layout
+    # Adjust layout then enforce spacing between panels
     plt.tight_layout()
+    # Ensure horizontal spacing between Panel A and Panel B
+    fig.subplots_adjust(wspace=0.30)
 
     # Save in multiple formats
-    output_dir = Path('../output/arxiv')
+    output_dir = base_dir / 'output' / 'arxiv'
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Save with metadata
@@ -163,7 +168,7 @@ def generate_fig1_optimized():
         print(f"✓ Saved: {filename}")
 
     # Also save web version
-    web_dir = Path('../output/web')
+    web_dir = base_dir / 'output' / 'web'
     web_dir.mkdir(parents=True, exist_ok=True)
     plt.savefig(web_dir / 'fig1_performance_gap.png',
                dpi=DPI_SCREEN,

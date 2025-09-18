@@ -27,21 +27,38 @@ cd current_draft
 cd ..
 
 # Step 3: Copy assembled markdown to ARXIV_FINAL_VERSION with clear name
-echo "[2/5] Creating final markdown from SSOT..."
+echo "[2/6] Creating final markdown from SSOT..."
 cp current_draft/CURRENT_WORKING_DRAFT_ASSEMBLED.md ARXIV_FINAL_VERSION/FINAL_PAPER_FROM_SSOT.md
 cp current_draft/CURRENT_WORKING_DRAFT_ASSEMBLED.md ARXIV_FINAL_VERSION/FINAL_PAPER_CLEAN.md
 
-# Step 4: Convert markdown to LaTeX in ARXIV_FINAL_VERSION
-echo "[3/5] Converting markdown to LaTeX..."
+# Step 4: Stage figures into nested path to match TeX includes
+echo "[3/6] Staging figures for path compatibility..."
+mkdir -p ARXIV_FINAL_VERSION/figures/output/arxiv
+# Map lower-case sources to expected upper-case names
+if compgen -G "figures/output/arxiv/fig1_performance_gap.pdf" > /dev/null; then
+    cp -f figures/output/arxiv/fig1_performance_gap.pdf ARXIV_FINAL_VERSION/figures/output/arxiv/FIGURE_1_performance_gap.pdf || true
+fi
+if compgen -G "figures/output/arxiv/fig2_scoring_impact.pdf" > /dev/null; then
+    cp -f figures/output/arxiv/fig2_scoring_impact.pdf ARXIV_FINAL_VERSION/figures/output/arxiv/FIGURE_2_scoring_impact.pdf || true
+fi
+if compgen -G "figures/output/arxiv/fig3_parameter_heatmap.pdf" > /dev/null; then
+    cp -f figures/output/arxiv/fig3_parameter_heatmap.pdf ARXIV_FINAL_VERSION/figures/output/arxiv/FIGURE_3_parameter_heatmap.pdf || true
+fi
+if compgen -G "figures/output/arxiv/fig4_operating_curves.pdf" > /dev/null; then
+    cp -f figures/output/arxiv/fig4_operating_curves.pdf ARXIV_FINAL_VERSION/figures/output/arxiv/FIGURE_4_operating_curves.pdf || true
+fi
+# Also keep convenience copies at root
+cp -f ARXIV_FINAL_VERSION/figures/output/arxiv/FIGURE_*.pdf ARXIV_FINAL_VERSION/ 2>/dev/null || true
+
+# Step 5: Convert markdown to LaTeX in ARXIV_FINAL_VERSION (with header)
+echo "[4/6] Converting markdown to LaTeX..."
 pandoc ARXIV_FINAL_VERSION/FINAL_PAPER_FROM_SSOT.md \
     -o ARXIV_FINAL_VERSION/FINAL_PAPER.tex \
     --standalone \
-    --pdf-engine=xelatex \
-    -H <(echo "\\usepackage{caption}") \
-    -H <(echo "\\captionsetup[figure]{font=small,labelfont=bf,skip=5pt}")
+    -H arxiv_header.tex
 
-# Step 5: Convert markdown to PDF in ARXIV_FINAL_VERSION (no TOC, smart figure placement)
-echo "[4/5] Generating PDF..."
+# Step 6: Convert markdown to PDF in ARXIV_FINAL_VERSION with CAP styling
+echo "[5/6] Generating PDF (CAP styling)..."
 pandoc ARXIV_FINAL_VERSION/FINAL_PAPER_FROM_SSOT.md \
     -o ARXIV_FINAL_VERSION/SEIZURE_TRANSFORMER_ARXIV.pdf \
     --pdf-engine=xelatex \
@@ -49,16 +66,11 @@ pandoc ARXIV_FINAL_VERSION/FINAL_PAPER_FROM_SSOT.md \
     -V fontsize=11pt \
     -V documentclass=article \
     -V colorlinks=true \
-    -H <(echo "\\usepackage{caption}") \
-    -H <(echo "\\captionsetup[figure]{font=small,labelfont=bf,skip=5pt}") \
-    --resource-path=.:current_draft
+    -H arxiv_header.tex \
+    --resource-path=.:current_draft:ARXIV_FINAL_VERSION:ARXIV_FINAL_VERSION/figures/output/arxiv
 
-# Step 6: Copy figures to ARXIV_FINAL_VERSION if they exist
-echo "[5/5] Copying figures to ARXIV_FINAL_VERSION..."
-if [[ -d "figures/output/arxiv" ]]; then
-    cp figures/output/arxiv/FIGURE_*.pdf ARXIV_FINAL_VERSION/ 2>/dev/null || true
-    echo "  ✓ Figures copied"
-fi
+# Optional: sync locked copy (commented out to avoid overwriting)
+# cp -f ARXIV_FINAL_VERSION/SEIZURE_TRANSFORMER_ARXIV.pdf ARXIV_FINAL_VERSION/SEIZURE_TRANSFORMER_ARXIV_LOCKED.pdf
 
 echo ""
 echo "CONVERSION COMPLETE!"
