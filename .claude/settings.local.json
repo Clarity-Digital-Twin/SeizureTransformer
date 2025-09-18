@@ -29,7 +29,8 @@
       "Bash(do echo \"==== PAGE $i ====\")",
       "Bash(bash:*)",
       "Bash(do echo \"==== $fig ====\")",
-      "Bash(do)"
+      "Bash(do)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []
