@@ -1,0 +1,60 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{times}
+
+% Better spacing
+\setlength{\parskip}{4pt}
+\setlength{\parindent}{0pt}
+
+% Figure spacing
+\setlength{\intextsep}{10pt plus 2pt minus 2pt}
+\setlength{\floatsep}{10pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{10pt plus 2pt minus 2pt}
+
+% Abstract formatting
+\renewenvironment{abstract}{%
+\small
+\begin{center}
+\textbf{Abstract}\vspace{-10pt}\vspace{0pt}
+\end{center}
+\quotation
+}{\endquotation\vspace{10pt}}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+$if(title)$
+\title{\Large\bfseries $title$}
+$endif$
+
+$if(author)$
+\author{$for(author)$$author$$sep$\\$endfor$}
+$endif$
+
+\date{}
+
+\begin{document}
+
+$if(title)$
+\maketitle
+\vspace{-15pt}
+$endif$
+
+$if(abstract)$
+\begin{abstract}
+$abstract$
+\end{abstract}
+$endif$
+
+$body$
+
+\end{document}
