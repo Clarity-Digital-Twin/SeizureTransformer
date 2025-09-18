@@ -32,7 +32,8 @@
       "Bash(do)",
       "Bash(git add:*)",
       "Bash(pdffonts:*)",
-      "Bash(md5sum:*)"
+      "Bash(md5sum:*)",
+      "Bash(cp:*)"
     ],
     "deny": [],
     "ask": []

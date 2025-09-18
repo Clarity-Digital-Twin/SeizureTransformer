@@ -1,0 +1,17 @@
+## ArXiv Submission Directory Status (2025-09-18)
+
+### Current Clean Files:
+- FINAL_PAPER_CLEAN.md - The single source of truth (100% correct with 37% sensitivity fix)
+- SEIZURE_TRANSFORMER_ARXIV.pdf - Latest PDF build with corrections
+- FINAL_PAPER.tex - LaTeX version with corrections
+
+### Build Commands:
+- ./CLEAN_CONVERSION_CHAIN.sh - Builds PDF from FINAL_PAPER_CLEAN.md
+
+### Key Corrections Applied:
+- Fixed: 37% sensitivity (was incorrectly 80.30%)
+- Verified: 27-fold gap (NEDC OVERLAP)
+- Verified: 137-fold gap (NEDC TAES)
+
+### Archived:
+- archived_drafts/ - Contains old versions
