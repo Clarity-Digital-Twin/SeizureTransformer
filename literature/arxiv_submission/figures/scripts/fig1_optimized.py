@@ -44,8 +44,14 @@ def generate_fig1_optimized():
                color=COLORS['threshold'],
                linestyle='--',
                linewidth=LINE_WIDTH['reference'],
-               label=f"Clinical threshold ({CLINICAL_THRESHOLDS['fa_per_24h']} FA/24h)",
                zorder=0)
+
+    # Add label in upper left corner where it won't block anything
+    ax1.text(0.02, 0.95, '---- Clinical threshold (10 FA/24h)',
+            transform=ax1.transAxes,
+            fontsize=FONT_SIZE['legend'],
+            color='black',  # Changed to black
+            va='top')
 
     # Enhanced multiplier annotations with background boxes
     for i, (fa, mult) in enumerate(zip(fa_rates, multipliers)):
@@ -70,9 +76,7 @@ def generate_fig1_optimized():
               ylabel='False Alarms per 24 Hours (log scale)',
               grid=True)
 
-    # Legend with better positioning
-    ax1.legend(loc='upper left', fontsize=FONT_SIZE['legend'],
-              framealpha=0.95, edgecolor='none')
+    # No legend needed since we added text label directly
 
     # Add panel label
     add_panel_label(ax1, 'A')
@@ -80,7 +84,7 @@ def generate_fig1_optimized():
     # ============ Panel B: Sensitivity at 10 FA/24h ============
     # Get data in same order as Panel A (minus Dianalund)
     panel_b_data = data[data['sensitivity_at_10fa'].notna()]
-    scorers = ['SzCORE\n(Event)', 'NEDC\nOVERLAP', 'NEDC\nTAES']
+    scorers = ['SzCORE\nEvent', 'NEDC\nOVERLAP', 'NEDC\nTAES']  # Removed parentheses
     sensitivities = panel_b_data['sensitivity_at_10fa'].tolist()
     sens_std = panel_b_data['sens_std'].fillna(0).tolist()  # Handle any NaN
     colors_b = [COLORS['szcore'], COLORS['nedc_overlap'], COLORS['nedc_taes']]

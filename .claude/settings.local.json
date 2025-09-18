@@ -2,7 +2,13 @@
   "permissions": {
     "allow": [
       "Bash(do echo \"Generating $script...\")",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(git log:*)",
+      "Bash(sort:*)",
+      "Bash(awk:*)",
+      "Bash(xargs:*)",
+      "Bash(python:*)",
+      "Bash(echo:*)"
     ],
     "deny": [],
     "ask": []

@@ -95,10 +95,10 @@ def generate_fig2_optimized():
     # Mark paper's default operating point
     default_point = nedc_overlap[nedc_overlap['threshold'] == 0.80].iloc[0]
     ax.plot(default_point['fa_per_24h'], default_point['sensitivity'],
-            'o', color='black', markersize=10, zorder=15)
-    ax.annotate('Paper default\n(θ=0.8, k=5, d=2.0)',
+            '*', color='black', markersize=14, zorder=15)  # Star marker
+    ax.annotate('Paper default\n(t=0.8, k=5, d=2.0)',  # Changed theta symbol to 't'
                 xy=(default_point['fa_per_24h'], default_point['sensitivity']),
-                xytext=(50, 30),
+                xytext=(45, 65),  # Move to the right to avoid blocking
                 fontsize=8,
                 ha='center',
                 bbox=dict(boxstyle='round,pad=0.3',
@@ -106,7 +106,8 @@ def generate_fig2_optimized():
                          alpha=0.95,
                          edgecolor='black',
                          linewidth=0.5),
-                arrowprops=dict(arrowstyle='-',
+                arrowprops=dict(arrowstyle='->',
+                               connectionstyle='arc3,rad=0.3',
                                color='black',
                                alpha=0.7,
                                lw=1),
@@ -123,14 +124,14 @@ def generate_fig2_optimized():
                 ha='left',
                 bbox=dict(boxstyle='round,pad=0.3',
                          facecolor='white',
-                         alpha=0.95,
+                         alpha=1.0,  # Full opacity to hide line behind
                          edgecolor='purple',
                          linewidth=0.5),
                 arrowprops=dict(arrowstyle='-',
                                color='purple',
                                alpha=0.7,
                                lw=1),
-                zorder=14)
+                zorder=16)  # Higher z-order to be on top of everything
 
     # Axes configuration
     ax.set_xlabel('False Alarms per 24 Hours', fontsize=FONT_SIZE['label'])

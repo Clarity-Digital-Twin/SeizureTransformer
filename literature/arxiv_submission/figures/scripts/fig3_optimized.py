@@ -127,7 +127,7 @@ def generate_fig3_optimized():
 
     # ============ Styling ============
     ax.set_xlim(0, 11.5)
-    ax.set_ylim(-0.8, 3.5)
+    ax.set_ylim(-0.8, 3.8)
     ax.axis('off')
 
     # Title
@@ -136,15 +136,15 @@ def generate_fig3_optimized():
                 fontweight='bold',
                 pad=20)
 
-    # Add subtle annotations
-    ax.text(2.5, 2.5, 'Same data', ha='center', fontsize=8,
-           style='italic', color='gray', alpha=0.7)
-    ax.text(5.5, 3.5, 'Identical\npredictions', ha='center', fontsize=8,
-           style='italic', color='gray', alpha=0.7)
-    ax.text(8.5, 3.8, 'Different\nscorers', ha='center', fontsize=8,
-           style='italic', color='gray', alpha=0.7)
-    ax.text(10, 3.8, 'Vastly different\nresults', ha='center', fontsize=8,
-           style='italic', color='red', alpha=0.7, fontweight='bold')
+    # Add subtle annotations (changed to black for better readability)
+    ax.text(2.5, 2.6, 'Same data', ha='center', fontsize=9,
+           style='italic', color='black', alpha=0.8)
+    ax.text(5.5, 3.4, 'Identical\npredictions', ha='center', fontsize=9,
+           style='italic', color='black', alpha=0.8)
+    ax.text(8.5, 3.6, 'Different\nscorers', ha='center', fontsize=9,
+           style='italic', color='black', alpha=0.8)
+    ax.text(10, 3.6, 'Vastly different\nresults', ha='center', fontsize=9,
+           style='italic', color='#C73E1D', alpha=0.9, fontweight='bold')
 
     plt.tight_layout()
 
