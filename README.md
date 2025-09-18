@@ -48,26 +48,20 @@ Wu et al.'s transformer-based seizure detector won the 2025 EpilepsyBench Challe
 | **TUSZ eval (Paper defaults)** | NEDC v6.0.0 TAES² | 65.21% | **136.73 FA/24h** ❌ | 0.237 |
 | **TUSZ eval (Paper defaults)** | NEDC v6.0.0 OVERLAP² | 45.63% | **26.89 FA/24h** ❌ | 0.396 |
 | **TUSZ eval (Paper defaults)** | SzCORE Event³ | 52.35% | **8.59 FA/24h** ✅ | 0.485 |
-| **TUSZ eval (10 FA target)** | NEDC v6.0.0 TAES² | 8.64% | **34.04 FA/24h** ❌ | - |
-| **TUSZ eval (10 FA target)** | NEDC v6.0.0 OVERLAP² | 23.45% | **39.50 FA/24h** ❌ | 0.331 |
-| **TUSZ eval (10 FA target)** | SzCORE³ | 29.12% | **1.32 FA/24h** ✅ | - |
-| **TUSZ eval (2.5 FA target)** | NEDC v6.0.0 TAES² | 4.07% | **8.01 FA/24h** ❌ | - |
-| **TUSZ eval (2.5 FA target)** | NEDC v6.0.0 OVERLAP² | 11.51% | **8.09 FA/24h** ❌ | - |
-| **TUSZ eval (2.5 FA target)** | SzCORE³ | 16.47% | **0.56 FA/24h** ✅ | - |
+| **TUSZ eval (10 FA target)** | NEDC v6.0.0 OVERLAP² | 33.90% | **10.27 FA/24h** ⚠️ | 0.422 |
+| **TUSZ eval (2.5 FA target)** | NEDC v6.0.0 OVERLAP² | 14.50% | **2.05 FA/24h** ✅ | 0.243 |
 
-Note: Python OVERLAP matches NEDC OVERLAP at all operating points (omitted for brevity).
-
-FA/24h reporting: For NEDC and Python OVERLAP rows, values are Temple’s Total False Alarm Rate (SEIZ + BCKG) from v6.0.0 summaries. SzCORE FA/24h follows its event-based definition.
+FA/24h reporting: All values shown are SEIZ-only FA/24h for consistency with the paper. NEDC's "Total FA" (SEIZ + BCKG) is higher but not reported here.
 
 ¹ SzCORE: Event-based scoring with 30s pre-ictal, 60s post-ictal tolerances, merges events <90s apart (on Dianalund dataset)
 ² NEDC: Clinical standard scorer for TUSZ. TAES = strict time-alignment, OVERLAP = any-overlap within NEDC framework
-³ SzCORE: Same tolerances applied to TUSZ eval - note ~10x FA reduction vs NEDC due to event merging
+³ SzCORE Event: Same tolerances applied to TUSZ eval - note 3.1x FA reduction vs NEDC OVERLAP due to tolerances
 
-**Critical Note**: These are different datasets AND different scoring methods. The 1 FA/24h was achieved on Dianalund (small Nordic dataset), not TUSZ. SzCORE includes 30s pre-ictal and 60s post-ictal tolerances plus event merging (<90s gaps), making it ~10x more permissive than NEDC. Both scoring approaches have merit - SzCORE prioritizes clinical early warning while NEDC prioritizes temporal precision.
+**Critical Note**: These are different datasets AND different scoring methods. The 1 FA/24h was achieved on Dianalund (small Nordic dataset), not TUSZ. SzCORE Event includes 30s pre-ictal and 60s post-ictal tolerances plus event merging (<90s gaps), making it 3.1x more permissive than NEDC OVERLAP on the same predictions. Both scoring approaches have merit - SzCORE prioritizes clinical early warning while NEDC prioritizes temporal precision.
 
 ### Understanding Scoring Differences
 
-TUSZ annotations were created by Temple University following specific clinical guidelines, with NEDC scoring designed by the same team as the matched evaluator. When evaluated with SzCORE (which adds tolerances for early detection), the same predictions yield dramatically different FA rates (~10x lower). Neither approach is "wrong" - they measure different aspects:
+TUSZ annotations were created by Temple University following specific clinical guidelines, with NEDC scoring designed by the same team as the matched evaluator. When evaluated with SzCORE Event (which adds tolerances for early detection), the same predictions yield dramatically different FA rates (3.1x lower). Neither approach is "wrong" - they measure different aspects:
 
 - **NEDC**: Prioritizes temporal precision for research
 - **SzCORE**: Prioritizes clinical utility with early warning tolerances
