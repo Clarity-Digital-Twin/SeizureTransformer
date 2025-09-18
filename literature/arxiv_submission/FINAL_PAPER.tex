@@ -105,14 +105,8 @@
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{-\maxdimen} % remove section numbering
-\usepackage{etoolbox}
-\makeatletter
-\patchcmd{\@maketitle}{\thispagestyle{plain}}{\thispagestyle{empty}}{}{}
-\makeatother
-\usepackage{listings}
-\lstset{breaklines=true, breakatwhitespace=true, basicstyle=\small\ttfamily}
-\usepackage{url}
-\urlstyle{same}
+\usepackage{caption}
+\captionsetup[figure]{font=small,labelfont=bf,skip=5pt}
 
 \title{Scoring Matters: A Reproducible NEDC Evaluation of
 SeizureTransformer on TUSZ}
@@ -244,7 +238,7 @@ architecture or parameters.
 \begin{figure}
 \hypertarget{fig:performance-gap}{%
 \centering
-\includegraphics[width=0.7\textwidth,height=\textheight]{figures/output/arxiv/FIGURE_1_performance_gap.pdf}
+\includegraphics[width=0.75\textwidth,height=\textheight]{figures/output/arxiv/FIGURE_1_performance_gap.pdf}
 \caption{Performance gap visualization showing the 27--137× difference
 between claimed and measured false alarm rates. Panel A shows false
 alarm rates on a logarithmic scale, comparing Dianalund's claimed
@@ -482,19 +476,6 @@ All scoring implementations process the same binary prediction masks,
 ensuring that performance differences stem solely from scoring
 philosophy rather than model behavior.
 
-\begin{figure}
-\hypertarget{fig:scoring-impact}{%
-\centering
-\includegraphics[width=0.8\textwidth,height=\textheight]{figures/output/arxiv/FIGURE_2_scoring_impact.pdf}
-\caption{Impact of scoring methodology on reported performance. The same
-SeizureTransformer predictions flow through different scoring pipelines,
-yielding a 15.9x difference in false alarm rates between NEDC TAES and
-SzCORE Event. This visualization demonstrates how evaluation standards,
-not model improvements, can account for order-of-magnitude performance
-variations.}\label{fig:scoring-impact}
-}
-\end{figure}
-
 \hypertarget{choice-of-event-based-metrics}{%
 \subsubsection{Choice of Event-Based
 Metrics}\label{choice-of-event-based-metrics}}
@@ -508,6 +489,19 @@ this pitfall, all reported results are event-based. ``SzCORE Event''
 denotes any-overlap with ±30 s/60 s tolerances and merge/split rules
 (merge \textless90 s, split \textgreater5 min); we do not report SzCORE
 Sample-based.
+
+\begin{figure}
+\hypertarget{fig:scoring-impact}{%
+\centering
+\includegraphics[width=0.7\textwidth,height=\textheight]{figures/output/arxiv/FIGURE_2_scoring_impact.pdf}
+\caption{Impact of scoring methodology on reported performance. The same
+SeizureTransformer predictions flow through different scoring pipelines,
+yielding a 15.9x difference in false alarm rates between NEDC TAES and
+SzCORE Event. This visualization demonstrates how evaluation standards,
+not model improvements, can account for order-of-magnitude performance
+variations.}\label{fig:scoring-impact}
+}
+\end{figure}
 
 \hypertarget{parameter-optimization}{%
 \subsection{Parameter Optimization}\label{parameter-optimization}}
@@ -534,7 +528,7 @@ theta=0.98) when illustrating the full trade-off curve.
 \begin{figure}
 \hypertarget{fig:parameter-heatmap}{%
 \centering
-\includegraphics[width=0.8\textwidth,height=\textheight]{figures/output/arxiv/FIGURE_3_parameter_heatmap.pdf}
+\includegraphics[width=0.88\textwidth,height=\textheight]{figures/output/arxiv/FIGURE_3_parameter_heatmap.pdf}
 \caption{Parameter sensitivity analysis showing F1 scores across
 threshold and minimum duration values for NEDC OVERLAP scoring. The
 heatmaps reveal that optimal parameters vary by morphological kernel

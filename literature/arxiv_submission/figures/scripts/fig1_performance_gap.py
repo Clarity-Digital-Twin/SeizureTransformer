@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate optimized Figure 1: The Performance Gap Visualization"""
+"""Generate Figure 1: The Performance Gap Visualization"""
 
 import sys
 import pandas as pd
@@ -18,7 +18,7 @@ def generate_fig1_optimized():
     data = pd.read_csv('../data/performance_metrics.csv')
 
     # Create figure with golden ratio
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(DOUBLE_COL, HEIGHT_DEFAULT * 0.9),
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(DOUBLE_COL, HEIGHT_DEFAULT),
                                    dpi=DPI_ARXIV)
 
     # ============ Panel A: False Alarm Rates ============
@@ -153,7 +153,7 @@ def generate_fig1_optimized():
 
     # Save with metadata
     for fmt in ['pdf', 'png']:
-        filename = output_dir / f'fig1_performance_gap_optimized.{fmt}'
+        filename = output_dir / f'fig1_performance_gap.{fmt}'
         plt.savefig(filename,
                    dpi=DPI_ARXIV if fmt == 'pdf' else DPI_WEB,
                    metadata=METADATA if fmt == 'pdf' else None,

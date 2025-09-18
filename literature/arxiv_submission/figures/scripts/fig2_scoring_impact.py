@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate optimized Figure 3: Scoring Impact Flow Diagram"""
+"""Generate Figure 2: Scoring Impact Flow Diagram (Vertical Layout)"""
 
 import sys
 import matplotlib.pyplot as plt
@@ -13,18 +13,18 @@ sys.path.append(str(Path(__file__).parent))
 from config import *
 
 def generate_fig3_optimized():
-    """Generate publication-quality Figure 3 with improved flow diagram"""
+    """Generate publication-quality Figure 3 with vertical flow diagram"""
 
-    fig, ax = plt.subplots(figsize=(10, 6), dpi=DPI_ARXIV)
+    fig, ax = plt.subplots(figsize=(6, 4.8), dpi=DPI_ARXIV)
 
-    # Define positions
-    input_x, input_y = 1, 2
-    model_x, model_y = 4, 2
-    scorer_x = 7
-    result_x = 10
+    # Define vertical positions (top to bottom flow)
+    input_x, input_y = 3.5, 5.5
+    model_x, model_y = 3.5, 4.2
+    scorer_y = 2.9
+    result_y = 1.5
 
-    # Y positions for scorers (only 3 now)
-    scorer_y = [3.0, 2.0, 1.0]
+    # X positions for scorers (3 side by side)
+    scorer_x = [1.5, 3.5, 5.5]
 
     # ============ Input Box ============
     input_box = FancyBboxPatch((input_x-0.8, input_y-0.4), 1.6, 0.8,
@@ -55,31 +55,31 @@ def generate_fig3_optimized():
                '8.59 FA/24h\n52.35% Sens']
     colors = [COLORS['nedc_taes'], COLORS['nedc_overlap'], COLORS['szcore']]
 
-    for scorer, result, color, y in zip(scorers, results, colors, scorer_y):
+    for scorer, result, color, x in zip(scorers, results, colors, scorer_x):
         # Scorer box
-        scorer_box = FancyBboxPatch((scorer_x-0.7, y-0.25), 1.4, 0.5,
+        scorer_box = FancyBboxPatch((x-0.7, scorer_y-0.25), 1.4, 0.5,
                                     boxstyle="round,pad=0.02",
                                     facecolor=color,
                                     alpha=0.7,
                                     edgecolor='black',
                                     linewidth=LINE_WIDTH['box'])
         ax.add_patch(scorer_box)
-        ax.text(scorer_x, y, scorer, ha='center', va='center',
+        ax.text(x, scorer_y, scorer, ha='center', va='center',
                fontsize=FONT_SIZE['annotation'], fontweight='bold')
 
-        # Result box
-        result_box = FancyBboxPatch((result_x-0.8, y-0.3), 1.6, 0.6,
+        # Result box (below scorer)
+        result_box = FancyBboxPatch((x-0.8, result_y-0.3), 1.6, 0.6,
                                    boxstyle="round,pad=0.02",
                                    facecolor='white',
                                    edgecolor=color,
                                    linewidth=LINE_WIDTH['box']+0.5)
         ax.add_patch(result_box)
-        ax.text(result_x, y, result, ha='center', va='center',
+        ax.text(x, result_y, result, ha='center', va='center',
                fontsize=FONT_SIZE['annotation'], fontweight='bold')
 
     # ============ Arrows ============
-    # Input to Model arrow
-    arrow1 = FancyArrowPatch((input_x+0.8, input_y), (model_x-1, model_y),
+    # Input to Model arrow (vertical)
+    arrow1 = FancyArrowPatch((input_x, input_y-0.4), (model_x, model_y+0.4),
                             connectionstyle="arc3,rad=0",
                             arrowstyle='->,head_width=0.3,head_length=0.3',
                             lw=LINE_WIDTH['arrow']+0.5,
@@ -87,10 +87,10 @@ def generate_fig3_optimized():
                             zorder=1)
     ax.add_patch(arrow1)
 
-    # Model to Scorers arrows (fan out)
-    for y in scorer_y:
-        arrow = FancyArrowPatch((model_x+1, model_y), (scorer_x-0.7, y),
-                               connectionstyle="arc3,rad=0.2",
+    # Model to Scorers arrows (straight lines)
+    for x in scorer_x:
+        arrow = FancyArrowPatch((model_x, model_y-0.4), (x, scorer_y+0.25),
+                               connectionstyle="arc3,rad=0",  # Changed to 0 for straight lines
                                arrowstyle='->,head_width=0.2,head_length=0.2',
                                lw=LINE_WIDTH['arrow'],
                                color='gray',
@@ -98,9 +98,9 @@ def generate_fig3_optimized():
                                zorder=1)
         ax.add_patch(arrow)
 
-    # Scorers to Results arrows
-    for color, y in zip(colors, scorer_y):
-        arrow = FancyArrowPatch((scorer_x+0.7, y), (result_x-0.8, y),
+    # Scorers to Results arrows (vertical, colored)
+    for color, x in zip(colors, scorer_x):
+        arrow = FancyArrowPatch((x, scorer_y-0.25), (x, result_y+0.3),
                                connectionstyle="arc3,rad=0",
                                arrowstyle='->,head_width=0.2,head_length=0.2',
                                lw=LINE_WIDTH['arrow']+0.3,
@@ -112,22 +112,22 @@ def generate_fig3_optimized():
     # ============ Annotation Box ============
     # Use 'x' instead of × to avoid font encoding issues
     annotation = '15.9x difference in FA/24h\nbetween TAES and SzCORE Event'
-    annotation_box = FancyBboxPatch((result_x-1.5, -0.3), 3, 0.6,
+    annotation_box = FancyBboxPatch((2.0, 0.2), 3, 0.6,
                                    boxstyle="round,pad=0.05",
                                    facecolor='yellow',
                                    alpha=0.3,
                                    edgecolor='orange',
                                    linewidth=LINE_WIDTH['box'])
     ax.add_patch(annotation_box)
-    ax.text(result_x, 0, annotation,
+    ax.text(3.5, 0.5, annotation,
             ha='center', va='center',
             fontsize=FONT_SIZE['annotation']+1,
             style='italic',
             fontweight='bold')
 
     # ============ Styling ============
-    ax.set_xlim(0, 11.5)
-    ax.set_ylim(-0.8, 3.8)
+    ax.set_xlim(0.5, 6.5)
+    ax.set_ylim(0, 6.2)
     ax.axis('off')
 
     # Title
@@ -136,14 +136,14 @@ def generate_fig3_optimized():
     #             fontweight='bold',
     #             pad=20)
 
-    # Add subtle annotations (changed to black for better readability)
-    ax.text(2.5, 2.6, 'Same data', ha='center', fontsize=9,
+    # Add subtle annotations (adjusted positions to avoid overlaps)
+    ax.text(2.0, 4.9, 'Same data', ha='center', fontsize=9,
            style='italic', color='black', alpha=0.8)
-    ax.text(5.5, 3.4, 'Identical\npredictions', ha='center', fontsize=9,
+    ax.text(5.8, 3.5, 'Identical predictions', ha='center', fontsize=9,  # Moved right to avoid arrows
            style='italic', color='black', alpha=0.8)
-    ax.text(8.5, 3.6, 'Different\nscorers', ha='center', fontsize=9,
+    ax.text(0.5, 2.2, 'Different\nscorers', ha='center', fontsize=9,  # Slightly left
            style='italic', color='black', alpha=0.8)
-    ax.text(10, 3.6, 'Vastly different\nresults', ha='center', fontsize=9,
+    ax.text(6.5, 0.8, 'Vastly different\nresults', ha='center', fontsize=9,  # Moved right and down
            style='italic', color='#C73E1D', alpha=0.9, fontweight='bold')
 
     plt.tight_layout()
@@ -153,7 +153,7 @@ def generate_fig3_optimized():
     output_dir.mkdir(parents=True, exist_ok=True)
 
     for fmt in ['pdf', 'png']:
-        filename = output_dir / f'fig3_scoring_impact_optimized.{fmt}'
+        filename = output_dir / f'fig2_scoring_impact.{fmt}'
         plt.savefig(filename,
                    dpi=DPI_ARXIV if fmt == 'pdf' else DPI_WEB,
                    metadata=METADATA if fmt == 'pdf' else None,

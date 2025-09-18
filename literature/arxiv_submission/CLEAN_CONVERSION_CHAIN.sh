@@ -31,7 +31,9 @@ echo "[3/4] Converting markdown to LaTeX..."
 pandoc FINAL_PAPER_FROM_SSOT.md \
     -o FINAL_PAPER.tex \
     --standalone \
-    --pdf-engine=xelatex
+    --pdf-engine=xelatex \
+    -H <(echo "\usepackage{caption}") \
+    -H <(echo "\captionsetup[figure]{font=small,labelfont=bf,skip=5pt}")
 
 # Step 5: Convert markdown to PDF (no TOC, smart figure placement)
 echo "[4/4] Generating PDF..."
@@ -42,6 +44,8 @@ pandoc FINAL_PAPER_FROM_SSOT.md \
     -V fontsize=11pt \
     -V documentclass=article \
     -V colorlinks=true \
+    -H <(echo "\usepackage{caption}") \
+    -H <(echo "\captionsetup[figure]{font=small,labelfont=bf,skip=5pt}") \
     --resource-path=.:current_draft
 
 echo ""
