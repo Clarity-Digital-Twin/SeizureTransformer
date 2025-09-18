@@ -20,6 +20,8 @@ def generate_fig1_optimized():
     # Create figure with golden ratio
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(DOUBLE_COL, HEIGHT_DEFAULT),
                                    dpi=DPI_ARXIV)
+    # Increase horizontal spacing between Panel A and Panel B (wspace in Axes widths)
+    fig.subplots_adjust(wspace=0.30)
 
     # ============ Panel A: False Alarm Rates ============
     methods = data['method'].str.replace(' ', '\n', regex=False)

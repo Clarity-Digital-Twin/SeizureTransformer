@@ -1,6 +1,18 @@
 % Extra header for arXiv build: float control + graphics path
 \usepackage{caption}
-\captionsetup[figure]{font=small,labelfont=bf,skip=5pt}
+\usepackage{ragged2e}
+% Tighter, cleaner figure captions: justified text, colon after label, minimal vertical gaps
+\captionsetup[figure]{%
+  font=small,
+  labelfont=bf,
+  labelsep=colon,
+  format=plain,
+  justification=justified,
+  singlelinecheck=false,
+  width=0.85\linewidth,
+  skip=1.5pt,
+  belowskip=1.5pt
+}
 
 % Keep figures near their sections
 \usepackage[section]{placeins}
@@ -9,12 +21,14 @@
 \makeatletter
 \def\fps@figure{!htbp}
 \makeatother
-\renewcommand{\topfraction}{0.9}
-\renewcommand{\bottomfraction}{0.8}
-\renewcommand{\textfraction}{0.07}
-\renewcommand{\floatpagefraction}{0.9}
-\setlength{\textfloatsep}{12pt plus 2pt minus 2pt}
-\setlength{\intextsep}{10pt plus 2pt minus 2pt}
+\renewcommand{\topfraction}{0.92}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.06}
+\renewcommand{\floatpagefraction}{0.92}
+% Tighter spacing around floats
+\setlength{\textfloatsep}{6pt plus 2pt minus 2pt}
+\setlength{\intextsep}{6pt plus 2pt minus 2pt}
+\setlength{\floatsep}{6pt plus 2pt minus 2pt}
 
 % Look for figures in both the current dir and the original figures path
 \usepackage{graphicx}
