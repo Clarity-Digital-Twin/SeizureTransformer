@@ -37,7 +37,12 @@
       "Bash(find:*)",
       "Bash(do echo \"Generating $fig...\")",
       "Bash(while read line)",
-      "Bash(do echo \"$line\")"
+      "Bash(do echo \"$line\")",
+      "Bash(__NEW_LINE__ cp figures/output/arxiv/fig1_performance_gap.pdf figures/output/arxiv/FIGURE_1_performance_gap.pdf)",
+      "Bash(__NEW_LINE__ cp figures/output/arxiv/fig2_scoring_impact.pdf figures/output/arxiv/FIGURE_2_scoring_impact.pdf)",
+      "Bash(__NEW_LINE__ cp figures/output/arxiv/fig3_parameter_heatmap.pdf figures/output/arxiv/FIGURE_3_parameter_heatmap.pdf)",
+      "Bash(__NEW_LINE__ cp figures/output/arxiv/fig4_operating_curves.pdf figures/output/arxiv/FIGURE_4_operating_curves.pdf)",
+      "Bash(__NEW_LINE__ echo \"Copied all new figures to FIGURE_* names\")"
     ],
     "deny": [],
     "ask": []
