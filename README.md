@@ -1,5 +1,5 @@
 # SeizureTransformer TUSZ Evaluation
-## First NEDC v6.0.0 Evaluation Reveals ≈100× False Alarm Gap
+## First NEDC v6.0.0 Evaluation Reveals 27-137× False Alarm Gap
 
 [![EpilepsyBench #1](https://img.shields.io/badge/EpilepsyBench%202025-%231%20Winner-gold.svg)](https://epilepsybenchmarks.com/challenge/)
 [![NEDC v6.0.0](https://img.shields.io/badge/NEDC-v6.0.0%20Pioneer-brightgreen.svg)](https://www.isip.piconepress.com/projects/nedc/)
@@ -11,7 +11,7 @@
 - SeizureTransformer won EpilepsyBench 2025 with 1 FA/24h on Dianalund (using SzCORE's "Any-Overlap" scoring)
 - Despite TUSZ having train/dev/eval splits, EpilepsyBench doesn't report eval results for models trained on it
 - We evaluated it on TUSZ v2.0.3 using Temple's NEDC v6.0.0 - the clinical standard scorer for this dataset
-- Result: 100.06 FA/24h at paper defaults (NEDC) vs 8.46 FA/24h (SzCORE), revealing a ≈12× scoring impact and ≈100× gap from Dianalund's 1 FA/24h
+- Result: 26.89 FA/24h at paper defaults (NEDC OVERLAP) vs 8.59 FA/24h (SzCORE Event), revealing a 3.1× scoring impact and 27× gap from Dianalund's 1 FA/24h
 
 ## 🎯 Background
 
@@ -45,10 +45,9 @@ Wu et al.'s transformer-based seizure detector won the 2025 EpilepsyBench Challe
 | Dataset | Scoring Method | Sensitivity | False Alarms/24h | F1 Score |
 |---------|---------------|-------------|------------------|-----------|
 | **Dianalund** | SzCORE Any-Overlap¹ | 37% | **1 FA/24h** ✅ | 43% |
-| **TUSZ eval (Paper defaults)** | NEDC v6.0.0 TAES² | 24.15% | **137.53 FA/24h** ❌ | 0.30 |
-| **TUSZ eval (Paper defaults)** | NEDC v6.0.0 OVERLAP² | 45.63% | **100.06 FA/24h** ❌ | 0.519 |
-| **TUSZ eval (Paper defaults)** | Python OVERLAP | 45.63% | **100.06 FA/24h** ❌ | 0.519 |
-| **TUSZ eval (Paper defaults)** | SzCORE³ | 52.35% | **8.46 FA/24h** ✅ | - |
+| **TUSZ eval (Paper defaults)** | NEDC v6.0.0 TAES² | 65.21% | **136.73 FA/24h** ❌ | 0.237 |
+| **TUSZ eval (Paper defaults)** | NEDC v6.0.0 OVERLAP² | 45.63% | **26.89 FA/24h** ❌ | 0.396 |
+| **TUSZ eval (Paper defaults)** | SzCORE Event³ | 52.35% | **8.59 FA/24h** ✅ | 0.485 |
 | **TUSZ eval (10 FA target)** | NEDC v6.0.0 TAES² | 8.64% | **34.04 FA/24h** ❌ | - |
 | **TUSZ eval (10 FA target)** | NEDC v6.0.0 OVERLAP² | 23.45% | **39.50 FA/24h** ❌ | 0.331 |
 | **TUSZ eval (10 FA target)** | SzCORE³ | 29.12% | **1.32 FA/24h** ✅ | - |

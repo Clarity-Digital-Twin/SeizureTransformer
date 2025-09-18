@@ -78,7 +78,7 @@ python scripts/visualize_results.py --results_dir results/
 - **Window Size**: 60-second non-overlapping windows (15,360 samples)
 - **Post-processing**: Morphological operations with configurable kernel size
 - **CSV Format**: NEDC requires `.csv_bi` extension with 4-decimal precision
-- **Scoring Backends**: Both NEDC binary and native Python implementations provided
+- **Scoring Backends**: NEDC v6.0.0 (vendored, unmodified) orchestrated via a thin `nedc-run` CLI; predictions are converted to NEDC CSV_bi and scored with the official binaries
 
 ## Validation Checksums
 
