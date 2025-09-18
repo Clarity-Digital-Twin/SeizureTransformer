@@ -30,7 +30,8 @@
       "Bash(bash:*)",
       "Bash(do echo \"==== $fig ====\")",
       "Bash(do)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(pdffonts:*)"
     ],
     "deny": [],
     "ask": []
