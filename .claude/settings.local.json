@@ -12,7 +12,8 @@
       "Bash(pdflatex:*)",
       "Bash(/dev/null)",
       "Bash(for fig in fig1_performance_gap fig2_operating_curves fig3_scoring_impact fig4_parameter_heatmap)",
-      "Bash(do md5sum /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/literature/arxiv_submission/figures/output/arxiv/$fig.pdf)"
+      "Bash(do md5sum /mnt/c/Users/JJ/Desktop/Clarity-Digital-Twin/SeizureTransformer/literature/arxiv_submission/figures/output/arxiv/$fig.pdf)",
+      "Bash(pandoc:*)"
     ],
     "deny": [],
     "ask": []
