@@ -34,7 +34,8 @@
       "Bash(pdffonts:*)",
       "Bash(md5sum:*)",
       "Bash(cp:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(do echo \"Generating $fig...\")"
     ],
     "deny": [],
     "ask": []

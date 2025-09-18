@@ -20,7 +20,7 @@ Claims about deep learning model performance in seizure detection are difficult 
 
 We evaluate the authors' pretrained model on TUSZ v2.0.3's held-out set (865 files, 127.7 hours) and assess identical predictions with three scoring methodologies. With NEDC OVERLAP [3], the model produces 26.89 FA/24h; with SzCORE Event [4], 8.59 FA/24h (~=3.1x lower due solely to scoring tolerances); with NEDC TAES [5], 136.73 FA/24h.
 
-When tuned toward deployment goals, the model cannot meet clinical thresholds with NEDC scoring: targeting 10 FA/24h achieves only 33.90% sensitivity, far below the 75% sensitivity goal for clinical systems [6]. Acceptable false-alarm rates occur only under SzCORE Event's permissive tolerances [4].
+When tuned toward deployment goals, the model cannot meet clinical thresholds with NEDC scoring: targeting 10 FA/24h achieves only 33.90% sensitivity, far below the 75% sensitivity goal for clinical systems [13]. Acceptable false-alarm rates occur only under SzCORE Event's permissive tolerances [4].
 
 We contribute a reproducible NEDC evaluation pipeline, operating points tailored to clinical targets, and quantitative evidence that scoring choice alone drives multi-fold differences. Dataset-matched, clinician-aligned evaluation is essential for credible seizure-detection claims.
 
@@ -40,7 +40,7 @@ We present, to our knowledge, the first evaluation of SeizureTransformer on TUSZ
 
 ![Performance gap visualization showing the 27–137× difference between claimed and measured false alarm rates. Panel A shows false alarm rates on a logarithmic scale, comparing Dianalund's claimed performance (1 FA/24h) against our TUSZ evaluation using different scoring methods. Panel B displays sensitivity near 10 FA/24h using each scorer's closest available operating point (no interpolation). SzCORE Event uses any-overlap with clinical tolerances (−30 s/+60 s; merge <90 s, split >5 min).](figures/output/arxiv/FIGURE_1_performance_gap.pdf){#fig:performance-gap width=75%}
 
-Our contributions extend beyond revealing performance gaps. We provide: (1) a reproducible NEDC v6.0.0 evaluation pipeline for TUSZ, bridging the research-to-clinic evaluation gap [3]; (2) comprehensive operating points for clinical deployment, including evaluation at a clinically-motivated threshold of <=10 FA/24h; (3) quantitative evidence that scoring methodology alone can account for multi-fold performance differences, highlighting the critical need for transparent reporting; and (4) open-source infrastructure enabling the community to replicate and extend our evaluation framework. When optimizing for the 10 FA/24h threshold, SeizureTransformer achieves only 33.90% sensitivity with NEDC OVERLAP, falling far short of the 75% sensitivity goal for clinical systems [6].
+Our contributions extend beyond revealing performance gaps. We provide: (1) a reproducible NEDC v6.0.0 evaluation pipeline for TUSZ, bridging the research-to-clinic evaluation gap [3]; (2) comprehensive operating points for clinical deployment, including evaluation at a clinically-motivated threshold of <=10 FA/24h; (3) quantitative evidence that scoring methodology alone can account for multi-fold performance differences, highlighting the critical need for transparent reporting; and (4) open-source infrastructure enabling the community to replicate and extend our evaluation framework. When optimizing for the 10 FA/24h threshold, SeizureTransformer achieves only 33.90% sensitivity with NEDC OVERLAP, falling far short of the 75% sensitivity goal for clinical systems [13].
 
 The remainder of this paper is organized as follows. Section 2 provides background and related work on TUSZ, NEDC, and scoring methodologies. Section 3 details our evaluation methodology, including data preparation, model inference, and multi-scorer validation. Section 4 presents comprehensive results across multiple operating points and scoring methods. Section 5 discusses implications for clinical deployment, the need for standardized evaluation, and limitations of current benchmarking practices. Section 6 concludes. Section 7 outlines reproducibility resources and exact rerun procedures.
 
@@ -60,7 +60,7 @@ SeizureTransformer [10] exemplifies both the advances and evaluation gaps in mod
 
 Despite training on TUSZ, SeizureTransformer has never been evaluated on TUSZ's held-out evaluation set using Temple's official scoring software [3]. EpilepsyBench marks TUSZ results with a train emoji ([train]) [10], indicating the model was trained on this dataset and therefore showing no evaluation metrics. While this conservative approach prevents overfitting claims, it overlooks the careful patient-disjoint split design that specifically enables valid held-out evaluation [2]. This represents a broader pattern in the field: models are trained on Dataset X, evaluated on Dataset Y with favorable scoring, generalization is claimed, yet performance on X's properly designed evaluation set remains unknown [11]. The uniform application of SzCORE Event scoring across all EpilepsyBench datasets, while ensuring consistency, obscures dataset-specific performance that would be revealed by matched evaluation tools [10].
 
-The clinical deployment of seizure detection systems requires meeting stringent performance thresholds. Clinical goals typically target 75% sensitivity or higher [6], while human reviewers achieve approximately 1 false alarm per 24 hours [6]. These requirements reflect the reality of clinical workflows where excessive false alarms lead to alarm fatigue and system abandonment. However, whether a system meets these thresholds depends critically on the evaluation methodology employed. Previous work has highlighted challenges in cross-dataset generalization [2], the need for standardized evaluation metrics [4], and broader reproducibility issues in medical AI [11]. Our work addresses these challenges by performing the missing evaluation: testing SeizureTransformer on TUSZ's held-out set using multiple scoring methodologies, revealing how evaluation choices fundamentally shape performance claims in seizure detection systems.
+The clinical deployment of seizure detection systems requires meeting stringent performance thresholds. Clinical goals typically target 75% sensitivity or higher [13], while human reviewers achieve approximately 1 false alarm per 24 hours [13]. These requirements reflect the reality of clinical workflows where excessive false alarms lead to alarm fatigue and system abandonment. However, whether a system meets these thresholds depends critically on the evaluation methodology employed. Previous work has highlighted challenges in cross-dataset generalization [2], the need for standardized evaluation metrics [4], and broader reproducibility issues in medical AI [11]. Our work addresses these challenges by performing the missing evaluation: testing SeizureTransformer on TUSZ's held-out set using multiple scoring methodologies, revealing how evaluation choices fundamentally shape performance claims in seizure detection systems.
 
 # Methods
 
@@ -153,7 +153,7 @@ We optimized parameters on the development set to target clinical false alarm th
 
 **10 FA/24h Target (theta=0.88, k=5, d=3.0)**:
 - NEDC OVERLAP achieved 33.90% sensitivity at 10.27 FA/24h
-- While meeting our FA constraint, this falls far below the 75% sensitivity goal for clinical systems [6]
+- While meeting our FA constraint, this falls far below the 75% sensitivity goal for clinical systems [13]
 - SzCORE Event achieved 40.59% sensitivity at only 3.36 FA/24h
 
 **2.5 FA/24h Target (theta=0.95, k=5, d=5.0)**:
@@ -167,7 +167,7 @@ We optimized parameters on the development set to target clinical false alarm th
 
 1. **Scoring Impact**: The ~=3.1x difference at default (NEDC OVERLAP vs SzCORE Event) stems entirely from scoring methodology, with TAES showing even larger divergence (5.1x vs OVERLAP).
 
-2. **Clinical Viability**: SeizureTransformer cannot achieve clinical viability when evaluated with NEDC scoring on TUSZ. At 10 FA/24h, it reaches only 33.90% sensitivity, far below the 75% goal for clinical systems [6].
+2. **Clinical Viability**: SeizureTransformer cannot achieve clinical viability when evaluated with NEDC scoring on TUSZ. At 10 FA/24h, it reaches only 33.90% sensitivity, far below the 75% goal for clinical systems [13].
 
 3. **AUROC Performance**: We measured AUROC of 0.9019.
 
@@ -195,7 +195,7 @@ Our focus on event-based metrics reflects clinical priorities. While sample-base
 
 ## Clinical Deployment Constraints
 
-The inability to achieve clinical viability reveals a critical gap between research achievements and deployment readiness. Our best operating point at 10 FA/24h achieved only 33.90% sensitivity with NEDC OVERLAP, falling far short of the 75% sensitivity goal for clinical systems [6]. This constraint is not merely academic—it determines whether AI assistants can be deployed in ICUs, where false alarms cause alarm fatigue and missed seizures delay critical treatment. While human reviewers achieve approximately 1 FA/24h [6], even at a more permissive 10 FA/24h threshold, current models cannot approach the sensitivity levels required for clinical deployment when evaluated with appropriate standards.
+The inability to achieve clinical viability reveals a critical gap between research achievements and deployment readiness. Our best operating point at 10 FA/24h achieved only 33.90% sensitivity with NEDC OVERLAP, falling far short of the 75% sensitivity goal for clinical systems [13]. This constraint is not merely academic—it determines whether AI assistants can be deployed in ICUs, where false alarms cause alarm fatigue and missed seizures delay critical treatment. While human reviewers achieve approximately 1 FA/24h [13], even at a more permissive 10 FA/24h threshold, current models cannot approach the sensitivity levels required for clinical deployment when evaluated with appropriate standards.
 
 ## Root Causes of Evaluation Gaps
 
@@ -223,7 +223,7 @@ This work highlights several critical areas for future research. The field urgen
 
 # Conclusion
 
-Our evaluation of SeizureTransformer on TUSZ's held-out test set reveals a 27-137x gap between benchmark claims and clinical reality, with the model producing 26.89 false alarms per 24 hours using NEDC OVERLAP versus the ~1 FA/24h achieved on Dianalund [1]. This discrepancy stems not from model failure but from fundamental mismatches in evaluation methodology. The same predictions yield 8.59 FA/24h with SzCORE Event's permissive tolerances [4], 26.89 FA/24h with NEDC OVERLAP [3], and 136.73 FA/24h with NEDC TAES [5]—a nearly 16-fold spread determined entirely by scoring philosophy. When optimized for a 10 FA/24h threshold with NEDC scoring, the model achieves only 33.90% sensitivity, falling far short of the 75% sensitivity goal for clinical systems [6]. These findings demonstrate that meaningful progress in automated seizure detection requires evaluation standards that match clinical reality rather than optimize benchmark metrics.
+Our evaluation of SeizureTransformer on TUSZ's held-out test set reveals a 27-137x gap between benchmark claims and clinical reality, with the model producing 26.89 false alarms per 24 hours using NEDC OVERLAP versus the ~1 FA/24h achieved on Dianalund [1]. This discrepancy stems not from model failure but from fundamental mismatches in evaluation methodology. The same predictions yield 8.59 FA/24h with SzCORE Event's permissive tolerances [4], 26.89 FA/24h with NEDC OVERLAP [3], and 136.73 FA/24h with NEDC TAES [5]—a nearly 16-fold spread determined entirely by scoring philosophy. When optimized for a 10 FA/24h threshold with NEDC scoring, the model achieves only 33.90% sensitivity, falling far short of the 75% sensitivity goal for clinical systems [13]. These findings demonstrate that meaningful progress in automated seizure detection requires evaluation standards that match clinical reality rather than optimize benchmark metrics.
 
 The path forward demands fundamental changes in how the field approaches evaluation. Models must be evaluated on held-out portions of their training datasets using dataset-matched scoring tools—TUSZ with NEDC, CHB-MIT with their protocols, and private datasets with their clinical standards. Papers should report performance across multiple scoring methodologies, acknowledging that different clinical applications require different evaluation approaches while maintaining transparency about which methods are used. Complete operating curves showing the sensitivity-false alarm tradeoff space enable clinicians to select thresholds appropriate for their specific use cases. Most critically, the community must establish minimum reporting standards that include dataset version, evaluation tool version, and complete post-processing parameters to ensure reproducibility. As seizure detection models approach deployment readiness, the field stands at a crossroads: continue optimizing for benchmarks that may mislead, or establish rigorous evaluation standards that bridge the gap between laboratory success and patient benefit. The 27-137x gap we document is not insurmountable but requires the collective will to prioritize clinical validity over benchmark performance.
 
@@ -350,6 +350,8 @@ We thank Joseph Picone and the Neural Engineering Data Consortium at Temple Univ
 [11] Haibe-Kains B, Adam GA, Hosny A, Khodakarami F, Waldron L, Wang B, et al. Transparency and reproducibility in artificial intelligence. Nature. 2020;586(7829):E14-E16.
 
 [12] Holger, Kern S, Papadopoulos Orfanos D, Vallat R, Brunner C, Cerina L, Appelhoff S, et al. pyEDFlib: v0.1.42. Zenodo; 2025. doi:10.5281/zenodo.15748763.
+
+[13] Roy S, Kiral-Kornek I, Harrer S, et al. Evaluation of artificial intelligence systems for assisted annotation of epileptic seizure EEG signals using expert human reviewers. EBioMedicine. 2021;73:103655. doi:10.1016/j.ebiom.2021.103655.
 
 # Appendix
 
