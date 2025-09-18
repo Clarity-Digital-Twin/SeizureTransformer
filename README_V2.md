@@ -18,6 +18,12 @@ The same model that achieves 1 FA/24h on Dianalund (Nordic dataset, SzCORE scori
 - **EpilepsyBench** doesn't report TUSZ results for models trained on it (marked with 🚂)
 - **First evaluation** of SeizureTransformer on TUSZ using proper clinical scoring (NEDC v6.0.0)
 
+<p align="center">
+<img src="docs/images/wu_ebench.png" alt="EpilepsyBench showing SeizureTransformer #1 but no TUSZ results" width="600">
+<br>
+<em>SeizureTransformer ranks #1 on EpilepsyBench, but TUSZ evaluation is blocked (🚂)</em>
+</p>
+
 ## 📊 Results
 
 | Dataset | Scorer | Sensitivity | FA/24h | F1 | Note |
