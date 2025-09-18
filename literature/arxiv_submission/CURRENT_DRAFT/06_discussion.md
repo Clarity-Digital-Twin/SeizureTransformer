@@ -16,7 +16,7 @@ The inability to achieve clinical viability reveals a critical gap between resea
 
 ## Root Causes of Evaluation Gaps
 
-The performance disparities stem from multiple compounding factors beyond scoring methodology. Dataset characteristics play a crucial role: TUSZ contains 865 evaluation files with diverse seizure types and recording conditions from an urban academic medical center, while Dianalund represents a specialized epilepsy monitoring unit with potentially cleaner recordings and different patient populations. Training choices further compound these differences—SeizureTransformer was trained on TUSZ v1.5.2 combined with the Siena dataset [9], potentially creating distribution shifts even within TUSZ versions. The lack of standardized evaluation protocols allows models to be tested on favorable datasets with permissive scoring, creating an illusion of clinical readiness that disappears under rigorous evaluation.
+The performance disparities stem from multiple compounding factors beyond scoring methodology. Dataset characteristics play a crucial role: TUSZ contains 865 evaluation files with diverse seizure types and recording conditions from an urban academic medical center, while Dianalund represents a specialized epilepsy monitoring unit with potentially cleaner recordings and different patient populations. Training choices further compound these differences—SeizureTransformer was trained on TUSZ v2.0.3 combined with the Siena dataset [9], with our evaluation using the same TUSZ v2.0.3 for consistency. The lack of standardized evaluation protocols allows models to be tested on favorable datasets with permissive scoring, creating an illusion of clinical readiness that disappears under rigorous evaluation.
 
 ## Systemic Issues in the Field
 

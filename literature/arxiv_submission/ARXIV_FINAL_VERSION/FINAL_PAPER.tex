@@ -186,7 +186,7 @@ SeizureTransformer represents a significant architectural advance in
 seizure detection, combining U-Net's proven biomedical segmentation
 capabilities with Transformer self-attention mechanisms to capture both
 local and global EEG patterns. The model was trained on a subset of the
-Temple University Hospital Seizure (TUSZ) dataset (v1.5.2;
+Temple University Hospital Seizure (TUSZ) dataset (v2.0.3;
 \textasciitilde910 hours) together with the Siena Scalp EEG Database
 (\textasciitilde128 hours) {[}9{]}. TUSZ itself is the largest publicly
 available seizure corpus, but the model's training used a subset as
@@ -345,7 +345,7 @@ SeizureTransformer {[}10{]} exemplifies both the advances and evaluation
 gaps in modern seizure detection. The architecture combines U-Net's
 biomedical segmentation capabilities with Transformer self-attention to
 capture local and global EEG patterns {[}10{]}. Trained on a subset of
-TUSZ v1.5.2 (\textasciitilde910 hours) {[}2{]} plus the Siena Scalp EEG
+TUSZ v2.0.3 (\textasciitilde910 hours) {[}2{]} plus the Siena Scalp EEG
 Database (128 hours) {[}9{]}, the model processes 19-channel EEG at 256
 Hz through 60-second windows {[}10{]}. With roughly 41 million
 parameters and publicly available pretrained weights
@@ -426,15 +426,13 @@ modifications, retraining, or fine-tuning {[}1{]}. The model expects
 U-Net-Transformer architecture {[}1{]}.
 
 Our preprocessing pipeline, implemented as a wrapper around the original
-wu\_2025 code, largely follows the paper's specifications {[}1{]}. For
-each EDF file, we: (1) load the data with unipolar montage enforcement
-and normalized channel aliases; (2) apply per-channel z-score
-normalization across the full recording; (3) resample to 256 Hz if
-necessary; (4) apply a 0.5-120 Hz bandpass filter (3rd-order
-Butterworth); and (5) apply notch filters at 1 Hz and 60 Hz (Q=30). The
-1 Hz notch (to suppress heart-rate artifacts) reflects our released
-evaluation code and is an addition beyond the paper's brief
-preprocessing description {[}1{]}.
+wu\_2025 code, follows the paper's specifications {[}1{]}. For each EDF
+file, we: (1) load the data with unipolar montage enforcement and
+normalized channel aliases; (2) apply per-channel z-score normalization
+across the full recording; (3) resample to 256 Hz if necessary; (4)
+apply a 0.5-120 Hz bandpass filter (3rd-order Butterworth); and (5)
+apply notch filters at 1 Hz and 60 Hz (Q=30) as specified in the
+original paper and implementation {[}1{]}.
 
 The model processes 60-second non-overlapping windows, outputting
 per-sample seizure probabilities at 256 Hz. Post-processing applies
@@ -766,9 +764,9 @@ recording conditions from an urban academic medical center, while
 Dianalund represents a specialized epilepsy monitoring unit with
 potentially cleaner recordings and different patient populations.
 Training choices further compound these differences---SeizureTransformer
-was trained on TUSZ v1.5.2 combined with the Siena dataset {[}9{]},
-potentially creating distribution shifts even within TUSZ versions. The
-lack of standardized evaluation protocols allows models to be tested on
+was trained on TUSZ v2.0.3 combined with the Siena dataset {[}9{]}, with
+our evaluation using the same TUSZ v2.0.3 for consistency. The lack of
+standardized evaluation protocols allows models to be tested on
 favorable datasets with permissive scoring, creating an illusion of
 clinical readiness that disappears under rigorous evaluation.
 
