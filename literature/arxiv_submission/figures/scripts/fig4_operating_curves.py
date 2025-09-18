@@ -14,8 +14,11 @@ from config import *
 def generate_fig2_optimized():
     """Generate publication-quality Figure 2 with precise control"""
 
+    # Resolve repo-relative paths based on this script's location
+    script_dir = Path(__file__).resolve().parent
+    base_dir = script_dir.parent  # figures/
     # Load the actual operating curves data
-    data = pd.read_csv('../data/operating_curves.csv')
+    data = pd.read_csv(base_dir / 'data' / 'operating_curves.csv')
 
     # Create figure
     fig, ax = plt.subplots(figsize=(DOUBLE_COL, HEIGHT_DEFAULT), dpi=DPI_ARXIV)
@@ -96,7 +99,7 @@ def generate_fig2_optimized():
     default_point = nedc_overlap[nedc_overlap['threshold'] == 0.80].iloc[0]
     ax.plot(default_point['fa_per_24h'], default_point['sensitivity'],
             '*', color='black', markersize=14, zorder=15)  # Star marker
-    ax.annotate('Paper default\n(t=0.8, k=5, d=2.0)',  # Changed theta symbol to 't'
+    ax.annotate('Paper default\n($\\theta$=0.8, k=5, d=2.0)',
                 xy=(default_point['fa_per_24h'], default_point['sensitivity']),
                 xytext=(45, 65),  # Move to the right to avoid blocking
                 fontsize=8,
@@ -165,7 +168,7 @@ def generate_fig2_optimized():
     plt.tight_layout()
 
     # Save in multiple formats
-    output_dir = Path(__file__).parent.parent / 'output' / 'arxiv'
+    output_dir = base_dir / 'output' / 'arxiv'
     output_dir.mkdir(exist_ok=True, parents=True)
 
     for fmt in ['png', 'pdf']:
