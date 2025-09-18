@@ -41,13 +41,13 @@ DPALIGN         | —           | —            | See NEDC summary for details
 
 ## Critical Observation
 
-The gap between NEDC OVERLAP and SzCORE Any‑Overlap (30s/60s tolerances with 90s merge) highlights the scoring methodology differences; SzCORE typically reports substantially lower FA for the same predictions.
+The gap between NEDC OVERLAP and SzCORE Event (any‑overlap with 30s/60s tolerances and 90s merge) highlights the scoring methodology differences; SzCORE Event typically reports substantially lower FA for the same predictions.
 
 ## Future Integration Opportunities
 
 Currently we only report TAES metrics in our README, but we could:
 1. Add a comprehensive metrics table showing all 5 NEDC scores
-2. Compare NEDC OVERLAP vs SzCORE Any-Overlap directly
+2. Compare NEDC OVERLAP vs SzCORE Event directly
 3. Use EPOCH scoring for fixed-window analysis
 4. Report IRA for statistical agreement metrics
 

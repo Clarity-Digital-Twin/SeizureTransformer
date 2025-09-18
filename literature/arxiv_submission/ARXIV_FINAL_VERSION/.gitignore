@@ -1,0 +1,9 @@
+# Override parent .gitignore for this specific folder
+# We WANT to track these PDFs for sharing with Temple University
+
+# Force include all PDFs in this directory
+!*.pdf
+!FIGURE_*.pdf
+!SEIZURE_TRANSFORMER_ARXIV.pdf
+!FINAL_PAPER.tex
+!README.md

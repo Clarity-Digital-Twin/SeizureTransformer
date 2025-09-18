@@ -1,0 +1,56 @@
+% Extra header for arXiv build: float control + graphics path
+\usepackage{caption}
+\usepackage{ragged2e}
+% Tighter, cleaner figure captions: justified text, colon after label, minimal vertical gaps
+\captionsetup[figure]{%
+  font=small,
+  labelfont=bf,
+  labelsep=colon,
+  format=plain,
+  justification=justified,
+  singlelinecheck=false,
+  width=0.85\linewidth,
+  skip=1.5pt,
+  belowskip=1.5pt
+}
+
+% Match table caption style to figures for consistency
+\captionsetup[table]{%
+  font=small,
+  labelfont=bf,
+  labelsep=colon,
+  format=plain,
+  justification=justified,
+  singlelinecheck=false,
+  width=0.85\linewidth,
+  skip=2pt,
+  belowskip=2pt
+}
+
+% Keep figures near their sections
+\usepackage[section]{placeins}
+
+% Improve float behavior and spacing
+\makeatletter
+\def\fps@figure{!htbp}
+\makeatother
+\renewcommand{\topfraction}{0.92}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.06}
+\renewcommand{\floatpagefraction}{0.92}
+% Tighter spacing around floats
+\setlength{\textfloatsep}{6pt plus 2pt minus 2pt}
+\setlength{\intextsep}{6pt plus 2pt minus 2pt}
+\setlength{\floatsep}{6pt plus 2pt minus 2pt}
+
+% Look for figures in both the current dir and the original figures path
+\usepackage{graphicx}
+\graphicspath{{.}{figures/output/arxiv/}}
+
+% Map common Unicode characters for pdflatex compatibility (not needed on XeLaTeX/LuaLaTeX)
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0
+  \DeclareUnicodeCharacter{2212}{-}   % minus sign
+  \DeclareUnicodeCharacter{2013}{--}  % en dash
+  \DeclareUnicodeCharacter{2014}{---} % em dash
+\fi

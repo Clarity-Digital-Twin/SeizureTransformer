@@ -1,0 +1,176 @@
+#!/usr/bin/env python3
+"""Generate Figure 2: Scoring Impact Flow Diagram (Vertical Layout)"""
+
+import sys
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
+from pathlib import Path
+import numpy as np
+
+# Add parent directory to path for config import
+sys.path.append(str(Path(__file__).parent))
+from config import *
+
+def generate_fig3_optimized():
+    """Generate publication-quality Figure 3 with vertical flow diagram"""
+
+    fig, ax = plt.subplots(figsize=(6, 4.8), dpi=DPI_ARXIV)
+
+    # Define vertical positions (top to bottom flow)
+    input_x, input_y = 3.5, 5.5
+    model_x, model_y = 3.5, 4.2
+    scorer_y = 2.9
+    result_y = 1.5
+
+    # X positions for scorers (3 side by side)
+    scorer_x = [1.5, 3.5, 5.5]
+
+    # ============ Input Box ============
+    input_box = FancyBboxPatch((input_x-0.8, input_y-0.4), 1.6, 0.8,
+                               boxstyle="round,pad=0.05",
+                               facecolor='lightgray',
+                               edgecolor='black',
+                               linewidth=LINE_WIDTH['box'])
+    ax.add_patch(input_box)
+    ax.text(input_x, input_y, '865 EDF Files\n469 Seizures\n127.7 Hours',
+            ha='center', va='center', fontsize=FONT_SIZE['annotation']+1,
+            fontweight='normal')
+
+    # ============ Model Box ============
+    model_box = FancyBboxPatch((model_x-1, model_y-0.4), 2, 0.8,
+                               boxstyle="round,pad=0.05",
+                               facecolor='lightblue',
+                               edgecolor='black',
+                               linewidth=LINE_WIDTH['box']+0.5)
+    ax.add_patch(model_box)
+    ax.text(model_x, model_y, 'SeizureTransformer\nPredictions',
+            ha='center', va='center', fontsize=FONT_SIZE['label'],
+            fontweight='bold')
+
+    # ============ Scorer and Result Boxes ============
+    scorers = ['NEDC TAES', 'NEDC OVERLAP', 'SzCORE Event']
+    results = ['136.73 FA/24h\n65.21% Sens',
+               '26.89 FA/24h\n45.63% Sens',
+               '8.59 FA/24h\n52.35% Sens']
+    colors = [COLORS['nedc_taes'], COLORS['nedc_overlap'], COLORS['szcore']]
+
+    for scorer, result, color, x in zip(scorers, results, colors, scorer_x):
+        # Scorer box
+        scorer_box = FancyBboxPatch((x-0.7, scorer_y-0.25), 1.4, 0.5,
+                                    boxstyle="round,pad=0.02",
+                                    facecolor=color,
+                                    alpha=0.7,
+                                    edgecolor='black',
+                                    linewidth=LINE_WIDTH['box'])
+        ax.add_patch(scorer_box)
+        ax.text(x, scorer_y, scorer, ha='center', va='center',
+               fontsize=FONT_SIZE['annotation'], fontweight='bold')
+
+        # Result box (below scorer)
+        result_box = FancyBboxPatch((x-0.8, result_y-0.3), 1.6, 0.6,
+                                   boxstyle="round,pad=0.02",
+                                   facecolor='white',
+                                   edgecolor=color,
+                                   linewidth=LINE_WIDTH['box']+0.5)
+        ax.add_patch(result_box)
+        ax.text(x, result_y, result, ha='center', va='center',
+               fontsize=FONT_SIZE['annotation'], fontweight='bold')
+
+    # ============ Arrows ============
+    # Input to Model arrow (vertical)
+    arrow1 = FancyArrowPatch((input_x, input_y-0.4), (model_x, model_y+0.4),
+                            connectionstyle="arc3,rad=0",
+                            arrowstyle='->,head_width=0.3,head_length=0.3',
+                            lw=LINE_WIDTH['arrow']+0.5,
+                            color='gray',
+                            zorder=1)
+    ax.add_patch(arrow1)
+
+    # Model to Scorers arrows (straight lines)
+    for x in scorer_x:
+        arrow = FancyArrowPatch((model_x, model_y-0.4), (x, scorer_y+0.25),
+                               connectionstyle="arc3,rad=0",  # Changed to 0 for straight lines
+                               arrowstyle='->,head_width=0.2,head_length=0.2',
+                               lw=LINE_WIDTH['arrow'],
+                               color='gray',
+                               alpha=0.6,
+                               zorder=1)
+        ax.add_patch(arrow)
+
+    # Scorers to Results arrows (vertical, colored)
+    for color, x in zip(colors, scorer_x):
+        arrow = FancyArrowPatch((x, scorer_y-0.25), (x, result_y+0.3),
+                               connectionstyle="arc3,rad=0",
+                               arrowstyle='->,head_width=0.2,head_length=0.2',
+                               lw=LINE_WIDTH['arrow']+0.3,
+                               color=color,
+                               alpha=0.8,
+                               zorder=1)
+        ax.add_patch(arrow)
+
+    # ============ Annotation Box ============
+    # Use 'x' instead of × to avoid font encoding issues
+    annotation = '15.9x difference in FA/24h\nbetween TAES and SzCORE Event'
+    annotation_box = FancyBboxPatch((2.0, 0.2), 3, 0.6,
+                                   boxstyle="round,pad=0.05",
+                                   facecolor='yellow',
+                                   alpha=0.3,
+                                   edgecolor='orange',
+                                   linewidth=LINE_WIDTH['box'])
+    ax.add_patch(annotation_box)
+    ax.text(3.5, 0.5, annotation,
+            ha='center', va='center',
+            fontsize=FONT_SIZE['annotation']+1,
+            style='italic',
+            fontweight='bold')
+
+    # ============ Styling ============
+    ax.set_xlim(0.5, 6.5)
+    ax.set_ylim(0, 6.2)
+    ax.axis('off')
+
+    # Title
+    # ax.set_title('Figure 3: How Scoring Methodology Determines Performance Metrics',
+    #             fontsize=FONT_SIZE['title']+1,
+    #             fontweight='bold',
+    #             pad=20)
+
+    # Add subtle annotations (adjusted positions to avoid overlaps)
+    ax.text(2.0, 4.9, 'Same data', ha='center', fontsize=9,
+           style='italic', color='black', alpha=0.8)
+    ax.text(5.8, 3.5, 'Identical predictions', ha='center', fontsize=9,  # Moved right to avoid arrows
+           style='italic', color='black', alpha=0.8)
+    ax.text(0.5, 2.2, 'Different\nscorers', ha='center', fontsize=9,  # Slightly left
+           style='italic', color='black', alpha=0.8)
+    ax.text(6.5, 0.8, 'Vastly different\nresults', ha='center', fontsize=9,  # Moved right and down
+           style='italic', color='#C73E1D', alpha=0.9, fontweight='bold')
+
+    plt.tight_layout()
+
+    # Save in multiple formats
+    output_dir = Path('../output/arxiv')
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    for fmt in ['pdf', 'png']:
+        filename = output_dir / f'fig2_scoring_impact.{fmt}'
+        plt.savefig(filename,
+                   dpi=DPI_ARXIV if fmt == 'pdf' else DPI_WEB,
+                   metadata=METADATA if fmt == 'pdf' else None,
+                   **EXPORT_SETTINGS)
+        print(f"✓ Saved: {filename}")
+
+    # Also save web version
+    web_dir = Path('../output/web')
+    web_dir.mkdir(parents=True, exist_ok=True)
+    plt.savefig(web_dir / 'fig3_scoring_impact.png',
+               dpi=DPI_SCREEN,
+               **EXPORT_SETTINGS)
+
+    # No need to save in additional locations
+
+    plt.close()
+    print("✓ Figure 3 optimized generation complete")
+
+if __name__ == "__main__":
+    generate_fig3_optimized()

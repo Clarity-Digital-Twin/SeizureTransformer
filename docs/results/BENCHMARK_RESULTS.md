@@ -5,12 +5,12 @@
 | Metric | Sensitivity | FA/24h | F1 Score | Notes |
 |--------|------------|--------|----------|-------|
 | NEDC OVERLAP | 45.63% | 26.89 | 0.518 | Temple's binary event scorer (SEIZ FA) |
-| SzCORE | 52.35% | 8.59 | - | EpilepsyBench (90s internal merge) |
+| SzCORE Event | 52.35% | 8.59 | - | EpilepsyBench (90s internal merge) |
 
 ## Key Findings
 
 1. **Without merge_gap manipulation**: The model shows 26.89 FA/24h (SEIZ) at paper defaults (OVERLAP)
-2. **SzCORE difference**: SzCORE's tolerances/merge reduce FA by ≈3.1× vs OVERLAP at default
+2. **SzCORE difference**: SzCORE Event's tolerances/merge reduce FA by ≈3.1× vs OVERLAP at default
 3. **Clinical viability**: At paper defaults, NOT clinically viable (need <10 FA/24h)
 
 ## Clinical Tuning Targets
@@ -25,5 +25,5 @@
 
 - All results use merge_gap=None (no artificial FA reduction)
 - NEDC scores follow Temple University standards
-- SzCORE uses timescoring package with EpilepsyBench defaults
+- SzCORE Event uses timescoring package with EpilepsyBench defaults
 
