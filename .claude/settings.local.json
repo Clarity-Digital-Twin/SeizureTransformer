@@ -1,10 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(__NEW_LINE__ cp FINAL_PAPER_FROM_SSOT.md ARXIV_FINAL_VERSION/FINAL_PAPER_FROM_SSOT.md)",
-      "Bash(__NEW_LINE__ echo \"✓ Copied corrected markdown files to ARXIV_FINAL_VERSION\")",
-      "Bash(__NEW_LINE__ rm -f FINAL_PAPER.pdf SEIZURE_TRANSFORMER_ARXIV.pdf FINAL_PAPER.aux FINAL_PAPER.log)",
-      "Bash(__NEW_LINE__ echo \"✓ Removed redundant PDFs and LaTeX aux files from parent directory\")"
+      "Bash(__NEW_LINE__ echo \"✅ Files in ARXIV_FINAL_VERSION:\")",
+      "Bash(__NEW_LINE__ ls ARXIV_FINAL_VERSION/*.pdf ARXIV_FINAL_VERSION/*.tex ARXIV_FINAL_VERSION/*.md)",
+      "Bash(__NEW_LINE__ echo \"\")",
+      "Bash(__NEW_LINE__ echo \"❌ Leftover files to clean in parent:\")",
+      "Bash(__NEW_LINE__ ls *.pdf *.tex *.md *.log *.aux)"
     ],
     "deny": [],
     "ask": []
