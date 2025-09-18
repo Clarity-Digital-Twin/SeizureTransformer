@@ -24,3 +24,5 @@
 
 [12] Holger, Kern S, Papadopoulos Orfanos D, Vallat R, Brunner C, Cerina L, Appelhoff S, et al. pyEDFlib: v0.1.42. Zenodo; 2025. doi:10.5281/zenodo.15748763.
 
+[13] Roy S, Kiral-Kornek I, Harrer S, et al. Evaluation of artificial intelligence systems for assisted annotation of epileptic seizure EEG signals using expert human reviewers. EBioMedicine. 2021;70:103512. doi:10.1016/j.ebiom.2021.103512.
+
