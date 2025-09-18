@@ -1,28 +1,28 @@
 # Methods
 
-We evaluated SeizureTransformer on the TUSZ v2.0.3 held-out test set using the authors' pretrained weights without modification [1]. Our evaluation employed three distinct scoring methodologies on identical model predictions to quantify the impact of evaluation standards on reported performance.
+We evaluated SeizureTransformer on the TUSZ v2.0.3 held-out test set using the authors' pretrained weights without modification [8]. Our evaluation employed three distinct scoring methodologies on identical model predictions to quantify the impact of evaluation standards on reported performance.
 
 ## Dataset
 
-We used the Temple University Hospital Seizure Corpus (TUSZ) v2.0.3, focusing on its carefully designed evaluation split [3]. The eval set contains 865 EDF files totaling 127.7 hours from 43 patients with 469 expert-annotated seizures [3]. Critically, this set is patient-disjoint from the training and development splits, ensuring no data leakage and enabling valid generalization assessment [3]. We achieved 100% file coverage, with one file requiring automated header repair using pyEDFlib's repair functionality on a temporary copy [14].
+We used the Temple University Hospital Seizure Corpus (TUSZ) v2.0.3, focusing on its carefully designed evaluation split [5]. The eval set contains 865 EDF files totaling 127.7 hours from 43 patients with 469 expert-annotated seizures [5]. Critically, this set is patient-disjoint from the training and development splits, ensuring no data leakage and enabling valid generalization assessment [5]. We achieved 100% file coverage, with one file requiring automated header repair using pyEDFlib's repair functionality on a temporary copy [12].
 
 The development set, containing 1,832 files (435.5 hours) from 53 distinct patients with 1,075 seizures, was used exclusively for post-processing parameter optimization. This maintains the integrity of the held-out evaluation while allowing systematic exploration of clinical operating points.
 
 ## Model and Inference Pipeline
 
-We employed the authors' publicly available pretrained SeizureTransformer weights (~=168 MB) without any modifications, retraining, or fine-tuning [1]. The model expects 19-channel unipolar montage EEG data sampled at 256 Hz, processing 60-second windows (15,360 samples per channel) through its U-Net-Transformer architecture [1].
+We employed the authors' publicly available pretrained SeizureTransformer weights (~=168 MB) without any modifications, retraining, or fine-tuning [8]. The model expects 19-channel unipolar montage EEG data sampled at 256 Hz, processing 60-second windows (15,360 samples per channel) through its U-Net-Transformer architecture [8].
 
-Our preprocessing pipeline, implemented as a wrapper around the original wu_2025 code, largely follows the paper's specifications [1]. For each EDF file, we: (1) load the data with unipolar montage enforcement and normalized channel aliases; (2) apply per-channel z-score normalization across the full recording; (3) resample to 256 Hz if necessary; (4) apply a 0.5-120 Hz bandpass filter (3rd-order Butterworth); and (5) apply notch filters at 1 Hz and 60 Hz (Q=30). The 1 Hz notch (to suppress heart-rate artifacts) reflects our released evaluation code and is an addition beyond the paper’s brief preprocessing description [1].
+Our preprocessing pipeline, implemented as a wrapper around the original wu_2025 code, largely follows the paper's specifications [8]. For each EDF file, we: (1) load the data with unipolar montage enforcement and normalized channel aliases; (2) apply per-channel z-score normalization across the full recording; (3) resample to 256 Hz if necessary; (4) apply a 0.5-120 Hz bandpass filter (3rd-order Butterworth); and (5) apply notch filters at 1 Hz and 60 Hz (Q=30). The 1 Hz notch (to suppress heart-rate artifacts) reflects our released evaluation code and is an addition beyond the paper’s brief preprocessing description [8].
 
-The model processes 60-second non-overlapping windows, outputting per-sample seizure probabilities at 256 Hz. Post-processing applies three sequential operations using configurable parameters: (1) threshold the probability values to create a binary mask; (2) apply morphological opening and closing operations with a specified kernel size; and (3) remove events shorter than a minimum duration. The paper's default configuration uses threshold theta=0.8, kernel size k=5 samples, and minimum duration d=2.0 seconds [1].
+The model processes 60-second non-overlapping windows, outputting per-sample seizure probabilities at 256 Hz. Post-processing applies three sequential operations using configurable parameters: (1) threshold the probability values to create a binary mask; (2) apply morphological opening and closing operations with a specified kernel size; and (3) remove events shorter than a minimum duration. The paper's default configuration uses threshold theta=0.8, kernel size k=5 samples, and minimum duration d=2.0 seconds [8].
 
 ## Scoring Methodologies
 
 We evaluated identical model predictions using three scoring methodologies, each representing different clinical and research priorities:
 
-**NEDC TAES (Time-Aligned Event Scoring)** computes partial credit based on temporal overlap between predictions and ground truth [2]. If a 60-second reference seizure has 45 seconds correctly detected, TAES awards 0.75 true positive credit [2]. This methodology emphasizes temporal precision, making it the strictest evaluation standard.
+**NEDC TAES (Time-Aligned Event Scoring)** computes partial credit based on temporal overlap between predictions and ground truth [5]. If a 60-second reference seizure has 45 seconds correctly detected, TAES awards 0.75 true positive credit [5]. This methodology emphasizes temporal precision, making it the strictest evaluation standard.
 
-**NEDC OVERLAP** implements Temple's binary any-overlap scoring within the NEDC v6.0.0 framework [6]. Any temporal overlap between prediction and reference, regardless of duration, counts as a full true positive. This represents the commonly reported mode for TUSZ evaluation, matching the dataset's annotation philosophy [6].
+**NEDC OVERLAP** implements Temple's binary any-overlap scoring within the NEDC v6.0.0 framework [5]. Any temporal overlap between prediction and reference, regardless of duration, counts as a full true positive. This represents the commonly reported mode for TUSZ evaluation, matching the dataset's annotation philosophy [5].
 
 **SzCORE Event (Any-Overlap + tolerances)** extends binary scoring with clinical tolerances: 30-second pre-ictal and 60-second post-ictal windows around each reference event, plus merging of predictions separated by less than 90 seconds [4]. These modifications, designed for clinical deployment scenarios where early warnings and reduced alarm fatigue are prioritized, substantially reduce reported false alarm rates [4].
 
