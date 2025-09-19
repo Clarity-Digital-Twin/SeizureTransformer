@@ -24,7 +24,9 @@
       "Bash(md5sum:*)",
       "Bash(awk:*)",
       "Bash(chmod:*)",
-      "Bash(pandoc:*)"
+      "Bash(pandoc:*)",
+      "Bash(pdfinfo:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []
