@@ -153,7 +153,7 @@ We optimized parameters on the development set to target clinical false alarm th
 
 **10 FA/24h Target (theta=0.88, k=5, d=3.0)**:
 - NEDC OVERLAP achieved 33.90% sensitivity at 10.27 FA/24h
-- While meeting our FA constraint, this falls far below the 75% sensitivity goal for clinical systems [6]
+- While meeting our FA constraint, this falls far below the 75% sensitivity goal for clinical systems [13]
 - SzCORE Event achieved 40.59% sensitivity at only 3.36 FA/24h
 
 **2.5 FA/24h Target (theta=0.95, k=5, d=5.0)**:
@@ -167,7 +167,7 @@ We optimized parameters on the development set to target clinical false alarm th
 
 1. **Scoring Impact**: The ~=3.1x difference at default (NEDC OVERLAP vs SzCORE Event) stems entirely from scoring methodology, with TAES showing even larger divergence (5.1x vs OVERLAP).
 
-2. **Clinical Viability**: SeizureTransformer cannot achieve clinical viability when evaluated with NEDC scoring on TUSZ. At 10 FA/24h, it reaches only 33.90% sensitivity, far below the 75% goal for clinical systems [6].
+2. **Clinical Viability**: SeizureTransformer cannot achieve clinical viability when evaluated with NEDC scoring on TUSZ. At 10 FA/24h, it reaches only 33.90% sensitivity, far below the 75% goal for clinical systems [13].
 
 3. **AUROC Performance**: We measured AUROC of 0.9019.
 
@@ -363,7 +363,7 @@ We thank Joseph Picone and the Neural Engineering Data Consortium at Temple Univ
 | **Default Parameters (theta=0.80, k=5, d=2.0)** |
 | NEDC TAES | 65.21 | 99.68 | 14.73 | 0.2403 | 136.73 | - |
 | NEDC OVERLAP | 45.63 | 99.90 | 37.83 | 0.4136 | 26.89 | - |
-| SzCORE Event | 52.35 | 99.97 | 67.07 | 0.5880 | 8.59 | - |
+| SzCORE Event | 52.35 | 99.97 | 67.07 | 0.485 | 8.59 | - |
 | **10 FA/24h Target (theta=0.88, k=5, d=3.0)** |
 | NEDC OVERLAP | 33.90 | 99.96 | 55.98 | 0.4223 | 10.27 | - |
 | NEDC TAES | 60.45 | 99.85 | 12.03 | 0.2025 | 83.88 | - |

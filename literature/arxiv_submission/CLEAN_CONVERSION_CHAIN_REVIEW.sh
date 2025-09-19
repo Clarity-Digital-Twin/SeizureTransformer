@@ -5,7 +5,7 @@ set -euo pipefail
 echo "SEIZURE TRANSFORMER ARXIV REVIEW BUILD"
 echo "======================================"
 
-if [[ ! -d "current_draft" ]]; then
+if [[ ! -d "CURRENT_DRAFT" ]]; then
   echo "ERROR: Must run from literature/arxiv_submission" >&2
   exit 1
 fi
@@ -14,11 +14,11 @@ REVIEW_DIR="ARXIV_REVIEW_BUILD"
 mkdir -p "$REVIEW_DIR"
 
 echo "[1/5] Assemble markdown (SSOT)"
-pushd current_draft >/dev/null
+pushd CURRENT_DRAFT >/dev/null
 ./assemble.sh
 popd >/dev/null
 
-cp current_draft/CURRENT_WORKING_DRAFT_ASSEMBLED.md "$REVIEW_DIR/REVIEW_FROM_SSOT.md"
+cp CURRENT_DRAFT/CURRENT_WORKING_DRAFT_ASSEMBLED.md "$REVIEW_DIR/REVIEW_FROM_SSOT.md"
 
 echo "[2/5] Stage figures to match paths"
 mkdir -p "$REVIEW_DIR/figures/output/arxiv"
@@ -45,7 +45,7 @@ pandoc "$REVIEW_DIR/REVIEW_FROM_SSOT.md" \
   -V documentclass=article \
   -V colorlinks=true \
   -H arxiv_header.tex \
-  --resource-path=.:current_draft:$REVIEW_DIR:$REVIEW_DIR/figures/output/arxiv:ARXIV_FINAL_VERSION
+  --resource-path=.:CURRENT_DRAFT:$REVIEW_DIR:$REVIEW_DIR/figures/output/arxiv:ARXIV_FINAL_VERSION
 
 echo "[5/5] Done. Review outputs in $REVIEW_DIR/"
 ls -la "$REVIEW_DIR" || true
