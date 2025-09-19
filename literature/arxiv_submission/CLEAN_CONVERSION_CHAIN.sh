@@ -12,7 +12,7 @@ echo "================================================="
 echo ""
 
 # Step 1: Verify we're in the right directory
-if [[ ! -d "current_draft" ]]; then
+if [[ ! -d "CURRENT_DRAFT" ]]; then
     echo "ERROR: Must run from arxiv_submission directory"
     exit 1
 fi
@@ -22,14 +22,14 @@ mkdir -p ARXIV_FINAL_VERSION
 
 # Step 2: Assemble individual markdown files into single document
 echo "[1/5] Assembling individual markdown sections..."
-cd current_draft
+cd CURRENT_DRAFT
 ./assemble.sh
 cd ..
 
 # Step 3: Copy assembled markdown to ARXIV_FINAL_VERSION with clear name
 echo "[2/6] Creating final markdown from SSOT..."
-cp current_draft/CURRENT_WORKING_DRAFT_ASSEMBLED.md ARXIV_FINAL_VERSION/FINAL_PAPER_FROM_SSOT.md
-cp current_draft/CURRENT_WORKING_DRAFT_ASSEMBLED.md ARXIV_FINAL_VERSION/FINAL_PAPER_CLEAN.md
+cp CURRENT_DRAFT/CURRENT_WORKING_DRAFT_ASSEMBLED.md ARXIV_FINAL_VERSION/FINAL_PAPER_FROM_SSOT.md
+cp CURRENT_DRAFT/CURRENT_WORKING_DRAFT_ASSEMBLED.md ARXIV_FINAL_VERSION/FINAL_PAPER_CLEAN.md
 
 # Step 4: Stage figures into nested path to match TeX includes
 echo "[3/6] Staging figures for path compatibility..."
@@ -67,7 +67,7 @@ pandoc ARXIV_FINAL_VERSION/FINAL_PAPER_FROM_SSOT.md \
     -V documentclass=article \
     -V colorlinks=true \
     -H arxiv_header.tex \
-    --resource-path=.:current_draft:ARXIV_FINAL_VERSION:ARXIV_FINAL_VERSION/figures/output/arxiv
+    --resource-path=.:CURRENT_DRAFT:ARXIV_FINAL_VERSION:ARXIV_FINAL_VERSION/figures/output/arxiv
 
 # Optional: sync locked copy (commented out to avoid overwriting)
 # cp -f ARXIV_FINAL_VERSION/SEIZURE_TRANSFORMER_ARXIV.pdf ARXIV_FINAL_VERSION/SEIZURE_TRANSFORMER_ARXIV_LOCKED.pdf
@@ -83,8 +83,8 @@ echo "  - SEIZURE_TRANSFORMER_ARXIV.pdf (PDF for review)"
 echo "  - FIGURE_*.pdf (all figures)"
 echo ""
 echo "THE CHAIN:"
-echo "1. Individual markdown files in current_draft/*.md (SSOT)"
-echo "2. Assembled via current_draft/assemble.sh"
+echo "1. Individual markdown files in CURRENT_DRAFT/*.md (SSOT)"
+echo "2. Assembled via CURRENT_DRAFT/assemble.sh"
 echo "3. All outputs go to ARXIV_FINAL_VERSION/"
 echo "4. No manual editing - all changes go to markdown SSOT"
 echo ""

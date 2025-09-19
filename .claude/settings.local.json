@@ -9,7 +9,16 @@
       "Bash(__NEW_LINE__ grep -c \"Neural Engineering Data Consortium\" FINAL_PAPER_CLEAN.md)",
       "Bash(__NEW_LINE__ grep -c \"\\[13\\]\" FINAL_PAPER_CLEAN.md)",
       "Bash(__NEW_LINE__ grep -q \"0.414\" ../figures/data/key_results_summary.csv)",
-      "Bash(tee:*)"
+      "Bash(tee:*)",
+      "Bash(./CLEAN_CONVERSION_CHAIN.sh:*)",
+      "Bash(dos2unix:*)",
+      "Bash(bash:*)",
+      "Bash(cat:*)",
+      "Bash(while read f)",
+      "Bash(continue)",
+      "Bash(echo \"Checking: $f\")",
+      "Bash([[ -f \"$f\" ]])",
+      "Bash(done)"
     ],
     "deny": [],
     "ask": []
