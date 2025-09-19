@@ -18,7 +18,9 @@
       "Bash(continue)",
       "Bash(echo \"Checking: $f\")",
       "Bash([[ -f \"$f\" ]])",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(for:*)",
+      "Bash(do sed -i 's/\\r$//' \"$f\")"
     ],
     "deny": [],
     "ask": []
