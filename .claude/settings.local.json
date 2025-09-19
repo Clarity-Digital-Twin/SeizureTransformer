@@ -22,7 +22,9 @@
       "Bash(for:*)",
       "Bash(do sed -i 's/\\r$//' \"$f\")",
       "Bash(md5sum:*)",
-      "Bash(awk:*)"
+      "Bash(awk:*)",
+      "Bash(chmod:*)",
+      "Bash(pandoc:*)"
     ],
     "deny": [],
     "ask": []
