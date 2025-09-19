@@ -20,7 +20,9 @@
       "Bash([[ -f \"$f\" ]])",
       "Bash(done)",
       "Bash(for:*)",
-      "Bash(do sed -i 's/\\r$//' \"$f\")"
+      "Bash(do sed -i 's/\\r$//' \"$f\")",
+      "Bash(md5sum:*)",
+      "Bash(awk:*)"
     ],
     "deny": [],
     "ask": []
