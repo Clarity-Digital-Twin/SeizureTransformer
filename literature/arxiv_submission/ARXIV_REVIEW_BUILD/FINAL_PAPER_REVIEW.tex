@@ -121,6 +121,19 @@
   belowskip=1.5pt
 }
 
+% Match table caption style to figures for consistency
+\captionsetup[table]{%
+  font=small,
+  labelfont=bf,
+  labelsep=colon,
+  format=plain,
+  justification=justified,
+  singlelinecheck=false,
+  width=0.85\linewidth,
+  skip=2pt,
+  belowskip=2pt
+}
+
 % Keep figures near their sections
 \usepackage[section]{placeins}
 
@@ -684,8 +697,8 @@ alarm thresholds:
 \textbf{10 FA/24h Target (theta=0.88, k=5, d=3.0)}: - NEDC OVERLAP
 achieved 33.90\% sensitivity at 10.27 FA/24h - While meeting our FA
 constraint, this falls far below the 75\% sensitivity goal for clinical
-systems {[}6{]} - SzCORE Event achieved 40.59\% sensitivity at only 3.36
-FA/24h
+systems {[}13{]} - SzCORE Event achieved 40.59\% sensitivity at only
+3.36 FA/24h
 
 \textbf{2.5 FA/24h Target (theta=0.95, k=5, d=5.0)}: - NEDC OVERLAP
 achieved 14.50\% sensitivity at 2.05 FA/24h - Sensitivity too low for
@@ -721,7 +734,7 @@ TUSZ.}\label{fig:operating-curves}
   \textbf{Clinical Viability}: SeizureTransformer cannot achieve
   clinical viability when evaluated with NEDC scoring on TUSZ. At 10
   FA/24h, it reaches only 33.90\% sensitivity, far below the 75\% goal
-  for clinical systems {[}6{]}.
+  for clinical systems {[}13{]}.
 \item
   \textbf{AUROC Performance}: We measured AUROC of 0.9019.
 \end{enumerate}
@@ -1252,7 +1265,7 @@ SzCORE Event\strut
 \end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\raggedright
 67.07\strut
 \end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\raggedright
-0.5880\strut
+0.485\strut
 \end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\raggedright
 8.59\strut
 \end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\raggedright
