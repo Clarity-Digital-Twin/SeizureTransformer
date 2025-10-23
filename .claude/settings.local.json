@@ -26,7 +26,8 @@
       "Bash(chmod:*)",
       "Bash(pandoc:*)",
       "Bash(pdfinfo:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": []
